@@ -1,0 +1,17 @@
+name: CustomNameplates
+version: '${version}'
+main: net.momirealms.customnameplates.CustomNameplates
+api-version: 1.16
+authors: [ XiaoMoMi ]
+depend:
+  - ProtocolLib
+  - PlaceholderAPI
+softdepend:
+  - ItemsAdder
+  - Oraxen
+  - PlaceholderAPI
+commands:
+  customnameplates:
+    usage: /customnameplates help
+    aliases:
+      - nameplates

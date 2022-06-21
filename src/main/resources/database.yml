@@ -1,0 +1,28 @@
+settings:
+  # Valid Options: SQLite MYSQL
+  # Only MYSQL supports pool.
+  # Restart is a must when you change database configuration.
+  storage-mode: SQLite
+  use-pool: false
+  disable-async: false
+
+# MySQL settings
+MySQL:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+  database: minecraft
+  table-name: nameplates_data
+  property:
+    use-ssl: false
+    encoding: utf8
+    timezone: ''
+    allowPublicKeyRetrieval: false
+
+# Connection pool settings
+Pool-Settings:
+  maximum-pool-size: 10
+  minimum-idle: 10
+  maximum-lifetime: 180000
+  idle-timeout: 60000
