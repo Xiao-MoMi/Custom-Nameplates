@@ -6,7 +6,7 @@ public record FontCache(String name, FontChar fontChar, NameplateConfig config) 
 
     public static FontCache EMPTY;
     static {
-        FontCache.EMPTY = new FontCache("none", new FontChar(' ', ' ', ' '), NameplateConfig.EMPTY);
+        FontCache.EMPTY = new FontCache("none", new FontChar('小', '默', '米'), NameplateConfig.EMPTY);
     }
 
     public String getName() {

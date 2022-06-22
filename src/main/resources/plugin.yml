@@ -8,8 +8,6 @@ depend:
   - PlaceholderAPI
 softdepend:
   - ItemsAdder
-  - Oraxen
-  - PlaceholderAPI
 commands:
   customnameplates:
     usage: /customnameplates help

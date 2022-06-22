@@ -111,7 +111,7 @@ public class ResourceManager {
             return;
         }
         //资源包生成成功提示
-        AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Resource pack has been successfully generated! <color:#3CB371>" + this.caches.size() + " <color:#F5F5F5>nameplates Loaded.");
+        AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Resource pack has been successfully generated! <color:#3CB371>" + (this.caches.size() -1) + " <color:#F5F5F5>nameplates Loaded.");
         if (this.plugin.getHookManager().hasItemsAdder()){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
@@ -126,7 +126,7 @@ public class ResourceManager {
     保存插件预设资源
     */
     private void saveDefaultResources() {
-        List<String> list = Arrays.asList("cat", "egg", "cheems", "wither");
+        List<String> list = Arrays.asList("cat", "egg", "cheems", "wither", "xmas", "halloween","hutao","starsky","trident","rabbit");
         list.forEach(name -> CustomNameplates.instance.saveResource("resources" + File.separatorChar + name + ".png", false));
     }
 
@@ -168,7 +168,7 @@ public class ResourceManager {
                 config.set("color","WHITE");
             }
             if (!config.contains("size")){
-                config.set("size", 12);
+                config.set("size", 16);
             }
             ChatColor color = ChatColor.WHITE;
             try {

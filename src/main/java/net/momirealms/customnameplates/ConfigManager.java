@@ -149,7 +149,7 @@ public class ConfigManager {
                     idle_timeout = databaseConfig.getInt("Pool-Settings.idle-timeout");
                 }
             }else {
-                AdventureManager.consoleMessage("这种存储方式不存在");
+                AdventureManager.consoleMessage("<red>[CustomNameplates] Error! No such storage mode!</red>");
                 Bukkit.getPluginManager().disablePlugin(CustomNameplates.instance);
             }
         }

@@ -1,9 +1,8 @@
 config:
-  # Messages Language
+  # Language
   lang: en
 
   # Your namespace
-  # "minecraft" is also
   namespace: "nameplates"
 
   # Font Name
@@ -35,7 +34,7 @@ config:
   # Placeholder based prefix and suffix system. When enabled, it is recommended
   # to use PlaceholderAPI to be able to use this feature to the fullest extent.
   # keep it empty if you don't want to enable this feature.
-  prefix: '%vault_prefix%'
+  prefix: ''
   suffix: ''
 
   # Should the plugin hook into other plugins

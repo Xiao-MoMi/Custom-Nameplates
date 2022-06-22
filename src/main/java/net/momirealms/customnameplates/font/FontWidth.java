@@ -27,7 +27,7 @@ public enum FontWidth {
     RIGHT_ARROW('>', 4), QUESTION_MARK('?', 5), SLASH('/', 5),
     BACK_SLASH('\\', 5), LINE('|', 1), TILDE('~', 5), TICK('`', 2),
     PERIOD('.', 1), COMMA(',', 1), SPACE(' ', 3),
-    IN_BETWEEN(' ', 1), DEFAULT('默', 8), DEFAULT2('米', 7);
+    IN_BETWEEN(' ', 1), DEFAULT('默', 8);
 
     private final char character;
     private final int length;
