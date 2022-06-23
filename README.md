@@ -2,7 +2,7 @@
  
 **本开源项目不提供可构建文件**
 
-购买插件请加Q3266959688，价格为70￥，公益服半价
+购买插件请加Q3266959688，价格为70￥
 如果有能力可以自行构建
 
 If you are interested in this resource, you can build this project.
