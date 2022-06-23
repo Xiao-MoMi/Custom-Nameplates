@@ -2,15 +2,8 @@
  
 **本开源项目不提供可构建文件**
 
-### CustomNameplates为插件Nameplates的重写版本
-##### ■ 新增自定义命名空间功能 
-##### ■ 新增自定义font名功能 
-##### ■ 新增自定义贴图路径功能 
-##### ■ 新增自定义起始字符的功能 
-##### ■ 修复插件数据库存储不同步的BUG 
-##### ■ 增强插件只有在玩家加载了资源包的情况下显示铭牌的跨服同步性 
-##### ■ 更改可用铭牌存储方式：json -> 权限 
-##### ■ 更改当前使用铭牌存储方式：json -> SQLite/MySQL
-##### ■ 优化预览铭牌的视觉效果 
-##### ■ 修复与时装插件在预览时造成背部装饰掉落的问题
-##### ■ 增加了ItemsAdder资源包自动迁移功能
+购买插件请加Q3266959688，价格为70￥公益服半价
+
+If you are interested in this resource, you can build this project.
+Or buy this plugin with AliPay or Wechat pay, just ping me in Discord Server
+I don't accept PayPal because I can't get any money from it. Thanks!
