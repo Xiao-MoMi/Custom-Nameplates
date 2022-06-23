@@ -23,7 +23,7 @@ import java.util.*;
 public class ResourceManager {
 
     public final HashMap<String, FontCache> caches;
-    private CustomNameplates plugin;
+    private final CustomNameplates plugin;
 
     public ResourceManager(CustomNameplates plugin) {
         this.caches = new HashMap<>();
@@ -78,7 +78,7 @@ public class ResourceManager {
             caches.put(pngName, new FontCache(pngName, fontChar, config));
             jsonObject_2.add("type", new JsonPrimitive("bitmap"));
             jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.folder_path.replaceAll("\\\\","/") + png.getName().toLowerCase()));
-            jsonObject_2.add("ascent", new JsonPrimitive(12));
+            jsonObject_2.add("ascent", new JsonPrimitive(config.getyoffset()));
             jsonObject_2.add("height", new JsonPrimitive(config.getHeight()));
             JsonArray jsonArray_2 = new JsonArray();
             jsonArray_2.add(native2ascii(fontChar.getLeft()) + native2ascii(fontChar.getMiddle()) + native2ascii(fontChar.getRight()));
@@ -170,6 +170,9 @@ public class ResourceManager {
             if (!config.contains("size")){
                 config.set("size", 16);
             }
+            if (!config.contains("yoffset")){
+                config.set("yoffset", 12);
+            }
             ChatColor color = ChatColor.WHITE;
             try {
                 color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color")).toUpperCase());
@@ -178,9 +181,10 @@ public class ResourceManager {
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Invalid Color of " + nameplate + "</red>");
             }
             int size = config.getInt("size");
+            int yoffset = config.getInt("yoffset");
             String name = config.getString("name");
             config.save(file);
-            return new NameplateConfig(color, size, name);
+            return new NameplateConfig(color, size, name, yoffset);
         }
         catch (Exception e) {
             return NameplateConfig.EMPTY;

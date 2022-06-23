@@ -37,6 +37,9 @@ config:
   prefix: ''
   suffix: ''
 
+  # Thin-font support
+  use-thin-font: false
+
   # Should the plugin hook into other plugins
   integrations:
     # When enabled, the plugin will be able to parse prefix and suffix

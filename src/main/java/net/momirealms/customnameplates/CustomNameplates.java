@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.commands.Execute;
 import net.momirealms.customnameplates.commands.TabComplete;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
+import net.momirealms.customnameplates.hook.HookManager;
 import net.momirealms.customnameplates.listener.PlayerListener;
 import net.momirealms.customnameplates.listener.PacketsListener;
 import net.momirealms.customnameplates.resource.ResourceManager;

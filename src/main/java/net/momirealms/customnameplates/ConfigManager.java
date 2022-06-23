@@ -35,6 +35,7 @@ public class ConfigManager {
         public static boolean show_after;
         public static String lang;
         public static Long preview;
+        public static boolean thin_font;
 
         public static void ReloadConfig(){
             CustomNameplates.instance.saveDefaultConfig();
@@ -55,6 +56,7 @@ public class ConfigManager {
             show_after = config.getBoolean("config.show-after-load-resourcepack");
             key = Key.key(fontName);
             preview = config.getLong("config.preview-duration");
+            thin_font = config.getBoolean("config.use-thin-font",false);
         }
     }
     //消息文件

@@ -1,8 +1,10 @@
 package net.momirealms.customnameplates.nameplates;
 
+import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.font.FontCache;
 import net.momirealms.customnameplates.font.FontNegative;
 import net.momirealms.customnameplates.font.FontWidth;
+import net.momirealms.customnameplates.font.FontWidthThin;
 import org.bukkit.ChatColor;
 
 public class NameplateUtil {
@@ -18,7 +20,12 @@ public class NameplateUtil {
     当然这个玩家名是带上前缀与后缀的
      */
     public String makeCustomNameplate(String prefix, String name, String suffix) {
-        int totalWidth = FontWidth.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
+        int totalWidth;
+        if (ConfigManager.MainConfig.thin_font){
+            totalWidth = FontWidthThin.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
+        }else {
+            totalWidth = FontWidth.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
+        }
         boolean isEven = totalWidth % 2 == 0; //奇偶判断
         char left = this.fontcache.getChar().getLeft();
         char middle = this.fontcache.getChar().getMiddle();
@@ -44,7 +51,12 @@ public class NameplateUtil {
     保证铭牌总是位于玩家头顶中央的位置
      */
     public String getSuffixLength(String name) {
-        final int totalWidth = FontWidth.getTotalWidth(ChatColor.stripColor(name));
+        int totalWidth;
+        if (ConfigManager.MainConfig.thin_font){
+            totalWidth = FontWidthThin.getTotalWidth(ChatColor.stripColor(name));
+        }else {
+            totalWidth = FontWidth.getTotalWidth(ChatColor.stripColor(name));
+        }
         return FontNegative.getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 

@@ -2,12 +2,12 @@ package net.momirealms.customnameplates.nameplates;
 
 import org.bukkit.ChatColor;
 
-public record NameplateConfig(ChatColor color, int height, String name) {
+public record NameplateConfig(ChatColor color, int height, String name, int yoffset) {
 
     public static NameplateConfig EMPTY;
 
     static {
-        EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none");
+        EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12);
     }
 
     //获取Team颜色
@@ -24,4 +24,6 @@ public record NameplateConfig(ChatColor color, int height, String name) {
     public String getName() {
         return this.name;
     }
+
+    public int getyoffset() {return  this.yoffset; }
 }
