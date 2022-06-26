@@ -2,6 +2,8 @@ package net.momirealms.customnameplates.scoreboard;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
@@ -64,6 +66,10 @@ public class NameplatesTeam {
         //根据铭牌名获取FontCache
         FontCache fontCache = this.plugin.getResourceManager().getNameplateInfo(nameplate);
         if (fontCache == null){
+            this.prefix = Component.text("");
+            this.suffix = Component.text("");
+            this.color = ChatColor.WHITE;
+            this.team.setPrefix("");
             DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
             return;
         }
@@ -81,7 +87,7 @@ public class NameplatesTeam {
         }
         //最终prefix:  偏移 + 铭牌左 + 偏移 + 铭牌中 + 偏移 + 铭牌右 + 偏移 + 前缀
         //最终suffix:  偏移 + 后缀
-        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
+        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).color(TextColor.color(255, 255, 255)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
         this.suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix)).font(ConfigManager.MainConfig.key));
         this.color = nameplateUtil.getColor();
         this.team.setPrefix("");

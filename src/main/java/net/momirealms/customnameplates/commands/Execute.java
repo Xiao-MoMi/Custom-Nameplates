@@ -5,16 +5,21 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.sun.source.tree.BreakTree;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
+import net.momirealms.customnameplates.font.FontCache;
+import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -181,59 +186,75 @@ public class Execute implements CommandExecutor {
             }
             case "preview" -> {
                 if (sender instanceof Player player){
-                    //指令冷却
-                    long time = System.currentTimeMillis();
-                    //冷却时间判断
-                    if (time - (coolDown.getOrDefault(player, time - ConfigManager.MainConfig.preview * 1050)) < ConfigManager.MainConfig.preview * 1050) {
-                        AdventureManager.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.cooldown);
-                        return true;
-                    }
-                    //重置冷却时间
-                    coolDown.put(player, time);
                     if (player.hasPermission("customnameplates.preview") || player.isOp()){
+                        //指令冷却
+                        long time = System.currentTimeMillis();
+                        //冷却时间判断
+                        if (time - (coolDown.getOrDefault(player, time - ConfigManager.MainConfig.preview * 1050)) < ConfigManager.MainConfig.preview * 1050) {
+                            AdventureManager.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.cooldown);
+                            return true;
+                        }
+                        //重置冷却时间
+                        coolDown.put(player, time);
                         AdventureManager.playerMessage(player,ConfigManager.Message.prefix + ConfigManager.Message.preview);
-                        ArmorStand entity = player.getWorld().spawn(player.getLocation().add(0,0.8,0), ArmorStand.class, a -> {
-                            a.setInvisible(true);
-                            a.setCollidable(false);
-                            a.setInvulnerable(true);
-                            a.setVisible(false);
-                            a.setCustomNameVisible(false);
-                            a.setSmall(true);
-                            a.setGravity(false);
-                        });
-                        pCache.add(entity);
                         NameplatesTeam team = this.plugin.getScoreBoardManager().getOrCreateTeam(player);
-                        Component full = team.getPrefix().append(Component.text(player.getName()).font(Key.key("default")).append(team.getSuffix()));
-
-                        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-                        wrappedDataWatcher.setEntity(entity);
-                        WrappedDataWatcher.Serializer serializer = WrappedDataWatcher.Registry.get(Boolean.class);
-                        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(full)).getHandle()));
-                        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer), true);
-                        PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-                        packetContainer.getIntegers().write(0, entity.getEntityId());
-                        packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
-
-                        try {
-                            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetContainer);
-                        }
-                        catch (Exception e) {
-                            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to preview for "+ player.getName()+"</red>");
-                            e.printStackTrace();
-                        }
-                        BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
-                        for (int i = 1; i < ConfigManager.MainConfig.preview * 20; i++){
-                            bukkitScheduler.runTaskLater(CustomNameplates.instance,()-> entity.teleport(player.getLocation().add(0,0.8,0)), i);
-                        }
-                        bukkitScheduler.runTaskLater(CustomNameplates.instance, ()->{
-                            entity.remove();
-                            pCache.remove(entity);
-                        }, ConfigManager.MainConfig.preview * 20L);
+                        Component full = team.getPrefix().append(Component.text(player.getName()).color(TextColor.color(color2decimal(team.getColor()))).font(Key.key("default")).append(team.getSuffix()));
+                        showNameplate(player, full);
                     }else {
                         AdventureManager.playerMessage((Player) sender,ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
                     }
                 }else {
                     AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.no_console);
+                }
+            }
+            case "forcepreview" -> {
+                if (sender.hasPermission("customnameplates.forcepreview") || sender.isOp()) {
+                    if (args.length < 3){
+                        if(sender instanceof Player){
+                            AdventureManager.playerMessage((Player) sender,ConfigManager.Message.prefix + ConfigManager.Message.lackArgs);
+                        }else {
+                            AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.lackArgs);
+                        }
+                        return true;
+                    }
+                    Player player = Bukkit.getPlayer(args[1]);
+                    if (player == null){
+                        if (sender instanceof Player){
+                            AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_online);
+                        }else {
+                            AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online);
+                        }
+                        return true;
+                    }
+                    FontCache fontCache = plugin.getResourceManager().getNameplateInfo(args[2]);
+                    if (fontCache == null){
+                        if(sender instanceof Player){
+                            AdventureManager.playerMessage((Player) sender,ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
+                        }else {
+                            AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
+                        }
+                        return true;
+                    }
+                    long time = System.currentTimeMillis();
+                    if (time - (coolDown.getOrDefault(player, time - ConfigManager.MainConfig.preview * 1050)) < ConfigManager.MainConfig.preview * 1050) {
+                        AdventureManager.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.cooldown);
+                        return true;
+                    }
+                    coolDown.put(player, time);
+                    NameplateUtil nameplateUtil = new NameplateUtil(fontCache);
+                    String playerPrefix;
+                    String playerSuffix;
+                    if (plugin.getHookManager().hasPlaceholderAPI()) {
+                        playerPrefix = this.plugin.getHookManager().parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
+                        playerSuffix = this.plugin.getHookManager().parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
+                    }else {
+                        playerPrefix = ConfigManager.MainConfig.player_prefix;
+                        playerSuffix = ConfigManager.MainConfig.player_suffix;
+                    }
+                    Component prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, args[1], playerSuffix)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
+                    Component suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + args[1] + playerSuffix)).font(ConfigManager.MainConfig.key));
+                    Component full = prefix.append(Component.text(player.getName()).color(TextColor.color(color2decimal(nameplateUtil.getColor()))).font(Key.key("default")).append(suffix));
+                    showNameplate(player, full);
                 }
             }
             case "list" -> {
@@ -274,6 +295,7 @@ public class Execute implements CommandExecutor {
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates unequip - <color:#7FFFAA>unequip your nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates forceunequip - <color:#7FFFAA>force unequip a player's nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
+                        AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
                     }
                 }else {
@@ -284,11 +306,103 @@ public class Execute implements CommandExecutor {
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates unequip - <color:#7FFFAA>unequip your nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates forceunequip - <color:#7FFFAA>force unequip a player's nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
+                    AdventureManager.consoleMessage("<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
                 }
                 return true;
             }
         }
         return true;
+    }
+
+    private void showNameplate(Player player, Component component) {
+        ArmorStand entity = player.getWorld().spawn(player.getLocation().add(0,0.8,0), ArmorStand.class, a -> {
+            a.setInvisible(true);
+            a.setCollidable(false);
+            a.setInvulnerable(true);
+            a.setVisible(false);
+            a.setCustomNameVisible(false);
+            a.setSmall(true);
+            a.setGravity(false);
+        });
+        pCache.add(entity);
+
+        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
+        wrappedDataWatcher.setEntity(entity);
+        WrappedDataWatcher.Serializer serializer = WrappedDataWatcher.Registry.get(Boolean.class);
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(component)).getHandle()));
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer), true);
+        PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
+        packetContainer.getIntegers().write(0, entity.getEntityId());
+        packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+
+        try {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetContainer);
+        }
+        catch (Exception e) {
+            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to preview for "+ player.getName()+"</red>");
+            e.printStackTrace();
+        }
+        BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
+        for (int i = 1; i < ConfigManager.MainConfig.preview * 20; i++){
+            bukkitScheduler.runTaskLater(CustomNameplates.instance,()-> entity.teleport(player.getLocation().add(0,0.8,0)), i);
+        }
+        bukkitScheduler.runTaskLater(CustomNameplates.instance, ()->{
+            entity.remove();
+            pCache.remove(entity);
+        }, ConfigManager.MainConfig.preview * 20L);
+    }
+
+    private int color2decimal(ChatColor color){
+        switch (String.valueOf(color.getChar())){
+            case "0" -> {
+                return 0;
+            }
+            case "c" -> {
+                return 16733525;
+            }
+            case "6" -> {
+                return 16755200;
+            }
+            case "4" -> {
+                return 11141120;
+            }
+            case "e" -> {
+                return 16777045;
+            }
+            case "2" -> {
+                return 43520;
+            }
+            case "a" -> {
+                return 5635925;
+            }
+            case "b" -> {
+                return 5636095;
+            }
+            case "3" -> {
+                return 43690;
+            }
+            case "1" -> {
+                return 170;
+            }
+            case "9" -> {
+                return 5592575;
+            }
+            case "d" -> {
+                return 16733695;
+            }
+            case "5" -> {
+                return 11141290;
+            }
+            case "8" -> {
+                return 5592405;
+            }
+            case "7" -> {
+                return 11184810;
+            }
+            default -> {
+                return 16777215;
+            }
+        }
     }
 }

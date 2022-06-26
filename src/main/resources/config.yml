@@ -1,6 +1,7 @@
 config:
   # Language
-  lang: en
+  # en/cn
+  lang: cn
 
   # Your namespace
   namespace: "nameplates"

@@ -34,12 +34,12 @@ public class TabComplete implements TabCompleter {
             if (sender.hasPermission("customnameplates.forceequip")) tab.add("forceequip");
             if (sender.hasPermission("customnameplates.unequip")) tab.add("unequip");
             if (sender.hasPermission("customnameplates.forceunequip")) tab.add("forceunequip");
+            if (sender.hasPermission("customnameplates.forcepreview")) tab.add("forcepreview");
             if (sender.hasPermission("customnameplates.preview")) tab.add("preview");
             if (sender.hasPermission("customnameplates.list")) tab.add("list");
             return tab;
         }
         if(2 == args.length){
-            List<String> tab = new ArrayList<>();
             if (args[0].equalsIgnoreCase("equip")){
                 return availableNameplates(sender);
             }
@@ -49,9 +49,15 @@ public class TabComplete implements TabCompleter {
             if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
                 return online_players();
             }
+            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
+                return online_players();
+            }
         }
         if(3 == args.length){
             if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
+                return nameplates();
+            }
+            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
                 return nameplates();
             }
         }
