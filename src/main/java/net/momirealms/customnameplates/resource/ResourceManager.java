@@ -111,10 +111,11 @@ public class ResourceManager {
             return;
         }
         //资源包生成成功提示
-        AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Resource pack has been successfully generated! <color:#3CB371>" + (this.caches.size() -1) + " <color:#F5F5F5>nameplates Loaded.");
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>资源包已成功生成! 已载入 <white>" + (this.caches.size() -1) + " <color:#baffd1>个铭牌!");
         if (this.plugin.getHookManager().hasItemsAdder()){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
+                AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>检测到 <color:#90EE90>ItemsAdder <color:#baffd1>已自动转移生成的资源包!");
             }catch (IOException e){
                 e.printStackTrace();
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy files to ItemsAdder...</red>");
@@ -137,7 +138,6 @@ public class ResourceManager {
         if(file.exists()){
             try{
                 FileUtils.deleteDirectory(file);
-                AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Successfully copy files to ItemsAdder...");
             }catch (IOException e){
                 e.printStackTrace();
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to delete generated folder...</red>" );

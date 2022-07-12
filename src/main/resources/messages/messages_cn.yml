@@ -1,9 +1,9 @@
 messages:
-  prefix: '<gradient:#DDE4FF:#8DA2EE>[CustomNameplates] </gradient>'
+  prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
   no-perm: '<red>你没有权限!</red>'
   lack-args: '<white>参数不足!</white>'
   reload: '<white>插件已重载!</white>'
-  equip: '<white>你已佩戴铭牌 {Nameplate}</white> <yellow><click:run_command:nameplates preview>[点击预览]'
+  equip: '<white>你已佩戴铭牌 {Nameplate}</white> <yellow><click:run_command:/nameplates preview>[点击预览]'
   force-equip: '<white>你已为玩家 {Player} 强制佩戴了铭牌 {Nameplate}</white>'
   unequip: '<white>你已卸下铭牌!</white>'
   force-unequip: '<white>你已强制卸下玩家 {Player} 的铭牌!</white>'

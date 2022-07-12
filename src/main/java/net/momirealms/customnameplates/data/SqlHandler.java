@@ -79,7 +79,7 @@ public class SqlHandler {
             if (rs.next()) {
                 playerData = new PlayerData(rs.getString(2), rs.getInt(3));
             }else {
-                sql = "INSERT INTO nameplates(player,equipped,accepted) values(?,?,?)";
+                sql = "INSERT INTO " + tableName + "(player,equipped,accepted) values(?,?,?)";
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, uuid.toString());
                 statement.setString(2, "none");

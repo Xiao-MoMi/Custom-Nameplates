@@ -38,14 +38,8 @@ import java.util.Optional;
 public class Execute implements CommandExecutor {
 
     private final CustomNameplates plugin;
-    private final HashMap<Player, Long> coolDown;
-    {
-        coolDown = new HashMap<>();
-    }
-    public static List<Entity> pCache;
-    {
-        pCache = new ArrayList<>();
-    }
+    private final HashMap<Player, Long> coolDown = new HashMap<>();
+    public static List<Entity> pCache = new ArrayList<>();
 
     public Execute(CustomNameplates plugin) {
         this.plugin = plugin;

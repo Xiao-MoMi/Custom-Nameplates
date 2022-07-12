@@ -20,7 +20,7 @@ public class DataManager {
         }
         PlayerData playerData = SqlHandler.getPlayerData(uuid);
         if (playerData == null) {
-            playerData = PlayerData.EMPTY;
+            playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
         }
         cache.put(uuid, playerData);
         return playerData;
@@ -40,9 +40,9 @@ public class DataManager {
 
     public static boolean create() {
         if(ConfigManager.DatabaseConfig.use_mysql){
-            AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#00CED1>Storage Mode - MYSQL");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>存储模式 - MYSQL");
         }else {
-            AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#00CED1>Storage Mode - SQLite");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>存储模式 - SQLite");
         }
         if (SqlHandler.connect()) {
             if (ConfigManager.DatabaseConfig.use_mysql) {

@@ -38,6 +38,7 @@ public final class CustomNameplates extends JavaPlugin {
     public void onEnable() {
         instance = this;
         adventure = BukkitAudiences.create(this);
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>Running on " + Bukkit.getVersion());
         //重载插件
         ConfigManager.MainConfig.ReloadConfig();
         ConfigManager.Message.ReloadConfig();
@@ -61,7 +62,7 @@ public final class CustomNameplates extends JavaPlugin {
             return;
         }
         //启动完成
-        AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Plugin has been enabled! Author: XiaoMoMi");
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>插件已启用! 作者: 小默米 QQ:3266959688");
     }
 
     @Override
@@ -71,7 +72,7 @@ public final class CustomNameplates extends JavaPlugin {
         //清除缓存实体
         Execute.pCache.forEach(Entity::remove);
         //卸载完成
-        AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Plugin has been disabled! Author: XiaoMoMi");
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>插件已卸载! 作者: 小默米 QQ:3266959688");
         //关闭adventure
         if(adventure != null) {
             adventure.close();

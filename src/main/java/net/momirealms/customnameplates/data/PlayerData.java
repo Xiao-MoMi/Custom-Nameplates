@@ -1,13 +1,6 @@
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.ConfigManager;
-
 public class PlayerData {
-
-    public static PlayerData EMPTY;
-    static {
-        EMPTY = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
-    }
 
     private String equipped;
     private int accepted;

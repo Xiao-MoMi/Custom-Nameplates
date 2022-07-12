@@ -4,7 +4,6 @@ settings:
   # Restart is a must when you change database configuration.
   storage-mode: SQLite
   use-pool: false
-  disable-async: false
 
 # MySQL settings
 MySQL:

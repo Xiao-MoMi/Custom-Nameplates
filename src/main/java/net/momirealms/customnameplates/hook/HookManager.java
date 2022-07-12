@@ -26,14 +26,15 @@ public class HookManager {
     }
 
     //Papi Hook检测
+    //其实是一段问题代码，但基本人人都装了PAPI，更改意义不大
     private void initializePlaceholderAPI() {
         if(!ConfigManager.MainConfig.placeholderAPI){
             this.placeholderAPI = false;
             return;
         }
         if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>已启用 PlaceholderAPI 变量解析!");
             this.placeholderAPI = true;
-            AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> " + "<color:#F5F5F5>PlaceholderAPI Hooked!");
         }
     }
     //ItemsAdder Hook检测
@@ -43,7 +44,6 @@ public class HookManager {
         }
         if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("ItemsAdder") != null){
             this.itemsAdder = true;
-            AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> " + "<color:#F5F5F5>ItemsAdder Hooked!");
         }
     }
     /*

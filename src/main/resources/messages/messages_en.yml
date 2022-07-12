@@ -1,5 +1,5 @@
 messages:
-  prefix: '<gradient:#DDE4FF:#8DA2EE>[CustomNameplates] </gradient>'
+  prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
   no-perm: '<red>No Permission!</red>'
   lack-args: '<white>Insufficient parameters!</white>'
   reload: '<white>Reloaded!</white>'
