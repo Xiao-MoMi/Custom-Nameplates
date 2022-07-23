@@ -60,7 +60,7 @@ public final class CustomNameplates extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketsListener(this));
         //新建单例
         this.resourceManager = new ResourceManager(this);
-        this.dataManager = new DataManager();
+        this.dataManager = new DataManager(this);
         this.hookManager = new HookManager(this);
         this.scoreBoardManager = new ScoreBoardManager(this);
         //生成资源包

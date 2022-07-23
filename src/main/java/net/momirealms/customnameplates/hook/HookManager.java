@@ -21,8 +21,6 @@ public class HookManager {
         this.initializeItemsAdder();
     }
 
-    //Papi Hook检测
-    //其实是一段问题代码，但基本人人都装了PAPI，更改意义不大
     private void initializePlaceholderAPI() {
         if(!ConfigManager.MainConfig.placeholderAPI){
             this.placeholderAPI = false;
@@ -33,7 +31,7 @@ public class HookManager {
             this.placeholderAPI = true;
         }
     }
-    //ItemsAdder Hook检测
+
     private void initializeItemsAdder() {
         if (!ConfigManager.MainConfig.itemsAdder) {
             this.itemsAdder = false;
@@ -42,12 +40,4 @@ public class HookManager {
             this.itemsAdder = true;
         }
     }
-//    /*
-//    解析prefix与suffix
-//     */
-//    public String parsePlaceholders(Player player, String papi) {
-//        String s = StringUtils.replace(StringUtils.replace(papi, "%player_name%", player.getName()), "%player_displayname%", player.getDisplayName());
-//        s = PlaceholderAPI.setPlaceholders(player, s);
-//        return ChatColor.translateAlternateColorCodes('&', s);
-//    }
 }

@@ -41,7 +41,7 @@ public class PacketsListener extends PacketAdapter {
         if (!this.plugin.getScoreBoardManager().doesTeamExist(teamName)){
             return;
         }
-        if (ConfigManager.MainConfig.show_after && DataManager.cache.get(event.getPlayer().getUniqueId()).getAccepted() == 0) {
+        if (ConfigManager.MainConfig.show_after && (DataManager.cache.get(event.getPlayer().getUniqueId()) == null || DataManager.cache.get(event.getPlayer().getUniqueId()).getAccepted() == 0)) {
             internalStructure.getChatComponents().write(1, WrappedChatComponent.fromJson("{\"text\":\"\"}"));
             internalStructure.getChatComponents().write(2, WrappedChatComponent.fromJson("{\"text\":\"\"}"));
             internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);

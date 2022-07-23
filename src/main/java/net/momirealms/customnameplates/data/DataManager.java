@@ -4,6 +4,7 @@ import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +13,32 @@ import java.util.UUID;
 public class DataManager {
 
     public static Map<UUID, PlayerData> cache;
-    public DataManager() {
+    private CustomNameplates plugin;
+
+    public DataManager(CustomNameplates plugin) {
+        this.plugin = plugin;
         cache = new HashMap<>();
+    }
+
+    public void loadData(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (ConfigManager.DatabaseConfig.async){
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
+                PlayerData playerData = SqlHandler.getPlayerData(uuid);
+                if (playerData == null) {
+                    playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
+                }
+                cache.put(uuid, playerData);
+                plugin.getScoreBoardManager().getOrCreateTeam(player);
+            });
+        }else {
+            PlayerData playerData = SqlHandler.getPlayerData(uuid);
+            if (playerData == null) {
+                playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
+            }
+            cache.put(uuid, playerData);
+            plugin.getScoreBoardManager().getOrCreateTeam(player);
+        }
     }
 
     public PlayerData getOrCreate(UUID uuid) {
@@ -32,7 +57,16 @@ public class DataManager {
         if (!cache.containsKey(uuid)) {
             return;
         }
-        cache.remove(uuid);
+        if (ConfigManager.DatabaseConfig.async){
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, ()-> {
+                SqlHandler.save(cache.get(uuid), uuid);
+                cache.remove(uuid);
+            });
+        }
+        else {
+            SqlHandler.save(cache.get(uuid), uuid);
+            cache.remove(uuid);
+        }
     }
 
     public void savePlayer(UUID uuid) {
