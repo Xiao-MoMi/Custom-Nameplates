@@ -1,8 +1,11 @@
 # Custom-Nameplates
+A unique way to customize nametags
 
-你可以自行构建此插件
-购买插件请加Q3266959688，价格为70￥公益服半价
+### How to buy
 
-If you are interested in this resource, you can build this project.
-Otherwise if you want to buy this plugin, plz use AliPay or Wechat pay, just ping me in Discord Server and I will provide you with QRcode.
-I don't accept PayPal because I can't get any money from it. Thanks!
+https://afdian.net/@xiaomomi
+
+https://polymart.org/resource/customnameplates.2543
+
+### How to compile
+Just compile it with -gradle shadowjar.
