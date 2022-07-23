@@ -79,3 +79,7 @@ tasks.withType(JavaCompile) {
 shadowJar {
     relocate ('net.kyori', 'libs.kyori')
 }
+tasks.register("delete", Delete).get().delete("build/libs/"+project.name+"-"+project.version+".jar")
+tasks.named("build").get().dependsOn("shadowJar").finalizedBy("delete").doLast {
+    println("Deleting: "+ "build/libs/"+project.name+"-"+project.version+".jar")
+}
