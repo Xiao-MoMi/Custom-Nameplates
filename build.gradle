@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '1.1'
+version = '1.7.1'
 
 repositories {
     mavenCentral()
@@ -28,18 +28,23 @@ repositories {
         name = "clip-repo"
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    maven {
+        name = "jitpack"
+        url = 'https://jitpack.io'
+    }
 }
 
 dependencies {
+    compileOnly fileTree(dir:'libs',includes:['*.jar'])
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0"
     compileOnly 'me.clip:placeholderapi:2.11.1'
-    implementation('com.zaxxer:HikariCP:5.0.1')
+    compileOnly 'com.zaxxer:HikariCP:5.0.1'
     implementation('net.kyori:adventure-api:4.11.0')
     implementation('net.kyori:adventure-platform-bukkit:4.1.1')
     implementation('net.kyori:adventure-text-minimessage:4.11.0')
     implementation("net.kyori:adventure-text-serializer-gson:4.11.0")
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    compileOnly group: 'commons-io', name: 'commons-io', version: '2.11.0'
 }
 
 def targetJavaVersion = 16
@@ -67,10 +72,10 @@ processResources {
     }
 }
 
-shadowJar {
-    relocate 'net.kyori', 'net.momirealms.customnameplates.libs.kyori'
-}
-
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+shadowJar {
+    relocate ('net.kyori', 'libs.kyori')
 }
