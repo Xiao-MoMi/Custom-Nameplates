@@ -36,6 +36,8 @@ public class ConfigManager {
         public static String lang;
         public static Long preview;
         public static boolean thin_font;
+        public static boolean hidePrefix;
+        public static boolean hideSuffix;
 
         public static void ReloadConfig(){
             CustomNameplates.instance.saveDefaultConfig();
@@ -57,6 +59,8 @@ public class ConfigManager {
             key = Key.key(fontName);
             preview = config.getLong("config.preview-duration");
             thin_font = config.getBoolean("config.use-thin-font",false);
+            hidePrefix = config.getBoolean("config.hide-prefix-when-equipped",false);
+            hideSuffix = config.getBoolean("config.hide-suffix-when-equipped",false);
         }
     }
     //消息文件
@@ -107,6 +111,7 @@ public class ConfigManager {
         public static String tableName;
         public static boolean enable_pool;
         public static boolean use_mysql;
+        public static boolean async;
         public static int maximum_pool_size;
         public static int minimum_idle;
         public static int maximum_lifetime;
@@ -116,6 +121,7 @@ public class ConfigManager {
             YamlConfiguration databaseConfig = getConfig("database.yml");
             String storage_mode = databaseConfig.getString("settings.storage-mode");
 
+            async = !databaseConfig.getBoolean("settings.disable-async", true);
             //使用SQLite
             if(storage_mode.equals("SQLite")){
                 enable_pool = false;

@@ -10,7 +10,7 @@ messages:
   preview: '<white>Now previewing your nameplate (go to third person to view)!</white>'
   not-exist: '<white>This nameplate does not exist!</white>'
   not-online: '<white>Player {Player} is not online!</white>'
-  no-console: '<white>This command can be only sent by player!</white>'
+  no-console: '<white>This command can be only executed by player!</white>'
   not-available: '<white>This nameplate is currently not available!</white>'
   available: '<white>Available nameplates: {Nameplates}.</white>'
   cooldown: '<white>Previewing is still Ongoing!</white>'

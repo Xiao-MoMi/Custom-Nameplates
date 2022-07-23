@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.listener;
 
+import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import org.bukkit.Bukkit;

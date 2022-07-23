@@ -1,12 +1,8 @@
 package net.momirealms.customnameplates.hook;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class HookManager {
 
@@ -33,7 +29,7 @@ public class HookManager {
             return;
         }
         if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>已启用 PlaceholderAPI 变量解析!");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
             this.placeholderAPI = true;
         }
     }
@@ -46,12 +42,12 @@ public class HookManager {
             this.itemsAdder = true;
         }
     }
-    /*
-    解析prefix与suffix
-     */
-    public String parsePlaceholders(Player player, String papi) {
-        String s = StringUtils.replace(StringUtils.replace(papi, "%player_name%", player.getName()), "%player_displayname%", player.getDisplayName());
-        s = PlaceholderAPI.setPlaceholders(player, s);
-        return ChatColor.translateAlternateColorCodes('&', s);
-    }
+//    /*
+//    解析prefix与suffix
+//     */
+//    public String parsePlaceholders(Player player, String papi) {
+//        String s = StringUtils.replace(StringUtils.replace(papi, "%player_name%", player.getName()), "%player_displayname%", player.getDisplayName());
+//        s = PlaceholderAPI.setPlaceholders(player, s);
+//        return ChatColor.translateAlternateColorCodes('&', s);
+//    }
 }

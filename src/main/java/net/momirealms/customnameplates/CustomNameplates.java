@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.commands.Execute;
 import net.momirealms.customnameplates.commands.TabComplete;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
+import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.HookManager;
 import net.momirealms.customnameplates.listener.PlayerListener;
 import net.momirealms.customnameplates.listener.PacketsListener;
@@ -35,8 +36,16 @@ public final class CustomNameplates extends JavaPlugin {
     public ScoreBoardManager getScoreBoardManager() { return this.scoreBoardManager; }
 
     @Override
-    public void onEnable() {
+    public void onLoad(){
+
         instance = this;
+        LibraryLoader.load("commons-io","commons-io","2.11.0","https://repo.maven.apache.org/maven2/");
+        LibraryLoader.load("com.zaxxer","HikariCP","5.0.1","https://repo.maven.apache.org/maven2/");
+    }
+
+    @Override
+    public void onEnable() {
+
         adventure = BukkitAudiences.create(this);
         AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>Running on " + Bukkit.getVersion());
         //重载插件
@@ -62,7 +71,7 @@ public final class CustomNameplates extends JavaPlugin {
             return;
         }
         //启动完成
-        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>插件已启用! 作者: 小默米 QQ:3266959688");
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
     }
 
     @Override
@@ -71,8 +80,6 @@ public final class CustomNameplates extends JavaPlugin {
         SqlHandler.close();
         //清除缓存实体
         Execute.pCache.forEach(Entity::remove);
-        //卸载完成
-        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>插件已卸载! 作者: 小默米 QQ:3266959688");
         //关闭adventure
         if(adventure != null) {
             adventure.close();

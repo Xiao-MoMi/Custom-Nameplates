@@ -5,7 +5,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.sun.source.tree.BreakTree;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -15,6 +14,7 @@ import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.font.FontCache;
+import net.momirealms.customnameplates.hook.ParsePapi;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
 import org.apache.commons.lang.StringUtils;
@@ -239,8 +239,8 @@ public class Execute implements CommandExecutor {
                     String playerPrefix;
                     String playerSuffix;
                     if (plugin.getHookManager().hasPlaceholderAPI()) {
-                        playerPrefix = this.plugin.getHookManager().parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
-                        playerSuffix = this.plugin.getHookManager().parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
+                        playerPrefix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
+                        playerSuffix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
                     }else {
                         playerPrefix = ConfigManager.MainConfig.player_prefix;
                         playerSuffix = ConfigManager.MainConfig.player_suffix;

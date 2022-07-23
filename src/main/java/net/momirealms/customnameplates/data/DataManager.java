@@ -2,6 +2,8 @@ package net.momirealms.customnameplates.data;
 
 import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.CustomNameplates;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,19 +32,24 @@ public class DataManager {
         if (!cache.containsKey(uuid)) {
             return;
         }
-        SqlHandler.save(cache.get(uuid), uuid);
         cache.remove(uuid);
     }
 
     public void savePlayer(UUID uuid) {
-        SqlHandler.save(cache.get(uuid), uuid);
+        if (ConfigManager.DatabaseConfig.async){
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
+                SqlHandler.save(cache.get(uuid), uuid);
+            });
+        }else {
+            SqlHandler.save(cache.get(uuid), uuid);
+        }
     }
 
     public static boolean create() {
         if(ConfigManager.DatabaseConfig.use_mysql){
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>存储模式 - MYSQL");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>Storage Mode - MYSQL");
         }else {
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>存储模式 - SQLite");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>Storage Mode - SQLite");
         }
         if (SqlHandler.connect()) {
             if (ConfigManager.DatabaseConfig.use_mysql) {

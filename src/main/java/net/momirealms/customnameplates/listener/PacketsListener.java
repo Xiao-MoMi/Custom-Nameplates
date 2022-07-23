@@ -48,8 +48,12 @@ public class PacketsListener extends PacketAdapter {
             return;
         }
         //在新建队伍名字的时候其实就是以玩家名命名,所以获得的teamName=playerName
-        internalStructure.getChatComponents().write(1, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getPrefix())));
-        internalStructure.getChatComponents().write(2, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getSuffix())));
+        if (team.getPrefix() != null){
+            internalStructure.getChatComponents().write(1, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getPrefix())));
+        }
+        if (team.getSuffix() != null){
+            internalStructure.getChatComponents().write(2, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getSuffix())));
+        }
         internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,team.getColor());
     }
 }

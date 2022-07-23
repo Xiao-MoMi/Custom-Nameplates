@@ -39,7 +39,7 @@ public class ResourceManager {
         File g_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated");
         //如果资源文件夹不存在则创建
         if (!r_file.exists()) {
-            AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Failed to detect resources folder! Generating default resources...");
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#F5F5F5>Failed to detect resources folder! Generating default resources...");
             if (!r_file.mkdir()) {
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to create resources folder...</red>");
                 return;
@@ -111,11 +111,11 @@ public class ResourceManager {
             return;
         }
         //资源包生成成功提示
-        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>资源包已成功生成! 已载入 <white>" + (this.caches.size() -1) + " <color:#baffd1>个铭牌!");
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>ResourcePack has been generated! <white>" + (this.caches.size() -1) + " <color:#baffd1>nameplates loaded!");
         if (this.plugin.getHookManager().hasItemsAdder()){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
-                AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>检测到 <color:#90EE90>ItemsAdder <color:#baffd1>已自动转移生成的资源包!");
+                AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>ItemsAdder!<color:#baffd1> Automatically sent rp to ItemsAdder folder!");
             }catch (IOException e){
                 e.printStackTrace();
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy files to ItemsAdder...</red>");

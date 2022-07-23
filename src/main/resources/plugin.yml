@@ -5,9 +5,9 @@ api-version: 1.16
 authors: [ XiaoMoMi ]
 depend:
   - ProtocolLib
-  - PlaceholderAPI
 softdepend:
   - ItemsAdder
+  - PlaceholderAPI
 commands:
   customnameplates:
     usage: /customnameplates help
