@@ -29,6 +29,7 @@ public class HookManager {
         if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
             this.placeholderAPI = true;
+            new Placeholders().register();
         }
     }
 

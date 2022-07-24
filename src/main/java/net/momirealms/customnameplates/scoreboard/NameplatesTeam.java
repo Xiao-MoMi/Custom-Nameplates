@@ -25,6 +25,9 @@ public class NameplatesTeam {
     private final Team team;
     private Component prefix;
     private Component suffix;
+    private String prefixText;
+    private String suffixText;
+
     private ChatColor color;
 
     public void hideNameplate() {
@@ -41,6 +44,14 @@ public class NameplatesTeam {
     }
     public ChatColor getColor() {
         return this.color;
+    }
+
+    public String getPrefixText() {
+        return prefixText;
+    }
+
+    public String getSuffixText() {
+        return suffixText;
     }
 
     public NameplatesTeam(CustomNameplates plugin, Player player) {
@@ -66,9 +77,13 @@ public class NameplatesTeam {
             if (plugin.getHookManager().hasPlaceholderAPI()) {
                 this.prefix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
                 this.suffix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
+                this.prefixText = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
+                this.suffixText = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix);
             }else {
                 this.prefix = Component.text(ConfigManager.MainConfig.player_prefix);
                 this.suffix = Component.text(ConfigManager.MainConfig.player_suffix);
+                this.prefixText = ConfigManager.MainConfig.player_prefix;
+                this.suffixText = ConfigManager.MainConfig.player_suffix;
             }
             this.color = ChatColor.WHITE;
             this.team.setPrefix("");
@@ -116,6 +131,8 @@ public class NameplatesTeam {
         //最终suffix:  偏移 + 后缀
         this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).color(TextColor.color(255, 255, 255)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
         this.suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix)).font(ConfigManager.MainConfig.key));
+        this.prefixText = nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix) + playerPrefix;
+        this.suffixText = playerSuffix + nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix);
         this.color = nameplateUtil.getColor();
         this.team.setPrefix("");
     }

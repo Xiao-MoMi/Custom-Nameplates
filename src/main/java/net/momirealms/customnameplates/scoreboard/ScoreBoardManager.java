@@ -10,30 +10,29 @@ import java.util.Map;
 public class ScoreBoardManager {
 
     private final CustomNameplates plugin;
-    private final Map<String, NameplatesTeam> teams;
+    public static Map<String, NameplatesTeam> teams = new HashMap<>();
 
     public ScoreBoardManager(CustomNameplates plugin) {
-        this.teams = new HashMap<>();
         this.plugin = plugin;
     }
 
     public NameplatesTeam getOrCreateTeam(Player player) {
-        if (!this.teams.containsKey(player.getName())) {
-            this.teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
+        if (!teams.containsKey(player.getName())) {
+            teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
         }
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.getTeam(player.getName()).updateNameplates(), 20);
-        return this.teams.get(player.getName());
+        this.getTeam(player.getName()).updateNameplates();
+        return teams.get(player.getName());
     }
 
     public void removeTeam(String playerName) {
-        this.teams.remove(playerName);
+        teams.remove(playerName);
     }
 
     public NameplatesTeam getTeam(String team) {
-        return this.teams.get(team);
+        return teams.get(team);
     }
 
     public boolean doesTeamExist(String playerName) {
-        return this.teams.containsKey(playerName);
+        return teams.containsKey(playerName);
     }
 }
