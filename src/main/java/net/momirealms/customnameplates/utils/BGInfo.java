@@ -15,16 +15,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates;
+package net.momirealms.customnameplates.utils;
 
-import org.bukkit.ChatColor;
+public record BGInfo(String text, String background) {
 
-public record NameplateConfig(ChatColor color, int height, String name, int yoffset) {
+    public String getText() {
+        return text;
+    }
 
-    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12);
-
-    public ChatColor getColor() {return this.color;}
-    public int getHeight() {return this.height;}
-    public String getName() {return this.name;}
-    public int getyoffset() {return  this.yoffset; }
+    public String getBackground() {
+        return background;
+    }
 }

@@ -1,30 +1,70 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates;
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
+import net.momirealms.customnameplates.background.BackGround;
+import net.momirealms.customnameplates.bossbar.BossbarConfig;
+import net.momirealms.customnameplates.utils.BGInfo;
+import net.momirealms.customnameplates.utils.NPInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 public class ConfigManager {
 
-    //根据文件名获取配置文件
+    public static TreeMap<String, BackGround> backgrounds = new TreeMap<>();
+    public static TreeMap<String, BossbarConfig> bossbars = new TreeMap<>();
+    public static HashMap<String, BGInfo> papiBG = new HashMap<>();
+    public static HashMap<String, NPInfo> papiNP = new HashMap<>();
+
     public static YamlConfiguration getConfig(String configName) {
         File file = new File(CustomNameplates.instance.getDataFolder(), configName);
-        //文件不存在则生成默认配置
         if (!file.exists()) {
             CustomNameplates.instance.saveResource(configName, false);
         }
         return YamlConfiguration.loadConfiguration(file);
     }
-    //主配置文件
-    public static class MainConfig{
 
+    public static boolean nameplate;
+    public static boolean background;
+    public static boolean bossbar;
+    public static boolean actionbar;
+    public static void loadModule(){
+        YamlConfiguration module = getConfig("module.yml");
+        nameplate = module.getBoolean("nameplate");
+        background = module.getBoolean("background");
+        bossbar = module.getBoolean("bossbar");
+        actionbar = module.getBoolean("actionbar");
+    }
+
+    public static class MainConfig{
         public static String namespace;
         public static String fontName;
         public static String start_char;
+        public static char start;
         public static String folder_path;
+        public static String bg_folder_path;
         public static String font;
         public static String default_nameplate;
         public static String player_prefix;
@@ -38,23 +78,37 @@ public class ConfigManager {
         public static boolean thin_font;
         public static boolean hidePrefix;
         public static boolean hideSuffix;
-
         public static void ReloadConfig(){
             CustomNameplates.instance.saveDefaultConfig();
             CustomNameplates.instance.reloadConfig();
             FileConfiguration config = CustomNameplates.instance.getConfig();
-
             lang = config.getString("config.lang");
             namespace = config.getString("config.namespace");
             font = config.getString("config.font");
             fontName = namespace + ":" + font;
             start_char = config.getString("config.start-char");
-            folder_path = config.getString("config.folder-path");
+            start = start_char.charAt(0);
+            folder_path = config.getString("config.nameplate-folder-path","font\\nameplates\\");
+            bg_folder_path = config.getString("config.background-folder-path","font\\backgrounds\\");
             default_nameplate = config.getString("config.default-nameplate");
             player_prefix = config.getString("config.prefix");
             player_suffix = config.getString("config.suffix");
             itemsAdder =config.getBoolean("config.integrations.ItemsAdder");
+            if (itemsAdder){
+                if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("ItemsAdder") == null){
+                    CustomNameplates.instance.getLogger().warning("Failed to initialize ItemsAdder!");
+                    itemsAdder = false;
+                }
+            }
             placeholderAPI = config.getBoolean("config.integrations.PlaceholderAPI");
+            if (placeholderAPI){
+                if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
+                    loadPapi();
+                }else {
+                    CustomNameplates.instance.getLogger().warning("Failed to initialize PlaceholderAPI!");
+                    placeholderAPI = false;
+                }
+            }
             show_after = config.getBoolean("config.show-after-load-resourcepack");
             key = Key.key(fontName);
             preview = config.getLong("config.preview-duration");
@@ -63,9 +117,8 @@ public class ConfigManager {
             hideSuffix = config.getBoolean("config.hide-suffix-when-equipped",false);
         }
     }
-    //消息文件
-    public static class Message{
 
+    public static class Message{
         public static String noPerm;
         public static String prefix;
         public static String lackArgs;
@@ -81,7 +134,7 @@ public class ConfigManager {
         public static String available;
         public static String cooldown;
         public static String preview;
-
+        public static String generate;
         public static void ReloadConfig(){
             YamlConfiguration messagesConfig = getConfig("messages/messages_" + MainConfig.lang +".yml");
             noPerm = messagesConfig.getString("messages.no-perm");
@@ -99,11 +152,67 @@ public class ConfigManager {
             available = messagesConfig.getString("messages.available");
             cooldown = messagesConfig.getString("messages.cooldown");
             preview = messagesConfig.getString("messages.preview");
+            generate = messagesConfig.getString("messages.generate");
         }
     }
-    //数据库配置
-    public static class DatabaseConfig{
 
+    public static void loadBGConfig(){
+        backgrounds.clear();
+        YamlConfiguration bgConfig = getConfig("background.yml");
+        bgConfig.getConfigurationSection("background").getKeys(false).forEach(key -> {
+            backgrounds.put(key, new BackGround(bgConfig.getString("background." + key + ".start"),bgConfig.getString("background." + key + ".offset_1"),
+                    bgConfig.getString("background." + key + ".offset_2"),bgConfig.getString("background." + key + ".offset_4"),bgConfig.getString("background." + key + ".offset_8"),
+                    bgConfig.getString("background." + key + ".offset_16"),bgConfig.getString("background." + key + ".offset_32"),bgConfig.getString("background." + key + ".offset_64"),
+                    bgConfig.getString("background." + key + ".offset_128"),bgConfig.getString("background." + key + ".end"),bgConfig.getInt("background." + key + ".y-offset"),bgConfig.getInt("background." + key + ".x-offset")
+            ));
+        });
+    }
+
+    public static void loadBossBar(){
+        YamlConfiguration bossbarConfig = getConfig("bossbar.yml");
+        bossbarConfig.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
+            BossbarConfig bossbarConfig1 = ConfigManager.bossbars.get(key);
+            if (bossbarConfig1 != null){
+                bossbarConfig1.setColor(BossBar.Color.valueOf(bossbarConfig.getString("bossbar." + key + ".color").toUpperCase()));
+                bossbarConfig1.setOverlay(BossBar.Overlay.valueOf(bossbarConfig.getString("bossbar." + key + ".overlay").toUpperCase()));
+                bossbarConfig1.setRate(bossbarConfig.getInt("bossbar." + key + ".refresh-rate") - 1);
+                bossbarConfig1.setText(bossbarConfig.getString("bossbar." + key + ".text"));
+            }else {
+                bossbars.put(key, new BossbarConfig(
+                        bossbarConfig.getString("bossbar." + key + ".text"),
+                        BossBar.Overlay.valueOf(bossbarConfig.getString("bossbar." + key + ".overlay").toUpperCase()),
+                        BossBar.Color.valueOf(bossbarConfig.getString("bossbar." + key + ".color").toUpperCase()),
+                        bossbarConfig.getInt("bossbar." + key + ".refresh-rate") - 1
+                ));
+            }
+        });
+    }
+
+    public static void loadPapi(){
+        papiBG.clear();
+        papiNP.clear();
+        YamlConfiguration papiInfo = getConfig("custom-papi.yml");
+        papiInfo.getConfigurationSection("papi").getKeys(false).forEach(key -> {
+            if (papiInfo.contains("papi." + key + ".background")){
+                papiBG.put(key, new BGInfo(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".background")));
+            }
+            if (papiInfo.contains("papi." + key + ".nameplate")){
+                papiNP.put(key, new NPInfo(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".nameplate")));
+            }
+        });
+    }
+
+    public static class ActionbarConfig{
+        public static int rate;
+        public static String text;
+        public static void LoadConfig(){
+            YamlConfiguration actionbarConfig = getConfig("actionbar.yml");
+            rate = actionbarConfig.getInt("refresh-rate") - 1;
+            text = actionbarConfig.getString("text");
+        }
+    }
+
+    public static class DatabaseConfig{
         public static String user;
         public static String password;
         public static String url;
@@ -116,27 +225,21 @@ public class ConfigManager {
         public static int minimum_idle;
         public static int maximum_lifetime;
         public static int idle_timeout;
-
         public static void LoadConfig(){
             YamlConfiguration databaseConfig = getConfig("database.yml");
             String storage_mode = databaseConfig.getString("settings.storage-mode");
-
             async = !databaseConfig.getBoolean("settings.disable-async", true);
-            //使用SQLite
             if(storage_mode.equals("SQLite")){
                 enable_pool = false;
                 use_mysql = false;
                 tableName = "nameplates";
             }
-            //使用MYSQL
             else if(storage_mode.equals("MYSQL")){
-
                 use_mysql = true;
                 ENCODING = databaseConfig.getString("MySQL.property.encoding");
                 tableName = databaseConfig.getString("MySQL.table-name");
                 user = databaseConfig.getString("MySQL.user");
                 password = databaseConfig.getString("MySQL.password");
-
                 url = "jdbc:mysql://" + databaseConfig.getString("MySQL.host")
                         + ":" + databaseConfig.getString("MySQL.port") + "/"
                         + databaseConfig.getString("MySQL.database") + "?characterEncoding="

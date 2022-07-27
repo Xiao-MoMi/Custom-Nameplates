@@ -1,0 +1,13 @@
+# You need a restart when you add/remove a bossbar
+# There's a bug that font can't be applied to bossbar. This is an Adventure API bug that I can't fix for the moment.
+bossbar:
+  example_1:
+    text: '<rainbow>Hi %player_name%! This is you nameplate!</rainbow>'
+    color: YELLOW
+    refresh-rate: 1
+    overlay: PROGRESS
+  example_2:
+    text: '<font:nameplates:default>%nameplates_prefix%</font><rainbow>Hello!</rainbow> %player_name%<red> %player_health_rounded%❤<font:nameplates:default>%nameplates_suffix%</font>'
+    color: WHITE
+    refresh-rate: 1
+    overlay: PROGRESS

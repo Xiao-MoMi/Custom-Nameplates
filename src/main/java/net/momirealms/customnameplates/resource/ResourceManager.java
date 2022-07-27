@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.resource;
 
 import com.google.gson.JsonArray;
@@ -6,6 +23,7 @@ import com.google.gson.JsonPrimitive;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.AdventureManager;
+import net.momirealms.customnameplates.background.BackGround;
 import net.momirealms.customnameplates.font.FontCache;
 import net.momirealms.customnameplates.font.FontChar;
 import net.momirealms.customnameplates.font.FontNegative;
@@ -20,40 +38,49 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import static net.momirealms.customnameplates.ConfigManager.MainConfig.start;
+
 public class ResourceManager {
 
-    public final HashMap<String, FontCache> caches;
+    public static HashMap<String, FontCache> caches = new HashMap<>();
+    public static HashMap<String, Character> bgCaches = new HashMap<>();
     private final CustomNameplates plugin;
 
     public ResourceManager(CustomNameplates plugin) {
-        this.caches = new HashMap<>();
         this.plugin = plugin;
     }
 
-    /*
-    此方法用于生成资源包
-    */
     public void generateResourcePack() {
 
         File r_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "resources");
+        File b_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "backgrounds");
         File g_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated");
-        //如果资源文件夹不存在则创建
+
         if (!r_file.exists()) {
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#F5F5F5>Failed to detect resources folder! Generating default resources...");
             if (!r_file.mkdir()) {
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to create resources folder...</red>");
                 return;
             }
             saveDefaultResources();
         }
-        //获取资源文件夹下的所有png文件
+
+        if (!b_file.exists()) {
+            if (!b_file.mkdir()) {
+                AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to create resources folder...</red>");
+                return;
+            }
+            saveDefaultBGResources();
+        }
+
         File[] pngFiles = r_file.listFiles(file -> file.getName().endsWith(".png"));
+
         if (pngFiles == null) {
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! No png files detected in resource folder...</red>");
             return;
         }
-        Arrays.sort(pngFiles); //将png文件按照首字母进行排序
-        deleteDirectory(g_file); //删除文件夹以重置自动生成的资源
+
+        Arrays.sort(pngFiles);
+        deleteDirectory(g_file);
 
         File f_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated" + File.separatorChar + ConfigManager.MainConfig.namespace + File.separatorChar + "font");
         File t_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated" + File.separatorChar + ConfigManager.MainConfig.namespace + File.separatorChar + "textures");
@@ -62,36 +89,49 @@ public class ResourceManager {
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to generate resource pack folders...</red>");
             return;
         }
-        char start = ConfigManager.MainConfig.start_char.charAt(0); //获取起始字符
-        JsonObject jsonObject_1 = new JsonObject(); //新建json对象
+
+        JsonObject jsonObject_1 = new JsonObject();
         JsonArray jsonArray_1 = new JsonArray();
         jsonObject_1.add("providers", jsonArray_1);
-        for (File png : pngFiles) {
-            JsonObject jsonObject_2 = new JsonObject();
-            char left = start;
-            char middle;
-            char right;
-            start = (char)((right = (char)((middle = (char)(start + '\u0001')) + '\u0001')) + '\u0001'); //依次+1
-            FontChar fontChar = new FontChar(left, middle, right);
-            String pngName = png.getName().substring(0, png.getName().length() - 4); //删除.png后缀
-            NameplateConfig config = this.getConfiguration(pngName);
-            caches.put(pngName, new FontCache(pngName, fontChar, config));
-            jsonObject_2.add("type", new JsonPrimitive("bitmap"));
-            jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.folder_path.replaceAll("\\\\","/") + png.getName().toLowerCase()));
-            jsonObject_2.add("ascent", new JsonPrimitive(config.getyoffset()));
-            jsonObject_2.add("height", new JsonPrimitive(config.getHeight()));
-            JsonArray jsonArray_2 = new JsonArray();
-            jsonArray_2.add(native2ascii(fontChar.getLeft()) + native2ascii(fontChar.getMiddle()) + native2ascii(fontChar.getRight()));
-            jsonObject_2.add("chars", jsonArray_2);
-            jsonArray_1.add(jsonObject_2);
-            try{
-                FileUtils.copyFile(png, new File(t_file.getPath() + File.separatorChar + ConfigManager.MainConfig.folder_path + png.getName()));
-            }catch (IOException e){
-                e.printStackTrace();
-                AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy png files to resource pack...</red>");
+
+        if (ConfigManager.nameplate){
+            for (File png : pngFiles) {
+                JsonObject jsonObject_2 = new JsonObject();
+                char left = start;
+                char middle;
+                char right;
+                start = (char)((right = (char)((middle = (char)(start + '\u0001')) + '\u0001')) + '\u0001');
+                FontChar fontChar = new FontChar(left, middle, right);
+                String pngName = png.getName().substring(0, png.getName().length() - 4);
+                NameplateConfig config = this.getConfiguration(pngName);
+                caches.put(pngName, new FontCache(pngName, fontChar, config));
+                jsonObject_2.add("type", new JsonPrimitive("bitmap"));
+                jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.folder_path.replaceAll("\\\\","/") + png.getName().toLowerCase()));
+                jsonObject_2.add("ascent", new JsonPrimitive(config.getyoffset()));
+                jsonObject_2.add("height", new JsonPrimitive(config.getHeight()));
+                JsonArray jsonArray_2 = new JsonArray();
+                jsonArray_2.add(native2ascii(fontChar.getLeft()) + native2ascii(fontChar.getMiddle()) + native2ascii(fontChar.getRight()));
+                jsonObject_2.add("chars", jsonArray_2);
+                jsonArray_1.add(jsonObject_2);
+
+                try{
+                    FileUtils.copyFile(png, new File(t_file.getPath() + File.separatorChar + ConfigManager.MainConfig.folder_path + png.getName()));
+                }catch (IOException e){
+                    e.printStackTrace();
+                    AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy png files to resource pack...</red>");
+                }
             }
+            caches.put("none", FontCache.EMPTY);
         }
-        caches.put("none", FontCache.EMPTY);
+
+        if (ConfigManager.background){
+            ConfigManager.backgrounds.forEach((key, backGround) -> {
+                getBackgrounds(backGround).forEach(jsonArray_1::add);
+            });
+        }
+
+        getNegativeFontEnums().forEach(jsonArray_1::add);
+
         CustomNameplates.instance.saveResource("space_split.png", false); //复制space_split.png
         try{
             FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath()  + File.separatorChar + ConfigManager.MainConfig.folder_path + "space_split.png"));
@@ -101,18 +141,17 @@ public class ResourceManager {
             return;
         }
         new File(CustomNameplates.instance.getDataFolder(),"space_split.png").delete(); //删除拷贝出的默认文件
-        this.getNegativeFontEnums().forEach(jsonArray_1::add); //添加负空格
-        //存储default.json
-        try (FileWriter fileWriter = new FileWriter(f_file.getPath() + File.separatorChar + ConfigManager.MainConfig.font + ".json")) {
+
+        try (FileWriter fileWriter = new FileWriter(CustomNameplates.instance.getDataFolder() + File.separator + "generated" + File.separatorChar + ConfigManager.MainConfig.namespace + File.separatorChar + "font" + File.separatorChar + ConfigManager.MainConfig.font + ".json")) {
             fileWriter.write(jsonObject_1.toString().replace("\\\\", "\\"));
         } catch (IOException e) {
             e.printStackTrace();
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to generate font json...</red>");
             return;
         }
-        //资源包生成成功提示
+
         AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>ResourcePack has been generated! <white>" + (this.caches.size() -1) + " <color:#baffd1>nameplates loaded!");
-        if (this.plugin.getHookManager().hasItemsAdder()){
+        if (ConfigManager.MainConfig.itemsAdder){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
                 AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>ItemsAdder!<color:#baffd1> Automatically sent rp to ItemsAdder folder!");
@@ -123,17 +162,15 @@ public class ResourceManager {
         }
     }
 
-    /*
-    保存插件预设资源
-    */
     private void saveDefaultResources() {
         List<String> list = Arrays.asList("cat", "egg", "cheems", "wither", "xmas", "halloween","hutao","starsky","trident","rabbit");
         list.forEach(name -> CustomNameplates.instance.saveResource("resources" + File.separatorChar + name + ".png", false));
     }
+    private void saveDefaultBGResources() {
+        List<String> list = Arrays.asList("b0", "b1", "b2", "b4", "b8", "b16","b32","b64","b128");
+        list.forEach(name -> CustomNameplates.instance.saveResource("backgrounds" + File.separatorChar + name + ".png", false));
+    }
 
-    /*
-    删除文件夹
-    */
     private void deleteDirectory(File file){
         if(file.exists()){
             try{
@@ -145,9 +182,6 @@ public class ResourceManager {
         }
     }
 
-    /*
-    获取铭牌的config
-    */
     private NameplateConfig getConfiguration(String nameplate) {
         try {
             File file = new File(CustomNameplates.instance.getDataFolder().getPath() + File.separator + "resources" + File.separator + nameplate + ".yml");
@@ -191,9 +225,6 @@ public class ResourceManager {
         }
     }
 
-    /*
-    获取负空格并返回list
-    */
     private List<JsonObject> getNegativeFontEnums() {
         ArrayList<JsonObject> list = new ArrayList<>();
         for (FontNegative negativeFont : FontNegative.values()) {
@@ -201,6 +232,7 @@ public class ResourceManager {
         }
         return list;
     }
+
     private JsonObject getNegativeFontChar(int height, char character) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("type", new JsonPrimitive("bitmap"));
@@ -213,16 +245,10 @@ public class ResourceManager {
         return jsonObject;
     }
 
-    /*
-    根据铭牌名获取铭牌的FontCache
-     */
     public FontCache getNameplateInfo(String nameplate) {
         return caches.get(nameplate);
     }
 
-    /*
-    字符转换
-     */
     private String native2ascii(char ch) {
         if (ch > '\u007f') {
             StringBuilder stringBuilder_1 = new StringBuilder("\\u");
@@ -237,5 +263,42 @@ public class ResourceManager {
             return stringBuilder_1.toString();
         }
         return Character.toString(ch);
+    }
+
+    private List<JsonObject> getBackgrounds(BackGround backGround) {
+        ArrayList<JsonObject> list = new ArrayList<>();
+        int y_offset = backGround.getOffset_y();
+        list.add(setBackgrounds(backGround.getStart(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_1(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_2(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_4(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_8(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_16(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_32(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_64(),y_offset));
+        list.add(setBackgrounds(backGround.getOffset_128(),y_offset));
+        list.add(setBackgrounds(backGround.getEnd(),y_offset));
+        return list;
+    }
+
+    private JsonObject setBackgrounds(String name, int y_offset){
+        JsonObject jsonObject_2 = new JsonObject();
+        jsonObject_2.add("type", new JsonPrimitive("bitmap"));
+        jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.bg_folder_path.replaceAll("\\\\","/") + name.toLowerCase() + ".png"));
+        jsonObject_2.add("ascent", new JsonPrimitive(y_offset));
+        jsonObject_2.add("height", new JsonPrimitive(14));
+        JsonArray jsonArray_2 = new JsonArray();
+        char character = start;
+        jsonArray_2.add(native2ascii(character));
+        jsonObject_2.add("chars", jsonArray_2);
+        start = (char)(start + '\u0001');
+        bgCaches.put(name, character);
+        try{
+            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder() + File.separator + "backgrounds" + File.separator + name + ".png"), new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated" + File.separator + ConfigManager.MainConfig.namespace + File.separatorChar + "textures" + File.separator + ConfigManager.MainConfig.bg_folder_path + name + ".png"));
+        }catch (IOException e){
+            e.printStackTrace();
+            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy background png files to resource pack...</red>");
+        }
+        return jsonObject_2;
     }
 }

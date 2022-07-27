@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '1.7.1'
+version = '1.8.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -37,14 +37,15 @@ repositories {
 dependencies {
     compileOnly fileTree(dir:'libs',includes:['*.jar'])
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0"
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.8.0'
     compileOnly 'me.clip:placeholderapi:2.11.1'
     compileOnly 'com.zaxxer:HikariCP:5.0.1'
+    compileOnly 'commons-io:commons-io:2.11.0'
     implementation('net.kyori:adventure-api:4.11.0')
     implementation('net.kyori:adventure-platform-bukkit:4.1.1')
     implementation('net.kyori:adventure-text-minimessage:4.11.0')
     implementation("net.kyori:adventure-text-serializer-gson:4.11.0")
-    compileOnly group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
 }
 
 def targetJavaVersion = 16

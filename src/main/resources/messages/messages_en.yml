@@ -14,3 +14,4 @@ messages:
   not-available: '<white>This nameplate is currently not available!</white>'
   available: '<white>Available nameplates: {Nameplates}.</white>'
   cooldown: '<white>Previewing is still Ongoing!</white>'
+  generate: '<white>Resource Pack is generating..</white>'

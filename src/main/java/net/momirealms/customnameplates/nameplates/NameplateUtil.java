@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.nameplates;
 
 import net.momirealms.customnameplates.ConfigManager;
@@ -15,10 +32,6 @@ public class NameplateUtil {
         this.fontcache = font;
     }
 
-    /*
-    根据玩家名构造长度适合的铭牌字符
-    当然这个玩家名是带上前缀与后缀的
-     */
     public String makeCustomNameplate(String prefix, String name, String suffix) {
         int totalWidth;
         if (ConfigManager.MainConfig.thin_font){
@@ -26,30 +39,26 @@ public class NameplateUtil {
         }else {
             totalWidth = FontWidth.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
         }
-        boolean isEven = totalWidth % 2 == 0; //奇偶判断
+        boolean isEven = totalWidth % 2 == 0;
         char left = this.fontcache.getChar().getLeft();
         char middle = this.fontcache.getChar().getMiddle();
         char right = this.fontcache.getChar().getRight();
         char neg_1 = FontNegative.NEG_1.getCharacter();
         int left_offset = totalWidth + 16 + 1;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1)); //先向左平移一个正方形的距离
-        stringBuilder.append(left).append(neg_1); //将铭牌的左部分拼接
-        int mid_amount = (totalWidth + 1) / 16; //显示名称的总长，如果超过一个正方形则多复制几个正方形
+        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1));
+        stringBuilder.append(left).append(neg_1);
+        int mid_amount = (totalWidth + 1) / 16;
         for (int i = 0; i < (mid_amount == 0 ? 1 : mid_amount); i++) {
-            stringBuilder.append(middle).append(neg_1); //减一是字符之间的间距（3）
+            stringBuilder.append(middle).append(neg_1);
         }
         stringBuilder.append(FontNegative.getShortestNegChars(16 - ((totalWidth + 1) % 16 + (isEven ? 0 : 1))));
         stringBuilder.append(middle).append(neg_1);
-        stringBuilder.append(right).append(neg_1); //将铭牌的右部分拼接
-        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1)); //首尾对称处理，保证铭牌位于正中央
+        stringBuilder.append(right).append(neg_1);
+        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1));
         return stringBuilder.toString();
     }
 
-    /*
-    用于为增加了后缀的玩家名计算负空格
-    保证铭牌总是位于玩家头顶中央的位置
-     */
     public String getSuffixLength(String name) {
         int totalWidth;
         if (ConfigManager.MainConfig.thin_font){
@@ -60,9 +69,6 @@ public class NameplateUtil {
         return FontNegative.getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 
-    /*
-    获取铭牌上玩家名的颜色
-     */
     public ChatColor getColor() {
         return this.fontcache.getConfig().getColor();
     }

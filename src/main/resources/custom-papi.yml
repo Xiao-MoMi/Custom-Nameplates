@@ -1,0 +1,23 @@
+# %nameplates_bg_xx%  BackGround
+# %nameplates_npp_xx%  NamePlatePrefix
+# %nameplates_nps_xx%  NamePlateSuffix
+
+papi:
+  #This papi will not return text with background
+  #It will only return the background
+  #So you need to do something like this in your bossbar/actionbar plugin:
+  #<font:nameplate:default>%nameplates_bg_player%<font:minecraft:default>Hello! %player_name%
+  player:
+    text: 'Hello! %player_name%'
+    background: bedrock
+  season:
+    text: 'Current Season: %customcrops_season%'
+    background: bedrock
+
+  #This papi will not return text with nameplate
+  #It will only return the nameplate
+  #So you need to do something like this in your bossbar/actionbar plugin:
+  #<font:nameplates:default>%nameplates_npp_halloween%</font>%player_name% Trick or Treat!<font:nameplates:default>%nameplates_nps_halloween%</font>
+  halloween:
+    text: '%player_name% Trick or Treat!'
+    nameplate: halloween

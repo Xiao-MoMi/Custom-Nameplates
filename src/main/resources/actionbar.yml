@@ -1,0 +1,2 @@
+text: '<font:nameplates:default>%nameplates_bg_player%</font>Hello! %player_name%    <font:nameplates:default>%nameplates_bg_season%</font>Current Season: %customcrops_season%'
+refresh-rate: 1

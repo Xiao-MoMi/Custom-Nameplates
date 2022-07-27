@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands;
 
 import com.comphenix.protocol.PacketType;
@@ -62,10 +79,30 @@ public class Execute implements CommandExecutor {
                 if (sender.hasPermission("customnameplates.reload") || sender.isOp()) {
                     ConfigManager.MainConfig.ReloadConfig();
                     ConfigManager.Message.ReloadConfig();
+                    if (ConfigManager.actionbar){
+                        ConfigManager.ActionbarConfig.LoadConfig();
+                    }
+                    if (ConfigManager.bossbar){
+                        ConfigManager.loadBossBar();
+                    }
                     if (sender instanceof Player) {
                         AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.reload);
                     } else {
                         AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.reload);
+                    }
+                } else {
+                    AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
+                }
+                return true;
+            }
+            case "generate" -> {
+                if (sender.hasPermission("customnameplates.generate") || sender.isOp()) {
+                    ConfigManager.MainConfig.ReloadConfig();
+                    plugin.getResourceManager().generateResourcePack();
+                    if (sender instanceof Player) {
+                        AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.generate);
+                    }else {
+                        AdventureManager.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.generate);
                     }
                 } else {
                     AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
@@ -238,7 +275,7 @@ public class Execute implements CommandExecutor {
                     NameplateUtil nameplateUtil = new NameplateUtil(fontCache);
                     String playerPrefix;
                     String playerSuffix;
-                    if (plugin.getHookManager().hasPlaceholderAPI()) {
+                    if (ConfigManager.MainConfig.placeholderAPI) {
                         playerPrefix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
                         playerSuffix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
                     }else {

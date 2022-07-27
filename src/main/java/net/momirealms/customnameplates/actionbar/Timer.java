@@ -15,16 +15,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates;
+package net.momirealms.customnameplates.actionbar;
 
-import org.bukkit.ChatColor;
+import net.momirealms.customnameplates.CustomNameplates;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
-public record NameplateConfig(ChatColor color, int height, String name, int yoffset) {
+public class Timer {
 
-    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12);
+    private final int taskID;
 
-    public ChatColor getColor() {return this.color;}
-    public int getHeight() {return this.height;}
-    public String getName() {return this.name;}
-    public int getyoffset() {return  this.yoffset; }
+    public void stopTimer(int ID) {
+        Bukkit.getScheduler().cancelTask(ID);
+    }
+
+    public Timer() {
+        ActionbarSender actionbarSender = new ActionbarSender();
+        BukkitTask task = actionbarSender.runTaskTimerAsynchronously(CustomNameplates.instance, 1,1);
+        this.taskID = task.getTaskId();
+    }
+
+    public int getTaskID() {
+        return this.taskID;
+    }
 }

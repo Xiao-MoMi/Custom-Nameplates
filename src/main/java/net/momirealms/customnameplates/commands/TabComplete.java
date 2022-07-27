@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands;
 
 import net.momirealms.customnameplates.CustomNameplates;
@@ -37,6 +54,7 @@ public class TabComplete implements TabCompleter {
             if (sender.hasPermission("customnameplates.forcepreview")) tab.add("forcepreview");
             if (sender.hasPermission("customnameplates.preview")) tab.add("preview");
             if (sender.hasPermission("customnameplates.list")) tab.add("list");
+            if (sender.hasPermission("customnameplates.generate")) tab.add("generate");
             return tab;
         }
         if(2 == args.length){

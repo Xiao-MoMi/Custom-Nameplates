@@ -1,0 +1,5 @@
+#Modules require a restart
+nameplate: true
+background: true
+bossbar: true
+actionbar: true

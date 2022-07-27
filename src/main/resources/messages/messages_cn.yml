@@ -14,3 +14,4 @@ messages:
   not-available: '<white>你还未拥有这个铭牌!</white>'
   available: '<white>可用铭牌: {Nameplates}</white>'
   cooldown: '<white>上一个预览还没结束!</white>'
+  generate: '<white>正在生成资源包...</white>'

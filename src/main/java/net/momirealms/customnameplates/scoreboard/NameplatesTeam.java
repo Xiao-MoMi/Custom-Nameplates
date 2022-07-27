@@ -1,8 +1,26 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.scoreboard;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
@@ -27,32 +45,13 @@ public class NameplatesTeam {
     private Component suffix;
     private String prefixText;
     private String suffixText;
-
     private ChatColor color;
 
-    public void hideNameplate() {
-        this.team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-    }
-    public void showNameplate() {
-        this.team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
-    }
-    public Component getPrefix() {
-        return this.prefix;
-    }
-    public Component getSuffix() {
-        return this.suffix;
-    }
-    public ChatColor getColor() {
-        return this.color;
-    }
-
-    public String getPrefixText() {
-        return prefixText;
-    }
-
-    public String getSuffixText() {
-        return suffixText;
-    }
+    public Component getPrefix() {return this.prefix;}
+    public Component getSuffix() {return this.suffix;}
+    public ChatColor getColor() {return this.color;}
+    public String getPrefixText() {return prefixText;}
+    public String getSuffixText() {return suffixText;}
 
     public NameplatesTeam(CustomNameplates plugin, Player player) {
         this.color = ChatColor.WHITE;
@@ -72,9 +71,8 @@ public class NameplatesTeam {
         }else {
             nameplate = "none";
         }
-        //如果是空铭牌直接飞机票送走
         if (nameplate.equals("none")) {
-            if (plugin.getHookManager().hasPlaceholderAPI()) {
+            if (ConfigManager.MainConfig.placeholderAPI) {
                 this.prefix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
                 this.suffix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
                 this.prefixText = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
@@ -89,7 +87,6 @@ public class NameplatesTeam {
             this.team.setPrefix("");
             return;
         }
-        //根据铭牌名获取FontCache
         FontCache fontCache = this.plugin.getResourceManager().getNameplateInfo(nameplate);
         if (fontCache == null){
             this.prefix = Component.text("");
@@ -103,8 +100,7 @@ public class NameplatesTeam {
         String name = this.player.getName();
         String playerPrefix;
         String playerSuffix;
-        //有Papi才解析
-        if (plugin.getHookManager().hasPlaceholderAPI()) {
+        if (ConfigManager.MainConfig.placeholderAPI) {
             if (!ConfigManager.MainConfig.hidePrefix){
                 playerPrefix = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
             }else {
@@ -127,12 +123,14 @@ public class NameplatesTeam {
                 playerSuffix = "";
             }
         }
-        //最终prefix:  偏移 + 铭牌左 + 偏移 + 铭牌中 + 偏移 + 铭牌右 + 偏移 + 前缀
-        //最终suffix:  偏移 + 后缀
-        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).color(TextColor.color(255, 255, 255)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
-        this.suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix)).font(ConfigManager.MainConfig.key));
-        this.prefixText = nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix) + playerPrefix;
-        this.suffixText = playerSuffix + nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix);
+        this.prefixText = nameplateUtil.makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), name, MiniMessage.miniMessage().stripTags(playerSuffix));
+        this.suffixText = nameplateUtil.getSuffixLength(MiniMessage.miniMessage().stripTags(playerPrefix) + name + MiniMessage.miniMessage().stripTags(playerSuffix));
+        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), name, MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.MainConfig.key).append(MiniMessage.miniMessage().deserialize(playerPrefix));
+        this.suffix = MiniMessage.miniMessage().deserialize(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(MiniMessage.miniMessage().stripTags(playerPrefix) + name + MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.MainConfig.key));
+//        this.prefixText = nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix) + playerPrefix;
+//        this.suffixText = playerSuffix + nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix);
+//        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
+//        this.suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix)).font(ConfigManager.MainConfig.key));
         this.color = nameplateUtil.getColor();
         this.team.setPrefix("");
     }
