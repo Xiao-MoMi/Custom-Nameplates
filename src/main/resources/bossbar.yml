@@ -1,13 +1,28 @@
 # You need a restart when you add/remove a bossbar
-# There's a bug that font can't be applied to bossbar. This is an Adventure API bug that I can't fix for the moment.
+
+# IMPORTANT NOTICE
+# mode: Adventure / ProtocolLib
+# There's a bug that font can't be applied to Adventure bossbar. This is an Adventure API bug that I can't fix for the moment.
+# So I made the ProtocolLib mode and I will remove ProtocolLib mode when Adventure API is fixed!
+# ProtocolLib mode doesn't support multiple bossbars for the moment.
+# It requires a restart to change mode
+mode: ProtocolLib
+
 bossbar:
-  example_1:
-    text: '<rainbow>Hi %player_name%! This is you nameplate!</rainbow>'
+  example:
+    text: '<font:nameplates:default>%nameplates_bg_player%Hello! %player_name%</font>    <font:nameplates:default>%nameplates_bg_pos%You are now at: %player_x%, %player_y%, %player_z%</font>'
+    refresh-rate: 5
+    # PINK
+    # YELLOW
+    # WHITE
+    # RED
+    # PURPLE
+    # GREEN
+    # BLUE
     color: YELLOW
-    refresh-rate: 1
-    overlay: PROGRESS
-  example_2:
-    text: '<font:nameplates:default>%nameplates_prefix%</font><rainbow>Hello!</rainbow> %player_name%<red> %player_health_rounded%❤<font:nameplates:default>%nameplates_suffix%</font>'
-    color: WHITE
-    refresh-rate: 1
+    # PROGRESS
+    # NOTCHED_6
+    # NOTCHED_10
+    # NOTCHED_12
+    # NOTCHED_20
     overlay: PROGRESS

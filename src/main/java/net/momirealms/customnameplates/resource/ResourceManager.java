@@ -43,7 +43,7 @@ import static net.momirealms.customnameplates.ConfigManager.MainConfig.start;
 public class ResourceManager {
 
     public static HashMap<String, FontCache> caches = new HashMap<>();
-    public static HashMap<String, Character> bgCaches = new HashMap<>();
+    public static HashMap<String, HashMap<String, Character>> bgCaches = new HashMap<>();
     private final CustomNameplates plugin;
 
     public ResourceManager(CustomNameplates plugin) {
@@ -93,6 +93,33 @@ public class ResourceManager {
         JsonObject jsonObject_1 = new JsonObject();
         JsonArray jsonArray_1 = new JsonArray();
         jsonObject_1.add("providers", jsonArray_1);
+
+        if (ConfigManager.MainConfig.anotherFont){
+            JsonObject jsonObject_2 = new JsonObject();
+            jsonObject_2.add("type", new JsonPrimitive("bitmap"));
+            jsonObject_2.add("file", new JsonPrimitive("minecraft:font/ascii.png"));
+            jsonObject_2.add("ascent", new JsonPrimitive(ConfigManager.MainConfig.fontOffset));
+            jsonObject_2.add("height", new JsonPrimitive(8));
+            JsonArray jsonArray_2 = new JsonArray();
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonArray_2.add(" !\"#$%&'()*+,-./");
+            jsonArray_2.add("0123456789:;<=>?");
+            jsonArray_2.add("@ABCDEFGHIJKLMNO");
+            jsonArray_2.add("PQRSTUVWXYZ[\\\\]^_");
+            jsonArray_2.add("`abcdefghijklmno");
+            jsonArray_2.add("pqrstuvwxyz{|}~\u0000");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonArray_2.add("\\u2591\\u2592\\u2593\\u2502\\u2524\\u2561\\u2562\\u2556\\u2555\\u2563\\u2551\\u2557\\u255d\\u255c\\u255b\\u2510");
+            jsonArray_2.add("\\u2514\\u2534\\u252c\\u251c\\u2500\\u253c\\u255e\\u255f\\u255a\\u2554\\u2569\\u2566\\u2560\\u2550\\u256c\\u2567");
+            jsonArray_2.add("\\u2568\\u2564\\u2565\\u2559\\u2558\\u2552\\u2553\\u256b\\u256a\\u2518\\u250c\\u2588\\u2584\\u258c\\u2590\\u2580");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\\u2205\\u2208\u0000");
+            jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
+            jsonObject_2.add("chars", jsonArray_2);
+            jsonArray_1.add(jsonObject_2);
+        }
 
         if (ConfigManager.nameplate){
             for (File png : pngFiles) {
@@ -268,20 +295,23 @@ public class ResourceManager {
     private List<JsonObject> getBackgrounds(BackGround backGround) {
         ArrayList<JsonObject> list = new ArrayList<>();
         int y_offset = backGround.getOffset_y();
-        list.add(setBackgrounds(backGround.getStart(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_1(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_2(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_4(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_8(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_16(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_32(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_64(),y_offset));
-        list.add(setBackgrounds(backGround.getOffset_128(),y_offset));
-        list.add(setBackgrounds(backGround.getEnd(),y_offset));
+        String name = backGround.getKey();
+        HashMap<String, Character> chars = new HashMap<>();
+        list.add(setBackgrounds(backGround.getStart(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_1(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_2(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_4(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_8(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_16(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_32(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_64(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getOffset_128(),y_offset,chars));
+        list.add(setBackgrounds(backGround.getEnd(),y_offset,chars));
+        bgCaches.put(name, chars);
         return list;
     }
 
-    private JsonObject setBackgrounds(String name, int y_offset){
+    private JsonObject setBackgrounds(String name, int y_offset, HashMap<String, Character> chars){
         JsonObject jsonObject_2 = new JsonObject();
         jsonObject_2.add("type", new JsonPrimitive("bitmap"));
         jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.bg_folder_path.replaceAll("\\\\","/") + name.toLowerCase() + ".png"));
@@ -292,7 +322,7 @@ public class ResourceManager {
         jsonArray_2.add(native2ascii(character));
         jsonObject_2.add("chars", jsonArray_2);
         start = (char)(start + '\u0001');
-        bgCaches.put(name, character);
+        chars.put(name, character);
         try{
             FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder() + File.separator + "backgrounds" + File.separator + name + ".png"), new File(CustomNameplates.instance.getDataFolder() + File.separator + "generated" + File.separator + ConfigManager.MainConfig.namespace + File.separatorChar + "textures" + File.separator + ConfigManager.MainConfig.bg_folder_path + name + ".png"));
         }catch (IOException e){

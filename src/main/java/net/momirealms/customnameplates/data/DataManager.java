@@ -20,8 +20,11 @@ package net.momirealms.customnameplates.data;
 import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.hook.TABHook;
+import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
 import java.util.Map;

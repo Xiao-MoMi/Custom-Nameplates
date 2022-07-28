@@ -1,2 +1,2 @@
-text: '<font:nameplates:default>%nameplates_bg_player%</font>Hello! %player_name%    <font:nameplates:default>%nameplates_bg_season%</font>Current Season: %customcrops_season%'
-refresh-rate: 1
+text: '<font:nameplates:default>%nameplates_prefix%</font><green>Hello!</green> %player_name%<rainbow> %player_ip%</rainbow><font:nameplates:default>%nameplates_suffix%</font>'
+refresh-rate: 5

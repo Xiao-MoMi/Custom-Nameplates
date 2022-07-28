@@ -20,10 +20,13 @@ package net.momirealms.customnameplates;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.background.BackGround;
-import net.momirealms.customnameplates.bossbar.BossbarConfig;
+import net.momirealms.customnameplates.bossbar.adventure.BossBarConfigA;
+import net.momirealms.customnameplates.bossbar.protocollib.BossBarConfigP;
+import net.momirealms.customnameplates.bossbar.protocollib.Overlay;
 import net.momirealms.customnameplates.utils.BGInfo;
 import net.momirealms.customnameplates.utils.NPInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -34,7 +37,8 @@ import java.util.TreeMap;
 public class ConfigManager {
 
     public static TreeMap<String, BackGround> backgrounds = new TreeMap<>();
-    public static TreeMap<String, BossbarConfig> bossbars = new TreeMap<>();
+    public static TreeMap<String, BossBarConfigA> bossbarsA = new TreeMap<>();
+    public static TreeMap<String, BossBarConfigP> bossbarsP = new TreeMap<>();
     public static HashMap<String, BGInfo> papiBG = new HashMap<>();
     public static HashMap<String, NPInfo> papiNP = new HashMap<>();
 
@@ -50,12 +54,15 @@ public class ConfigManager {
     public static boolean background;
     public static boolean bossbar;
     public static boolean actionbar;
+    public static boolean useAdventure;
     public static void loadModule(){
         YamlConfiguration module = getConfig("module.yml");
         nameplate = module.getBoolean("nameplate");
         background = module.getBoolean("background");
         bossbar = module.getBoolean("bossbar");
         actionbar = module.getBoolean("actionbar");
+        YamlConfiguration bossbarmode = getConfig("bossbar.yml");
+        useAdventure =  bossbarmode.getString("mode").equalsIgnoreCase("Adventure");
     }
 
     public static class MainConfig{
@@ -78,6 +85,9 @@ public class ConfigManager {
         public static boolean thin_font;
         public static boolean hidePrefix;
         public static boolean hideSuffix;
+        public static boolean anotherFont;
+        public static boolean tab;
+        public static int fontOffset;
         public static void ReloadConfig(){
             CustomNameplates.instance.saveDefaultConfig();
             CustomNameplates.instance.reloadConfig();
@@ -93,14 +103,17 @@ public class ConfigManager {
             default_nameplate = config.getString("config.default-nameplate");
             player_prefix = config.getString("config.prefix");
             player_suffix = config.getString("config.suffix");
-            itemsAdder =config.getBoolean("config.integrations.ItemsAdder");
+            anotherFont = config.getBoolean("config.another-ascii-font.enable",true);
+
+            itemsAdder = config.getBoolean("config.integrations.ItemsAdder",false);
+            fontOffset = config.getInt("config.another-ascii-font.y-offset",3);
             if (itemsAdder){
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("ItemsAdder") == null){
                     CustomNameplates.instance.getLogger().warning("Failed to initialize ItemsAdder!");
                     itemsAdder = false;
                 }
             }
-            placeholderAPI = config.getBoolean("config.integrations.PlaceholderAPI");
+            placeholderAPI = config.getBoolean("config.integrations.PlaceholderAPI",false);
             if (placeholderAPI){
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
                     loadPapi();
@@ -109,6 +122,16 @@ public class ConfigManager {
                     placeholderAPI = false;
                 }
             }
+            tab = config.getBoolean("config.integrations.TAB",false);
+            if (tab){
+                if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("TAB") == null){
+                    tab = false;
+                    CustomNameplates.instance.getLogger().warning("Failed to initialize TAB!");
+                }else {
+                    AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>TAB Hooked!");
+                }
+            }
+
             show_after = config.getBoolean("config.show-after-load-resourcepack");
             key = Key.key(fontName);
             preview = config.getLong("config.preview-duration");
@@ -160,7 +183,7 @@ public class ConfigManager {
         backgrounds.clear();
         YamlConfiguration bgConfig = getConfig("background.yml");
         bgConfig.getConfigurationSection("background").getKeys(false).forEach(key -> {
-            backgrounds.put(key, new BackGround(bgConfig.getString("background." + key + ".start"),bgConfig.getString("background." + key + ".offset_1"),
+            backgrounds.put(key, new BackGround(key, bgConfig.getString("background." + key + ".start"),bgConfig.getString("background." + key + ".offset_1"),
                     bgConfig.getString("background." + key + ".offset_2"),bgConfig.getString("background." + key + ".offset_4"),bgConfig.getString("background." + key + ".offset_8"),
                     bgConfig.getString("background." + key + ".offset_16"),bgConfig.getString("background." + key + ".offset_32"),bgConfig.getString("background." + key + ".offset_64"),
                     bgConfig.getString("background." + key + ".offset_128"),bgConfig.getString("background." + key + ".end"),bgConfig.getInt("background." + key + ".y-offset"),bgConfig.getInt("background." + key + ".x-offset")
@@ -169,23 +192,42 @@ public class ConfigManager {
     }
 
     public static void loadBossBar(){
-        YamlConfiguration bossbarConfig = getConfig("bossbar.yml");
-        bossbarConfig.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
-            BossbarConfig bossbarConfig1 = ConfigManager.bossbars.get(key);
-            if (bossbarConfig1 != null){
-                bossbarConfig1.setColor(BossBar.Color.valueOf(bossbarConfig.getString("bossbar." + key + ".color").toUpperCase()));
-                bossbarConfig1.setOverlay(BossBar.Overlay.valueOf(bossbarConfig.getString("bossbar." + key + ".overlay").toUpperCase()));
-                bossbarConfig1.setRate(bossbarConfig.getInt("bossbar." + key + ".refresh-rate") - 1);
-                bossbarConfig1.setText(bossbarConfig.getString("bossbar." + key + ".text"));
-            }else {
-                bossbars.put(key, new BossbarConfig(
-                        bossbarConfig.getString("bossbar." + key + ".text"),
-                        BossBar.Overlay.valueOf(bossbarConfig.getString("bossbar." + key + ".overlay").toUpperCase()),
-                        BossBar.Color.valueOf(bossbarConfig.getString("bossbar." + key + ".color").toUpperCase()),
-                        bossbarConfig.getInt("bossbar." + key + ".refresh-rate") - 1
-                ));
-            }
-        });
+        YamlConfiguration config = getConfig("bossbar.yml");
+        if (useAdventure){
+            config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
+                BossBarConfigA bossbarConfig = ConfigManager.bossbarsA.get(key);
+                if (bossbarConfig != null){
+                    bossbarConfig.setColor(BossBar.Color.valueOf(config.getString("bossbar." + key + ".color").toUpperCase()));
+                    bossbarConfig.setOverlay(BossBar.Overlay.valueOf(config.getString("bossbar." + key + ".overlay").toUpperCase()));
+                    bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
+                    bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
+                }else {
+                    bossbarsA.put(key, new BossBarConfigA(
+                            config.getString("bossbar." + key + ".text"),
+                            BossBar.Overlay.valueOf(config.getString("bossbar." + key + ".overlay").toUpperCase()),
+                            BossBar.Color.valueOf(config.getString("bossbar." + key + ".color").toUpperCase()),
+                            config.getInt("bossbar." + key + ".refresh-rate") - 1
+                    ));
+                }
+            });
+        }else {
+            config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
+                BossBarConfigP bossbarConfig = ConfigManager.bossbarsP.get(key);
+                if (bossbarConfig != null){
+                    bossbarConfig.setColor(BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()));
+                    bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
+                    bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
+                    bossbarConfig.setOverlay(Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()));
+                }else {
+                    bossbarsP.put(key, new BossBarConfigP(
+                            config.getString("bossbar." + key + ".text"),
+                            Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()),
+                            BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()),
+                            config.getInt("bossbar." + key + ".refresh-rate") - 1
+                    ));
+                }
+            });
+        }
     }
 
     public static void loadPapi(){

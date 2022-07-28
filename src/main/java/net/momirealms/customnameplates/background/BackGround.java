@@ -20,8 +20,11 @@ package net.momirealms.customnameplates.background;
 import net.momirealms.customnameplates.font.FontNegative;
 import net.momirealms.customnameplates.resource.ResourceManager;
 
+import java.util.HashMap;
+
 public class BackGround {
 
+    private final String key;
     private final String start;
     private final String offset_1;
     private final String offset_2;
@@ -35,9 +38,10 @@ public class BackGround {
     private final int offset_y;
     private final int offset_x;
 
-    public BackGround(String start, String offset_1, String offset_2,
+    public BackGround(String key, String start, String offset_1, String offset_2,
                       String offset_4, String offset_8, String offset_16,
                       String offset_32, String offset_64, String offset_128, String end, int offset_y, int offset_x){
+        this.key = key;
         this.start = start; this.offset_1 = offset_1; this.offset_2 = offset_2;
         this.end = end; this.offset_4 = offset_4; this.offset_8 = offset_8;
         this.offset_16 = offset_16; this.offset_32 = offset_32; this.offset_64 = offset_64;
@@ -50,48 +54,49 @@ public class BackGround {
         n += offset_x;
         String offset = FontNegative.getShortestNegChars(n);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(ResourceManager.bgCaches.get(start));
+        HashMap<String, Character> chars = ResourceManager.bgCaches.get(key);
+        stringBuilder.append(chars.get(start));
         if (n > 128) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_128));
+            stringBuilder.append(chars.get(offset_128));
             n -= 128;
         }
         if (n - 64 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_64));
+            stringBuilder.append(chars.get(offset_64));
             n -= 64;
         }
         if (n - 32 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_32));
+            stringBuilder.append(chars.get(offset_32));
             n -= 32;
         }
         if (n - 16 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_16));
+            stringBuilder.append(chars.get(offset_16));
             n -= 16;
         }
         if (n - 8 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_8));
+            stringBuilder.append(chars.get(offset_8));
             n -= 8;
         }
         if (n - 4 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_4));
+            stringBuilder.append(chars.get(offset_4));
             n -= 4;
         }
         if (n - 2 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_2));
+            stringBuilder.append(chars.get(offset_2));
             n -= 2;
         }
         if (n - 1 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
-            stringBuilder.append(ResourceManager.bgCaches.get(offset_1));
+            stringBuilder.append(chars.get(offset_1));
         }
         stringBuilder.append(FontNegative.NEG_1.getCharacter());
-        stringBuilder.append(ResourceManager.bgCaches.get(end)).append(offset);
+        stringBuilder.append(chars.get(end)).append(offset);
         return stringBuilder.toString();
     }
 
@@ -137,5 +142,9 @@ public class BackGround {
 
     public String getOffset_128() {
         return offset_128;
+    }
+
+    public String getKey() {
+        return key;
     }
 }

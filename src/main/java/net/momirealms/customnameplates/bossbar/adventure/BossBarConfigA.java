@@ -15,19 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.bossbar;
+package net.momirealms.customnameplates.bossbar.adventure;
 
 import net.kyori.adventure.bossbar.BossBar;
 
-public class BossbarConfig {
+public class BossBarConfigA {
 
     private String text;
     private BossBar.Overlay overlay;
     private BossBar.Color color;
     private int rate;
 
-    public BossbarConfig(String text, BossBar.Overlay overlay,
-                         BossBar.Color color, int rate){
+    public BossBarConfigA(String text, BossBar.Overlay overlay,
+                          BossBar.Color color, int rate){
         this.text = text;
         this.rate = rate;
         this.overlay = overlay;

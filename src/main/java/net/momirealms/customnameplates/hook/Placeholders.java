@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.font.FontWidth;
 import net.momirealms.customnameplates.font.FontWidthThin;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.resource.ResourceManager;
+import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
 import net.momirealms.customnameplates.utils.BGInfo;
 import net.momirealms.customnameplates.utils.NPInfo;
@@ -52,13 +53,31 @@ public class Placeholders extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (params.equals("prefix")){
-            if (ScoreBoardManager.teams.get(player.getName()) != null){
-                return ScoreBoardManager.teams.get(player.getName()).getPrefixText();
+            if (ConfigManager.MainConfig.tab){
+                String teamName = TABHook.getTABTeam(player.getName());
+                NameplatesTeam nameplatesTeam = ScoreBoardManager.teams.get(teamName);
+                if (nameplatesTeam != null){
+                    return nameplatesTeam.getPrefixText();
+                }
+            }else {
+                NameplatesTeam nameplatesTeam = ScoreBoardManager.teams.get(player.getName());
+                if (nameplatesTeam != null){
+                    return nameplatesTeam.getPrefixText();
+                }
             }
         }
         if (params.equals("suffix")){
-            if (ScoreBoardManager.teams.get(player.getName()) != null){
-                return ScoreBoardManager.teams.get(player.getName()).getSuffixText();
+            if (ConfigManager.MainConfig.tab){
+                String teamName = TABHook.getTABTeam(player.getName());
+                NameplatesTeam nameplatesTeam = ScoreBoardManager.teams.get(teamName);
+                if (nameplatesTeam != null){
+                    return nameplatesTeam.getSuffixText();
+                }
+            }else {
+                NameplatesTeam nameplatesTeam = ScoreBoardManager.teams.get(player.getName());
+                if (nameplatesTeam != null){
+                    return nameplatesTeam.getSuffixText();
+                }
             }
         }
         if (params.startsWith("bg_")){

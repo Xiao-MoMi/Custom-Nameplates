@@ -18,9 +18,11 @@
 package net.momirealms.customnameplates;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.momirealms.customnameplates.actionbar.Timer;
-import net.momirealms.customnameplates.bossbar.QuitAndJoin;
+import net.momirealms.customnameplates.bossbar.adventure.QuitAndJoinA;
+import net.momirealms.customnameplates.bossbar.protocollib.QuitAndJoinP;
 import net.momirealms.customnameplates.commands.Execute;
 import net.momirealms.customnameplates.commands.TabComplete;
 import net.momirealms.customnameplates.data.DataManager;
@@ -41,6 +43,7 @@ public final class CustomNameplates extends JavaPlugin {
 
     public static JavaPlugin instance;
     public static BukkitAudiences adventure;
+    public static ProtocolManager protocolManager;
 
     private ResourceManager resourceManager;
     private DataManager dataManager;
@@ -63,13 +66,18 @@ public final class CustomNameplates extends JavaPlugin {
     @Override
     public void onEnable() {
         adventure = BukkitAudiences.create(this);
+        protocolManager = ProtocolLibrary.getProtocolManager();
         AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>Running on " + Bukkit.getVersion());
         ConfigManager.loadModule();
         ConfigManager.MainConfig.ReloadConfig();
         ConfigManager.Message.ReloadConfig();
         if (ConfigManager.bossbar){
             ConfigManager.loadBossBar();
-            Bukkit.getPluginManager().registerEvents(new QuitAndJoin(),this);
+            if (ConfigManager.useAdventure){
+                Bukkit.getPluginManager().registerEvents(new QuitAndJoinA(),this);
+            }else {
+                Bukkit.getPluginManager().registerEvents(new QuitAndJoinP(),this);
+            }
         }
         if (ConfigManager.actionbar){
             ConfigManager.ActionbarConfig.LoadConfig();

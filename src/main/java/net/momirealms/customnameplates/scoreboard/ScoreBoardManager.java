@@ -17,7 +17,9 @@
 
 package net.momirealms.customnameplates.scoreboard;
 
+import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.hook.TABHook;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -28,22 +30,27 @@ public record ScoreBoardManager(CustomNameplates plugin) {
     public static Map<String, NameplatesTeam> teams = new HashMap<>();
 
     public NameplatesTeam getOrCreateTeam(Player player) {
-        if (!teams.containsKey(player.getName())) {
-            teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
+        if (ConfigManager.MainConfig.tab){
+            String tabTeamName = TABHook.getTABTeam(player.getName());
+            if (!teams.containsKey(tabTeamName)) {
+                teams.put(tabTeamName, new NameplatesTeam(this.plugin, player));
+            }
+            this.getTeam(tabTeamName).updateNameplates();
+            return teams.get(tabTeamName);
+        } else {
+            if (!teams.containsKey(player.getName())) {
+                teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
+            }
+            this.getTeam(player.getName()).updateNameplates();
+            return teams.get(player.getName());
         }
-        this.getTeam(player.getName()).updateNameplates();
-        return teams.get(player.getName());
     }
 
-    public void removeTeam(String playerName) {
-        teams.remove(playerName);
+    public void removeTeam(String teamName) {
+        teams.remove(teamName);
     }
 
-    public NameplatesTeam getTeam(String team) {
-        return teams.get(team);
-    }
-
-    public boolean doesTeamExist(String playerName) {
-        return teams.containsKey(playerName);
+    public NameplatesTeam getTeam(String teamName) {
+        return teams.get(teamName);
     }
 }

@@ -17,9 +17,7 @@
 
 package net.momirealms.customnameplates.scoreboard;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
@@ -27,6 +25,7 @@ import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.font.FontCache;
 import net.momirealms.customnameplates.hook.ParsePapi;
+import net.momirealms.customnameplates.hook.TABHook;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,12 +45,14 @@ public class NameplatesTeam {
     private String prefixText;
     private String suffixText;
     private ChatColor color;
+    private final String teamName;
 
     public Component getPrefix() {return this.prefix;}
     public Component getSuffix() {return this.suffix;}
     public ChatColor getColor() {return this.color;}
     public String getPrefixText() {return prefixText;}
     public String getSuffixText() {return suffixText;}
+    public String getTeamName() {return teamName;}
 
     public NameplatesTeam(CustomNameplates plugin, Player player) {
         this.color = ChatColor.WHITE;
@@ -59,8 +60,15 @@ public class NameplatesTeam {
         this.player = player;
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         String name = player.getName();
-        this.team = Optional.ofNullable(Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name)).orElseGet(() -> scoreboard.registerNewTeam(name));
-        team.addEntry(player.getName());
+        if (ConfigManager.MainConfig.tab){
+            this.teamName = TABHook.getTABTeam(name);
+            this.team = Optional.ofNullable(Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamName)).orElseGet(() -> scoreboard.registerNewTeam(teamName));
+            team.addEntry(player.getName());
+        }else {
+            this.teamName = name;
+            this.team = Optional.ofNullable(Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name)).orElseGet(() -> scoreboard.registerNewTeam(name));
+            team.addEntry(player.getName());
+        }
     }
 
     public void updateNameplates() {
@@ -73,15 +81,15 @@ public class NameplatesTeam {
         }
         if (nameplate.equals("none")) {
             if (ConfigManager.MainConfig.placeholderAPI) {
-                this.prefix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
-                this.suffix = Component.text(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
-                this.prefixText = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
-                this.suffixText = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix);
-            }else {
-                this.prefix = Component.text(ConfigManager.MainConfig.player_prefix);
-                this.suffix = Component.text(ConfigManager.MainConfig.player_suffix);
-                this.prefixText = ConfigManager.MainConfig.player_prefix;
-                this.suffixText = ConfigManager.MainConfig.player_suffix;
+                this.prefix = MiniMessage.miniMessage().deserialize(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
+                this.suffix = MiniMessage.miniMessage().deserialize(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
+                this.prefixText = "";
+                this.suffixText = "";
+            } else {
+                this.prefix = MiniMessage.miniMessage().deserialize(ConfigManager.MainConfig.player_prefix);
+                this.suffix = MiniMessage.miniMessage().deserialize(ConfigManager.MainConfig.player_suffix);
+                this.prefixText = "";
+                this.suffixText = "";
             }
             this.color = ChatColor.WHITE;
             this.team.setPrefix("");

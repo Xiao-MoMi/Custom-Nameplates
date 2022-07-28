@@ -15,27 +15,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.bossbar;
+package net.momirealms.customnameplates.bossbar.adventure;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class BossbarSender extends BukkitRunnable {
+public class BossBarSenderA extends BukkitRunnable {
 
     private final Player player;
     private final Audience audience;
     private BossBar bossBar;
     private int timer;
-    private final BossbarConfig bossbarConfig;
+    private final BossBarConfigA bossbarConfig;
 
-    public BossbarSender(Player player, BossbarConfig bossbarConfig){
+    public BossBarSenderA(Player player, BossBarConfigA bossbarConfig){
         this.player = player;
         this.bossbarConfig = bossbarConfig;
         audience = CustomNameplates.adventure.player(player);

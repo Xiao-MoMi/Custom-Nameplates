@@ -8,6 +8,7 @@ depend:
 softdepend:
   - ItemsAdder
   - PlaceholderAPI
+  - TAB
 commands:
   customnameplates:
     usage: /customnameplates help

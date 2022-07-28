@@ -9,10 +9,10 @@ papi:
   #<font:nameplate:default>%nameplates_bg_player%<font:minecraft:default>Hello! %player_name%
   player:
     text: 'Hello! %player_name%'
-    background: bedrock
-  season:
-    text: 'Current Season: %customcrops_season%'
-    background: bedrock
+    background: bedrock_1
+  pos:
+    text: 'You are now at: %player_x%, %player_y%, %player_z%'
+    background: bedrock_1
 
   #This papi will not return text with nameplate
   #It will only return the nameplate

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.bossbar;
+package net.momirealms.customnameplates.bossbar.adventure;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,21 +25,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 
-public class QuitAndJoin implements Listener {
+public class QuitAndJoinA implements Listener {
 
-    public static HashMap<Player, TimerTask> cache = new HashMap<>();
+    public static HashMap<Player, TimerTaskA> cache = new HashMap<>();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        TimerTask timerTask = new TimerTask(player);
+        TimerTaskA timerTask = new TimerTaskA(player);
         cache.put(player, timerTask);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        TimerTask timerTask = cache.get(player);
+        TimerTaskA timerTask = cache.get(player);
         if (timerTask != null){
             timerTask.stopTimer();
         }

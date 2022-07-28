@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.font.FontCache;
 import net.momirealms.customnameplates.hook.ParsePapi;
+import net.momirealms.customnameplates.hook.TABHook;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
 import org.apache.commons.lang.StringUtils;
@@ -121,7 +122,11 @@ public class Execute implements CommandExecutor {
                             return true;
                         }
                         DataManager.cache.get(player.getUniqueId()).equipNameplate(args[1]);
-                        this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                        if (ConfigManager.MainConfig.tab){
+                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(player.getName())).updateNameplates();
+                        }else {
+                            this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                        }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.equip.replace("{Nameplate}", plugin.getResourceManager().getNameplateInfo(args[1]).getConfig().getName()));
                     } else {
@@ -154,7 +159,11 @@ public class Execute implements CommandExecutor {
                             return true;
                         }
                         DataManager.cache.get(player.getUniqueId()).equipNameplate(args[2]);
-                        this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                        if (ConfigManager.MainConfig.tab){
+                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(args[1])).updateNameplates();
+                        }else {
+                            this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                        }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         if (sender instanceof Player){
                             AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.force_equip.replace("{Nameplate}", plugin.getResourceManager().getNameplateInfo(args[2]).getConfig().getName()).replace("{Player}", args[1]));
@@ -177,7 +186,11 @@ public class Execute implements CommandExecutor {
             case "unequip" -> {
                 if (sender instanceof Player player){
                     DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
-                    this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                    if (ConfigManager.MainConfig.tab){
+                        this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(player.getName())).updateNameplates();
+                    }else {
+                        this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                    }
                     this.plugin.getDataManager().savePlayer(player.getUniqueId());
                     AdventureManager.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.unequip);
                 }else {
@@ -198,7 +211,11 @@ public class Execute implements CommandExecutor {
                     if (Bukkit.getPlayer(args[1]) != null){
                         Player player = Bukkit.getPlayer(args[1]);
                         DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
-                        this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                        if (ConfigManager.MainConfig.tab){
+                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(args[1])).updateNameplates();
+                        }else {
+                            this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                        }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         if (sender instanceof Player){
                             AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.force_unequip.replace("{Player}", args[1]));

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.bossbar;
+package net.momirealms.customnameplates.bossbar.adventure;
 
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
@@ -25,13 +25,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 
-public class TimerTask {
+public class TimerTaskA {
 
-    private final HashMap<Integer, BossbarSender> bossbarCache = new HashMap<>();
+    private final HashMap<Integer, BossBarSenderA> bossbarCache = new HashMap<>();
 
-    public TimerTask(Player player){
-        ConfigManager.bossbars.forEach((key, bossbarConfig) -> {
-            BossbarSender bossbar = new BossbarSender(player, bossbarConfig);
+    public TimerTaskA(Player player){
+        ConfigManager.bossbarsA.forEach((key, bossbarConfig) -> {
+            BossBarSenderA bossbar = new BossBarSenderA(player, bossbarConfig);
             bossbar.showBossbar();
             BukkitTask task = bossbar.runTaskTimerAsynchronously(CustomNameplates.instance, 1,1);
             bossbarCache.put(task.getTaskId(), bossbar);
