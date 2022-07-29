@@ -104,6 +104,9 @@ public class ConfigManager {
             player_prefix = config.getString("config.prefix");
             player_suffix = config.getString("config.suffix");
             anotherFont = config.getBoolean("config.another-ascii-font.enable",true);
+            if(config.getBoolean("config.extract-shader",true)){
+                CustomNameplates.instance.saveResource("shaders.zip", true);
+            }
 
             itemsAdder = config.getBoolean("config.integrations.ItemsAdder",false);
             fontOffset = config.getInt("config.another-ascii-font.y-offset",3);
@@ -127,8 +130,6 @@ public class ConfigManager {
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("TAB") == null){
                     tab = false;
                     CustomNameplates.instance.getLogger().warning("Failed to initialize TAB!");
-                }else {
-                    AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>TAB Hooked!");
                 }
             }
 

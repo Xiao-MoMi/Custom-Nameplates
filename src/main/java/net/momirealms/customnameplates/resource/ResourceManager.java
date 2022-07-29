@@ -161,7 +161,7 @@ public class ResourceManager {
 
         CustomNameplates.instance.saveResource("space_split.png", false); //复制space_split.png
         try{
-            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath()  + File.separatorChar + ConfigManager.MainConfig.folder_path + "space_split.png"));
+            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath() + File.separator + "space_split.png"));
         }catch (IOException e){
             e.printStackTrace();
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy space_split.png to resource pack...</red>");
@@ -263,7 +263,7 @@ public class ResourceManager {
     private JsonObject getNegativeFontChar(int height, char character) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("type", new JsonPrimitive("bitmap"));
-        jsonObject.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.folder_path.replaceAll("\\\\","/") +"space_split.png"));
+        jsonObject.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":space_split.png"));
         jsonObject.add("ascent", new JsonPrimitive(-5000));
         jsonObject.add("height", new JsonPrimitive(height));
         final JsonArray jsonArray = new JsonArray();

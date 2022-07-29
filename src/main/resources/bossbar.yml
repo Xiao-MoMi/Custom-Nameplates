@@ -10,7 +10,7 @@ mode: ProtocolLib
 
 bossbar:
   example:
-    text: '<font:nameplates:default>%nameplates_bg_player%Hello! %player_name%</font>    <font:nameplates:default>%nameplates_bg_pos%You are now at: %player_x%, %player_y%, %player_z%</font>'
+    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%Hello! %player_name%</font>    <font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%You are now at: %player_x%, %player_y%, %player_z%</font>'
     refresh-rate: 5
     # PINK
     # YELLOW

@@ -95,6 +95,9 @@ public final class CustomNameplates extends JavaPlugin {
             new Placeholders().register();
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
         }
+        if (ConfigManager.MainConfig.tab){
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>TAB Hooked!");
+        }
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute(this));
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete(this));
         this.resourceManager = new ResourceManager(this);
