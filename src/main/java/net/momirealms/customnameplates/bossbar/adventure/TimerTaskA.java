@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 public class TimerTaskA {
 
-    private final HashMap<Integer, BossBarSenderA> bossbarCache = new HashMap<>();
+    private HashMap<Integer, BossBarSenderA> bossbarCache = new HashMap<>();
 
     public TimerTaskA(Player player){
         ConfigManager.bossbarsA.forEach((key, bossbarConfig) -> {
@@ -43,5 +43,6 @@ public class TimerTaskA {
             value.hideBossbar();
             Bukkit.getScheduler().cancelTask(key);
         });
+        bossbarCache = null;
     }
 }

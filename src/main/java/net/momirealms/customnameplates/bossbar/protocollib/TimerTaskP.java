@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class TimerTaskP {
 
-    private final HashMap<Integer, BossBarSenderP> bossbarCache = new HashMap<>();
+    private HashMap<Integer, BossBarSenderP> bossbarCache = new HashMap<>();
 
     public TimerTaskP(Player player){
         ConfigManager.bossbarsP.forEach((key, bossbarConfig) -> {
@@ -18,6 +18,7 @@ public class TimerTaskP {
             bossbar.showBossbar();
             BukkitTask task = bossbar.runTaskTimerAsynchronously(CustomNameplates.instance, 1,1);
             bossbarCache.put(task.getTaskId(), bossbar);
+
         });
     }
 
@@ -25,5 +26,6 @@ public class TimerTaskP {
         bossbarCache.forEach((key,value)-> {
             Bukkit.getScheduler().cancelTask(key);
         });
+        bossbarCache = null;
     }
 }

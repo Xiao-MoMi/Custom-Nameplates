@@ -95,6 +95,7 @@ public class ResourceManager {
         jsonObject_1.add("providers", jsonArray_1);
 
         if (ConfigManager.MainConfig.anotherFont){
+
             JsonObject jsonObject_2 = new JsonObject();
             jsonObject_2.add("type", new JsonPrimitive("bitmap"));
             jsonObject_2.add("file", new JsonPrimitive("minecraft:font/ascii.png"));
@@ -119,6 +120,14 @@ public class ResourceManager {
             jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
             jsonObject_2.add("chars", jsonArray_2);
             jsonArray_1.add(jsonObject_2);
+
+            JsonObject jsonObject_3 = new JsonObject();
+            jsonObject_3.add("type", new JsonPrimitive("space"));
+            JsonObject jsonObject_4 = new JsonObject();
+            jsonObject_4.add(" ", new JsonPrimitive(4));
+            jsonObject_4.add("", new JsonPrimitive(0));
+            jsonObject_3.add("advances", jsonObject_4);
+            jsonArray_1.add(jsonObject_3);
         }
 
         if (ConfigManager.nameplate){
@@ -161,7 +170,7 @@ public class ResourceManager {
 
         CustomNameplates.instance.saveResource("space_split.png", false); //复制space_split.png
         try{
-            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath() + File.separator + "space_split.png"));
+            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath() + File.separator + ConfigManager.MainConfig.ss_folder_path + "space_split.png"));
         }catch (IOException e){
             e.printStackTrace();
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy space_split.png to resource pack...</red>");
@@ -185,6 +194,15 @@ public class ResourceManager {
             }catch (IOException e){
                 e.printStackTrace();
                 AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy files to ItemsAdder...</red>");
+            }
+        }
+        if (ConfigManager.MainConfig.oraxen){
+            try{
+                FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("Oraxen").getDataFolder() + File.separator + "pack"+ File.separator + "assets"));
+                AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>Oraxen!<color:#baffd1> Automatically sent rp to Oraxen folder!");
+            }catch (IOException e){
+                e.printStackTrace();
+                AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to copy files to Oraxen...</red>");
             }
         }
     }
@@ -263,7 +281,7 @@ public class ResourceManager {
     private JsonObject getNegativeFontChar(int height, char character) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("type", new JsonPrimitive("bitmap"));
-        jsonObject.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":space_split.png"));
+        jsonObject.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.ss_folder_path.replaceAll("\\\\","/") + "space_split.png"));
         jsonObject.add("ascent", new JsonPrimitive(-5000));
         jsonObject.add("height", new JsonPrimitive(height));
         final JsonArray jsonArray = new JsonArray();

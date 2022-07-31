@@ -9,12 +9,9 @@ public class TABHook {
         TAB tab = TAB.getInstance();
         TabPlayer tabPlayer = tab.getPlayer(playerName);
         String name = tabPlayer.getTeamName();
-
         if (name == null) {
-            //System.out.println("TAB没有" + playerName);
             return playerName;
         }
-        //System.out.println("太好啦，有team" + name);
         return name;
     }
 }

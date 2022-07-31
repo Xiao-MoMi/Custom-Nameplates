@@ -9,6 +9,7 @@ softdepend:
   - ItemsAdder
   - PlaceholderAPI
   - TAB
+  - Oraxen
 commands:
   customnameplates:
     usage: /customnameplates help

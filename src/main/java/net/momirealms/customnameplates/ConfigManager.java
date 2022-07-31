@@ -72,6 +72,7 @@ public class ConfigManager {
         public static char start;
         public static String folder_path;
         public static String bg_folder_path;
+        public static String ss_folder_path;
         public static String font;
         public static String default_nameplate;
         public static String player_prefix;
@@ -87,6 +88,7 @@ public class ConfigManager {
         public static boolean hideSuffix;
         public static boolean anotherFont;
         public static boolean tab;
+        public static boolean oraxen;
         public static int fontOffset;
         public static void ReloadConfig(){
             CustomNameplates.instance.saveDefaultConfig();
@@ -100,6 +102,7 @@ public class ConfigManager {
             start = start_char.charAt(0);
             folder_path = config.getString("config.nameplate-folder-path","font\\nameplates\\");
             bg_folder_path = config.getString("config.background-folder-path","font\\backgrounds\\");
+            ss_folder_path = config.getString("config.space-split-folder-path","font\\");
             default_nameplate = config.getString("config.default-nameplate");
             player_prefix = config.getString("config.prefix");
             player_suffix = config.getString("config.suffix");
@@ -129,7 +132,12 @@ public class ConfigManager {
             if (tab){
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("TAB") == null){
                     tab = false;
-                    CustomNameplates.instance.getLogger().warning("Failed to initialize TAB!");
+                }
+            }
+            oraxen = config.getBoolean("config.integrations.Oraxen",false);
+            if (oraxen){
+                if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("Oraxen") == null){
+                    oraxen = false;
                 }
             }
 
