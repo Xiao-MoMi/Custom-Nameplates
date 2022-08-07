@@ -12,6 +12,38 @@ softdepend:
   - Oraxen
 commands:
   customnameplates:
-    usage: /customnameplates help
+    usage: /customnameplates
     aliases:
       - nameplates
+
+permissions:
+  nameplates.*:
+    description: Gives access to all nameplates commands
+    children:
+      nameplates.generate: true
+      nameplates.reload: true
+      nameplates.forceequip: true
+      nameplates.forceunequip: true
+      nameplates.help: true
+      nameplates.unequip: true
+      nameplates.preview: true
+      nameplates.list: true
+
+  nameplates.generate:
+    default: op
+  nameplates.reload:
+    default: op
+  nameplates.forceequip:
+    default: op
+  nameplates.forceunequip:
+    default: op
+  nameplates.help:
+    default: op
+  nameplates.unequip:
+    default: true
+  nameplates.preview:
+    default: true
+  nameplates.list:
+    default: true
+  nameplates.equip:
+    default: true

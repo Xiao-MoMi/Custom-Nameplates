@@ -1,0 +1,6 @@
+# Font is processed by client
+# Server side doesn't know the width of you custom font
+# So you can tell the plugin each character's width here
+小: 8
+默: 8
+米: 8

@@ -56,7 +56,10 @@ config:
   # Placeholder based prefix and suffix system. When enabled, it is recommended
   # to use PlaceholderAPI to be able to use this feature to the fullest extent.
   # keep it empty if you don't want to enable this feature.
-  prefix: '<font:default><rainbow>Hello!</rainbow></font> '
+  # You should make sure the papi doesn't contain "&" (legacy color code)
+  # Nameplates work on the custom font system where legacy color code is not supported!
+  # Please use minimessage format: https://docs.adventure.kyori.net/minimessage/format.html
+  prefix: '<font:default><rainbow>Hello! </rainbow></font>'
   suffix: ''
 
   # should prefix/suffix be hidden when player is equipping a nameplate

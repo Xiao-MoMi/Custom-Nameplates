@@ -24,14 +24,11 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.font.FontCache;
-import net.momirealms.customnameplates.hook.ParsePapi;
+import net.momirealms.customnameplates.hook.PapiHook;
 import net.momirealms.customnameplates.hook.TABHook;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.util.Optional;
 
@@ -39,7 +36,6 @@ public class NameplatesTeam {
 
     private final CustomNameplates plugin;
     private final Player player;
-    private final Team team;
     private Component prefix;
     private Component suffix;
     private String prefixText;
@@ -58,16 +54,11 @@ public class NameplatesTeam {
         this.color = ChatColor.WHITE;
         this.plugin = plugin;
         this.player = player;
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         String name = player.getName();
         if (ConfigManager.MainConfig.tab){
             this.teamName = TABHook.getTABTeam(name);
-            this.team = Optional.ofNullable(Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamName)).orElseGet(() -> scoreboard.registerNewTeam(teamName));
-            team.addEntry(player.getName());
         }else {
             this.teamName = name;
-            this.team = Optional.ofNullable(Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name)).orElseGet(() -> scoreboard.registerNewTeam(name));
-            team.addEntry(player.getName());
         }
     }
 
@@ -81,8 +72,8 @@ public class NameplatesTeam {
         }
         if (nameplate.equals("none")) {
             if (ConfigManager.MainConfig.placeholderAPI) {
-                this.prefix = MiniMessage.miniMessage().deserialize(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
-                this.suffix = MiniMessage.miniMessage().deserialize(ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
+                this.prefix = MiniMessage.miniMessage().deserialize(PapiHook.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix));
+                this.suffix = MiniMessage.miniMessage().deserialize(PapiHook.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix));
                 this.prefixText = "";
                 this.suffixText = "";
             } else {
@@ -92,7 +83,6 @@ public class NameplatesTeam {
                 this.suffixText = "";
             }
             this.color = ChatColor.WHITE;
-            this.team.setPrefix("");
             return;
         }
         FontCache fontCache = this.plugin.getResourceManager().getNameplateInfo(nameplate);
@@ -100,7 +90,6 @@ public class NameplatesTeam {
             this.prefix = Component.text("");
             this.suffix = Component.text("");
             this.color = ChatColor.WHITE;
-            this.team.setPrefix("");
             DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
             return;
         }
@@ -110,16 +99,17 @@ public class NameplatesTeam {
         String playerSuffix;
         if (ConfigManager.MainConfig.placeholderAPI) {
             if (!ConfigManager.MainConfig.hidePrefix){
-                playerPrefix = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
+                playerPrefix = PapiHook.parsePlaceholders(this.player, ConfigManager.MainConfig.player_prefix);
             }else {
                 playerPrefix = "";
             }
             if (!ConfigManager.MainConfig.hideSuffix){
-                playerSuffix = ParsePapi.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix);
+                playerSuffix = PapiHook.parsePlaceholders(this.player, ConfigManager.MainConfig.player_suffix);
             }else {
                 playerSuffix = "";
             }
-        }else {
+        }
+        else {
             if (!ConfigManager.MainConfig.hidePrefix){
                 playerPrefix = ConfigManager.MainConfig.player_prefix;
             }else {
@@ -135,11 +125,6 @@ public class NameplatesTeam {
         this.suffixText = nameplateUtil.getSuffixLength(MiniMessage.miniMessage().stripTags(playerPrefix) + name + MiniMessage.miniMessage().stripTags(playerSuffix));
         this.prefix = Component.text(nameplateUtil.makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), name, MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.MainConfig.key).append(MiniMessage.miniMessage().deserialize(playerPrefix));
         this.suffix = MiniMessage.miniMessage().deserialize(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(MiniMessage.miniMessage().stripTags(playerPrefix) + name + MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.MainConfig.key));
-//        this.prefixText = nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix) + playerPrefix;
-//        this.suffixText = playerSuffix + nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix);
-//        this.prefix = Component.text(nameplateUtil.makeCustomNameplate(playerPrefix, name, playerSuffix)).font(ConfigManager.MainConfig.key).append(Component.text(playerPrefix).font(Key.key("default")));
-//        this.suffix = Component.text(playerSuffix).append(Component.text(nameplateUtil.getSuffixLength(playerPrefix + name + playerSuffix)).font(ConfigManager.MainConfig.key));
         this.color = nameplateUtil.getColor();
-        this.team.setPrefix("");
     }
 }

@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.font;
 
+import net.momirealms.customnameplates.ConfigManager;
+
 public enum FontWidth {
 
     A('A', 5), a('a', 5), B('B', 5), b('b', 5),
@@ -72,13 +74,18 @@ public enum FontWidth {
     /*
     获取每个字符的像素宽度
      */
-    public static FontWidth getInfo(char c) {
+    public static int getInfo(char c) {
         for (FontWidth minecraftFontWidth : values()) {
             if (minecraftFontWidth.getCharacter() == c) {
-                return minecraftFontWidth;
+                return minecraftFontWidth.length;
             }
         }
-        return FontWidth.DEFAULT;
+        int custom = ConfigManager.fontWidth.get(c);
+        if (custom != 0){
+            return custom;
+        }else {
+            return 8;
+        }
     }
 
     /*
@@ -88,8 +95,8 @@ public enum FontWidth {
         int length = s.length();
         int n = 0;
         for (int i = 0; i < length; i++) {
-            n += getInfo(s.charAt(i)).getLength();
+            n += getInfo(s.charAt(i));
         }
-        return n + FontWidth.IN_BETWEEN.getLength() * (length - 1); //总长还需加上字符间距
+        return n + length - 1; //总长还需加上字符间距
     }
 }

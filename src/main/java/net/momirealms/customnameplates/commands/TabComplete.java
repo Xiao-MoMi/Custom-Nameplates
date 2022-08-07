@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.commands;
 
-import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.resource.ResourceManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,12 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TabComplete implements TabCompleter {
-
-    private final CustomNameplates plugin;
-
-    public TabComplete(CustomNameplates plugin){
-        this.plugin = plugin;
-    }
 
     @Override
     @ParametersAreNonnullByDefault
@@ -95,7 +89,7 @@ public class TabComplete implements TabCompleter {
                 String permission = info.getPermission().toLowerCase();
                 if (permission.startsWith("customnameplates.equip.")) {
                     permission = StringUtils.replace(permission, "customnameplates.equip.", "");
-                    if (this.plugin.getResourceManager().caches.get(permission) != null){
+                    if (ResourceManager.caches.get(permission) != null){
                         availableNameplates.add(permission);
                     }
                 }
@@ -105,6 +99,6 @@ public class TabComplete implements TabCompleter {
     }
 
     private List<String> nameplates(){
-        return new ArrayList<>(this.plugin.getResourceManager().caches.keySet());
+        return new ArrayList<>(ResourceManager.caches.keySet());
     }
 }

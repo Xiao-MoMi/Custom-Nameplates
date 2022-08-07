@@ -30,7 +30,6 @@ import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.Placeholders;
 import net.momirealms.customnameplates.listener.PlayerListener;
-import net.momirealms.customnameplates.listener.PacketsListener;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
 import org.bukkit.Bukkit;
@@ -48,11 +47,10 @@ public final class CustomNameplates extends JavaPlugin {
     private ResourceManager resourceManager;
     private DataManager dataManager;
     private ScoreBoardManager scoreBoardManager;
+    private Placeholders placeholders;
     private Timer timer;
 
-    public ResourceManager getResourceManager() {
-        return this.resourceManager;
-    }
+    public ResourceManager getResourceManager() {return this.resourceManager;}
     public DataManager getDataManager() { return this.dataManager; }
     public ScoreBoardManager getScoreBoardManager() { return this.scoreBoardManager; }
 
@@ -71,6 +69,7 @@ public final class CustomNameplates extends JavaPlugin {
         ConfigManager.loadModule();
         ConfigManager.MainConfig.ReloadConfig();
         ConfigManager.Message.ReloadConfig();
+        ConfigManager.loadWidth();
         if (ConfigManager.bossbar){
             ConfigManager.loadBossBar();
             if (ConfigManager.useAdventure){
@@ -89,17 +88,17 @@ public final class CustomNameplates extends JavaPlugin {
         if (ConfigManager.nameplate){
             ConfigManager.DatabaseConfig.LoadConfig();
             Bukkit.getPluginManager().registerEvents(new PlayerListener(this),this);
-            ProtocolLibrary.getProtocolManager().addPacketListener(new PacketsListener(this));
         }
         if (ConfigManager.MainConfig.placeholderAPI){
-            new Placeholders().register();
+            placeholders = new Placeholders();
+            placeholders.register();
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
         }
         if (ConfigManager.MainConfig.tab){
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>TAB Hooked!");
         }
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute(this));
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete(this));
+        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete());
         this.resourceManager = new ResourceManager(this);
         this.dataManager = new DataManager(this);
         this.scoreBoardManager = new ScoreBoardManager(this);
@@ -122,9 +121,27 @@ public final class CustomNameplates extends JavaPlugin {
         if (timer != null){
             timer.stopTimer(timer.getTaskID());
         }
-        if(adventure != null) {
+        if (adventure != null) {
             adventure.close();
             adventure = null;
+        }
+        if (protocolManager != null){
+            protocolManager = null;
+        }
+        if (placeholders != null){
+            placeholders.unregister();
+        }
+        if (resourceManager != null){
+            resourceManager = null;
+        }
+        if (scoreBoardManager != null){
+            scoreBoardManager = null;
+        }
+        if (dataManager != null){
+            dataManager = null;
+        }
+        if (instance != null){
+            instance = null;
         }
     }
 }

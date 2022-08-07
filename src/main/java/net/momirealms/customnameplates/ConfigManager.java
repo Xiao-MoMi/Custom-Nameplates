@@ -41,6 +41,7 @@ public class ConfigManager {
     public static TreeMap<String, BossBarConfigP> bossbarsP = new TreeMap<>();
     public static HashMap<String, BGInfo> papiBG = new HashMap<>();
     public static HashMap<String, NPInfo> papiNP = new HashMap<>();
+    public static HashMap<Character, Integer> fontWidth = new HashMap<>();
 
     public static YamlConfiguration getConfig(String configName) {
         File file = new File(CustomNameplates.instance.getDataFolder(), configName);
@@ -63,6 +64,18 @@ public class ConfigManager {
         actionbar = module.getBoolean("actionbar");
         YamlConfiguration bossbarmode = getConfig("bossbar.yml");
         useAdventure =  bossbarmode.getString("mode").equalsIgnoreCase("Adventure");
+    }
+
+
+    public static void loadWidth(){
+
+        fontWidth.clear();
+
+        YamlConfiguration config = getConfig("char-width.yml");
+        config.getConfigurationSection("").getKeys(false).forEach(key -> {
+            fontWidth.put(key.charAt(0), config.getInt(key));
+        });
+        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Loaded <white>" + fontWidth.size() + " <color:#baffd1>custom char width");
     }
 
     public static class MainConfig{

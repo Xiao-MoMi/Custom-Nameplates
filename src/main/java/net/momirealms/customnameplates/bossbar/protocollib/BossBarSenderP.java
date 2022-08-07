@@ -37,9 +37,9 @@ public class BossBarSenderP extends BukkitRunnable {
 
     public void showBossbar(){
         this.packet = new PacketContainer(PacketType.Play.Server.BOSS);
-        packet.setMeta("id", UUID.randomUUID());
         this.overlay = bossbarConfig.getOverlay();
         this.barColor = bossbarConfig.getColor();
+        packet.getModifier().write(0, UUID.randomUUID());
         InternalStructure internalStructure = packet.getStructures().read(1);
         if (ConfigManager.MainConfig.placeholderAPI){
             this.text = PlaceholderAPI.setPlaceholders(player, bossbarConfig.getText());

@@ -31,10 +31,11 @@ import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.font.FontCache;
-import net.momirealms.customnameplates.hook.ParsePapi;
+import net.momirealms.customnameplates.hook.PapiHook;
 import net.momirealms.customnameplates.hook.TABHook;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
+import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -80,6 +81,7 @@ public class Execute implements CommandExecutor {
                 if (sender.hasPermission("customnameplates.reload") || sender.isOp()) {
                     ConfigManager.MainConfig.ReloadConfig();
                     ConfigManager.Message.ReloadConfig();
+                    ConfigManager.loadWidth();
                     if (ConfigManager.actionbar){
                         ConfigManager.ActionbarConfig.LoadConfig();
                     }
@@ -123,9 +125,9 @@ public class Execute implements CommandExecutor {
                         }
                         DataManager.cache.get(player.getUniqueId()).equipNameplate(args[1]);
                         if (ConfigManager.MainConfig.tab){
-                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(player.getName())).updateNameplates();
+                            ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates();
                         }else {
-                            this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                            ScoreBoardManager.teams.get(player.getName()).updateNameplates();
                         }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         AdventureManager.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.equip.replace("{Nameplate}", plugin.getResourceManager().getNameplateInfo(args[1]).getConfig().getName()));
@@ -160,9 +162,9 @@ public class Execute implements CommandExecutor {
                         }
                         DataManager.cache.get(player.getUniqueId()).equipNameplate(args[2]);
                         if (ConfigManager.MainConfig.tab){
-                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(args[1])).updateNameplates();
+                            ScoreBoardManager.teams.get(TABHook.getTABTeam(args[1])).updateNameplates();
                         }else {
-                            this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                            ScoreBoardManager.teams.get(args[1]).updateNameplates();
                         }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         if (sender instanceof Player){
@@ -187,9 +189,9 @@ public class Execute implements CommandExecutor {
                 if (sender instanceof Player player){
                     DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
                     if (ConfigManager.MainConfig.tab){
-                        this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(player.getName())).updateNameplates();
+                        ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates();
                     }else {
-                        this.plugin.getScoreBoardManager().getTeam(player.getName()).updateNameplates();
+                        ScoreBoardManager.teams.get(player.getName()).updateNameplates();
                     }
                     this.plugin.getDataManager().savePlayer(player.getUniqueId());
                     AdventureManager.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.unequip);
@@ -212,9 +214,9 @@ public class Execute implements CommandExecutor {
                         Player player = Bukkit.getPlayer(args[1]);
                         DataManager.cache.get(player.getUniqueId()).equipNameplate("none");
                         if (ConfigManager.MainConfig.tab){
-                            this.plugin.getScoreBoardManager().getTeam(TABHook.getTABTeam(args[1])).updateNameplates();
+                            ScoreBoardManager.teams.get(TABHook.getTABTeam(args[1])).updateNameplates();
                         }else {
-                            this.plugin.getScoreBoardManager().getTeam(args[1]).updateNameplates();
+                            ScoreBoardManager.teams.get(args[1]).updateNameplates();
                         }
                         this.plugin.getDataManager().savePlayer(player.getUniqueId());
                         if (sender instanceof Player){
@@ -293,8 +295,8 @@ public class Execute implements CommandExecutor {
                     String playerPrefix;
                     String playerSuffix;
                     if (ConfigManager.MainConfig.placeholderAPI) {
-                        playerPrefix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
-                        playerSuffix = ParsePapi.parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
+                        playerPrefix = PapiHook.parsePlaceholders(player, ConfigManager.MainConfig.player_prefix);
+                        playerSuffix = PapiHook.parsePlaceholders(player, ConfigManager.MainConfig.player_suffix);
                     }else {
                         playerPrefix = ConfigManager.MainConfig.player_prefix;
                         playerSuffix = ConfigManager.MainConfig.player_suffix;
@@ -345,6 +347,7 @@ public class Execute implements CommandExecutor {
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
+                        AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the RP");
                     }
                 }else {
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates help - <color:#7FFFAA>show the command list");
@@ -356,6 +359,7 @@ public class Execute implements CommandExecutor {
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
+                    AdventureManager.consoleMessage("<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the RP");
                 }
                 return true;
             }
@@ -364,6 +368,7 @@ public class Execute implements CommandExecutor {
     }
 
     private void showNameplate(Player player, Component component) {
+
         ArmorStand entity = player.getWorld().spawn(player.getLocation().add(0,0.8,0), ArmorStand.class, a -> {
             a.setInvisible(true);
             a.setCollidable(false);

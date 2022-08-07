@@ -4,12 +4,11 @@
 # mode: Adventure / ProtocolLib
 # There's a bug that font can't be applied to Adventure bossbar. This is an Adventure API bug that I can't fix for the moment.
 # So I made the ProtocolLib mode and I will remove ProtocolLib mode when Adventure API is fixed!
-# ProtocolLib mode doesn't support multiple bossbars for the moment.
 # It requires a restart to change mode
 mode: ProtocolLib
 
 bossbar:
-  example:
+  example_1:
     text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%Hello! %player_name%</font>    <font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%You are now at: %player_x%, %player_y%, %player_z%</font>'
     refresh-rate: 5
     # PINK
@@ -26,3 +25,20 @@ bossbar:
     # NOTCHED_12
     # NOTCHED_20
     overlay: PROGRESS
+  example_2:
+    text: 'Another BossBar'
+    refresh-rate: 5
+    # PINK
+    # YELLOW
+    # WHITE
+    # RED
+    # PURPLE
+    # GREEN
+    # BLUE
+    color: RED
+    # PROGRESS
+    # NOTCHED_6
+    # NOTCHED_10
+    # NOTCHED_12
+    # NOTCHED_20
+    overlay: NOTCHED_10

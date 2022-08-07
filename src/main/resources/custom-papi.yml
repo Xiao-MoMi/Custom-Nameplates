@@ -13,6 +13,9 @@ papi:
   pos:
     text: 'You are now at: %player_x%, %player_y%, %player_z%'
     background: bedrock_1
+  text:
+    text: 'Thanks for your purchase!'
+    background: bedrock_2
 
   #This papi will not return text with nameplate
   #It will only return the nameplate

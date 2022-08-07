@@ -35,22 +35,15 @@ public record ScoreBoardManager(CustomNameplates plugin) {
             if (!teams.containsKey(tabTeamName)) {
                 teams.put(tabTeamName, new NameplatesTeam(this.plugin, player));
             }
-            this.getTeam(tabTeamName).updateNameplates();
+            teams.get(tabTeamName).updateNameplates();
             return teams.get(tabTeamName);
-        } else {
+        }
+        else {
             if (!teams.containsKey(player.getName())) {
                 teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
             }
-            this.getTeam(player.getName()).updateNameplates();
+            teams.get(player.getName()).updateNameplates();
             return teams.get(player.getName());
         }
-    }
-
-    public void removeTeam(String teamName) {
-        teams.remove(teamName);
-    }
-
-    public NameplatesTeam getTeam(String teamName) {
-        return teams.get(teamName);
     }
 }

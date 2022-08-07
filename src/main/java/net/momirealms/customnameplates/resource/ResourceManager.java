@@ -96,6 +96,14 @@ public class ResourceManager {
 
         if (ConfigManager.MainConfig.anotherFont){
 
+            JsonObject jsonObject_3 = new JsonObject();
+            jsonObject_3.add("type", new JsonPrimitive("space"));
+            JsonObject jsonObject_4 = new JsonObject();
+            jsonObject_4.add(" ", new JsonPrimitive(4));
+            jsonObject_4.add("\\u200c", new JsonPrimitive(0));
+            jsonObject_3.add("advances", jsonObject_4);
+            jsonArray_1.add(jsonObject_3);
+
             JsonObject jsonObject_2 = new JsonObject();
             jsonObject_2.add("type", new JsonPrimitive("bitmap"));
             jsonObject_2.add("file", new JsonPrimitive("minecraft:font/ascii.png"));
@@ -120,14 +128,6 @@ public class ResourceManager {
             jsonArray_2.add("\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000");
             jsonObject_2.add("chars", jsonArray_2);
             jsonArray_1.add(jsonObject_2);
-
-            JsonObject jsonObject_3 = new JsonObject();
-            jsonObject_3.add("type", new JsonPrimitive("space"));
-            JsonObject jsonObject_4 = new JsonObject();
-            jsonObject_4.add(" ", new JsonPrimitive(4));
-            jsonObject_4.add("", new JsonPrimitive(0));
-            jsonObject_3.add("advances", jsonObject_4);
-            jsonArray_1.add(jsonObject_3);
         }
 
         if (ConfigManager.nameplate){

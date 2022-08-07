@@ -18,13 +18,11 @@
 package net.momirealms.customnameplates.hook;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 
-public class ParsePapi {
+public class PapiHook {
 
     public static String parsePlaceholders(Player player, String papi) {
-        String s = StringUtils.replace(StringUtils.replace(papi, "%player_name%", player.getName()), "%player_displayname%", player.getDisplayName());
-        return PlaceholderAPI.setPlaceholders(player, s);
+        return PlaceholderAPI.setPlaceholders(player, papi);
     }
 }
