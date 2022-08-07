@@ -37,8 +37,7 @@ public record ScoreBoardManager(CustomNameplates plugin) {
             }
             teams.get(tabTeamName).updateNameplates();
             return teams.get(tabTeamName);
-        }
-        else {
+        } else {
             if (!teams.containsKey(player.getName())) {
                 teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
             }

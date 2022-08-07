@@ -81,7 +81,6 @@ public class Execute implements CommandExecutor {
                 if (sender.hasPermission("customnameplates.reload") || sender.isOp()) {
                     ConfigManager.MainConfig.ReloadConfig();
                     ConfigManager.Message.ReloadConfig();
-                    ConfigManager.loadWidth();
                     if (ConfigManager.actionbar){
                         ConfigManager.ActionbarConfig.LoadConfig();
                     }
@@ -347,7 +346,7 @@ public class Execute implements CommandExecutor {
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                         AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-                        AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the RP");
+                        AdventureManager.playerMessage(player,"<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the resource pack");
                     }
                 }else {
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates help - <color:#7FFFAA>show the command list");
@@ -359,7 +358,7 @@ public class Execute implements CommandExecutor {
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                     AdventureManager.consoleMessage("<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-                    AdventureManager.consoleMessage("<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the RP");
+                    AdventureManager.consoleMessage("<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the resource pack");
                 }
                 return true;
             }
@@ -368,7 +367,6 @@ public class Execute implements CommandExecutor {
     }
 
     private void showNameplate(Player player, Component component) {
-
         ArmorStand entity = player.getWorld().spawn(player.getLocation().add(0,0.8,0), ArmorStand.class, a -> {
             a.setInvisible(true);
             a.setCollidable(false);

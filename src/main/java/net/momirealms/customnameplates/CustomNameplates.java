@@ -29,6 +29,7 @@ import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.Placeholders;
+import net.momirealms.customnameplates.listener.PacketsListener;
 import net.momirealms.customnameplates.listener.PlayerListener;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
@@ -49,6 +50,7 @@ public final class CustomNameplates extends JavaPlugin {
     private ScoreBoardManager scoreBoardManager;
     private Placeholders placeholders;
     private Timer timer;
+    private PacketsListener packetsListener;
 
     public ResourceManager getResourceManager() {return this.resourceManager;}
     public DataManager getDataManager() { return this.dataManager; }
@@ -88,6 +90,8 @@ public final class CustomNameplates extends JavaPlugin {
         if (ConfigManager.nameplate){
             ConfigManager.DatabaseConfig.LoadConfig();
             Bukkit.getPluginManager().registerEvents(new PlayerListener(this),this);
+            packetsListener = new PacketsListener(this);
+            protocolManager.addPacketListener(packetsListener);
         }
         if (ConfigManager.MainConfig.placeholderAPI){
             placeholders = new Placeholders();
@@ -125,7 +129,8 @@ public final class CustomNameplates extends JavaPlugin {
             adventure.close();
             adventure = null;
         }
-        if (protocolManager != null){
+        if (packetsListener != null && protocolManager != null){
+            protocolManager.removePacketListener(this.packetsListener);
             protocolManager = null;
         }
         if (placeholders != null){

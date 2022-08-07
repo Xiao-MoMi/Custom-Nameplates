@@ -19,6 +19,8 @@ package net.momirealms.customnameplates.font;
 
 import net.momirealms.customnameplates.ConfigManager;
 
+import java.util.Objects;
+
 public enum FontWidthThin {
 
     A('A', 3), a('a', 3), B('B', 3), b('b', 3),
@@ -81,11 +83,7 @@ public enum FontWidthThin {
             }
         }
         int custom = ConfigManager.fontWidth.get(c);
-        if (custom != 0){
-            return custom;
-        }else {
-            return 8;
-        }
+        return Objects.requireNonNullElse(custom, 8);
     }
 
     /*

@@ -1,6 +1,6 @@
 config:
   # Language
-  # en/cn
+  # en/cn/es
   lang: en
 
   # Should the plugin hook into other plugins

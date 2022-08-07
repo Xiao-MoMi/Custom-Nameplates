@@ -70,7 +70,6 @@ public class ConfigManager {
     public static void loadWidth(){
 
         fontWidth.clear();
-
         YamlConfiguration config = getConfig("char-width.yml");
         config.getConfigurationSection("").getKeys(false).forEach(key -> {
             fontWidth.put(key.charAt(0), config.getInt(key));

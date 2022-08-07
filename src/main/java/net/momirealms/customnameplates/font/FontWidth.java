@@ -19,6 +19,8 @@ package net.momirealms.customnameplates.font;
 
 import net.momirealms.customnameplates.ConfigManager;
 
+import java.util.Objects;
+
 public enum FontWidth {
 
     A('A', 5), a('a', 5), B('B', 5), b('b', 5),
@@ -80,12 +82,8 @@ public enum FontWidth {
                 return minecraftFontWidth.length;
             }
         }
-        int custom = ConfigManager.fontWidth.get(c);
-        if (custom != 0){
-            return custom;
-        }else {
-            return 8;
-        }
+        Integer custom = ConfigManager.fontWidth.get(c);
+        return Objects.requireNonNullElse(custom, 8);
     }
 
     /*

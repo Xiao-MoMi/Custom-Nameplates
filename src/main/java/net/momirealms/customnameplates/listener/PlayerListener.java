@@ -17,31 +17,20 @@
 
 package net.momirealms.customnameplates.listener;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.InternalStructure;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.utility.MinecraftReflection;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.hook.TABHook;
-import net.momirealms.customnameplates.scoreboard.NameplatesTeam;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Optional;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 public record PlayerListener(CustomNameplates plugin) implements Listener {
 
@@ -49,20 +38,30 @@ public record PlayerListener(CustomNameplates plugin) implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         this.plugin.getDataManager().loadData(event.getPlayer());
         Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, ()-> {
-            sendPacketsToPlayer(event.getPlayer());
-        }, 40);
+            if (ConfigManager.MainConfig.tab){
+                Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
+            }else {
+                Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
+            }
+        }, 50);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         this.plugin.getDataManager().unloadPlayer(event.getPlayer().getUniqueId());
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team team;
         String teamName;
         if (ConfigManager.MainConfig.tab){
             teamName = TABHook.getTABTeam(event.getPlayer().getName());
         }else {
             teamName = event.getPlayer().getName();
         }
+        team = scoreboard.getTeam(teamName);
         ScoreBoardManager.teams.remove(teamName);
+        if (team != null){
+            team.unregister();
+        }
     }
 
     @EventHandler
@@ -74,58 +73,19 @@ public record PlayerListener(CustomNameplates plugin) implements Listener {
             }
             if (event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
                 playerData.setAccepted(1);
-            }
-            else if(event.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || event.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
+                if (ConfigManager.MainConfig.tab){
+                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
+                }else {
+                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
+                }
+            } else if(event.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || event.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
                 playerData.setAccepted(0);
+                if (ConfigManager.MainConfig.tab){
+                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
+                }else {
+                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
+                }
             }
-            sendPacketsToPlayer(event.getPlayer());
         }, 20);
-    }
-
-    private void sendPacketsToPlayer(Player player){
-
-        if (ConfigManager.MainConfig.show_after && DataManager.cache.get(player.getUniqueId()).getAccepted() != 1) return;
-
-        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-
-            String teamName;
-
-            if (ConfigManager.MainConfig.tab){
-                teamName = TABHook.getTABTeam(onlinePlayer.getName());
-            }else {
-                teamName = onlinePlayer.getName();
-            }
-
-            NameplatesTeam team = ScoreBoardManager.teams.get(teamName);
-
-            if (team == null) return;
-
-            PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
-            packetContainer.getStrings().write(0, teamName);
-
-            Optional<InternalStructure> optional = packetContainer.getOptionalStructures().read(0);
-            if (optional.isEmpty()) {
-                return;
-            }
-            InternalStructure internalStructure1 = optional.get();
-            internalStructure1.getChatComponents().write(0, WrappedChatComponent.fromJson("{\"text\":\" "+ onlinePlayer.getName() +" \"}"));
-
-            if (team.getPrefix() != null){
-                internalStructure1.getChatComponents().write(1, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getPrefix())));
-            }
-
-            if (team.getSuffix() != null){
-                internalStructure1.getChatComponents().write(2, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(team.getSuffix())));
-            }
-
-            internalStructure1.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,team.getColor());
-            packetContainer.getModifier().write(2, Collections.singletonList(onlinePlayer.getName()));
-
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(player, packetContainer);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
     }
 }
