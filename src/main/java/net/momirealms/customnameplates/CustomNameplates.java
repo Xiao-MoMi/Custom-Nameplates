@@ -61,6 +61,7 @@ public final class CustomNameplates extends JavaPlugin {
         instance = this;
         LibraryLoader.load("commons-io","commons-io","2.11.0","https://repo.maven.apache.org/maven2/");
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1","https://repo.maven.apache.org/maven2/");
+        LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3","https://repo.maven.apache.org/maven2/");
     }
 
     @Override
@@ -92,11 +93,6 @@ public final class CustomNameplates extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new PlayerListener(this),this);
             packetsListener = new PacketsListener(this);
             protocolManager.addPacketListener(packetsListener);
-        }
-        if (ConfigManager.MainConfig.placeholderAPI){
-            placeholders = new Placeholders();
-            placeholders.register();
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
         }
         if (ConfigManager.MainConfig.tab){
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>TAB Hooked!");

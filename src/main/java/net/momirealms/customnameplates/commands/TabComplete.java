@@ -49,28 +49,64 @@ public class TabComplete implements TabCompleter {
             if (sender.hasPermission("customnameplates.preview")) tab.add("preview");
             if (sender.hasPermission("customnameplates.list")) tab.add("list");
             if (sender.hasPermission("customnameplates.generate")) tab.add("generate");
-            return tab;
+
+            List<String> arrayList = new ArrayList<>();
+            for (String cmd : tab) {
+                if (cmd.startsWith(args[0]))
+                    arrayList.add(cmd);
+            }
+            return arrayList;
         }
         if(2 == args.length){
             if (args[0].equalsIgnoreCase("equip")){
-                return availableNameplates(sender);
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : availableNameplates(sender)) {
+                    if (cmd.startsWith(args[1]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
             if (args[0].equalsIgnoreCase("forceunequip") && sender.hasPermission("customnameplates.forceunequip")){
-                return online_players();
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : online_players()) {
+                    if (cmd.startsWith(args[1]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
             if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
-                return online_players();
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : online_players()) {
+                    if (cmd.startsWith(args[1]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
             if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
-                return online_players();
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : online_players()) {
+                    if (cmd.startsWith(args[1]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
         }
         if(3 == args.length){
             if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
-                return nameplates();
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : nameplates()) {
+                    if (cmd.startsWith(args[2]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
             if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
-                return nameplates();
+                List<String> arrayList = new ArrayList<>();
+                for (String cmd : nameplates()) {
+                    if (cmd.startsWith(args[2]))
+                        arrayList.add(cmd);
+                }
+                return arrayList;
             }
         }
         return null;

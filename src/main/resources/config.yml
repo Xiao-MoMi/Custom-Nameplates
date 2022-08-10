@@ -1,3 +1,6 @@
+# don't change
+config-version: 1
+
 config:
   # Language
   # en/cn/es
