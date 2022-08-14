@@ -36,8 +36,6 @@ import java.util.Optional;
 
 public class PacketsListener extends PacketAdapter {
 
-    private final CustomNameplates plugin;
-
     public PacketsListener(CustomNameplates plugin) {
         super(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.SCOREBOARD_TEAM);
         this.plugin = plugin;

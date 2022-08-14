@@ -35,6 +35,7 @@ config:
 
   # Customize the folder where png files should be generated.
   # This is useful for those who want to keep their resource pack structure in order.
+  # if you are using Linux, use / instead
   nameplate-folder-path: 'font\nameplates\'
   background-folder-path: 'font\backgrounds\'
   space-split-folder-path: 'font\'

@@ -30,9 +30,11 @@ import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.Placeholders;
 import net.momirealms.customnameplates.listener.PacketsListener;
+import net.momirealms.customnameplates.listener.PapiReload;
 import net.momirealms.customnameplates.listener.PlayerListener;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
+import net.momirealms.customnameplates.utils.UpdateConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,11 +46,11 @@ public final class CustomNameplates extends JavaPlugin {
     public static JavaPlugin instance;
     public static BukkitAudiences adventure;
     public static ProtocolManager protocolManager;
+    public static Placeholders placeholders;
 
     private ResourceManager resourceManager;
     private DataManager dataManager;
     private ScoreBoardManager scoreBoardManager;
-    private Placeholders placeholders;
     private Timer timer;
     private PacketsListener packetsListener;
 
@@ -97,6 +99,12 @@ public final class CustomNameplates extends JavaPlugin {
         if (ConfigManager.MainConfig.tab){
             AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>TAB Hooked!");
         }
+        if (ConfigManager.MainConfig.placeholderAPI){
+            placeholders = new Placeholders();
+            placeholders.register();
+            Bukkit.getPluginManager().registerEvents(new PapiReload(), this);
+            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
+        }
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute(this));
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete());
         this.resourceManager = new ResourceManager(this);
@@ -107,6 +115,9 @@ public final class CustomNameplates extends JavaPlugin {
             AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager! Disabling plugin...</red>");
             instance.getPluginLoader().disablePlugin(instance);
             return;
+        }
+        if (ConfigManager.MainConfig.version != 1){
+            UpdateConfig.update();
         }
         AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
     }

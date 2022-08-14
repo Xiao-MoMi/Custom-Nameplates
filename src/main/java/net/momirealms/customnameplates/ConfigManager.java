@@ -17,19 +17,12 @@
 
 package net.momirealms.customnameplates;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
-import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
-import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
-import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
-import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.background.BackGround;
 import net.momirealms.customnameplates.bossbar.adventure.BossBarConfigA;
 import net.momirealms.customnameplates.bossbar.protocollib.BossBarConfigP;
 import net.momirealms.customnameplates.bossbar.protocollib.Overlay;
-import net.momirealms.customnameplates.helper.Log;
 import net.momirealms.customnameplates.hook.Placeholders;
 import net.momirealms.customnameplates.utils.BGInfo;
 import net.momirealms.customnameplates.utils.NPInfo;
@@ -39,7 +32,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -51,7 +43,6 @@ public class ConfigManager {
     public static HashMap<String, BGInfo> papiBG = new HashMap<>();
     public static HashMap<String, NPInfo> papiNP = new HashMap<>();
     public static HashMap<Character, Integer> fontWidth = new HashMap<>();
-    private static Placeholders placeholders;
 
     public static YamlConfiguration getConfig(String configName) {
         File file = new File(CustomNameplates.instance.getDataFolder(), configName);
@@ -112,13 +103,8 @@ public class ConfigManager {
         public static boolean tab;
         public static boolean oraxen;
         public static int fontOffset;
+        public static int version;
         public static void ReloadConfig(){
-
-            try {
-                YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "config.yml"), CustomNameplates.instance.getResource("config.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
-            }catch (IOException e){
-                Log.warn(e.getMessage());
-            }
 
             CustomNameplates.instance.saveDefaultConfig();
             CustomNameplates.instance.reloadConfig();
@@ -142,6 +128,7 @@ public class ConfigManager {
 
             itemsAdder = config.getBoolean("config.integrations.ItemsAdder",false);
             fontOffset = config.getInt("config.another-ascii-font.y-offset",3);
+            version = config.getInt("config-version",1);
             if (itemsAdder){
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("ItemsAdder") == null){
                     CustomNameplates.instance.getLogger().warning("Failed to initialize ItemsAdder!");
@@ -152,12 +139,7 @@ public class ConfigManager {
             if (placeholderAPI){
                 if(CustomNameplates.instance.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
                     loadPapi();
-                    if (placeholders != null){
-                        placeholders.unregister();
-                    }
-                    placeholders = new Placeholders();
-                    placeholders.register();
-                    AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
+
                 }else {
                     CustomNameplates.instance.getLogger().warning("Failed to initialize PlaceholderAPI!");
                     placeholderAPI = false;
