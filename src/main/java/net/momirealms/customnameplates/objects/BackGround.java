@@ -33,20 +33,10 @@ public record BackGround(String key, String start, String offset_1,
         StringBuilder stringBuilder = new StringBuilder();
         HashMap<String, Character> chars = ResourceManager.BACKGROUNDS.get(key);
         stringBuilder.append(chars.get(start));
-        if (n > 128) {
+        while (n > 128) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_128));
             n -= 128;
-            if (n > 128) {
-                stringBuilder.append(FontNegative.NEG_1.getCharacter());
-                stringBuilder.append(chars.get(offset_128));
-                n -= 128;
-                if (n > 128) {
-                    stringBuilder.append(FontNegative.NEG_1.getCharacter());
-                    stringBuilder.append(chars.get(offset_128));
-                    n -= 128;
-                }
-            }
         }
         if (n - 64 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
