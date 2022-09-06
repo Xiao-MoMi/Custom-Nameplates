@@ -4,11 +4,10 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.momirealms.customnameplates.AdventureManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.boss.BarColor;
@@ -50,10 +49,13 @@ public class BossBarSenderP extends BukkitRunnable {
         internalStructure.getFloat().write(0,1F);
         internalStructure.getEnumModifier(BarColor.class, 2).write(0, barColor);
         internalStructure.getEnumModifier(Overlay.class, 3).write(0, overlay);
+        internalStructure.getModifier().write(5, false);
+        internalStructure.getModifier().write(6, false);
+        internalStructure.getModifier().write(4, false);
         try{
             CustomNameplates.protocolManager.sendServerPacket(player, packet);
         }catch (InvocationTargetException e){
-            AdventureManager.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for "+player.getName());
+            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for "+player.getName());
         }
     }
 
@@ -82,10 +84,13 @@ public class BossBarSenderP extends BukkitRunnable {
             internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text))));
             internalStructure.getEnumModifier(BarColor.class, 2).write(0, barColor);
             internalStructure.getEnumModifier(Overlay.class, 3).write(0, overlay);
+            internalStructure.getModifier().write(5, false);
+            internalStructure.getModifier().write(6, false);
+            internalStructure.getModifier().write(4, false);
             try{
                 CustomNameplates.protocolManager.sendServerPacket(player, packet);
             }catch (InvocationTargetException e){
-                AdventureManager.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
+                AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
             }
         }
     }

@@ -2,4 +2,4 @@
 nameplate: true
 background: true
 bossbar: true
-actionbar: true
+actionbar: false

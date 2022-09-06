@@ -125,7 +125,7 @@ public class TabComplete implements TabCompleter {
                 String permission = info.getPermission().toLowerCase();
                 if (permission.startsWith("customnameplates.equip.")) {
                     permission = StringUtils.replace(permission, "customnameplates.equip.", "");
-                    if (ResourceManager.caches.get(permission) != null){
+                    if (ResourceManager.NAMEPLATES.get(permission) != null){
                         availableNameplates.add(permission);
                     }
                 }
@@ -135,6 +135,6 @@ public class TabComplete implements TabCompleter {
     }
 
     private List<String> nameplates(){
-        return new ArrayList<>(ResourceManager.caches.keySet());
+        return new ArrayList<>(ResourceManager.NAMEPLATES.keySet());
     }
 }

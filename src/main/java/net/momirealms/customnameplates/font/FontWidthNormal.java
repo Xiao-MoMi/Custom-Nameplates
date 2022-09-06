@@ -17,11 +17,7 @@
 
 package net.momirealms.customnameplates.font;
 
-import net.momirealms.customnameplates.ConfigManager;
-
-import java.util.Objects;
-
-public enum FontWidth {
+public enum FontWidthNormal {
 
     A('A', 5), a('a', 5), B('B', 5), b('b', 5),
     C('C', 5), c('c', 5), D('D', 5), d('d', 5),
@@ -40,20 +36,20 @@ public enum FontWidth {
     NUM_5('5', 5), NUM_6('6', 5), NUM_7('7', 5), NUM_8('8', 5),
     NUM_9('9', 5), NUM_0('0', 5), EXCLAMATION_POINT('!', 1), AT_SYMBOL('@', 6),
     NUM_SIGN('#', 5), DOLLAR_SIGN('$', 5), PERCENT('%', 5), UP_ARROW('^', 5),
-    AMPERSAND('&', 5), ASTERISK('*', 5), LEFT_PARENTHESIS('(', 4),
-    RIGHT_PARENTHESIS(')', 4), MINUS('-', 5), UNDERSCORE('_', 5), PLUS_SIGN('+', 5),
-    EQUALS_SIGN('=', 5), LEFT_CURL_BRACE('{', 4), RIGHT_CURL_BRACE('}', 4),
+    AMPERSAND('&', 5), ASTERISK('*', 3), LEFT_PARENTHESIS('(', 3),
+    RIGHT_PARENTHESIS(')', 3), MINUS('-', 5), UNDERSCORE('_', 5), PLUS_SIGN('+', 5),
+    EQUALS_SIGN('=', 5), LEFT_CURL_BRACE('{', 3), RIGHT_CURL_BRACE('}', 3),
     LEFT_BRACKET('[', 3), RIGHT_BRACKET(']', 3), COLON(':', 1), SEMI_COLON(';', 1),
     DOUBLE_QUOTE('\"', 3), SINGLE_QUOTE('\'', 1), LEFT_ARROW('<', 4),
     RIGHT_ARROW('>', 4), QUESTION_MARK('?', 5), SLASH('/', 5),
     BACK_SLASH('\\', 5), LINE('|', 1), TILDE('~', 5), TICK('`', 2),
     PERIOD('.', 1), COMMA(',', 1), SPACE(' ', 3),
-    IN_BETWEEN(' ', 1), DEFAULT('默', 8);
+    IN_BETWEEN(' ', 3), DEFAULT('默', 8);
 
     private final char character;
     private final int length;
 
-    FontWidth(char character, int length) {
+    FontWidthNormal(char character, int length) {
         this.character = character;
         this.length = length;
     }
@@ -64,37 +60,5 @@ public enum FontWidth {
 
     public int getLength() {
         return this.length;
-    }
-
-    public int getBoldLength() {
-        if (this == FontWidth.SPACE) {
-            return this.getLength();
-        }
-        return this.getLength() + 1;
-    }
-
-    /*
-    获取每个字符的像素宽度
-     */
-    public static int getInfo(char c) {
-        for (FontWidth minecraftFontWidth : values()) {
-            if (minecraftFontWidth.getCharacter() == c) {
-                return minecraftFontWidth.length;
-            }
-        }
-        Integer custom = ConfigManager.fontWidth.get(c);
-        return Objects.requireNonNullElse(custom, 8);
-    }
-
-    /*
-    计算一个字符串的总宽度
-     */
-    public static int getTotalWidth(String s) {
-        int length = s.length();
-        int n = 0;
-        for (int i = 0; i < length; i++) {
-            n += getInfo(s.charAt(i));
-        }
-        return n + length - 1; //总长还需加上字符间距
     }
 }

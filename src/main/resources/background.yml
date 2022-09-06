@@ -1,5 +1,6 @@
 background:
   bedrock_1:
+    size: 14
     x-offset: 5
     y-offset: 7
     start: b0
@@ -13,8 +14,23 @@ background:
     offset_128: b128
     end: b0
   bedrock_2:
+    size: 14
     x-offset: 5
-    y-offset: 10
+    y-offset: 9
+    start: b0
+    offset_1: b1
+    offset_2: b2
+    offset_4: b4
+    offset_8: b8
+    offset_16: b16
+    offset_32: b32
+    offset_64: b64
+    offset_128: b128
+    end: b0
+  bedrock_3:
+    size: 14
+    x-offset: 5
+    y-offset: -7
     start: b0
     offset_1: b1
     offset_2: b2

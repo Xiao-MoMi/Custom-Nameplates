@@ -17,10 +17,6 @@
 
 package net.momirealms.customnameplates.font;
 
-import net.momirealms.customnameplates.ConfigManager;
-
-import java.util.Objects;
-
 public enum FontWidthThin {
 
     A('A', 3), a('a', 3), B('B', 3), b('b', 3),
@@ -48,7 +44,7 @@ public enum FontWidthThin {
     RIGHT_ARROW('>', 2), QUESTION_MARK('?', 3), SLASH('/', 3),
     BACK_SLASH('\\', 3), LINE('|', 1), TILDE('~', 3), TICK('`', 1),
     PERIOD('.', 1), COMMA(',', 1), SPACE(' ', 3),
-    IN_BETWEEN(' ', 1), DEFAULT('默', 8);
+    IN_BETWEEN(' ', 3), DEFAULT('默', 8);
 
     private final char character;
     private final int length;
@@ -64,37 +60,5 @@ public enum FontWidthThin {
 
     public int getLength() {
         return this.length;
-    }
-
-    public int getBoldLength() {
-        if (this == FontWidthThin.SPACE) {
-            return this.getLength();
-        }
-        return this.getLength() + 1;
-    }
-
-    /*
-    获取每个字符的像素宽度
-     */
-    public static int getInfo(char c) {
-        for (FontWidthThin minecraftFontWidth : values()) {
-            if (minecraftFontWidth.getCharacter() == c) {
-                return minecraftFontWidth.length;
-            }
-        }
-        int custom = ConfigManager.fontWidth.get(c);
-        return Objects.requireNonNullElse(custom, 8);
-    }
-
-    /*
-    计算一个字符串的总宽度
-     */
-    public static int getTotalWidth(String s) {
-        int length = s.length();
-        int n = 0;
-        for (int i = 0; i < length; i++) {
-            n += getInfo(s.charAt(i));
-        }
-        return n + length - 1; //总长还需加上字符间距
     }
 }

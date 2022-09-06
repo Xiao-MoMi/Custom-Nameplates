@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.utils;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.momirealms.customnameplates.AdventureManager;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 
@@ -98,18 +97,18 @@ public class SqlConnection {
                 }
             }
             if (secon) {
-                AdventureManager.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Successfully reconnect to SQL!");
+                AdventureUtil.consoleMessage("<gradient:#DDE4FF:#8DA2EE>[CustomNameplates]</gradient> <color:#F5F5F5>Successfully reconnect to SQL!");
             } else {
                 secon = true;
             }
             return true;
         } catch (SQLException e) {
-            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to connect to SQL!</red>");
+            AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to connect to SQL!</red>");
             e.printStackTrace();
             close();
             return false;
         } catch (ClassNotFoundException e) {
-            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to load JDBC driver</red>");
+            AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to load JDBC driver</red>");
         }
         return false;
     }
@@ -127,7 +126,7 @@ public class SqlConnection {
                 return getConnectionAndCheck();
             } else {
                 isfirstry = true;
-                AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to connect to SQL!</red>");
+                AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to connect to SQL!</red>");
                 close();
                 e.printStackTrace();
                 return null;
@@ -194,7 +193,7 @@ public class SqlConnection {
                 hikari.close();
             }
         } catch (SQLException e) {
-            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to close SQL!</red>");
+            AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to close SQL!</red>");
             e.printStackTrace();
         }
     }

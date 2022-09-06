@@ -17,17 +17,17 @@
 
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.AdventureManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.utils.SqlConnection;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.util.UUID;
 
 public class SqlHandler {
 
-    public static String tableName = ConfigManager.DatabaseConfig.tableName;
     public final static SqlConnection database = new SqlConnection();
 
     public static boolean connect() {
@@ -55,7 +55,7 @@ public class SqlHandler {
                 statement.close();
                 database.closeHikariConnection(connection);
             } catch (SQLException ignored) {
-                AdventureManager.consoleMessage("[CustomNameplates] Failed to get wait time out");
+                AdventureUtil.consoleMessage("[CustomNameplates] Failed to get wait time out");
             }
         }
     }
@@ -69,11 +69,11 @@ public class SqlHandler {
             }
             String query;
             if (ConfigManager.DatabaseConfig.use_mysql) {
-                query = "CREATE TABLE IF NOT EXISTS " + tableName
+                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.DatabaseConfig.tableName
                         + "(player VARCHAR(50) NOT NULL, equipped VARCHAR(50) NOT NULL, accepted INT(1) NOT NULL,"
                         + " PRIMARY KEY (player)) DEFAULT charset = " + ConfigManager.DatabaseConfig.ENCODING + ";";
             } else {
-                query = "CREATE TABLE IF NOT EXISTS " + tableName
+                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.DatabaseConfig.tableName
                         + "(player VARCHAR(50) NOT NULL, equipped VARCHAR(50) NOT NULL, accepted INT(1) NOT NULL,"
                         + " PRIMARY KEY (player));";
             }
@@ -85,21 +85,22 @@ public class SqlHandler {
         }
     }
 
+    @Nullable
     public static PlayerData getPlayerData(UUID uuid) {
         PlayerData playerData = null;
         try {
             Connection connection = database.getConnectionAndCheck();
-            String sql = "SELECT * FROM " + tableName + " WHERE player = ?";
+            String sql = "SELECT * FROM " + ConfigManager.DatabaseConfig.tableName + " WHERE player = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 playerData = new PlayerData(rs.getString(2), rs.getInt(3));
             }else {
-                sql = "INSERT INTO " + tableName + "(player,equipped,accepted) values(?,?,?)";
+                sql = "INSERT INTO " + ConfigManager.DatabaseConfig.tableName + "(player,equipped,accepted) values(?,?,?)";
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, uuid.toString());
-                statement.setString(2, "none");
+                statement.setString(2, ConfigManager.Nameplate.default_nameplate);
                 statement.setInt(3, 0);
                 statement.executeUpdate();
             }
@@ -116,7 +117,7 @@ public class SqlHandler {
         Connection connection = database.getConnectionAndCheck();
         try {
             String query = " SET equipped = ?, accepted = ? WHERE player = ?";
-            PreparedStatement statement = connection.prepareStatement("UPDATE " + tableName + query);
+            PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
             statement.setString(1, playerData.getEquippedNameplate());
             statement.setInt(2, playerData.getAccepted());
             statement.setString(3, uuid.toString());
@@ -134,7 +135,7 @@ public class SqlHandler {
             try {
                 PlayerData playerData = DataManager.cache.get(player.getUniqueId());
                 String query = " SET equipped = ?, accepted = ? WHERE player = ?";
-                PreparedStatement statement = connection.prepareStatement("UPDATE " + tableName + query);
+                PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
                 statement.setString(1, playerData.getEquippedNameplate());
                 statement.setInt(2, playerData.getAccepted());
                 statement.setString(3, String.valueOf(player.getUniqueId()));

@@ -16,6 +16,12 @@ papi:
   text:
     text: 'Thanks for your purchase!'
     background: bedrock_2
+  health:
+    text: '%player_health_rounded% Health'
+    background: bedrock_3
+  food:
+    text: '%player_food_level% Hunger'
+    background: bedrock_3
 
   #This papi will not return text with nameplate
   #It will only return the nameplate

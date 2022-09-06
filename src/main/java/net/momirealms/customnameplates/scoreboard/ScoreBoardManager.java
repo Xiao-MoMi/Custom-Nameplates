@@ -18,31 +18,20 @@
 package net.momirealms.customnameplates.scoreboard;
 
 import net.momirealms.customnameplates.ConfigManager;
-import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.hook.TABHook;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public record ScoreBoardManager(CustomNameplates plugin) {
+public class ScoreBoardManager{
 
     public static Map<String, NameplatesTeam> teams = new HashMap<>();
 
     public NameplatesTeam getOrCreateTeam(Player player) {
-        if (ConfigManager.MainConfig.tab){
-            String tabTeamName = TABHook.getTABTeam(player.getName());
-            if (!teams.containsKey(tabTeamName)) {
-                teams.put(tabTeamName, new NameplatesTeam(this.plugin, player));
-            }
-            teams.get(tabTeamName).updateNameplates();
-            return teams.get(tabTeamName);
-        } else {
-            if (!teams.containsKey(player.getName())) {
-                teams.put(player.getName(), new NameplatesTeam(this.plugin, player));
-            }
-            teams.get(player.getName()).updateNameplates();
-            return teams.get(player.getName());
-        }
+        String teamName = player.getName();
+        if (ConfigManager.MainConfig.tab) teamName = TABHook.getTABTeam(teamName);
+        if (!teams.containsKey(teamName)) teams.put(teamName, new NameplatesTeam(player));
+        return teams.get(teamName);
     }
 }

@@ -14,3 +14,4 @@ messages:
   not-available: '<white>Esta placa no está disponible actualmente.</white>'
   available: '<white>Nameplates disponibles: {Nameplates}.</white>'
   cooldown: '<white>¡El preestreno sigue en curso!</white>'
+  no-nameplate: 'No Nameplate'

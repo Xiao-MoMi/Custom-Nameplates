@@ -12,7 +12,7 @@ import net.momirealms.customnameplates.helper.Log;
 import java.io.File;
 import java.io.IOException;
 
-public class UpdateConfig {
+public class ConfigUtil {
 
     public static void update(){
         try {

@@ -15,51 +15,38 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.background;
+package net.momirealms.customnameplates.objects;
 
 import net.momirealms.customnameplates.font.FontNegative;
 import net.momirealms.customnameplates.resource.ResourceManager;
 
 import java.util.HashMap;
 
-public class BackGround {
-
-    private final String key;
-    private final String start;
-    private final String offset_1;
-    private final String offset_2;
-    private final String offset_4;
-    private final String offset_8;
-    private final String offset_16;
-    private final String offset_32;
-    private final String offset_64;
-    private final String offset_128;
-    private final String end;
-    private final int offset_y;
-    private final int offset_x;
-
-    public BackGround(String key, String start, String offset_1, String offset_2,
-                      String offset_4, String offset_8, String offset_16,
-                      String offset_32, String offset_64, String offset_128, String end, int offset_y, int offset_x){
-        this.key = key;
-        this.start = start; this.offset_1 = offset_1; this.offset_2 = offset_2;
-        this.end = end; this.offset_4 = offset_4; this.offset_8 = offset_8;
-        this.offset_16 = offset_16; this.offset_32 = offset_32; this.offset_64 = offset_64;
-        this.offset_128 = offset_128;
-        this.offset_y = offset_y;
-        this.offset_x = offset_x;
-    }
+public record BackGround(String key, String start, String offset_1,
+                         String offset_2, String offset_4, String offset_8,
+                         String offset_16, String offset_32, String offset_64,
+                         String offset_128, String end, int offset_y, int offset_x, int size) {
 
     public String getBackGround(int n) {
         n += offset_x;
         String offset = FontNegative.getShortestNegChars(n);
         StringBuilder stringBuilder = new StringBuilder();
-        HashMap<String, Character> chars = ResourceManager.bgCaches.get(key);
+        HashMap<String, Character> chars = ResourceManager.BACKGROUNDS.get(key);
         stringBuilder.append(chars.get(start));
         if (n > 128) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_128));
             n -= 128;
+            if (n > 128) {
+                stringBuilder.append(FontNegative.NEG_1.getCharacter());
+                stringBuilder.append(chars.get(offset_128));
+                n -= 128;
+                if (n > 128) {
+                    stringBuilder.append(FontNegative.NEG_1.getCharacter());
+                    stringBuilder.append(chars.get(offset_128));
+                    n -= 128;
+                }
+            }
         }
         if (n - 64 > 0) {
             stringBuilder.append(FontNegative.NEG_1.getCharacter());
@@ -146,5 +133,9 @@ public class BackGround {
 
     public String getKey() {
         return key;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

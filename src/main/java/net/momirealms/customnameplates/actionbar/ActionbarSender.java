@@ -18,7 +18,7 @@
 package net.momirealms.customnameplates.actionbar;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.AdventureManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,9 +38,9 @@ public class ActionbarSender extends BukkitRunnable {
         }else {
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if (ConfigManager.MainConfig.placeholderAPI){
-                    AdventureManager.playerActionbar(player, PlaceholderAPI.setPlaceholders(player, ConfigManager.ActionbarConfig.text));
+                    AdventureUtil.playerActionbar(player, PlaceholderAPI.setPlaceholders(player, ConfigManager.ActionbarConfig.text));
                 }else {
-                    AdventureManager.playerActionbar(player, ConfigManager.ActionbarConfig.text);
+                    AdventureUtil.playerActionbar(player, ConfigManager.ActionbarConfig.text);
                 }
             });
             timer = 0;

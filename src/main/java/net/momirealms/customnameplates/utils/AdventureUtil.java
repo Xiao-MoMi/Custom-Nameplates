@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates;
+package net.momirealms.customnameplates.utils;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
@@ -23,12 +23,13 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
+import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
 
-public class AdventureManager {
+public class AdventureUtil {
 
     public static void consoleMessage(String s) {
         Audience au = CustomNameplates.adventure.sender(Bukkit.getConsoleSender());

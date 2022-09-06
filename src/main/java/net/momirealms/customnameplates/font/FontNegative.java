@@ -52,7 +52,15 @@ public enum FontNegative {
         StringBuilder stringBuilder = new StringBuilder();
         if (n > 128) {
             stringBuilder.append(FontNegative.NEG_128.getCharacter());
-            n -= 129;
+            n -= 128;
+            if (n > 128) {
+                stringBuilder.append(FontNegative.NEG_128.getCharacter());
+                n -= 128;
+                if (n > 128) {
+                    stringBuilder.append(FontNegative.NEG_128.getCharacter());
+                    n -= 128;
+                }
+            }
         }
         if (n - 64 > 0) {
             stringBuilder.append(FontNegative.NEG_64.getCharacter());

@@ -1,5 +1,5 @@
 # don't change
-config-version: 1
+config-version: '2'
 
 config:
   # Language
@@ -29,13 +29,16 @@ config:
   font: "default"
 
   # Another ascii font with y offset
-  another-ascii-font:
+  ascii-y-offset:
     enable: true
-    y-offset: 3
+    offset:
+      - 3
+      - 5
+      - -11
+      - -24
 
   # Customize the folder where png files should be generated.
   # This is useful for those who want to keep their resource pack structure in order.
-  # if you are using Linux, use / instead
   nameplate-folder-path: 'font\nameplates\'
   background-folder-path: 'font\backgrounds\'
   space-split-folder-path: 'font\'
@@ -45,33 +48,13 @@ config:
   # You can specify any Unicode Character as you want.
   start-char: '뀁'
 
-  # The duration (in seconds) that the nameplate preview will last for.
-  preview-duration: 5
-
-  # The default nameplate.
-  # "none" represents no default nameplate.
-  default-nameplate: 'none'
-
-  # Recommended to keep this true, otherwise players may see weird characters
-  # above their heads if they have not accepted the resource pack.
-  # This option supports proxy when using Mysql
-  show-after-load-resourcepack: true
-
-  # Placeholder based prefix and suffix system. When enabled, it is recommended
-  # to use PlaceholderAPI to be able to use this feature to the fullest extent.
-  # keep it empty if you don't want to enable this feature.
-  # You should make sure the papi doesn't contain "&" (legacy color code)
-  # Nameplates work on the custom font system where legacy color code is not supported!
-  # Please use minimessage format: https://docs.adventure.kyori.net/minimessage/format.html
-  prefix: '<font:default><rainbow>Hello! </rainbow></font>'
-  suffix: ''
-
-  # should prefix/suffix be hidden when player is equipping a nameplate
-  hide-prefix-when-equipped: false
-  hide-suffix-when-equipped: false
-
   # Thin-font support
   use-thin-font: false
 
-  # Extract default shader to plugin folder
+  # For ItemsAdder users:
+  # You need to override assets/minecraft/shaders/core/rendertype_text.vsh in the generated pack to apply this shader
+  # For Oraxen users:
+  # extract the shaders to Oraxen/pack/shaders/core
+  #
+  #The shader identify text by colors. You need to add <color:#RRGGBB> to the text you want to apply this shader
   extract-shader: true

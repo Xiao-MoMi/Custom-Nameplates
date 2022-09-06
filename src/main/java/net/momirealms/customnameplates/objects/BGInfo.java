@@ -15,15 +15,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.utils;
+package net.momirealms.customnameplates.objects;
 
-public record NPInfo(String text, String nameplate) {
+public record BGInfo(String text, String background) {
 
     public String getText() {
         return text;
     }
 
-    public String getNameplate() {
-        return nameplate;
+    public String getBackground() {
+        return background;
     }
 }

@@ -18,7 +18,6 @@ public class TimerTaskP {
             bossbar.showBossbar();
             BukkitTask task = bossbar.runTaskTimerAsynchronously(CustomNameplates.instance, 1,1);
             bossbarCache.put(task.getTaskId(), bossbar);
-
         });
     }
 

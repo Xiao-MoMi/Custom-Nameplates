@@ -17,14 +17,13 @@
 
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.AdventureManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.hook.TABHook;
-import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
+import net.momirealms.customnameplates.utils.ArmorStandPacketUtil;
+import net.momirealms.customnameplates.utils.TeamPacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,32 +31,39 @@ import java.util.UUID;
 
 public class DataManager {
 
-    public static Map<UUID, PlayerData> cache;
-    private final CustomNameplates plugin;
-
-    public DataManager(CustomNameplates plugin) {
-        this.plugin = plugin;
-        cache = new HashMap<>();
-    }
+    public static Map<UUID, PlayerData> cache  = new HashMap<>();
 
     public void loadData(Player player) {
         UUID uuid = player.getUniqueId();
-        if (ConfigManager.DatabaseConfig.async){
+        if (ConfigManager.DatabaseConfig.async) {
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
                 if (playerData == null) {
-                    playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
+                    playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
                 }
                 cache.put(uuid, playerData);
-                plugin.getScoreBoardManager().getOrCreateTeam(player);
+                CustomNameplates.instance.getScoreBoardManager().getOrCreateTeam(player);
+                TeamPacketUtil.sendUpdateToOne(player);
+                TeamPacketUtil.sendUpdateToAll(player);
+                if (!ConfigManager.Nameplate.mode_team) {
+                    ArmorStandPacketUtil.preparePackets(player);
+                }
             });
-        }else {
+        }
+        else {
             PlayerData playerData = SqlHandler.getPlayerData(uuid);
             if (playerData == null) {
-                playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
+                playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
             }
             cache.put(uuid, playerData);
-            plugin.getScoreBoardManager().getOrCreateTeam(player);
+            CustomNameplates.instance.getScoreBoardManager().getOrCreateTeam(player);
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
+                TeamPacketUtil.sendUpdateToOne(player);
+                TeamPacketUtil.sendUpdateToAll(player);
+                if (!ConfigManager.Nameplate.mode_team) {
+                    ArmorStandPacketUtil.preparePackets(player);
+                }
+            });
         }
     }
 
@@ -67,7 +73,7 @@ public class DataManager {
         }
         PlayerData playerData = SqlHandler.getPlayerData(uuid);
         if (playerData == null) {
-            playerData = new PlayerData(ConfigManager.MainConfig.default_nameplate, 0);
+            playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
         }
         cache.put(uuid, playerData);
         return playerData;
@@ -99,21 +105,16 @@ public class DataManager {
         }
     }
 
-    public static boolean create() {
-        if(ConfigManager.DatabaseConfig.use_mysql){
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>Storage Mode - MYSQL");
-        }else {
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#22e281>Storage Mode - SQLite");
-        }
+    public boolean create() {
+        if (ConfigManager.DatabaseConfig.use_mysql) AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode - <green>MYSQL");
+        else AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode - <green>SQLite");
         if (SqlHandler.connect()) {
             if (ConfigManager.DatabaseConfig.use_mysql) {
                 SqlHandler.getWaitTimeOut();
             }
             SqlHandler.createTable();
-        } else {
-            AdventureManager.consoleMessage("<red>//DATA storage ERROR//</red>");
-            return false;
+            return true;
         }
-        return true;
+        else return false;
     }
 }

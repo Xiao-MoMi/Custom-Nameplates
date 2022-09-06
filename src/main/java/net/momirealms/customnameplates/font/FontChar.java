@@ -33,12 +33,8 @@ public record FontChar(char left, char middle, char right) {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof FontChar fontInfo)) {
-            return false;
-        }
+        if (o == this) return true;
+        if (!(o instanceof FontChar fontInfo)) return false;
         return this.getLeft() == fontInfo.getLeft() && this.getMiddle() == fontInfo.getMiddle() && this.getRight() == fontInfo.getRight();
     }
 
@@ -49,6 +45,10 @@ public record FontChar(char left, char middle, char right) {
 
     @Override
     public String toString() {
-        return "FontChar=" + this.getLeft() + this.getMiddle() + this.getRight();
+        return "FontChar{" +
+                "left=" + left +
+                ", middle=" + middle +
+                ", right=" + right +
+                '}';
     }
 }

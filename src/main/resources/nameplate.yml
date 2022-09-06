@@ -1,0 +1,75 @@
+nameplate:
+  # mode: Team / Entity
+  # ================ Team ===================
+  #  Team is based on vanilla mechanic team
+  #  Advantage:
+  #            No lag
+  #
+  #  Disadvantage:
+  #            Player name's colors are limited
+  #            Only support one-line text
+  #            May exist conflict with other plugins that use team
+  #
+  # ================ Entity ================
+  #  Plugin would summon fake armorstands packets riding the player
+  #  Advantage:
+  #            No lag (The principle is different from TAB)
+  #            Support multiple lines (based on resource pack side tech)
+  #
+  #  Disadvantage:
+  #            May not compatible with some cosmetics plugins
+  # (requires a restart)
+  mode: Team
+
+  update:
+    # Nameplates will be updated every x ticks
+    # If your nameplate content is static, it's better to disable updating for better performance
+    enable: true
+    ticks: 20
+
+  # The duration (in seconds) that the nameplate preview will last for.
+  preview-duration: 5
+
+  # The default nameplate.
+  # "none" represents no default nameplate.
+  default-nameplate: 'none'
+
+  # Recommended to keep this true, otherwise players may see weird characters
+  # above their heads if they have not accepted the resource pack.
+  # This option supports proxy when using Mysql
+  # If you meet problem with this, set it to false to always display nameplates
+  show-after-load-resourcepack: true
+
+  # These option only works when using mode team
+  team:
+    # Team mode only supports one line, so it is using a prefix/suffix system to extend the player name info
+
+    # Placeholder based prefix and suffix system. When enabled, it is recommended
+    # to use PlaceholderAPI to be able to use this feature to the fullest extent.
+    # keep it empty if you don't want to enable this feature.
+    # You should make sure the papi doesn't contain "&" (legacy color code)
+    # Nameplates work on the custom font system where legacy color code is not supported!
+    # Please use minimessage format: https://docs.adventure.kyori.net/minimessage/format.html
+    prefix: '<font:minecraft:default><rainbow>Hello! </rainbow></font>'
+    suffix: ' <red>%player_health_rounded%♥'
+
+    # should prefix/suffix be hidden when player is equipping a nameplate
+    hide-prefix-when-equipped: false
+    hide-suffix-when-equipped: false
+
+  # These option only works when using mode entity
+  entity:
+    # If you are having trouble with plugin conflict
+    # Set this to "true" might help (let other plugin handle armor_stand mounting) (requires a restart)
+    # MagicCosmetics has been tested, and it proves to work well
+    try-to-hook-cosmetics-plugin: false
+    # Remove player original name-tag (requires Vanilla Team)
+    # If you have another plugin that is using team please disable team management in that plugin or turn player's name off in that plugin
+    remove-nametag: true
+    # If it is the normal size, more lines can be displayed but it would go obviously abnormal when you look at it in a certain angle
+    small-size: true
+    # nameplates content
+    text:
+      - '<font:nameplates:default>%nameplates_prefix%</font><font:minecraft:default>%player_name%</font><font:nameplates:default>%nameplates_suffix%</font>'
+      - '<font:nameplates:default>%nameplates_bg_health%</font><font:nameplates:offset_-11><red>%player_health_rounded% Health</font>  <font:nameplates:default>%nameplates_bg_food%</font><font:nameplates:offset_-11><#F0E68C>%player_food_level% Hunger</font>'
+      - '<font:nameplates:offset_-24>Multiple lines are supported!</font>'

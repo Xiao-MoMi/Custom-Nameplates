@@ -21,71 +21,120 @@ import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.PlayerData;
+import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.hook.TABHook;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
+import net.momirealms.customnameplates.utils.ArmorStandPacketUtil;
+import net.momirealms.customnameplates.utils.TeamPacketUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-public record PlayerListener(CustomNameplates plugin) implements Listener {
+import java.util.HashMap;
+
+public class PlayerListener implements Listener {
+
+    public static HashMap<Player, BukkitTask> taskCache = new HashMap<>();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        this.plugin.getDataManager().loadData(event.getPlayer());
-        Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, ()-> {
-            if (ConfigManager.MainConfig.tab){
-                Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
-            }else {
-                Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
-            }
-        }, 50);
+
+        CustomNameplates.instance.getDataManager().loadData(event.getPlayer());
+
+        if (ConfigManager.Nameplate.update && ConfigManager.Nameplate.mode_team) {
+            Player player = event.getPlayer();
+            BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
+                String teamName = player.getName();
+                if (ConfigManager.MainConfig.tab) teamName = TABHook.getTABTeam(teamName);
+                ScoreBoardManager.teams.get(teamName).updateNameplates();
+                TeamPacketUtil.sendUpdateToAll(player);
+            }, 20, ConfigManager.Nameplate.refresh);
+            taskCache.put(player, task);
+        }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        this.plugin.getDataManager().unloadPlayer(event.getPlayer().getUniqueId());
+        CustomNameplates.instance.getDataManager().unloadPlayer(event.getPlayer().getUniqueId());
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        Team team;
-        String teamName;
-        if (ConfigManager.MainConfig.tab){
-            teamName = TABHook.getTABTeam(event.getPlayer().getName());
-        }else {
-            teamName = event.getPlayer().getName();
-        }
-        team = scoreboard.getTeam(teamName);
+        Player player = event.getPlayer();
+        String teamName = player.getName();
+        if (ConfigManager.MainConfig.tab) teamName = TABHook.getTABTeam(teamName);
+        Team team = scoreboard.getTeam(teamName);
+        if (team != null) team.unregister();
         ScoreBoardManager.teams.remove(teamName);
-        if (team != null){
-            team.unregister();
+        if (ConfigManager.Nameplate.update) {
+            if (ConfigManager.Nameplate.mode_team) {
+                TeamPacketUtil.teamInfoCache.remove(player);
+                BukkitTask bukkitTask = taskCache.remove(player);
+                if (bukkitTask != null) {
+                    bukkitTask.cancel();
+                }
+            }
+            else {
+                int id = event.getPlayer().getEntityId();
+                HashMap<Integer, BukkitTask> taskMap = ArmorStandPacketUtil.taskCache.remove(id);
+                if (taskMap != null) {
+                    for (int otherID : taskMap.keySet()) {
+                        HashMap<Integer, BukkitTask> otherTaskMap = ArmorStandPacketUtil.taskCache.get(otherID);
+                        if (otherTaskMap != null) {
+                            BukkitTask task = otherTaskMap.remove(id);
+                            if (task != null) {
+                                task.cancel();
+                            }
+                        }
+                    }
+                    taskMap.values().forEach(BukkitTask::cancel);
+                }
+            }
         }
     }
 
     @EventHandler
     public void onAccept(PlayerResourcePackStatusEvent event) {
-        PlayerData playerData = DataManager.cache.get(event.getPlayer().getUniqueId());
-        Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, ()-> {
-            if (playerData == null) {
-                return;
-            }
-            if (event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
-                playerData.setAccepted(1);
-                if (ConfigManager.MainConfig.tab){
-                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
-                }else {
-                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
+        if (!ConfigManager.Nameplate.show_after) return;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerData playerData = DataManager.cache.get(event.getPlayer().getUniqueId());
+                if (playerData == null) {
+                    return;
                 }
-            } else if(event.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || event.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
-                playerData.setAccepted(0);
-                if (ConfigManager.MainConfig.tab){
-                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(TABHook.getTABTeam(player.getName())).updateNameplates());
-                }else {
-                    Bukkit.getOnlinePlayers().forEach(player -> ScoreBoardManager.teams.get(player.getName()).updateNameplates());
+                if (event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
+                    playerData.setAccepted(1);
+                    Player player = event.getPlayer();
+                    SqlHandler.save(playerData, player.getUniqueId());
+                    TeamPacketUtil.sendUpdateToOne(player);
+                    if (!ConfigManager.Nameplate.mode_team) {
+                        HashMap<Integer, BukkitTask> tasks = ArmorStandPacketUtil.taskCache.get(player.getEntityId());
+                        if (tasks == null) return;
+                        for (Integer id : tasks.keySet()){
+                            ArmorStandPacketUtil.forceUpdateOneToOne(id, player);
+                        }
+                    }
+                }
+                else if (event.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || event.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
+                    playerData.setAccepted(0);
+                    SqlHandler.save(playerData, event.getPlayer().getUniqueId());
+                    Player player = event.getPlayer();
+                    TeamPacketUtil.sendUpdateToOne(player);
+                    if (!ConfigManager.Nameplate.mode_team) {
+                        HashMap<Integer, BukkitTask> tasks = ArmorStandPacketUtil.taskCache.get(player.getEntityId());
+                        if (tasks == null) return;
+                        for (Integer id : tasks.keySet()){
+                            ArmorStandPacketUtil.forceUpdateOneToOne(id, player);
+                        }
+                    }
                 }
             }
-        }, 20);
+        }.runTaskAsynchronously(CustomNameplates.instance);
     }
 }

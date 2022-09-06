@@ -29,21 +29,19 @@ import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.Placeholders;
-import net.momirealms.customnameplates.listener.PacketsListener;
-import net.momirealms.customnameplates.listener.PapiReload;
-import net.momirealms.customnameplates.listener.PlayerListener;
+import net.momirealms.customnameplates.listener.*;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.scoreboard.ScoreBoardManager;
-import net.momirealms.customnameplates.utils.UpdateConfig;
+import net.momirealms.customnameplates.utils.AdventureUtil;
+import net.momirealms.customnameplates.utils.ConfigUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
 public final class CustomNameplates extends JavaPlugin {
 
-    public static JavaPlugin instance;
+    public static CustomNameplates instance;
     public static BukkitAudiences adventure;
     public static ProtocolManager protocolManager;
     public static Placeholders placeholders;
@@ -52,11 +50,9 @@ public final class CustomNameplates extends JavaPlugin {
     private DataManager dataManager;
     private ScoreBoardManager scoreBoardManager;
     private Timer timer;
-    private PacketsListener packetsListener;
-
-    public ResourceManager getResourceManager() {return this.resourceManager;}
-    public DataManager getDataManager() { return this.dataManager; }
-    public ScoreBoardManager getScoreBoardManager() { return this.scoreBoardManager; }
+    private PlayerPacketsListener playerPackets;
+    private MountPacketListener mountPackets;
+    private EntityDestroyListener entityDestroy;
 
     @Override
     public void onLoad(){
@@ -68,58 +64,24 @@ public final class CustomNameplates extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         adventure = BukkitAudiences.create(this);
         protocolManager = ProtocolLibrary.getProtocolManager();
-        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient><color:#baffd1>Running on " + Bukkit.getVersion());
-        ConfigManager.loadModule();
-        ConfigManager.MainConfig.ReloadConfig();
-        ConfigManager.Message.ReloadConfig();
-        ConfigManager.loadWidth();
-        if (ConfigManager.bossbar){
-            ConfigManager.loadBossBar();
-            if (ConfigManager.useAdventure){
-                Bukkit.getPluginManager().registerEvents(new QuitAndJoinA(),this);
-            }else {
-                Bukkit.getPluginManager().registerEvents(new QuitAndJoinP(),this);
-            }
-        }
-        if (ConfigManager.actionbar){
-            ConfigManager.ActionbarConfig.LoadConfig();
-            timer = new Timer();
-        }
-        if (ConfigManager.background){
-            ConfigManager.loadBGConfig();
-        }
-        if (ConfigManager.nameplate){
-            ConfigManager.DatabaseConfig.LoadConfig();
-            Bukkit.getPluginManager().registerEvents(new PlayerListener(this),this);
-            packetsListener = new PacketsListener(this);
-            protocolManager.addPacketListener(packetsListener);
-        }
-        if (ConfigManager.MainConfig.tab){
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>TAB Hooked!");
-        }
-        if (ConfigManager.MainConfig.placeholderAPI){
-            placeholders = new Placeholders();
-            placeholders.register();
-            Bukkit.getPluginManager().registerEvents(new PapiReload(), this);
-            AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>PlaceholderAPI Hooked!");
-        }
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute(this));
+
+        AdventureUtil.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
+
+        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute());
         Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete());
-        this.resourceManager = new ResourceManager(this);
-        this.dataManager = new DataManager(this);
-        this.scoreBoardManager = new ScoreBoardManager(this);
-        resourceManager.generateResourcePack();
-        if (!DataManager.create()) {
-            AdventureManager.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager! Disabling plugin...</red>");
-            instance.getPluginLoader().disablePlugin(instance);
-            return;
+
+        loadConfig();
+        this.resourceManager = new ResourceManager();
+        this.resourceManager.generateResourcePack();
+
+        if (Objects.equals(ConfigManager.MainConfig.version, "2")){
+            ConfigUtil.update();
         }
-        if (ConfigManager.MainConfig.version != 1){
-            UpdateConfig.update();
-        }
-        AdventureManager.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
+
+        AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
     }
 
     @Override
@@ -128,17 +90,22 @@ public final class CustomNameplates extends JavaPlugin {
             SqlHandler.saveAll();
             SqlHandler.close();
         }
-        Execute.pCache.forEach(Entity::remove);
         if (timer != null){
             timer.stopTimer(timer.getTaskID());
         }
         if (adventure != null) {
             adventure.close();
-            adventure = null;
         }
-        if (packetsListener != null && protocolManager != null){
-            protocolManager.removePacketListener(this.packetsListener);
-            protocolManager = null;
+        if (protocolManager != null){
+            if (playerPackets != null) {
+                protocolManager.removePacketListener(this.playerPackets);
+            }
+            if (mountPackets != null) {
+                protocolManager.removePacketListener(this.mountPackets);
+            }
+            if (entityDestroy != null) {
+                protocolManager.removePacketListener(this.entityDestroy);
+            }
         }
         if (placeholders != null){
             placeholders.unregister();
@@ -152,8 +119,64 @@ public final class CustomNameplates extends JavaPlugin {
         if (dataManager != null){
             dataManager = null;
         }
-        if (instance != null){
-            instance = null;
+    }
+
+    private void loadConfig() {
+        ConfigManager.loadModule();
+        ConfigManager.MainConfig.reload();
+        ConfigManager.Message.reload();
+        ConfigManager.loadWidth();
+
+        if (ConfigManager.bossbar){
+            ConfigManager.loadBossBar();
+            if (ConfigManager.useAdventure) Bukkit.getPluginManager().registerEvents(new QuitAndJoinA(),this);
+            else Bukkit.getPluginManager().registerEvents(new QuitAndJoinP(),this);
         }
+        if (ConfigManager.actionbar){
+            ConfigManager.ActionbarConfig.load();
+            timer = new Timer();
+        }
+        if (ConfigManager.background){
+            ConfigManager.loadBGConfig();
+        }
+        if (ConfigManager.nameplate){
+            ConfigManager.Nameplate.reload();
+            ConfigManager.DatabaseConfig.LoadConfig();
+            Bukkit.getPluginManager().registerEvents(new PlayerListener(),this);
+            this.scoreBoardManager = new ScoreBoardManager();
+            this.dataManager = new DataManager();
+            if (!dataManager.create()) {
+                AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager! Disabling plugin...</red>");
+                return;
+            }
+            if (!ConfigManager.Nameplate.mode_team) {
+                playerPackets = new PlayerPacketsListener(this);
+                protocolManager.addPacketListener(playerPackets);
+                entityDestroy = new EntityDestroyListener(this);
+                protocolManager.addPacketListener(entityDestroy);
+                if (ConfigManager.Nameplate.tryHook) {
+                    mountPackets = new MountPacketListener(this);
+                    protocolManager.addPacketListener(mountPackets);
+                }
+            }
+        }
+        if (ConfigManager.MainConfig.placeholderAPI){
+            placeholders = new Placeholders();
+            placeholders.register();
+            ConfigManager.loadPapi();
+            Bukkit.getPluginManager().registerEvents(new PapiReload(), this);
+        }
+    }
+
+    public ResourceManager getResourceManager() {
+        return this.resourceManager;
+    }
+
+    public DataManager getDataManager() {
+        return this.dataManager;
+    }
+
+    public ScoreBoardManager getScoreBoardManager() {
+        return this.scoreBoardManager;
     }
 }
