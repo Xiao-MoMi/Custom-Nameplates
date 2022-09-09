@@ -1,2 +1,2 @@
-text: '<font:nameplates:default>%nameplates_prefix%</font><rainbow>Hello!</rainbow> %player_name%<font:nameplates:default>%nameplates_suffix%</font>'
+text: '<font:nameplates:default>%nameplates_prefix%</font>%player_name%<font:nameplates:default>%nameplates_suffix%</font>'
 refresh-rate: 5

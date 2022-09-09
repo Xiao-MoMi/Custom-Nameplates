@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.PlaceholderManager;
+import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.TeamPacketManager;
 import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
 import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
@@ -37,7 +38,6 @@ import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketB;
 import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketC;
 import net.momirealms.customnameplates.nameplates.mode.tp.TeleportingTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
-import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.utils.ConfigUtil;
 import org.bukkit.Bukkit;
@@ -84,10 +84,6 @@ public final class CustomNameplates extends JavaPlugin {
 
         this.resourceManager = new ResourceManager();
         this.resourceManager.generateResourcePack();
-
-        if (!Objects.equals(ConfigManager.Main.version, "3")){
-            ConfigUtil.update();
-        }
 
         AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
     }

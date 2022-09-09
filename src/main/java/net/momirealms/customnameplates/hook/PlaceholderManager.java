@@ -18,11 +18,8 @@
 package net.momirealms.customnameplates.hook;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.Function;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
 import java.util.ArrayList;
 import java.util.Collections;

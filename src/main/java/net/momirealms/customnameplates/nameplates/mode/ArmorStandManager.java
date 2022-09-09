@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.nameplates.mode;
 
 import com.comphenix.protocol.PacketType;
@@ -101,17 +118,21 @@ public class ArmorStandManager {
     }
 
     public void mount(Player receiver) {
-        int[] passengers = new int[armorStandArray.length];
-        for (int i = 0; i < armorStandArray.length; i++) {
-            passengers[i] = armorStandArray[i].getEntityId();
-        }
         try {
-            CustomNameplates.protocolManager.sendServerPacket(receiver, getMountPacket(passengers));
+            CustomNameplates.protocolManager.sendServerPacket(receiver, getMountPacket(getArmorStandIDs()));
         }
         catch (InvocationTargetException e) {
             e.printStackTrace();
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to mount player");
         }
+    }
+
+    public int[] getArmorStandIDs() {
+        int[] passengers = new int[armorStandArray.length];
+        for (int i = 0; i < armorStandArray.length; i++) {
+            passengers[i] = armorStandArray[i].getEntityId();
+        }
+        return passengers;
     }
 
     private PacketContainer getMountPacket(int[] passengers) {

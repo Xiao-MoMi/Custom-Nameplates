@@ -26,9 +26,10 @@ import net.momirealms.customnameplates.font.FontWidthThin;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.objects.BackGroundText;
 import net.momirealms.customnameplates.objects.NameplateText;
+import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -75,6 +76,13 @@ public class ConfigManager {
             background = module.getBoolean("background", true);
             bossBar = module.getBoolean("bossbar", true);
             actionbar = module.getBoolean("actionbar", true);
+            try {
+                Reflection.load();
+                ConfigUtil.update();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -265,23 +273,15 @@ public class ConfigManager {
      * 载入BossBar配置
      */
     public static void loadBossBar() {
+        bossBars.clear();
         YamlConfiguration config = getConfig("bossbar.yml");
         Objects.requireNonNull(config.getConfigurationSection("bossbar")).getKeys(false).forEach(key -> {
-            BossBarConfig bossbarConfig = ConfigManager.bossBars.get(key);
-            if (bossbarConfig != null) {
-                bossbarConfig.setColor(BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()));
-                bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
-                bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
-                bossbarConfig.setOverlay(Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()));
-            }
-            else {
-                bossBars.put(key, new BossBarConfig(
-                        config.getString("bossbar." + key + ".text"),
-                        Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()),
-                        BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()),
-                        config.getInt("bossbar." + key + ".refresh-rate") - 1
-                ));
-            }
+            bossBars.put(key, new BossBarConfig(
+                    config.getString("bossbar." + key + ".text"),
+                    Overlay.valueOf(config.getString("bossbar."+key+".overlay","progress").toUpperCase()),
+                    BarColor.valueOf(config.getString("bossbar."+key+".color","white").toUpperCase()),
+                    config.getInt("bossbar." + key + ".refresh-rate") - 1
+            ));
         });
     }
 

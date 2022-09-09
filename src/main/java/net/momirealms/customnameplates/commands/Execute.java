@@ -22,6 +22,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.nameplates.mode.ArmorStandManager;
+import net.momirealms.customnameplates.nameplates.mode.EntityTag;
+import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.CustomNameplates;
@@ -203,7 +206,17 @@ public class Execute implements CommandExecutor {
                             HoloUtil.showHolo(full, player, (int) ConfigManager.Nameplate.preview);
                         }
                         else {
-                           // ArmorStandPacketUtil.sendPreviewToOne(player);
+                            EntityTag entityTag = (EntityTag) CustomNameplates.instance.getNameplateManager();
+                            ArmorStandManager asm = entityTag.getArmorStandManager(player);
+                            asm.spawn(player);
+                            for (int i = 0; i < ConfigManager.Nameplate.preview * 20; i++) {
+                                Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+                                    asm.teleport(player);
+                                },i);
+                            }
+                            Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+                                asm.destroy(player);
+                            },ConfigManager.Nameplate.preview * 20);
                         }
                     }else {
                         AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
@@ -251,7 +264,17 @@ public class Execute implements CommandExecutor {
                         HoloUtil.showHolo(full, player, (int) ConfigManager.Nameplate.preview);
                     }
                     else {
-                       // ArmorStandPacketUtil.sendPreviewToOne(player);
+                        EntityTag entityTag = (EntityTag) CustomNameplates.instance.getNameplateManager();
+                        ArmorStandManager asm = entityTag.getArmorStandManager(player);
+                        asm.spawn(player);
+                        for (int i = 0; i < ConfigManager.Nameplate.preview * 20; i++) {
+                            Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+                                asm.teleport(player);
+                            },i);
+                        }
+                        Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+                            asm.destroy(player);
+                        },ConfigManager.Nameplate.preview * 20);
                     }
                 }
 

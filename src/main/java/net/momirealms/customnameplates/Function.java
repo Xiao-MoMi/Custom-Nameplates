@@ -9,11 +9,12 @@ public abstract class Function {
     }
 
     public void load() {
-        //
     }
 
     public void unload() {
-        //
     }
 
+    public String getName() {
+        return name;
+    }
 }

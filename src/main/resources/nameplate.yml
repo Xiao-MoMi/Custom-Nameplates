@@ -1,4 +1,4 @@
-config-version: '3'
+config-version: '4'
 
 nameplate:
   # mode: Team / Riding / Teleporting
@@ -11,7 +11,6 @@ nameplate:
   # ========================== Teleporting ===============================
   #  Plugin would summon fake armor stands packets teleporting the player
   #  to provide additional tag lines for players
-  # (requires a restart)
   mode: Team
 
   update:

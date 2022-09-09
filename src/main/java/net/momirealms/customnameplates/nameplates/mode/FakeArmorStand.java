@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.nameplates.mode;
 
 import com.comphenix.protocol.PacketType;
@@ -175,7 +192,7 @@ public class FakeArmorStand implements ArmorStand {
         for (Player viewer : asm.getNearbyPlayers()) {
             PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
             metaPacket.getIntegers().write(0, entityId);
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer), viewer).getWatchableObjects());
+            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer)).getWatchableObjects());
             try {
                 CustomNameplates.protocolManager.sendServerPacket(viewer, metaPacket);
             }
@@ -222,7 +239,7 @@ public class FakeArmorStand implements ArmorStand {
     }
 
     //创建实体信息包
-    public WrappedDataWatcher createDataWatcher(String text, Player viewer) {
+    public WrappedDataWatcher createDataWatcher(String text) {
 
         WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
         WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
@@ -255,7 +272,7 @@ public class FakeArmorStand implements ArmorStand {
 
         PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metaPacket.getIntegers().write(0, entityId);
-        metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer), viewer).getWatchableObjects());
+        metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer)).getWatchableObjects());
 
         return new PacketContainer[] {entityPacket, metaPacket};
     }

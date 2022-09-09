@@ -1,7 +1,10 @@
 background:
+
   bedrock_1:
     size: 14
+    # x-offset = start + end -1
     x-offset: 5
+    # y-offset is the vertical position of the background
     y-offset: 7
     start: b0
     offset_1: b1
@@ -13,6 +16,7 @@ background:
     offset_64: b64
     offset_128: b128
     end: b0
+
   bedrock_2:
     size: 14
     x-offset: 5
@@ -27,6 +31,7 @@ background:
     offset_64: b64
     offset_128: b128
     end: b0
+
   bedrock_3:
     size: 14
     x-offset: 5
