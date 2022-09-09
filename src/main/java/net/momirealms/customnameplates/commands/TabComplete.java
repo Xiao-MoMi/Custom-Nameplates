@@ -38,17 +38,18 @@ public class TabComplete implements TabCompleter {
     public @Nullable List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
         if(1 == args.length){
+
             List<String> tab = new ArrayList<>();
-            if (sender.hasPermission("customnameplates.reload")) tab.add("reload");
-            if (sender.hasPermission("customnameplates.help")) tab.add("help");
-            if (sender.hasPermission("customnameplates.equip")) tab.add("equip");
-            if (sender.hasPermission("customnameplates.forceequip")) tab.add("forceequip");
-            if (sender.hasPermission("customnameplates.unequip")) tab.add("unequip");
-            if (sender.hasPermission("customnameplates.forceunequip")) tab.add("forceunequip");
-            if (sender.hasPermission("customnameplates.forcepreview")) tab.add("forcepreview");
-            if (sender.hasPermission("customnameplates.preview")) tab.add("preview");
-            if (sender.hasPermission("customnameplates.list")) tab.add("list");
-            if (sender.hasPermission("customnameplates.generate")) tab.add("generate");
+            if (sender.hasPermission("nameplates.reload")) tab.add("reload");
+            if (sender.hasPermission("nameplates.help")) tab.add("help");
+            if (sender.hasPermission("nameplates.equip")) tab.add("equip");
+            if (sender.hasPermission("nameplates.forceequip")) tab.add("forceequip");
+            if (sender.hasPermission("nameplates.unequip")) tab.add("unequip");
+            if (sender.hasPermission("nameplates.forceunequip")) tab.add("forceunequip");
+            if (sender.hasPermission("nameplates.forcepreview")) tab.add("forcepreview");
+            if (sender.hasPermission("nameplates.preview")) tab.add("preview");
+            if (sender.hasPermission("nameplates.list")) tab.add("list");
+            if (sender.hasPermission("nameplates.generate")) tab.add("generate");
 
             List<String> arrayList = new ArrayList<>();
             for (String cmd : tab) {
@@ -66,7 +67,7 @@ public class TabComplete implements TabCompleter {
                 }
                 return arrayList;
             }
-            if (args[0].equalsIgnoreCase("forceunequip") && sender.hasPermission("customnameplates.forceunequip")){
+            if (args[0].equalsIgnoreCase("forceunequip") && sender.hasPermission("nameplates.forceunequip")){
                 List<String> arrayList = new ArrayList<>();
                 for (String cmd : online_players()) {
                     if (cmd.startsWith(args[1]))
@@ -74,7 +75,7 @@ public class TabComplete implements TabCompleter {
                 }
                 return arrayList;
             }
-            if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
+            if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("nameplates.forceequip")){
                 List<String> arrayList = new ArrayList<>();
                 for (String cmd : online_players()) {
                     if (cmd.startsWith(args[1]))
@@ -82,7 +83,7 @@ public class TabComplete implements TabCompleter {
                 }
                 return arrayList;
             }
-            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
+            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("nameplates.forcepreview")){
                 List<String> arrayList = new ArrayList<>();
                 for (String cmd : online_players()) {
                     if (cmd.startsWith(args[1]))
@@ -92,7 +93,7 @@ public class TabComplete implements TabCompleter {
             }
         }
         if(3 == args.length){
-            if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("customnameplates.forceequip")){
+            if (args[0].equalsIgnoreCase("forceequip") && sender.hasPermission("nameplates.forceequip")){
                 List<String> arrayList = new ArrayList<>();
                 for (String cmd : nameplates()) {
                     if (cmd.startsWith(args[2]))
@@ -100,7 +101,7 @@ public class TabComplete implements TabCompleter {
                 }
                 return arrayList;
             }
-            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("customnameplates.forcepreview")){
+            if (args[0].equalsIgnoreCase("forcepreview") && sender.hasPermission("nameplates.forcepreview")){
                 List<String> arrayList = new ArrayList<>();
                 for (String cmd : nameplates()) {
                     if (cmd.startsWith(args[2]))
@@ -123,8 +124,8 @@ public class TabComplete implements TabCompleter {
         if (sender instanceof Player player){
             for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
                 String permission = info.getPermission().toLowerCase();
-                if (permission.startsWith("customnameplates.equip.")) {
-                    permission = StringUtils.replace(permission, "customnameplates.equip.", "");
+                if (permission.startsWith("nameplates.equip.")) {
+                    permission = StringUtils.replace(permission, "nameplates.equip.", "");
                     if (ResourceManager.NAMEPLATES.get(permission) != null){
                         availableNameplates.add(permission);
                     }

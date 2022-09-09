@@ -17,34 +17,33 @@
 
 package net.momirealms.customnameplates;
 
-import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
+import net.momirealms.customnameplates.bossbar.BossBarConfig;
+import net.momirealms.customnameplates.bossbar.Overlay;
 import net.momirealms.customnameplates.objects.BackGround;
-import net.momirealms.customnameplates.bossbar.adventure.BossBarConfigA;
-import net.momirealms.customnameplates.bossbar.protocollib.BossBarConfigP;
-import net.momirealms.customnameplates.bossbar.protocollib.Overlay;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
 import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.objects.BGInfo;
-import net.momirealms.customnameplates.objects.NPInfo;
+import net.momirealms.customnameplates.objects.BackGroundText;
+import net.momirealms.customnameplates.objects.NameplateText;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class ConfigManager {
 
     public static TreeMap<String, BackGround> backgrounds = new TreeMap<>();
-    public static TreeMap<String, BossBarConfigA> bossbarsA = new TreeMap<>();
-    public static TreeMap<String, BossBarConfigP> bossbarsP = new TreeMap<>();
-    public static HashMap<String, BGInfo> papiBG = new HashMap<>();
-    public static HashMap<String, NPInfo> papiNP = new HashMap<>();
+    public static TreeMap<String, BossBarConfig> bossBars = new TreeMap<>();
+    public static HashMap<String, BackGroundText> papiBG = new HashMap<>();
+    public static HashMap<String, NameplateText> papiNP = new HashMap<>();
     public static HashMap<Character, Integer> fontWidth = new HashMap<>();
 
     /**
@@ -63,41 +62,49 @@ public class ConfigManager {
     /**
      * 载入模块
      */
-    public static boolean nameplate;
-    public static boolean background;
-    public static boolean bossbar;
-    public static boolean actionbar;
-    public static boolean useAdventure;
-    public static void loadModule(){
-        YamlConfiguration module = getConfig("MODULES.yml");
-        nameplate = module.getBoolean("nameplate", true);
-        background = module.getBoolean("background", true);
-        bossbar = module.getBoolean("bossbar", true);
-        actionbar = module.getBoolean("actionbar", true);
+    public static class Module{
+
+        public static boolean nameplate;
+        public static boolean background;
+        public static boolean bossBar;
+        public static boolean actionbar;
+
+        public static void loadModule(){
+            YamlConfiguration module = getConfig("MODULES.yml");
+            nameplate = module.getBoolean("nameplate", true);
+            background = module.getBoolean("background", true);
+            bossBar = module.getBoolean("bossbar", true);
+            actionbar = module.getBoolean("actionbar", true);
+        }
     }
 
     /**
      * 载入主配置
      */
-    public static class MainConfig{
+    public static class Main {
+
         public static String namespace;
         public static String fontName;
         public static String start_char;
-        public static char start;
+        public static String lang;
+        public static String version;
+
         public static String folder_path;
         public static String bg_folder_path;
         public static String ss_folder_path;
         public static String font;
-        public static List<Integer> offsets;
-        public static Key key;
+
         public static boolean itemsAdder;
         public static boolean placeholderAPI;
-        public static String lang;
+
         public static boolean thin_font;
         public static boolean tab;
         public static boolean oraxen;
         public static boolean extract;
-        public static String version;
+        public static List<Integer> offsets;
+        public static char start;
+        public static Key key;
+
 
         public static void reload(){
 
@@ -114,7 +121,6 @@ public class ConfigManager {
             folder_path = config.getString("config.nameplate-folder-path","font\\nameplates\\");
             bg_folder_path = config.getString("config.background-folder-path","font\\backgrounds\\");
             ss_folder_path = config.getString("config.space-split-folder-path","font\\");
-
             key = Key.key(fontName);
             thin_font = config.getBoolean("config.use-thin-font",false);
             itemsAdder = config.getBoolean("config.integrations.ItemsAdder",false);
@@ -151,40 +157,47 @@ public class ConfigManager {
         public static String default_nameplate;
         public static String player_prefix;
         public static String player_suffix;
-        public static boolean mode_team;
         public static long preview;
         public static boolean update;
         public static int refresh;
+        public static String mode;
         public static boolean hidePrefix;
         public static boolean hideSuffix;
-        public static boolean show_after;
         public static boolean tryHook;
         public static boolean removeTag;
         public static boolean smallSize;
-        public static List<String> texts;
+        public static HashMap<String, Double> textMap = new HashMap<>();
+
         public static void reload() {
 
             YamlConfiguration config = getConfig("nameplate.yml");
             default_nameplate = config.getString("nameplate.default-nameplate");
             preview = config.getLong("nameplate.preview-duration");
-            show_after = config.getBoolean("nameplate.show-after-load-resourcepack");
-            mode_team = config.getString("nameplate.mode","team").equalsIgnoreCase("team");
-            update = config.getBoolean("nameplate.update.enable",false);
+            mode = config.getString("nameplate.mode","team");
+            update = config.getBoolean("nameplate.update.enable",true);
             refresh = config.getInt("nameplate.update.ticks",20);
-
-            if (mode_team) {
-                player_prefix = config.getString("nameplate.team.prefix","");
-                player_suffix = config.getString("nameplate.team.suffix","");
-                hidePrefix = config.getBoolean("nameplate.team.hide-prefix-when-equipped",false);
-                hideSuffix = config.getBoolean("nameplate.team.hide-suffix-when-equipped",false);
+            player_prefix = config.getString("nameplate.prefix","");
+            player_suffix = config.getString("nameplate.suffix","");
+            hidePrefix = config.getBoolean("nameplate.team.hide-prefix-when-equipped",true);
+            hideSuffix = config.getBoolean("nameplate.team.hide-suffix-when-equipped",true);
+            if (mode.equalsIgnoreCase("team")) removeTag = false;
+            else if (mode.equalsIgnoreCase("riding")) {
+                tryHook = config.getBoolean("nameplate.riding.try-to-hook-cosmetics-plugin", false);
+                List<String> texts = config.getStringList("nameplate.riding.text");
+                textMap.clear();
+                for (String text : texts) {
+                    textMap.put(text, -0.1);
+                }
+                smallSize = config.getBoolean("nameplate.riding.small-size", true);
+                removeTag = config.getBoolean("nameplate.riding.remove-nametag");
             }
-            else {
-                player_prefix = "";
-                player_suffix = "";
-                removeTag = config.getBoolean("nameplate.entity.remove-nametag");
-                tryHook = config.getBoolean("nameplate.entity.try-to-hook-cosmetics-plugin");
-                texts = config.getStringList("nameplate.entity.text");
-                smallSize = config.getBoolean("nameplate.entity.small-size", true);
+            else if (mode.equalsIgnoreCase("teleporting")) {
+                removeTag = config.getBoolean("nameplate.teleporting.remove-nametag");
+                smallSize = config.getBoolean("nameplate.teleporting.small-size", true);
+                textMap.clear();
+                config.getConfigurationSection("nameplate.teleporting.text").getKeys(false).forEach(key -> {
+                    textMap.put(config.getString("nameplate.teleporting.text." + key + ".content"), config.getDouble("nameplate.teleporting.text." + key + ".offset"));
+                });
             }
         }
     }
@@ -199,36 +212,36 @@ public class ConfigManager {
         public static String lackArgs;
         public static String reload;
         public static String equip;
-        public static String unequip;
+        public static String unEquip;
         public static String force_equip;
-        public static String force_unequip;
+        public static String force_unEquip;
         public static String not_exist;
         public static String not_online;
         public static String no_console;
         public static String notAvailable;
         public static String available;
-        public static String cooldown;
+        public static String coolDown;
         public static String preview;
         public static String generate;
         public static String noNameplate;
 
         public static void reload(){
 
-            YamlConfiguration messagesConfig = getConfig("messages/messages_" + MainConfig.lang +".yml");
+            YamlConfiguration messagesConfig = getConfig("messages/messages_" + Main.lang +".yml");
             noPerm = messagesConfig.getString("messages.no-perm");
             prefix = messagesConfig.getString("messages.prefix");
             lackArgs = messagesConfig.getString("messages.lack-args");
             reload = messagesConfig.getString("messages.reload");
             equip = messagesConfig.getString("messages.equip");
-            unequip = messagesConfig.getString("messages.unequip");
+            unEquip = messagesConfig.getString("messages.unequip");
             force_equip = messagesConfig.getString("messages.force-equip");
-            force_unequip = messagesConfig.getString("messages.force-unequip");
+            force_unEquip = messagesConfig.getString("messages.force-unequip");
             not_exist = messagesConfig.getString("messages.not-exist");
             not_online = messagesConfig.getString("messages.not-online");
             no_console = messagesConfig.getString("messages.no-console");
             notAvailable = messagesConfig.getString("messages.not-available");
             available = messagesConfig.getString("messages.available");
-            cooldown = messagesConfig.getString("messages.cooldown");
+            coolDown = messagesConfig.getString("messages.cooldown");
             preview = messagesConfig.getString("messages.preview");
             generate = messagesConfig.getString("messages.generate");
             noNameplate = messagesConfig.getString("messages.no-nameplate","messages.no-nameplate is missing");
@@ -249,48 +262,27 @@ public class ConfigManager {
     }
 
     /**
-     * 载入bossbar配置
+     * 载入BossBar配置
      */
     public static void loadBossBar() {
         YamlConfiguration config = getConfig("bossbar.yml");
-        useAdventure =  config.getString("mode").equalsIgnoreCase("Adventure");
-        if (useAdventure){
-            config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
-                BossBarConfigA bossbarConfig = ConfigManager.bossbarsA.get(key);
-                if (bossbarConfig != null) {
-                    bossbarConfig.setColor(BossBar.Color.valueOf(config.getString("bossbar." + key + ".color").toUpperCase()));
-                    bossbarConfig.setOverlay(BossBar.Overlay.valueOf(config.getString("bossbar." + key + ".overlay").toUpperCase()));
-                    bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
-                    bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
-                }
-                else {
-                    bossbarsA.put(key, new BossBarConfigA(
-                            config.getString("bossbar." + key + ".text"),
-                            BossBar.Overlay.valueOf(config.getString("bossbar." + key + ".overlay").toUpperCase()),
-                            BossBar.Color.valueOf(config.getString("bossbar." + key + ".color").toUpperCase()),
-                            config.getInt("bossbar." + key + ".refresh-rate") - 1
-                    ));
-                }
-            });
-        }else {
-            config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
-                BossBarConfigP bossbarConfig = ConfigManager.bossbarsP.get(key);
-                if (bossbarConfig != null) {
-                    bossbarConfig.setColor(BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()));
-                    bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
-                    bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
-                    bossbarConfig.setOverlay(Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()));
-                }
-                else {
-                    bossbarsP.put(key, new BossBarConfigP(
-                            config.getString("bossbar." + key + ".text"),
-                            Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()),
-                            BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()),
-                            config.getInt("bossbar." + key + ".refresh-rate") - 1
-                    ));
-                }
-            });
-        }
+        Objects.requireNonNull(config.getConfigurationSection("bossbar")).getKeys(false).forEach(key -> {
+            BossBarConfig bossbarConfig = ConfigManager.bossBars.get(key);
+            if (bossbarConfig != null) {
+                bossbarConfig.setColor(BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()));
+                bossbarConfig.setRate(config.getInt("bossbar." + key + ".refresh-rate") - 1);
+                bossbarConfig.setText(config.getString("bossbar." + key + ".text"));
+                bossbarConfig.setOverlay(Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()));
+            }
+            else {
+                bossBars.put(key, new BossBarConfig(
+                        config.getString("bossbar." + key + ".text"),
+                        Overlay.valueOf(config.getString("bossbar."+key+".overlay").toUpperCase()),
+                        BarColor.valueOf(config.getString("bossbar."+key+".color").toUpperCase()),
+                        config.getInt("bossbar." + key + ".refresh-rate") - 1
+                ));
+            }
+        });
     }
 
     /**
@@ -302,9 +294,9 @@ public class ConfigManager {
         YamlConfiguration papiInfo = getConfig("custom-papi.yml");
         papiInfo.getConfigurationSection("papi").getKeys(false).forEach(key -> {
             if (papiInfo.contains("papi." + key + ".background"))
-                papiBG.put(key, new BGInfo(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".background")));
+                papiBG.put(key, new BackGroundText(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".background")));
             if (papiInfo.contains("papi." + key + ".nameplate"))
-                papiNP.put(key, new NPInfo(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".nameplate")));
+                papiNP.put(key, new NameplateText(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".nameplate")));
         });
     }
 
@@ -329,7 +321,7 @@ public class ConfigManager {
         YamlConfiguration config = getConfig("char-width.yml");
         config.getConfigurationSection("").getKeys(false).forEach(key -> fontWidth.put(key.charAt(0), config.getInt(key)));
         AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + fontWidth.size() + " <gray>custom char-width");
-        if (MainConfig.thin_font)
+        if (Main.thin_font)
             for (int i = 0; i < FontWidthThin.values().length; i++)
                 fontWidth.put(FontWidthThin.values()[i].getCharacter(), FontWidthThin.values()[i].getLength());
         else
@@ -355,17 +347,17 @@ public class ConfigManager {
         public static int maximum_lifetime;
         public static int idle_timeout;
 
-        public static void LoadConfig(){
+        public static void reload(){
 
             YamlConfiguration databaseConfig = getConfig("database.yml");
-            String storage_mode = databaseConfig.getString("settings.storage-mode");
+            String storage_mode = databaseConfig.getString("settings.storage-mode","SQLite");
             async = !databaseConfig.getBoolean("settings.disable-async", true);
-            if(storage_mode.equals("SQLite")){
+            if(storage_mode.equalsIgnoreCase("SQLite")){
                 enable_pool = false;
                 use_mysql = false;
                 tableName = "nameplates";
             }
-            else if(storage_mode.equals("MYSQL")){
+            else if(storage_mode.equalsIgnoreCase("MYSQL")){
                 use_mysql = true;
                 ENCODING = databaseConfig.getString("MySQL.property.encoding");
                 tableName = databaseConfig.getString("MySQL.table-name");

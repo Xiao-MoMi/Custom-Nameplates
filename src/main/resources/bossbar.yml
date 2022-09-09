@@ -1,14 +1,6 @@
-# You need a restart when you add/remove a bossbar
-
-# IMPORTANT NOTICE
-# mode: Adventure / ProtocolLib
-# There's a bug that font can't be applied to Adventure bossbar. This is an Adventure API bug that I can't fix for the moment.
-# It requires a restart to change mode
-mode: ProtocolLib
-
 bossbar:
   example_1:
-    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%<font:nameplates:offset_3>Hello! %player_name%</font>    <font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%<font:nameplates:offset_3>You are now at: %player_x%, %player_y%, %player_z%</font>'
+    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%<font:nameplates:offset_3>Hello! %player_name%</font></font>    <font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%<font:nameplates:offset_3>You are now at: %player_x%, %player_y%, %player_z%</font>'
     refresh-rate: 5
     # PINK
     # YELLOW

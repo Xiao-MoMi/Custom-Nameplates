@@ -39,7 +39,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import static net.momirealms.customnameplates.ConfigManager.MainConfig.start;
+import static net.momirealms.customnameplates.ConfigManager.Main.start;
 
 public class ResourceManager {
 
@@ -78,16 +78,16 @@ public class ResourceManager {
         Arrays.sort(pngFiles);
         deleteDirectory(g_file);
 
-        File f_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separatorChar + ConfigManager.MainConfig.namespace + File.separatorChar + "font");
-        File t_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separatorChar + ConfigManager.MainConfig.namespace + File.separatorChar + "textures");
+        File f_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separatorChar + ConfigManager.Main.namespace + File.separatorChar + "font");
+        File t_file = new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separatorChar + ConfigManager.Main.namespace + File.separatorChar + "textures");
 
         if (!f_file.mkdirs() || !t_file.mkdirs()) {
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to generate resource pack folders...</red>");
             return;
         }
 
-        if (ConfigManager.MainConfig.offsets != null){
-            ConfigManager.MainConfig.offsets.forEach(offset -> {
+        if (ConfigManager.Main.offsets != null){
+            ConfigManager.Main.offsets.forEach(offset -> {
                 JsonObject jsonObject_offset = new JsonObject();
                 JsonArray jsonArray_offset = new JsonArray();
                 jsonObject_offset.add("providers", jsonArray_offset);
@@ -126,7 +126,7 @@ public class ResourceManager {
                 try (FileWriter fileWriter = new FileWriter(
                         CustomNameplates.instance.getDataFolder() +
                                 File.separator + "ResourcePack" +
-                                File.separator + ConfigManager.MainConfig.namespace +
+                                File.separator + ConfigManager.Main.namespace +
                                 File.separator + "font" +
                                 File.separator + "offset_" + offset + ".json")) {
                     fileWriter.write(jsonObject_offset.toString().replace("\\\\", "\\"));
@@ -141,7 +141,7 @@ public class ResourceManager {
         JsonArray jsonArray_1 = new JsonArray();
         jsonObject_1.add("providers", jsonArray_1);
         getNegativeFontEnums().forEach(jsonArray_1::add);
-        if (ConfigManager.nameplate){
+        if (ConfigManager.Module.nameplate){
             for (File png : pngFiles) {
                 JsonObject jsonObject_2 = new JsonObject();
                 char left = start;
@@ -153,28 +153,28 @@ public class ResourceManager {
                 NameplateConfig config = this.getConfiguration(pngName);
                 NAMEPLATES.put(pngName, new NameplateInstance(pngName, fontChar, config));
                 jsonObject_2.add("type", new JsonPrimitive("bitmap"));
-                jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.folder_path.replaceAll("\\\\","/") + png.getName().toLowerCase()));
+                jsonObject_2.add("file", new JsonPrimitive(ConfigManager.Main.namespace + ":" + ConfigManager.Main.folder_path.replaceAll("\\\\","/") + png.getName().toLowerCase()));
                 jsonObject_2.add("ascent", new JsonPrimitive(config.getYOffset()));
                 jsonObject_2.add("height", new JsonPrimitive(config.getHeight()));
                 JsonArray jsonArray_2 = new JsonArray();
                 jsonArray_2.add(native2ascii(fontChar.getLeft()) + native2ascii(fontChar.getMiddle()) + native2ascii(fontChar.getRight()));
                 jsonObject_2.add("chars", jsonArray_2);
                 jsonArray_1.add(jsonObject_2);
-                try{
-                    FileUtils.copyFile(png, new File(t_file.getPath() + File.separatorChar + StringUtils.replace(ConfigManager.MainConfig.folder_path, "\\", String.valueOf(File.separatorChar)) + png.getName()));
+                try {
+                    FileUtils.copyFile(png, new File(t_file.getPath() + File.separatorChar + StringUtils.replace(ConfigManager.Main.folder_path, "\\", String.valueOf(File.separatorChar)) + png.getName()));
                 }catch (IOException e){
                     AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to copy png files to resource pack...</red>");
                 }
             }
             NAMEPLATES.put("none", NameplateInstance.EMPTY);
         }
-        if (ConfigManager.background){
+        if (ConfigManager.Module.background){
             ConfigManager.backgrounds.forEach((key, backGround) -> {
                 getBackgrounds(backGround).forEach(jsonArray_1::add);
             });
         }
 
-        if (ConfigManager.MainConfig.extract) {
+        if (ConfigManager.Main.extract) {
             String path = "ResourcePack" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator;
             CustomNameplates.instance.saveResource(path + "rendertype_text.fsh", true);
             CustomNameplates.instance.saveResource(path + "rendertype_text.json", true);
@@ -186,7 +186,7 @@ public class ResourceManager {
 
         try{
             CustomNameplates.instance.saveResource("space_split.png", false);
-            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath() + File.separator + StringUtils.replace(ConfigManager.MainConfig.ss_folder_path, "\\", String.valueOf(File.separatorChar)) + "space_split.png"));
+            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder(),"space_split.png"), new File(t_file.getPath() + File.separator + StringUtils.replace(ConfigManager.Main.ss_folder_path, "\\", String.valueOf(File.separatorChar)) + "space_split.png"));
             new File(CustomNameplates.instance.getDataFolder(),"space_split.png").delete();
         }catch (IOException e){
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to copy space_split.png to resource pack...</red>");
@@ -195,9 +195,9 @@ public class ResourceManager {
         try (FileWriter fileWriter = new FileWriter(
                 CustomNameplates.instance.getDataFolder() +
                         File.separator + "ResourcePack" +
-                        File.separator + ConfigManager.MainConfig.namespace +
+                        File.separator + ConfigManager.Main.namespace +
                         File.separator + "font" +
-                        File.separator + ConfigManager.MainConfig.font + ".json"))
+                        File.separator + ConfigManager.Main.font + ".json"))
         {
             fileWriter.write(jsonObject_1.toString().replace("\\\\", "\\"));
         } catch (IOException e) {
@@ -205,9 +205,9 @@ public class ResourceManager {
         }
 
         AdventureUtil.consoleMessage("[CustomNameplates] ResourcePack has been generated!");
-        AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + (NAMEPLATES.size() -1) + " <gray>nameplates");
+        if (NAMEPLATES.size() != 0) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + (NAMEPLATES.size() -1) + " <gray>nameplates");
 
-        if (ConfigManager.MainConfig.itemsAdder){
+        if (ConfigManager.Main.itemsAdder){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
                 AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>ItemsAdder!<color:#baffd1> Automatically sent rp to ItemsAdder folder!");
@@ -216,7 +216,7 @@ public class ResourceManager {
                 AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to copy files to ItemsAdder...</red>");
             }
         }
-        if (ConfigManager.MainConfig.oraxen){
+        if (ConfigManager.Main.oraxen){
             try{
                 FileUtils.copyDirectory(g_file, new File(Bukkit.getPluginManager().getPlugin("Oraxen").getDataFolder() + File.separator + "pack"+ File.separator + "assets"));
                 AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>Oraxen!<color:#baffd1> Automatically sent rp to Oraxen folder!");
@@ -287,7 +287,7 @@ public class ResourceManager {
     private JsonObject getNegativeFontChar(int height, char character) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("type", new JsonPrimitive("bitmap"));
-        jsonObject.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.ss_folder_path.replaceAll("\\\\","/") + "space_split.png"));
+        jsonObject.add("file", new JsonPrimitive(ConfigManager.Main.namespace + ":" + ConfigManager.Main.ss_folder_path.replaceAll("\\\\","/") + "space_split.png"));
         jsonObject.add("ascent", new JsonPrimitive(-5000));
         jsonObject.add("height", new JsonPrimitive(height));
         final JsonArray jsonArray = new JsonArray();
@@ -335,7 +335,7 @@ public class ResourceManager {
     private JsonObject setBackgrounds(String name, int y_offset, int size, HashMap<String, Character> chars){
         JsonObject jsonObject_2 = new JsonObject();
         jsonObject_2.add("type", new JsonPrimitive("bitmap"));
-        jsonObject_2.add("file", new JsonPrimitive(ConfigManager.MainConfig.namespace + ":" + ConfigManager.MainConfig.bg_folder_path.replaceAll("\\\\","/") + name.toLowerCase() + ".png"));
+        jsonObject_2.add("file", new JsonPrimitive(ConfigManager.Main.namespace + ":" + ConfigManager.Main.bg_folder_path.replaceAll("\\\\","/") + name.toLowerCase() + ".png"));
         jsonObject_2.add("ascent", new JsonPrimitive(y_offset));
         jsonObject_2.add("height", new JsonPrimitive(size));
         JsonArray jsonArray_2 = new JsonArray();
@@ -345,7 +345,7 @@ public class ResourceManager {
         start = (char)(start + '\u0001');
         chars.put(name, character);
         try {
-            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder() + File.separator + "backgrounds" + File.separator + name + ".png"), new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separator + ConfigManager.MainConfig.namespace + File.separatorChar + "textures" + File.separatorChar + StringUtils.replace(ConfigManager.MainConfig.bg_folder_path, "\\", String.valueOf(File.separatorChar)) + name + ".png"));
+            FileUtils.copyFile(new File(CustomNameplates.instance.getDataFolder() + File.separator + "backgrounds" + File.separator + name + ".png"), new File(CustomNameplates.instance.getDataFolder() + File.separator + "ResourcePack" + File.separator + ConfigManager.Main.namespace + File.separatorChar + "textures" + File.separatorChar + StringUtils.replace(ConfigManager.Main.bg_folder_path, "\\", String.valueOf(File.separatorChar)) + name + ".png"));
         }
         catch (IOException e){
             e.printStackTrace();

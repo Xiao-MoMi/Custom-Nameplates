@@ -17,23 +17,27 @@
 
 package net.momirealms.customnameplates.data;
 
+import net.momirealms.customnameplates.ConfigManager;
+
 public class PlayerData {
 
+    public static PlayerData EMPTY = new PlayerData("none");
+
     private String equipped;
-    private int accepted;
+//    private boolean accepted;
 
-    public PlayerData(String equipped, int accepted) {
+    public PlayerData(String equipped) {
         this.equipped = equipped;
-        this.accepted = accepted;
+//        this.accepted = accepted;
     }
 
-    public int getAccepted(){
-        return this.accepted;
-    }
-
-    public void setAccepted(int accepted){
-        this.accepted = accepted;
-    }
+//    public boolean getAccepted(){
+//        return this.accepted;
+//    }
+//
+//    public void setAccepted(boolean accepted){
+//        this.accepted = accepted;
+//    }
 
     public String getEquippedNameplate() {
         return this.equipped;
@@ -42,4 +46,5 @@ public class PlayerData {
     public void equipNameplate(String nameplate) {
         this.equipped = nameplate.toLowerCase();
     }
+
 }

@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.font;
 
+
 import net.momirealms.customnameplates.ConfigManager;
 
 import java.util.Objects;

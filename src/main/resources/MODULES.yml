@@ -1,5 +1,7 @@
-#Modules require a restart
+#Nameplate module require a restart because it requires a SQL connection
 nameplate: true
+
+#These modules can be toggled by reloading
 background: true
 bossbar: true
 actionbar: false

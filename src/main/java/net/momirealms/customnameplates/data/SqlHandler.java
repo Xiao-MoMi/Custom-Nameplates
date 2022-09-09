@@ -17,13 +17,15 @@
 
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.utils.SqlConnection;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class SqlHandler {
@@ -95,7 +97,7 @@ public class SqlHandler {
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                playerData = new PlayerData(rs.getString(2), rs.getInt(3));
+                playerData = new PlayerData(rs.getString(2));
             }else {
                 sql = "INSERT INTO " + ConfigManager.DatabaseConfig.tableName + "(player,equipped,accepted) values(?,?,?)";
                 statement = connection.prepareStatement(sql);
@@ -119,7 +121,7 @@ public class SqlHandler {
             String query = " SET equipped = ?, accepted = ? WHERE player = ?";
             PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
             statement.setString(1, playerData.getEquippedNameplate());
-            statement.setInt(2, playerData.getAccepted());
+            statement.setInt(2, 1);
             statement.setString(3, uuid.toString());
             statement.executeUpdate();
             statement.close();
@@ -131,13 +133,14 @@ public class SqlHandler {
 
     public static void saveAll() {
         Connection connection = database.getConnectionAndCheck();
+        HashMap<UUID, PlayerData> data = CustomNameplates.instance.getDataManager().getCache();
         Bukkit.getOnlinePlayers().forEach(player -> {
             try {
-                PlayerData playerData = DataManager.cache.get(player.getUniqueId());
+                PlayerData playerData = data.get(player.getUniqueId());
                 String query = " SET equipped = ?, accepted = ? WHERE player = ?";
                 PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
                 statement.setString(1, playerData.getEquippedNameplate());
-                statement.setInt(2, playerData.getAccepted());
+                statement.setInt(2, 1);
                 statement.setString(3, String.valueOf(player.getUniqueId()));
                 statement.executeUpdate();
                 statement.close();

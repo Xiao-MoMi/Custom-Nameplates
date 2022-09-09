@@ -17,6 +17,7 @@ public class ConfigUtil {
     public static void update(){
         try {
             YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "config.yml"), CustomNameplates.instance.getResource("config.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "nameplate.yml"), CustomNameplates.instance.getResource("nameplate.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
         }catch (IOException e){
             Log.warn(e.getMessage());
         }

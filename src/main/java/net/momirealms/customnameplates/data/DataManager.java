@@ -17,52 +17,47 @@
 
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.utils.ArmorStandPacketUtil;
-import net.momirealms.customnameplates.utils.TeamPacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class DataManager {
 
-    public static Map<UUID, PlayerData> cache  = new HashMap<>();
+    private final HashMap<UUID, PlayerData> cache = new HashMap<>();
+
+    public PlayerData getOrEmpty(Player player) {
+        if (cache.get(player.getUniqueId()) == null) {
+            return new PlayerData("none");
+        }
+        else {
+            return cache.get(player.getUniqueId());
+        }
+    }
 
     public void loadData(Player player) {
         UUID uuid = player.getUniqueId();
         if (ConfigManager.DatabaseConfig.async) {
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
-                if (playerData == null) {
-                    playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
-                }
-                cache.put(uuid, playerData);
-                CustomNameplates.instance.getScoreBoardManager().getOrCreateTeam(player);
-                TeamPacketUtil.sendUpdateToOne(player);
-                TeamPacketUtil.sendUpdateToAll(player);
-                if (!ConfigManager.Nameplate.mode_team) {
-                    ArmorStandPacketUtil.preparePackets(player);
-                }
+                cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate)));
+                CustomNameplates.instance.getTeamManager().createTeam(player);
+                CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
             });
         }
         else {
             PlayerData playerData = SqlHandler.getPlayerData(uuid);
-            if (playerData == null) {
-                playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
-            }
-            cache.put(uuid, playerData);
-            CustomNameplates.instance.getScoreBoardManager().getOrCreateTeam(player);
+            cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate)));
+            CustomNameplates.instance.getTeamManager().createTeam(player);
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
-                TeamPacketUtil.sendUpdateToOne(player);
-                TeamPacketUtil.sendUpdateToAll(player);
-                if (!ConfigManager.Nameplate.mode_team) {
-                    ArmorStandPacketUtil.preparePackets(player);
-                }
+                CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
             });
         }
     }
@@ -73,7 +68,7 @@ public class DataManager {
         }
         PlayerData playerData = SqlHandler.getPlayerData(uuid);
         if (playerData == null) {
-            playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, 0);
+            playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate);
         }
         cache.put(uuid, playerData);
         return playerData;
@@ -116,5 +111,9 @@ public class DataManager {
             return true;
         }
         else return false;
+    }
+
+    public HashMap<UUID, PlayerData> getCache() {
+        return cache;
     }
 }

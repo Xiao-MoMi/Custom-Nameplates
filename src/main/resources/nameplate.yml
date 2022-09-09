@@ -1,23 +1,16 @@
+config-version: '3'
+
 nameplate:
-  # mode: Team / Entity
-  # ================ Team ===================
-  #  Team is based on vanilla mechanic team
-  #  Advantage:
-  #            No lag
-  #
-  #  Disadvantage:
-  #            Player name's colors are limited
-  #            Only support one-line text
-  #            May exist conflict with other plugins that use team
-  #
-  # ================ Entity ================
-  #  Plugin would summon fake armorstands packets riding the player
-  #  Advantage:
-  #            No lag (The principle is different from TAB)
-  #            Support multiple lines (based on resource pack side tech)
-  #
-  #  Disadvantage:
-  #            May not compatible with some cosmetics plugins
+  # mode: Team / Riding / Teleporting
+  # ============================== Team ==================================
+  #  Team is based on vanilla team mechanic
+  #  But only supports one line
+  # ============================= Riding =================================
+  #  Plugin would summon fake armor stands packets riding the player
+  #  to provide additional tag lines for players
+  # ========================== Teleporting ===============================
+  #  Plugin would summon fake armor stands packets teleporting the player
+  #  to provide additional tag lines for players
   # (requires a restart)
   mode: Team
 
@@ -34,42 +27,53 @@ nameplate:
   # "none" represents no default nameplate.
   default-nameplate: 'none'
 
-  # Recommended to keep this true, otherwise players may see weird characters
-  # above their heads if they have not accepted the resource pack.
-  # This option supports proxy when using Mysql
-  # If you meet problem with this, set it to false to always display nameplates
-  show-after-load-resourcepack: true
+  # Placeholder based prefix and suffix system. When enabled, it is recommended
+  # to use PlaceholderAPI to be able to use this feature to the fullest extent.
+  # keep it empty if you don't want to enable this feature.
+  # You should make sure the papi doesn't contain "&" (legacy color code)
+  # Nameplates work on the custom font system where legacy color code is not supported!
+  # Please use MiniMessage format: https://docs.adventure.kyori.net/minimessage/format.html
+  prefix: '<font:minecraft:default><rainbow>Hello! </rainbow></font>'
+  suffix: ' <red>%player_health_rounded%♥'
 
-  # These option only works when using mode team
+  # These options only work when using mode Team
   team:
-    # Team mode only supports one line, so it is using a prefix/suffix system to extend the player name info
-
-    # Placeholder based prefix and suffix system. When enabled, it is recommended
-    # to use PlaceholderAPI to be able to use this feature to the fullest extent.
-    # keep it empty if you don't want to enable this feature.
-    # You should make sure the papi doesn't contain "&" (legacy color code)
-    # Nameplates work on the custom font system where legacy color code is not supported!
-    # Please use minimessage format: https://docs.adventure.kyori.net/minimessage/format.html
-    prefix: '<font:minecraft:default><rainbow>Hello! </rainbow></font>'
-    suffix: ' <red>%player_health_rounded%♥'
-
     # should prefix/suffix be hidden when player is equipping a nameplate
-    hide-prefix-when-equipped: false
-    hide-suffix-when-equipped: false
+    hide-prefix-when-equipped: true
+    hide-suffix-when-equipped: true
 
-  # These option only works when using mode entity
-  entity:
+  # These options only work when using mode Riding
+  riding:
     # If you are having trouble with plugin conflict
-    # Set this to "true" might help (let other plugin handle armor_stand mounting) (requires a restart)
-    # MagicCosmetics has been tested, and it proves to work well
+    # Set this to "true" might help (let other plugin handle armor stand mounting) (requires a restart)
+    # MagicCosmetics is tested, and it proves to work well
     try-to-hook-cosmetics-plugin: false
-    # Remove player original name-tag (requires Vanilla Team)
-    # If you have another plugin that is using team please disable team management in that plugin or turn player's name off in that plugin
+    # Make player's original name-tag invisible
+    # If you have another plugin that is using team please disable team management in that plugin or make player's name invisible in that plugin
     remove-nametag: true
-    # If it is the normal size, more lines can be displayed but it would go obviously abnormal when you look at it in a certain angle
+    # If armor stand is the normal size, more lines can be displayed but texts would go obviously abnormal when you look at it in a certain angle
     small-size: true
     # nameplates content
     text:
       - '<font:nameplates:default>%nameplates_prefix%</font><font:minecraft:default>%player_name%</font><font:nameplates:default>%nameplates_suffix%</font>'
       - '<font:nameplates:default>%nameplates_bg_health%</font><font:nameplates:offset_-11><red>%player_health_rounded% Health</font>  <font:nameplates:default>%nameplates_bg_food%</font><font:nameplates:offset_-11><#F0E68C>%player_food_level% Hunger</font>'
       - '<font:nameplates:offset_-24>Multiple lines are supported!</font>'
+
+  # These options only work when using mode Teleporting
+  teleporting:
+    # Make player's original name-tag invisible
+    # If you have another plugin that is using team please disable team management in that plugin or make player's name invisible in that plugin
+    remove-nametag: true
+    # Small size armor stand
+    small-size: true
+    # nameplates content
+    text:
+      text_1:
+        content: '<font:nameplates:default>%nameplates_prefix%</font><font:minecraft:default>%player_name%</font><font:nameplates:default>%nameplates_suffix%</font>'
+        offset: -1
+      text_2:
+        content: '<font:nameplates:default>%nameplates_bg_health%</font><font:nameplates:offset_-11><red>%player_health_rounded% Health</font>  <font:nameplates:default>%nameplates_bg_food%</font><font:nameplates:offset_-11><#F0E68C>%player_food_level% Hunger</font>'
+        offset: 0
+      text_3:
+        content: 'Multiple lines are supported!'
+        offset: 0
