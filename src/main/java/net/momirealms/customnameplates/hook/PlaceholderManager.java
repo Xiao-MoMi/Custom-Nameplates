@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
 
 public class PlaceholderManager extends Function {
 
-    private Placeholders placeholders;
+    private NameplatePlaceholders nameplatePlaceholders;
+
+    private OffsetPlaceholders offsetPlaceholders;
 
     public PlaceholderManager(String name) {
         super(name);
@@ -37,13 +39,16 @@ public class PlaceholderManager extends Function {
 
     @Override
     public void load() {
-        this.placeholders = new Placeholders();
-        this.placeholders.register();
+        this.nameplatePlaceholders = new NameplatePlaceholders();
+        this.offsetPlaceholders = new OffsetPlaceholders();
+        this.nameplatePlaceholders.register();
+        this.offsetPlaceholders.register();
     }
 
     @Override
     public void unload() {
-        this.placeholders.unregister();
+        this.nameplatePlaceholders.unregister();
+        this.offsetPlaceholders.unregister();
     }
 
     public String parsePlaceholders(Player player, String papi) {

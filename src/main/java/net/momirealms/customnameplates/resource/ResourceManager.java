@@ -26,7 +26,7 @@ import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.nameplates.NameplateInstance;
 import net.momirealms.customnameplates.font.FontChar;
-import net.momirealms.customnameplates.font.FontNegative;
+import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.nameplates.NameplateConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -278,7 +278,7 @@ public class ResourceManager {
 
     private List<JsonObject> getNegativeFontEnums() {
         ArrayList<JsonObject> list = new ArrayList<>();
-        for (FontNegative negativeFont : FontNegative.values()) {
+        for (FontOffset negativeFont : FontOffset.values()) {
             list.add(this.getNegativeFontChar(negativeFont.getHeight(), negativeFont.getCharacter()));
         }
         return list;

@@ -11,10 +11,10 @@ papi:
     text: 'Hello! %player_name%'
     background: bedrock_1
   pos:
-    text: 'You are now at: %player_x%, %player_y%, %player_z%'
+    text: ' You are now at: %player_x%, %player_y%, %player_z% '
     background: bedrock_1
   text:
-    text: 'Thanks for your purchase!'
+    text: ' Thanks for your purchase! '
     background: bedrock_2
   health:
     text: '%player_health_rounded% Health'

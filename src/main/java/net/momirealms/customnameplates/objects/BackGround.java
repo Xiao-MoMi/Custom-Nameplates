@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.objects;
 
-import net.momirealms.customnameplates.font.FontNegative;
+import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.resource.ResourceManager;
 
 import java.util.HashMap;
@@ -29,50 +29,50 @@ public record BackGround(String key, String start, String offset_1,
 
     public String getBackGround(int n) {
         n += offset_x;
-        String offset = FontNegative.getShortestNegChars(n);
+        String offset = FontOffset.getShortestNegChars(n);
         StringBuilder stringBuilder = new StringBuilder();
         HashMap<String, Character> chars = ResourceManager.BACKGROUNDS.get(key);
         stringBuilder.append(chars.get(start));
         while (n > 128) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_128));
             n -= 128;
         }
         if (n - 64 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_64));
             n -= 64;
         }
         if (n - 32 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_32));
             n -= 32;
         }
         if (n - 16 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_16));
             n -= 16;
         }
         if (n - 8 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_8));
             n -= 8;
         }
         if (n - 4 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_4));
             n -= 4;
         }
         if (n - 2 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_2));
             n -= 2;
         }
         if (n - 1 > 0) {
-            stringBuilder.append(FontNegative.NEG_1.getCharacter());
+            stringBuilder.append(FontOffset.NEG_1.getCharacter());
             stringBuilder.append(chars.get(offset_1));
         }
-        stringBuilder.append(FontNegative.NEG_1.getCharacter());
+        stringBuilder.append(FontOffset.NEG_1.getCharacter());
         stringBuilder.append(chars.get(end)).append(offset);
         return stringBuilder.toString();
     }

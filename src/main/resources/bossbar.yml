@@ -1,23 +1,21 @@
 bossbar:
+
+  # Dynamic Boss Bar
   example_1:
-    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%<font:nameplates:offset_3>Hello! %player_name%</font></font>    <font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%<font:nameplates:offset_3>You are now at: %player_x%, %player_y%, %player_z%</font>'
-    refresh-rate: 5
-    # PINK
-    # YELLOW
-    # WHITE
-    # RED
-    # PURPLE
-    # GREEN
-    # BLUE
     color: YELLOW
-    # PROGRESS
-    # NOTCHED_6
-    # NOTCHED_10
-    # NOTCHED_12
-    # NOTCHED_20
     overlay: PROGRESS
+    dynamic-text:
+      - '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_pos%</font><font:nameplates:offset_3> You are now at: %player_x%, %player_y%, %player_z% </font>'
+      - '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_player%</font><font:nameplates:offset_3> Hello! %player_name% </font>'
+    # seconds
+    switch-interval: 15
+    # ticks
+    refresh-rate: 5
+
+
+  # Basic Boss Bar
   example_2:
-    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_text%<font:nameplates:offset_5>Thanks for your purchase!'
+    text: '<font:nameplates:default><color:#FFFEFD>%nameplates_bg_text%</font><font:nameplates:offset_5>Thanks for your purchase!</font>'
     refresh-rate: 5
     color: YELLOW
     overlay: PROGRESS

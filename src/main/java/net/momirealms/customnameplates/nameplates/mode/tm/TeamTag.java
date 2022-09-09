@@ -34,11 +34,10 @@ public class TeamTag extends NameplateManager {
 
     private EventListener listener;
 
-    private final HashMap<Player, BukkitTask> taskCache;
+    private final HashMap<Player, BukkitTask> taskCache = new HashMap<>();
 
     public TeamTag(String name) {
         super(name);
-        this.taskCache = new HashMap<>();
     }
 
     @Override
@@ -73,12 +72,19 @@ public class TeamTag extends NameplateManager {
         if (!player.isOnline()) return;
 
         String teamName = TeamManager.getTeamName(player);
-        NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(teamName);
+        TeamManager teamManager = CustomNameplates.instance.getTeamManager();
+        NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
 
         if (nameplatesTeam != null) {
             BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
-                nameplatesTeam.updateNameplates();
-                CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                NameplatesTeam npTeam = teamManager.getTeams().get(teamName);
+                if (npTeam != null) {
+                    nameplatesTeam.updateNameplates();
+                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                }
+                else {
+                    taskCache.remove(player).cancel();
+                }
             }, 20, ConfigManager.Nameplate.refresh);
             taskCache.put(player, task);
         }
@@ -93,7 +99,6 @@ public class TeamTag extends NameplateManager {
     public void onQuit(Player player) {
 
         super.onQuit(player);
-
         BukkitTask bukkitTask = taskCache.remove(player);
         if (bukkitTask != null) bukkitTask.cancel();
 

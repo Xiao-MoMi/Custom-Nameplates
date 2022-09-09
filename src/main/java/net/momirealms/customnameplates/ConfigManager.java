@@ -276,12 +276,23 @@ public class ConfigManager {
         bossBars.clear();
         YamlConfiguration config = getConfig("bossbar.yml");
         Objects.requireNonNull(config.getConfigurationSection("bossbar")).getKeys(false).forEach(key -> {
-            bossBars.put(key, new BossBarConfig(
-                    config.getString("bossbar." + key + ".text"),
+            String[] texts;
+            String text = config.getString("bossbar." + key + ".text");
+            if (text != null) {
+                texts = new String[]{text};
+            }
+            else {
+                List<String> strings = config.getStringList("bossbar." + key + ".dynamic-text");
+                texts = strings.toArray(new String[0]);
+            }
+            BossBarConfig bossBarConfig = new BossBarConfig(
+                    texts,
                     Overlay.valueOf(config.getString("bossbar."+key+".overlay","progress").toUpperCase()),
                     BarColor.valueOf(config.getString("bossbar."+key+".color","white").toUpperCase()),
                     config.getInt("bossbar." + key + ".refresh-rate") - 1
-            ));
+            );
+            bossBarConfig.setInternal(config.getInt("bossbar." + key + ".switch-interval", 5) * 20);
+            bossBars.put(key, bossBarConfig);
         });
     }
 

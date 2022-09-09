@@ -28,22 +28,22 @@ public class NameplateUtil {
         char left = nameplate.getChar().getLeft();
         char middle = nameplate.getChar().getMiddle();
         char right = nameplate.getChar().getRight();
-        char neg_1 = FontNegative.NEG_1.getCharacter();
+        char neg_1 = FontOffset.NEG_1.getCharacter();
         int left_offset = totalWidth + 16 + 1;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1));
+        stringBuilder.append(FontOffset.getShortestNegChars(isEven ? left_offset : left_offset + 1));
         stringBuilder.append(left).append(neg_1);
         int mid_amount = (totalWidth + 1) / 16;
         for (int i = 0; i < (mid_amount == 0 ? 1 : mid_amount); i++) stringBuilder.append(middle).append(neg_1);
-        stringBuilder.append(FontNegative.getShortestNegChars(16 - ((totalWidth + 1) % 16 + (isEven ? 0 : 1))));
+        stringBuilder.append(FontOffset.getShortestNegChars(16 - ((totalWidth + 1) % 16 + (isEven ? 0 : 1))));
         stringBuilder.append(middle).append(neg_1);
         stringBuilder.append(right).append(neg_1);
-        stringBuilder.append(FontNegative.getShortestNegChars(isEven ? left_offset : left_offset + 1));
+        stringBuilder.append(FontOffset.getShortestNegChars(isEven ? left_offset : left_offset + 1));
         return stringBuilder.toString();
     }
 
     public static String getSuffixChar(String name) {
         int totalWidth = FontUtil.getTotalWidth(ChatColor.stripColor(name));
-        return FontNegative.getShortestNegChars(totalWidth + totalWidth % 2 + 1);
+        return FontOffset.getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 }

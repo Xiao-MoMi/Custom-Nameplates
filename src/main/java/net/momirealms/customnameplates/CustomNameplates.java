@@ -118,6 +118,22 @@ public final class CustomNameplates extends JavaPlugin {
         ConfigManager.Message.reload();
         ConfigManager.loadWidth();
 
+        if (ConfigManager.Main.placeholderAPI){
+            ConfigManager.loadPapi();
+            if (this.placeholderManager != null) {
+                this.placeholderManager.unload();
+                this.placeholderManager.load();
+            }
+            else {
+                this.placeholderManager = new PlaceholderManager("PAPI");
+                this.placeholderManager.load();
+            }
+        }
+        else if (this.placeholderManager != null) {
+            this.placeholderManager.unload();
+            this.placeholderManager = null;
+        }
+
         if (ConfigManager.Module.bossBar){
             ConfigManager.loadBossBar();
             if (this.bossBarManager != null) {
@@ -198,22 +214,6 @@ public final class CustomNameplates extends JavaPlugin {
                 this.nameplateManager.unload();
                 this.nameplateManager = null;
             }
-        }
-
-        if (ConfigManager.Main.placeholderAPI){
-            ConfigManager.loadPapi();
-            if (this.placeholderManager != null) {
-                this.placeholderManager.unload();
-                this.placeholderManager.load();
-            }
-            else {
-                this.placeholderManager = new PlaceholderManager("PAPI");
-                this.placeholderManager.load();
-            }
-        }
-        else if (this.placeholderManager != null) {
-            this.placeholderManager.unload();
-            this.placeholderManager = null;
         }
     }
 

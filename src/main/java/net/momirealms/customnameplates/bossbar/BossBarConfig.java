@@ -19,26 +19,37 @@ package net.momirealms.customnameplates.bossbar;
 
 import org.bukkit.boss.BarColor;
 
+import java.util.List;
+
 public class BossBarConfig {
 
-    private String text;
+    private String[] text;
+    private int internal;
     private Overlay overlay;
     private BarColor color;
     private int rate;
 
-    public BossBarConfig(String text, Overlay overlay, BarColor color, int rate) {
+    public BossBarConfig(String[] text, Overlay overlay, BarColor color, int rate) {
         this.text = text;
         this.overlay = overlay;
         this.color = color;
         this.rate = rate;
     }
 
-    public String getText() {
+    public String[] getText() {
         return text;
     }
 
-    public void setText(String text) {
+    public void setText(String[] text) {
         this.text = text;
+    }
+
+    public int getInternal() {
+        return internal;
+    }
+
+    public void setInternal(int internal) {
+        this.internal = internal;
     }
 
     public Overlay getOverlay() {

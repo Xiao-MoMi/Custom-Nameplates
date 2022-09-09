@@ -32,24 +32,35 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 import java.util.UUID;
 
 public class Sender {
 
     private final Player player;
-    private int timer;
-    private final TextCache text;
+    private int timer_1;
+    private int timer_2;
+    private int counter;
+    private final TextCache[] texts;
+    private TextCache text;
     private final BukkitTask bukkitTask;
     private final UUID uuid;
+    private boolean force;
+
+    public void setText(int position) {
+        this.text = texts[position];
+        this.force = true;
+    }
 
     public Sender(Player player, BossBarConfig config){
-
+        String[] str = config.getText();
+        int size = str.length;
+        texts = new TextCache[str.length];
+        for (int i = 0; i < str.length; i++) {
+            texts[i] = new TextCache(player, str[i]);
+        }
+        text = texts[0];
         this.player = player;
-        this.text = new TextCache(player, config.getText());
-        this.timer = 0;
         this.uuid = UUID.randomUUID();
 
         show(config);
@@ -57,29 +68,41 @@ public class Sender {
         this.bukkitTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                if (timer < config.getRate()){
-                    timer++;
-                }
-                else {
-                    timer = 0;
-                    if (text.update()) {
-                        PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
-                        packet.getModifier().write(0, uuid);
-                        InternalStructure internalStructure = packet.getStructures().read(1);
-                        internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text.getLatestValue()))));
-                        internalStructure.getFloat().write(0,1F);
-                        internalStructure.getEnumModifier(BarColor.class, 2).write(0, config.getColor());
-                        internalStructure.getEnumModifier(Overlay.class, 3).write(0, config.getOverlay());
-                        internalStructure.getModifier().write(4, false);
-                        internalStructure.getModifier().write(5, false);
-                        internalStructure.getModifier().write(6, false);
-                        try{
-                            CustomNameplates.protocolManager.sendServerPacket(player, packet);
-                        }catch (InvocationTargetException e){
-                            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
+                    if (size != 1) {
+                        timer_2++;
+                        if (timer_2 > config.getInternal()) {
+                            timer_2 = 0;
+                            counter++;
+                            if (counter == size) {
+                                counter = 0;
+                            }
+                            setText(counter);
                         }
                     }
-                }
+                    if (timer_1 < config.getRate()){
+                        timer_1++;
+                    }
+                    else {
+                        timer_1 = 0;
+                        if (text.update() || force) {
+                            force = false;
+                            PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
+                            packet.getModifier().write(0, uuid);
+                            InternalStructure internalStructure = packet.getStructures().read(1);
+                            internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text.getLatestValue()))));
+                            internalStructure.getFloat().write(0,1F);
+                            internalStructure.getEnumModifier(BarColor.class, 2).write(0, config.getColor());
+                            internalStructure.getEnumModifier(Overlay.class, 3).write(0, config.getOverlay());
+                            internalStructure.getModifier().write(4, false);
+                            internalStructure.getModifier().write(5, false);
+                            internalStructure.getModifier().write(6, false);
+                            try{
+                                CustomNameplates.protocolManager.sendServerPacket(player, packet);
+                            }catch (InvocationTargetException e){
+                                AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
+                            }
+                        }
+                    }
             }
         }.runTaskTimerAsynchronously(CustomNameplates.instance,1,1);
 

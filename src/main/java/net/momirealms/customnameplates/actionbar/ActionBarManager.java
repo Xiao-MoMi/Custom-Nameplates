@@ -30,6 +30,8 @@ public class ActionBarManager extends Function {
 
     private BukkitTask bukkitTask;
 
+    private ActionBarPacketsListener actionBarPacketsListener;
+
     private int timer;
 
     public ActionBarManager(String name) {
@@ -38,6 +40,9 @@ public class ActionBarManager extends Function {
 
     @Override
     public void load() {
+
+        this.actionBarPacketsListener = new ActionBarPacketsListener(this);
+        CustomNameplates.protocolManager.addPacketListener(actionBarPacketsListener);
 
         PlaceholderManager placeholderManager = CustomNameplates.instance.getPlaceholderManager();
 
@@ -57,6 +62,7 @@ public class ActionBarManager extends Function {
 
     @Override
     public void unload() {
+        CustomNameplates.protocolManager.removePacketListener(actionBarPacketsListener);
         this.bukkitTask.cancel();
     }
 }
