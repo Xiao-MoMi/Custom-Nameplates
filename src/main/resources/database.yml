@@ -1,3 +1,6 @@
+# Do not change
+config-version: '6'
+
 settings:
   # Valid Options: SQLite MYSQL
   # Only MYSQL supports pool.
@@ -5,6 +8,10 @@ settings:
   storage-mode: SQLite
   use-pool: false
   disable-async: false
+  # If you are updating from a version lower than 2.0-PRE-6
+  # Enable this to migrate data! If you are using MySQL you only need one server to proceed migration
+  # BackUp your data before enabling this!
+  migration: false
 
 # MySQL settings
 MySQL:

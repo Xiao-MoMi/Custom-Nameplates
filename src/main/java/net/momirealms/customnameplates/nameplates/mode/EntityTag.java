@@ -17,13 +17,9 @@
 
 package net.momirealms.customnameplates.nameplates.mode;
 
-import net.momirealms.customnameplates.ConfigManager;
-import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.nameplates.ArmorStandManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,35 +27,16 @@ public abstract class EntityTag extends NameplateManager {
 
     protected final ConcurrentHashMap<Player, ArmorStandManager> armorStandManagerMap = new ConcurrentHashMap<>();
 
-    protected BukkitTask bukkitTask;
-
     protected EntityTag(String name) {
         super(name);
     }
 
     @Override
     public void load(){
-        if (ConfigManager.Nameplate.update) {
-            bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
-                for (ArmorStandManager asm : armorStandManagerMap.values()) {
-                    asm.refresh(false);
-                }
-            }, 20, ConfigManager.Nameplate.refresh);
-        }
-        else {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, () -> {
-                for (ArmorStandManager asm : armorStandManagerMap.values()) {
-                    asm.refresh(false);
-                }
-            }, 20);
-        }
     }
 
     @Override
     public void unload(){
-        if (bukkitTask != null) {
-            bukkitTask.cancel();
-        }
         for (Player all : Bukkit.getOnlinePlayers()) {
             getArmorStandManager(all).destroy();
         }
@@ -69,24 +46,11 @@ public abstract class EntityTag extends NameplateManager {
     @Override
     public void onJoin(Player player) {
         super.onJoin(player);
-        armorStandManagerMap.put(player, new ArmorStandManager(player, false));
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            spawnArmorStands(viewer, player);
-            spawnArmorStands(player, viewer);
-        }
     }
 
     @Override
     public void onQuit(Player player) {
         super.onQuit(player);
-//        for (Player all : Bukkit.getOnlinePlayers()) {
-//            if (getArmorStandManager(all) == null) continue;
-//            getArmorStandManager(all) .unregisterPlayer(player);
-//        }
-        ArmorStandManager asm = armorStandManagerMap.remove(player);
-        if (asm != null) {
-            asm.destroy();
-        }
     }
 
 //    @Override
@@ -106,18 +70,5 @@ public abstract class EntityTag extends NameplateManager {
 
     public void refresh(Player refreshed, boolean force) {
         getArmorStandManager(refreshed).refresh(force);
-    }
-
-    private void spawnArmorStands(Player viewer, Player target) {
-        if (target == viewer) return;
-        if (viewer.getWorld() != target.getWorld()) return;
-        if (getDistance(target, viewer) < 48 && viewer.canSee(target))
-            getArmorStandManager(target).spawn(viewer);
-    }
-
-    private double getDistance(Player player1, Player player2) {
-        Location loc1 = player1.getLocation();
-        Location loc2 = player2.getLocation();
-        return Math.sqrt(Math.pow(loc1.getX()-loc2.getX(), 2) + Math.pow(loc1.getZ()-loc2.getZ(), 2));
     }
 }

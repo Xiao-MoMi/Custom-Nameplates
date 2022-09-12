@@ -1,4 +1,5 @@
-config-version: '5'
+# Do not change
+config-version: '6'
 
 #Nameplate module require a restart because it requires a SQL connection
 nameplate: true
@@ -7,7 +8,4 @@ nameplate: true
 background: true
 bossbar: true
 actionbar: true
-
-#Chatting bubbles are still not available
-#They are in developments and will be available soon
-bubbles: false
+bubbles: true

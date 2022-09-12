@@ -204,7 +204,6 @@ public class ResourceManager {
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to generate font json...</red>");
         }
 
-        AdventureUtil.consoleMessage("[CustomNameplates] ResourcePack has been generated!");
         if (NAMEPLATES.size() != 0) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + (NAMEPLATES.size() -1) + " <gray>nameplates");
 
         if (ConfigManager.Main.itemsAdder){
@@ -264,12 +263,14 @@ public class ResourceManager {
             if (!config.contains("color")) config.set("color","WHITE");
             if (!config.contains("size")) config.set("size", 16);
             if (!config.contains("yoffset")) config.set("yoffset", 12);
+            if (!config.contains("bubble")) config.set("bubble", "<white>");
             ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color","WHITE")).toUpperCase());
             int size = config.getInt("size");
             int yoffset = config.getInt("yoffset");
             String name = config.getString("name");
+            String bubble = config.getString("bubble");
             config.save(file);
-            return new NameplateConfig(color, size, name, yoffset);
+            return new NameplateConfig(color, size, name, yoffset, bubble);
         }
         catch (Exception e) {
             return NameplateConfig.EMPTY;

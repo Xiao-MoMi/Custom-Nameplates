@@ -1,21 +1,4 @@
-/*
- *  Copyright (C) <2022> <XiaoMoMi>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-package net.momirealms.customnameplates.nameplates.mode.tp;
+package net.momirealms.customnameplates.nameplates.mode.bubbles;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.nameplates.listener.*;
@@ -24,9 +7,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class TpPacketsHandler extends PacketsHandler {
+public class BBPacketsHandle extends PacketsHandler {
 
-    private final TeleportingTag teleportingTag;
+    private final ChatBubblesManager chatBubblesManager;
 
     private EntityDestroyListener entityDestroyListener;
     private EntityMoveListener entityMoveListener;
@@ -34,9 +17,9 @@ public class TpPacketsHandler extends PacketsHandler {
     private EntityTeleportListener entityTeleportListener;
     private EntityLookListener entityLookListener;
 
-    protected TpPacketsHandler(String name, TeleportingTag teleportingTag) {
-        super(name, teleportingTag);
-        this.teleportingTag = teleportingTag;
+    protected BBPacketsHandle(String name, ChatBubblesManager chatBubblesManager) {
+        super(name, chatBubblesManager);
+        this.chatBubblesManager = chatBubblesManager;
     }
 
     @Override
@@ -68,15 +51,15 @@ public class TpPacketsHandler extends PacketsHandler {
     public void onEntityMove(Player receiver, int entityId) {
         Player mover = getPlayerFromMap(entityId);
         if (mover != null) {
-            teleportingTag.getArmorStandManager(mover).teleport(receiver);
+            chatBubblesManager.getArmorStandManager(mover).teleport(receiver);
         }
     }
 
     @Override
     public void onEntitySpawn(Player receiver, int entityId) {
-        Player spawnedPlayer = super.getPlayerFromMap(entityId);
+        Player spawnedPlayer = getPlayerFromMap(entityId);
         if (spawnedPlayer != null) {
-            teleportingTag.getArmorStandManager(spawnedPlayer).spawn(receiver);
+            chatBubblesManager.getArmorStandManager(spawnedPlayer).spawn(receiver);
         }
     }
 
@@ -89,9 +72,14 @@ public class TpPacketsHandler extends PacketsHandler {
 
     @Override
     public void onEntityDestroy(Player receiver, int entity) {
-        Player deSpawnedPlayer = super.getPlayerFromMap(entity);
+        Player deSpawnedPlayer = getPlayerFromMap(entity);
         if (deSpawnedPlayer != null) {
-            teleportingTag.getArmorStandManager(deSpawnedPlayer).destroy(receiver);
+            chatBubblesManager.getArmorStandManager(deSpawnedPlayer).destroy(receiver);
         }
+    }
+
+    @Override
+    public Player getPlayerFromMap(int entityID) {
+        return entityIdMap.get(entityID);
     }
 }

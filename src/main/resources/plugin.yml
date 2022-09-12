@@ -24,7 +24,6 @@ permissions:
   nameplates.*:
     description: Gives access to all nameplates commands
     children:
-      nameplates.generate: true
       nameplates.reload: true
       nameplates.forceequip: true
       nameplates.forceunequip: true
@@ -33,8 +32,6 @@ permissions:
       nameplates.preview: true
       nameplates.list: true
 
-  nameplates.generate:
-    default: op
   nameplates.reload:
     default: op
   nameplates.forceequip:
@@ -51,3 +48,25 @@ permissions:
     default: true
   nameplates.equip:
     default: true
+
+  bubbles.*:
+    description: Gives access to all bubbles commands
+    children:
+      bubbles.unequip: true
+      bubbles.equip: true
+      bubbles.forceequip: true
+      bubbles.forceunequip: true
+      bubbles.list: true
+
+  bubbles.help:
+    default: op
+  bubbles.equip:
+    default: true
+  bubbles.unequip:
+    default: true
+  bubbles.list:
+    default: true
+  bubbles.forceequip:
+    default: op
+  bubbles.forceunequip:
+    default: op

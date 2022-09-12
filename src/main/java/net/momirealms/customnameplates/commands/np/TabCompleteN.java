@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands;
+package net.momirealms.customnameplates.commands.np;
 
 import net.momirealms.customnameplates.resource.ResourceManager;
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabComplete implements TabCompleter {
+public class TabCompleteN implements TabCompleter {
 
     @Override
     @ParametersAreNonnullByDefault
@@ -49,7 +49,6 @@ public class TabComplete implements TabCompleter {
             if (sender.hasPermission("nameplates.forcepreview")) tab.add("forcepreview");
             if (sender.hasPermission("nameplates.preview")) tab.add("preview");
             if (sender.hasPermission("nameplates.list")) tab.add("list");
-            if (sender.hasPermission("nameplates.generate")) tab.add("generate");
 
             List<String> arrayList = new ArrayList<>();
             for (String cmd : tab) {

@@ -39,14 +39,15 @@ public class ArmorStandManager {
     private final Player owner;
 
 
-    public ArmorStandManager(Player owner, boolean isBubbles) {
-        Set<Map.Entry<String, Double>> entries = ConfigManager.Nameplate.textMap.entrySet();
+    public ArmorStandManager(Player owner) {
         this.owner = owner;
-        if (!isBubbles) {
-            entries.forEach(map -> {
-                addArmorStand(map.getKey(), new FakeArmorStand(this, owner, new TextCache(owner, map.getKey()), map.getValue()));
-            });
-        }
+    }
+
+    public void addDefault() {
+        Set<Map.Entry<String, Double>> entries = ConfigManager.Nameplate.textMap.entrySet();
+        entries.forEach(map -> {
+            addArmorStand(map.getKey(), new FakeArmorStand(this, owner, new TextCache(owner, map.getKey()), map.getValue()));
+        });
     }
 
     public void addArmorStand(String name, ArmorStand as) {
@@ -150,6 +151,7 @@ public class ArmorStandManager {
             public void run() {
                 as.destroy();
                 armorStands.remove(random);
+                armorStandArray = armorStands.values().toArray(new ArmorStand[0]);
             }
         }.runTaskLater(CustomNameplates.instance, ConfigManager.Bubbles.stayTime * 20L);
     }

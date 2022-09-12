@@ -33,7 +33,7 @@ public class DataManager {
 
     public PlayerData getOrEmpty(Player player) {
         if (cache.get(player.getUniqueId()) == null) {
-            return new PlayerData("none");
+            return new PlayerData("none","none");
         }
         else {
             return cache.get(player.getUniqueId());
@@ -45,7 +45,7 @@ public class DataManager {
         if (ConfigManager.DatabaseConfig.async) {
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
-                cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate)));
+                cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
                 CustomNameplates.instance.getTeamManager().createTeam(player);
                 CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
                 CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
@@ -53,7 +53,7 @@ public class DataManager {
         }
         else {
             PlayerData playerData = SqlHandler.getPlayerData(uuid);
-            cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate)));
+            cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
             CustomNameplates.instance.getTeamManager().createTeam(player);
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
@@ -68,7 +68,7 @@ public class DataManager {
         }
         PlayerData playerData = SqlHandler.getPlayerData(uuid);
         if (playerData == null) {
-            playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate);
+            playerData = new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble);
         }
         cache.put(uuid, playerData);
         return playerData;

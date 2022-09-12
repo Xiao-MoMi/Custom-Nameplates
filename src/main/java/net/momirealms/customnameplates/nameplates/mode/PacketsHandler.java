@@ -69,9 +69,6 @@ public abstract class PacketsHandler extends Function {
     public void onEntityMove(Player receiver, int entityId) {
     }
 
-    public void onPlayerMove(Player mover) {
-    }
-
     public void onEntitySpawn(Player receiver, int entityId) {
     }
 

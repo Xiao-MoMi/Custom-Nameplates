@@ -19,13 +19,15 @@ package net.momirealms.customnameplates.data;
 
 public class PlayerData {
 
-    public static PlayerData EMPTY = new PlayerData("none");
+    public static PlayerData EMPTY = new PlayerData("none","none");
 
     private String equipped;
+    private String bubbles;
 //    private boolean accepted;
 
-    public PlayerData(String equipped) {
+    public PlayerData(String equipped, String bubbles) {
         this.equipped = equipped;
+        this.bubbles = bubbles;
 //        this.accepted = accepted;
     }
 
@@ -45,4 +47,11 @@ public class PlayerData {
         this.equipped = nameplate.toLowerCase();
     }
 
+    public String getBubbles() {
+        return bubbles;
+    }
+
+    public void setBubbles(String bubbles) {
+        this.bubbles = bubbles;
+    }
 }

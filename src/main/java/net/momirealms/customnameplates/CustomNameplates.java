@@ -22,15 +22,17 @@ import com.comphenix.protocol.ProtocolManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.momirealms.customnameplates.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.bossbar.BossBarManager;
-import net.momirealms.customnameplates.commands.Execute;
-import net.momirealms.customnameplates.commands.TabComplete;
+import net.momirealms.customnameplates.commands.bb.ExecuteB;
+import net.momirealms.customnameplates.commands.bb.TabCompleteB;
+import net.momirealms.customnameplates.commands.np.ExecuteN;
+import net.momirealms.customnameplates.commands.np.TabCompleteN;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.PlaceholderManager;
 import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.TeamPacketManager;
-import net.momirealms.customnameplates.nameplates.bubbles.ChatBubblesManager;
+import net.momirealms.customnameplates.nameplates.mode.bubbles.ChatBubblesManager;
 import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
 import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
 import net.momirealms.customnameplates.nameplates.mode.tm.TeamTag;
@@ -78,8 +80,10 @@ public final class CustomNameplates extends JavaPlugin {
 
         AdventureUtil.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
 
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new Execute());
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabComplete());
+        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new ExecuteN());
+        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabCompleteN());
+        Objects.requireNonNull(Bukkit.getPluginCommand("chatbubbles")).setExecutor(new ExecuteB());
+        Objects.requireNonNull(Bukkit.getPluginCommand("chatbubbles")).setTabCompleter(new TabCompleteB());
 
         loadConfig();
 

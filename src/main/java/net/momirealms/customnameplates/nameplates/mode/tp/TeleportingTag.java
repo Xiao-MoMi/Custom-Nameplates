@@ -36,7 +36,9 @@ public class TeleportingTag extends EntityTag {
 
     private TpPacketsHandler handler;
 
-    private BukkitTask task;
+    private BukkitTask vehicleTask;
+
+    private BukkitTask refreshTask;
 
     public TeleportingTag(String name) {
         super(name);
@@ -45,7 +47,9 @@ public class TeleportingTag extends EntityTag {
     @Override
     public void load() {
         for (Player all : Bukkit.getOnlinePlayers()) {
-            armorStandManagerMap.put(all, new ArmorStandManager(all, false));
+            ArmorStandManager asm = new ArmorStandManager(all);
+            asm.addDefault();
+            armorStandManagerMap.put(all, asm);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(all);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all);
             for (Player player : Bukkit.getOnlinePlayers())
@@ -57,12 +61,25 @@ public class TeleportingTag extends EntityTag {
         this.handler.load();
         this.vehicleChecker = new VehicleChecker(this);
         this.vehicleChecker.load();
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
+        this.vehicleTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
            for (Player player : Bukkit.getOnlinePlayers()) {
                this.vehicleChecker.refresh(player);
            }
         },10,20);
-        super.load();
+        if (ConfigManager.Nameplate.update) {
+            refreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
+                for (ArmorStandManager asm : armorStandManagerMap.values()) {
+                    asm.refresh(false);
+                }
+            }, 20, ConfigManager.Nameplate.refresh);
+        }
+        else {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, () -> {
+                for (ArmorStandManager asm : armorStandManagerMap.values()) {
+                    asm.refresh(false);
+                }
+            }, 20);
+        }
     }
 
     @Override
@@ -71,7 +88,10 @@ public class TeleportingTag extends EntityTag {
         super.unload();
         this.handler.unload();
         this.vehicleChecker.unload();
-        this.task.cancel();
+        this.vehicleTask.cancel();
+        if (refreshTask != null) {
+            refreshTask.cancel();
+        }
     }
 
     @Override
@@ -95,5 +115,30 @@ public class TeleportingTag extends EntityTag {
         Location loc1 = player1.getLocation();
         Location loc2 = player2.getLocation();
         return Math.sqrt(Math.pow(loc1.getX()-loc2.getX(), 2) + Math.pow(loc1.getZ()-loc2.getZ(), 2));
+    }
+
+    @Override
+    public void onJoin(Player player) {
+        ArmorStandManager asm = new ArmorStandManager(player);
+        asm.addDefault();
+        armorStandManagerMap.put(player, asm);
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
+            spawnArmorStands(viewer, player);
+            spawnArmorStands(player, viewer);
+        }
+        super.onJoin(player);
+    }
+
+    @Override
+    public void onQuit(Player player) {
+//        for (Player all : Bukkit.getOnlinePlayers()) {
+//            if (getArmorStandManager(all) == null) continue;
+//            getArmorStandManager(all) .unregisterPlayer(player);
+//        }
+        ArmorStandManager asm = armorStandManagerMap.remove(player);
+        if (asm != null) {
+            asm.destroy();
+        }
+        super.onQuit(player);
     }
 }

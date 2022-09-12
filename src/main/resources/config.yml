@@ -1,5 +1,5 @@
-# don't change
-config-version: '5'
+# Do not change
+config-version: '6'
 
 config:
   # Language

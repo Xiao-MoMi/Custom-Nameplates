@@ -1,10 +1,18 @@
-# Don't change
-config-version: '5'
+# Do not change
+config-version: '6'
 
 bubble:
 
   # Player's default chatting bubbles
   default-bubbles: 'none'
+
+  # Text format when no bubbles equipped
+  default-format: '<white><underlined>'
+
+  # Add additional prefix and suffix to the text
+  # Placeholders can be used here
+  text-prefix: ''
+  text-suffix: ''
 
   # Space between two lines of text
   line-spacing: 0.5

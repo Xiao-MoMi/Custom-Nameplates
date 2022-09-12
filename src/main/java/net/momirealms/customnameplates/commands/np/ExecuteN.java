@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands;
+package net.momirealms.customnameplates.commands.np;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -38,9 +38,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Execute implements CommandExecutor {
+public class ExecuteN implements CommandExecutor {
 
     private final HashMap<Player, Long> coolDown = new HashMap<>();
 
@@ -64,17 +66,13 @@ public class Execute implements CommandExecutor {
 
                     if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.reload);
                     else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.reload);
-                }
-                else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
-                return true;
-            }
-            //生成资源包
-            case "generate" -> {
-                if (sender.hasPermission("nameplates.generate") || sender.isOp()) {
-                    ConfigManager.Main.reload();
-                    CustomNameplates.instance.getResourceManager().generateResourcePack();
+
                     if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.generate);
                     else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.generate);
+                    CustomNameplates.instance.getResourceManager().generateResourcePack();
+
+                    if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.generateDone);
+                    else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.generateDone);
                 }
                 else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
                 return true;
@@ -91,17 +89,17 @@ public class Execute implements CommandExecutor {
                     if (sender.hasPermission("nameplates.equip." + args[1]) || sender.isOp()) {
 
                         if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]) == null) {
-                            AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
+                            AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                             return true;
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[1]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
                         CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]).getConfig().getName()));
+                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]).getConfig().getName()));
 
                     }
-                    else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.notAvailable);
+                    else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_notAvailable);
                 }
                 else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.no_console);
 
@@ -120,16 +118,16 @@ public class Execute implements CommandExecutor {
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player != null){
                         if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]) == null){
-                            if(sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
-                            else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
+                            if(sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
+                            else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                             return true;
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[2]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
                         CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
-                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
+                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
+                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
                     }else {
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
@@ -147,7 +145,7 @@ public class Execute implements CommandExecutor {
                     CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                     CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
                     CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                    AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.unEquip);
+                    AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.np_unEquip);
                 }
                 else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.no_console);
 
@@ -170,8 +168,8 @@ public class Execute implements CommandExecutor {
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
                         CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.force_unEquip.replace("{Player}", args[1]));
-                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.force_unEquip.replace("{Player}", args[1]));
+                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_unEquip.replace("{Player}", args[1]));
+                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_unEquip.replace("{Player}", args[1]));
                     }else {
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
@@ -240,8 +238,8 @@ public class Execute implements CommandExecutor {
                     }
                     NameplateInstance nameplateInstance = CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]);
                     if (nameplateInstance == null){
-                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
-                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_exist);
+                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
+                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                         return true;
                     }
                     long time = System.currentTimeMillis();
@@ -284,20 +282,29 @@ public class Execute implements CommandExecutor {
                             if (key.equalsIgnoreCase("none")) return;
                             stringBuilder.append(key).append(" ");
                         });
-                        AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.available.replace("{Nameplates}", stringBuilder.toString()));
+                        AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.np_available.replace("{Nameplates}", stringBuilder.toString()));
                     }
                     else if (player.hasPermission("nameplates.list")) {
-                        StringBuilder stringBuilder = new StringBuilder();
+                        List<String> availableNameplates = new ArrayList<>();
                         for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
                             String permission = info.getPermission().toLowerCase();
                             if (permission.startsWith("nameplates.equip.")) {
                                 permission = StringUtils.replace(permission, "nameplates.equip.", "");
                                 if (ResourceManager.NAMEPLATES.get(permission) != null) {
-                                    stringBuilder.append(permission).append(" ");
+                                    availableNameplates.add(permission);
                                 }
                             }
                         }
-                        AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.available.replace("{Nameplates}", stringBuilder.toString()));
+                        if (availableNameplates.size() != 0) {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            for (String str : availableNameplates) {
+                                stringBuilder.append(str).append(" ");
+                            }
+                            AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.np_available.replace("{Nameplates}", stringBuilder.toString()));
+                        }
+                        else {
+                            AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.np_haveNone);
+                        }
                     }
                     else AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.noPerm);
                 }
@@ -317,7 +324,6 @@ public class Execute implements CommandExecutor {
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-                        AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the resource pack");
                     }
                 }
                 else {
@@ -330,7 +336,6 @@ public class Execute implements CommandExecutor {
                     AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
                     AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
                     AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-                    AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates generate - <color:#7FFFAA>generate the resource pack");
                 }
                 return true;
             }

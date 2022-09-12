@@ -21,9 +21,9 @@ import org.bukkit.ChatColor;
 
 import java.util.Objects;
 
-public record NameplateConfig(ChatColor color, int height, String name, int yoffset) {
+public record NameplateConfig(ChatColor color, int height, String name, int yoffset, String bubbleColor) {
 
-    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12);
+    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12, "<white>");
 
     public ChatColor getColor() {
         return this.color;
@@ -39,6 +39,10 @@ public record NameplateConfig(ChatColor color, int height, String name, int yoff
 
     public int getYOffset() {
         return this.yoffset;
+    }
+
+    public String bubbleColor() {
+        return bubbleColor;
     }
 
     @Override

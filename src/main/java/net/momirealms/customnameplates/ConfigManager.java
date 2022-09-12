@@ -20,6 +20,7 @@ package net.momirealms.customnameplates;
 import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.bossbar.BossBarConfig;
 import net.momirealms.customnameplates.bossbar.Overlay;
+import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.font.FontWidthNormal;
@@ -35,6 +36,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -222,40 +224,65 @@ public class ConfigManager {
         public static String prefix;
         public static String lackArgs;
         public static String reload;
-        public static String equip;
-        public static String unEquip;
-        public static String force_equip;
-        public static String force_unEquip;
-        public static String not_exist;
         public static String not_online;
         public static String no_console;
-        public static String notAvailable;
-        public static String available;
         public static String coolDown;
         public static String preview;
         public static String generate;
         public static String noNameplate;
+        public static String generateDone;
+
+        public static String np_equip;
+        public static String np_unEquip;
+        public static String np_force_equip;
+        public static String np_force_unEquip;
+        public static String np_not_exist;
+        public static String np_notAvailable;
+        public static String np_available;
+        public static String np_haveNone;
+
+        public static String bb_equip;
+        public static String bb_unEquip;
+        public static String bb_force_equip;
+        public static String bb_force_unEquip;
+        public static String bb_not_exist;
+        public static String bb_notAvailable;
+        public static String bb_available;
+        public static String bb_haveNone;
 
         public static void reload(){
 
-            YamlConfiguration messagesConfig = getConfig("messages/messages_" + Main.lang +".yml");
+            YamlConfiguration messagesConfig = getConfig("messages" + File.separator + Main.lang +".yml");
+
             noPerm = messagesConfig.getString("messages.no-perm");
             prefix = messagesConfig.getString("messages.prefix");
             lackArgs = messagesConfig.getString("messages.lack-args");
             reload = messagesConfig.getString("messages.reload");
-            equip = messagesConfig.getString("messages.equip");
-            unEquip = messagesConfig.getString("messages.unequip");
-            force_equip = messagesConfig.getString("messages.force-equip");
-            force_unEquip = messagesConfig.getString("messages.force-unequip");
-            not_exist = messagesConfig.getString("messages.not-exist");
-            not_online = messagesConfig.getString("messages.not-online");
-            no_console = messagesConfig.getString("messages.no-console");
-            notAvailable = messagesConfig.getString("messages.not-available");
-            available = messagesConfig.getString("messages.available");
             coolDown = messagesConfig.getString("messages.cooldown");
             preview = messagesConfig.getString("messages.preview");
             generate = messagesConfig.getString("messages.generate");
-            noNameplate = messagesConfig.getString("messages.no-nameplate","messages.no-nameplate is missing");
+            generateDone = messagesConfig.getString("messages.generate-done");
+            noNameplate = messagesConfig.getString("messages.no-nameplate");
+            not_online = messagesConfig.getString("messages.not-online");
+            no_console = messagesConfig.getString("messages.no-console");
+
+            np_equip = messagesConfig.getString("messages.equip-nameplates");
+            np_unEquip = messagesConfig.getString("messages.unequip-nameplates");
+            np_force_equip = messagesConfig.getString("messages.force-equip-nameplates");
+            np_force_unEquip = messagesConfig.getString("messages.force-unequip-nameplates");
+            np_not_exist = messagesConfig.getString("messages.not-exist-nameplates");
+            np_notAvailable = messagesConfig.getString("messages.not-available-nameplates");
+            np_available = messagesConfig.getString("messages.available-nameplates");
+            np_haveNone = messagesConfig.getString("messages.have-no-nameplates");
+
+            bb_equip = messagesConfig.getString("messages.equip-bubbles");
+            bb_unEquip = messagesConfig.getString("messages.unequip-bubbles");
+            bb_force_equip = messagesConfig.getString("messages.force-equip-bubbles");
+            bb_force_unEquip = messagesConfig.getString("messages.force-unequip-bubbles");
+            bb_not_exist = messagesConfig.getString("messages.not-exist-bubbles");
+            bb_notAvailable = messagesConfig.getString("messages.not-available-bubbles");
+            bb_available = messagesConfig.getString("messages.available-bubbles");
+            bb_haveNone = messagesConfig.getString("messages.have-no-bubbles");
         }
     }
 
@@ -331,14 +358,20 @@ public class ConfigManager {
      * 加载聊天气泡模块功能
      */
     public static class Bubbles {
-        public static String defaultBubble;
+        public static String defaultBubble = "none";
+        public static String defaultFormat;
+        public static String prefix;
+        public static String suffix;
         public static double lineSpace;
         public static double yOffset;
         public static int stayTime;
         public static void load() {
             YamlConfiguration config = getConfig("bubble.yml");
             defaultBubble = config.getString("bubble.default-bubbles", "none");
+            prefix = config.getString("bubble.text-prefix", "");
+            suffix = config.getString("bubble.text-suffix", "");
             lineSpace = config.getDouble("bubble.line-spacing");
+            defaultFormat = config.getString("bubble.default-format", "<white><underlined>");
             yOffset = config.getDouble("bubble.bottom-line-Y-offset");
             stayTime = config.getInt("bubble.stay-time", 5);
         }
@@ -384,7 +417,7 @@ public class ConfigManager {
 
             YamlConfiguration databaseConfig = getConfig("database.yml");
             String storage_mode = databaseConfig.getString("settings.storage-mode","SQLite");
-            async = !databaseConfig.getBoolean("settings.disable-async", true);
+            async = !databaseConfig.getBoolean("settings.disable-async", false);
             if(storage_mode.equalsIgnoreCase("SQLite")){
                 enable_pool = false;
                 use_mysql = false;
@@ -409,6 +442,7 @@ public class ConfigManager {
                     url = url + "&allowPublicKeyRetrieval=true";
                 }
                 enable_pool = databaseConfig.getBoolean("settings.use-pool");
+
                 if(enable_pool){
                     maximum_pool_size = databaseConfig.getInt("Pool-Settings.maximum-pool-size");
                     minimum_idle = databaseConfig.getInt("Pool-Settings.minimum-idle");
@@ -419,6 +453,18 @@ public class ConfigManager {
             else {
                 AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! No such storage mode!</red>");
                 Bukkit.getPluginManager().disablePlugin(CustomNameplates.instance);
+            }
+
+            if (databaseConfig.getBoolean("settings.migration", false)) {
+                SqlHandler.updateTable();
+                databaseConfig.set("settings.migration", false);
+                AdventureUtil.consoleMessage("<green>[CustomNameplates] Migration is done!");
+                try {
+                    databaseConfig.save(new File(CustomNameplates.instance.getDataFolder(), "database.yml"));
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

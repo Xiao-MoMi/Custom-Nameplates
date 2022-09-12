@@ -23,6 +23,7 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.helper.Log;
 
@@ -37,6 +38,15 @@ public class ConfigUtil {
             YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "nameplate.yml"), CustomNameplates.instance.getResource("nameplate.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
             YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "bubble.yml"), CustomNameplates.instance.getResource("bubble.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
             YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "MODULES.yml"), CustomNameplates.instance.getResource("MODULES.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "database.yml"), CustomNameplates.instance.getResource("database.yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+        }catch (IOException e){
+            Log.warn(e.getMessage());
+        }
+    }
+
+    public static void lang(){
+        try {
+            YamlDocument.create(new File(CustomNameplates.instance.getDataFolder(), "messages" + File.separator + ConfigManager.Main.lang +".yml"), CustomNameplates.instance.getResource("messages" + File.separator + ConfigManager.Main.lang +".yml"), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
         }catch (IOException e){
             Log.warn(e.getMessage());
         }

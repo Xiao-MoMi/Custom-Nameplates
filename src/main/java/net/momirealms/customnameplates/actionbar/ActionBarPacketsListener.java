@@ -40,6 +40,4 @@ public class ActionBarPacketsListener extends PacketAdapter {
 //        WrappedChatComponent chatComponent1 = WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(raw));
 //        packet.getChatComponents().write(0, chatComponent1);
     }
-
-
 }
