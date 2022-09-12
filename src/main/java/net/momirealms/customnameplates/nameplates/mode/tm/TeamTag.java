@@ -19,10 +19,10 @@ package net.momirealms.customnameplates.nameplates.mode.tm;
 
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.nameplates.TeamManager;
-import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
 import net.momirealms.customnameplates.nameplates.NameplatesTeam;
+import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.mode.EventListener;
+import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

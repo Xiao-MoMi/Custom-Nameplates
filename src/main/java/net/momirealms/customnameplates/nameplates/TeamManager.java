@@ -21,7 +21,6 @@ import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.hook.TABTeamHook;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

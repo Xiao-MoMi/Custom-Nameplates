@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.nameplates.mode;
 
 import com.comphenix.protocol.events.PacketContainer;
-import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.Function;
 import net.momirealms.customnameplates.nameplates.listener.BukkitListener;

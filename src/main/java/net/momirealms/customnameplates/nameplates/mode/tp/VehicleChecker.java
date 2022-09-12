@@ -24,7 +24,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.WeakHashMap;
 
 public class VehicleChecker extends Function {
 

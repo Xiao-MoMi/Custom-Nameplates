@@ -17,7 +17,8 @@
 
 package net.momirealms.customnameplates.nameplates;
 
-import net.momirealms.customnameplates.font.*;
+import net.momirealms.customnameplates.font.FontOffset;
+import net.momirealms.customnameplates.font.FontUtil;
 import org.bukkit.ChatColor;
 
 public class NameplateUtil {

@@ -21,10 +21,10 @@ import com.comphenix.protocol.events.PacketContainer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.nameplates.ArmorStandManager;
-import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
 import net.momirealms.customnameplates.nameplates.listener.EntityDestroyListener;
 import net.momirealms.customnameplates.nameplates.listener.EntityMountListener;
 import net.momirealms.customnameplates.nameplates.listener.EntitySpawnListener;
+import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -93,7 +93,9 @@ public class RdPacketsHandler extends PacketsHandler {
 
     @Override
     public void onEntityMount(PacketContainer packet) {
-        int[] ids =  ridingTag.getArmorStandManager(super.getPlayerFromMap(packet.getIntegers().read(0))).getArmorStandIDs();
+        Player player = super.getPlayerFromMap(packet.getIntegers().read(0));
+        if (player == null) return;
+        int[] ids =  ridingTag.getArmorStandManager(player).getArmorStandIDs();
         if (ids != null) {
             int[] old = packet.getIntegerArrays().read(0);
             int[] idArray = new int[ids.length + old.length];

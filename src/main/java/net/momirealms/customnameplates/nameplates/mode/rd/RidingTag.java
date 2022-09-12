@@ -106,7 +106,7 @@ public class RidingTag extends EntityTag {
         if (target == viewer) return;
         if (viewer.getWorld() != target.getWorld()) return;
         if (getDistance(target, viewer) < 48 && viewer.canSee(target)) {
-            ArmorStandManager asm = (ArmorStandManager) getArmorStandManager(target);
+            ArmorStandManager asm = getArmorStandManager(target);
             asm.spawn(viewer);
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 asm.mount(viewer);
