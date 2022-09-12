@@ -2,8 +2,9 @@ background:
 
   bedrock_1:
     size: 14
-    # x-offset = start + end
-    x-offset: 4
+    # change the margin of the background
+    start-offset: 1
+    end-offset: 1
     # y-offset is the vertical position of the background
     y-offset: 7
     start: b0
@@ -19,7 +20,8 @@ background:
 
   bedrock_2:
     size: 14
-    x-offset: 4
+    start-offset: 4
+    end-offset: 4
     y-offset: 9
     start: b0
     offset_1: b1
@@ -34,7 +36,8 @@ background:
 
   bedrock_3:
     size: 14
-    x-offset: 4
+    start-offset: 1
+    end-offset: 1
     y-offset: -7
     start: b0
     offset_1: b1

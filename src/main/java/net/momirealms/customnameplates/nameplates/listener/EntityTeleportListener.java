@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates.mode.listener;
+package net.momirealms.customnameplates.nameplates.listener;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -25,16 +25,17 @@ import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
 
-public class EntityMountListener extends PacketAdapter {
+public class EntityTeleportListener extends PacketAdapter {
 
     private final PacketsHandler handler;
 
-    public EntityMountListener(PacketsHandler handler) {
-        super(CustomNameplates.instance, ListenerPriority.HIGHEST, PacketType.Play.Server.MOUNT);
+    public EntityTeleportListener(PacketsHandler handler) {
+        super(CustomNameplates.instance, ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_TELEPORT);
         this.handler = handler;
     }
 
     public void onPacketSending(PacketEvent event) {
-        handler.onEntityMount(event.getPacket());
+        PacketContainer packet = event.getPacket();
+        handler.onEntityMove(event.getPlayer(), packet.getIntegers().read(0));
     }
 }

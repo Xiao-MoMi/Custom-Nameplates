@@ -1,0 +1,17 @@
+# Don't change
+config-version: '5'
+
+bubble:
+
+  # Player's default chatting bubbles
+  default-bubbles: 'none'
+
+  # Space between two lines of text
+  line-spacing: 0.5
+
+  # This decides where the bottom line is
+  bottom-line-Y-offset: 0.6
+
+  # Seconds
+  # This decides how long will the chat hologram remains
+  stay-time: 5

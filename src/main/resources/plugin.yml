@@ -1,7 +1,7 @@
 name: CustomNameplates
 version: '${version}'
 main: net.momirealms.customnameplates.CustomNameplates
-api-version: 1.16
+api-version: 1.17
 authors: [ XiaoMoMi ]
 depend:
   - ProtocolLib
@@ -15,6 +15,10 @@ commands:
     usage: /customnameplates
     aliases:
       - nameplates
+  chatbubbles:
+    usage: /chatbubbles
+    aliases:
+      - bubbles
 
 permissions:
   nameplates.*:

@@ -55,7 +55,9 @@ public class NameplatesTeam {
 
         if (!ConfigManager.Main.tab) {
             Team teamTemp = scoreboard.getTeam(teamName);
-            if (teamTemp == null) teamTemp = scoreboard.registerNewTeam(teamName);
+            if (teamTemp == null) {
+                teamTemp = scoreboard.registerNewTeam(teamName);
+            }
             teamTemp.addEntry(player.getName());
         }
 
@@ -79,8 +81,15 @@ public class NameplatesTeam {
                 this.prefix = MiniMessage.miniMessage().deserialize(ConfigManager.Nameplate.player_prefix);
                 this.suffix = MiniMessage.miniMessage().deserialize(ConfigManager.Nameplate.player_suffix);
             }
-            this.prefixText = "";
-            this.suffixText = "";
+            if (ConfigManager.Main.placeholderAPI) {
+                this.prefixText = CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(this.player, ConfigManager.Nameplate.player_prefix);
+                this.suffixText = CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(this.player, ConfigManager.Nameplate.player_suffix);
+            }
+            else {
+                this.prefixText = ConfigManager.Nameplate.player_prefix;
+                this.suffixText = ConfigManager.Nameplate.player_suffix;
+            }
+
             this.color = ChatColor.WHITE;
             return;
         }
@@ -120,9 +129,9 @@ public class NameplatesTeam {
                 name,
                 MiniMessage.miniMessage().stripTags(playerSuffix),
                 nameplateInstance
-        );
+        ) + playerPrefix;
 
-        this.suffixText = NameplateUtil.getSuffixChar(
+        this.suffixText = playerSuffix + NameplateUtil.getSuffixChar(
                 MiniMessage.miniMessage().stripTags(playerPrefix) +
                         name +
                         MiniMessage.miniMessage().stripTags(playerSuffix)

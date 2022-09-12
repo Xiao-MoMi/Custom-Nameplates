@@ -18,8 +18,8 @@
 package net.momirealms.customnameplates.nameplates.mode.tp;
 
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.nameplates.listener.*;
 import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
-import net.momirealms.customnameplates.nameplates.mode.listener.*;
 import org.bukkit.entity.Player;
 
 import java.util.List;

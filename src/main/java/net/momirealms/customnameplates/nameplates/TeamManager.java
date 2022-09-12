@@ -23,10 +23,11 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager {
 
-    private final HashMap<String, NameplatesTeam> teams = new HashMap<>();
+    private final ConcurrentHashMap<String, NameplatesTeam> teams = new ConcurrentHashMap<>();
 
     public void createTeam(Player player) {
         String teamName = player.getName();

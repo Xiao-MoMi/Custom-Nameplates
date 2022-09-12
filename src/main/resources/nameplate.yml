@@ -1,4 +1,5 @@
-config-version: '4'
+# Don't change
+config-version: '5'
 
 nameplate:
   # mode: Team / Riding / Teleporting
@@ -33,7 +34,7 @@ nameplate:
   # Nameplates work on the custom font system where legacy color code is not supported!
   # Please use MiniMessage format: https://docs.adventure.kyori.net/minimessage/format.html
   prefix: '<font:minecraft:default><rainbow>Hello! </rainbow></font>'
-  suffix: ' <red>%player_health_rounded%♥'
+  suffix: '<font:minecraft:default> <red>%player_health_rounded%♥</font>'
 
   # These options only work when using mode Team
   team:

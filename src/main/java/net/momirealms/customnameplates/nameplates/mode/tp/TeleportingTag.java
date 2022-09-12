@@ -17,11 +17,13 @@
 
 package net.momirealms.customnameplates.nameplates.mode.tp;
 
+import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.nameplates.mode.ArmorStandManager;
+import net.momirealms.customnameplates.nameplates.ArmorStandManager;
 import net.momirealms.customnameplates.nameplates.mode.EntityTag;
 import net.momirealms.customnameplates.nameplates.mode.EventListenerE;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitTask;
@@ -43,7 +45,7 @@ public class TeleportingTag extends EntityTag {
     @Override
     public void load() {
         for (Player all : Bukkit.getOnlinePlayers()) {
-            armorStandManagerMap.put(all, new ArmorStandManager(all));
+            armorStandManagerMap.put(all, new ArmorStandManager(all, false));
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(all);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all);
             for (Player player : Bukkit.getOnlinePlayers())
@@ -85,17 +87,13 @@ public class TeleportingTag extends EntityTag {
     private void spawnArmorStands(Player viewer, Player target) {
         if (target == viewer) return;
         if (viewer.getWorld() != target.getWorld()) return;
-        if (viewer.canSee(target))
+        if (getDistance(target, viewer) < 48 && viewer.canSee(target))
             getArmorStandManager(target).spawn(viewer);
     }
 
-    @Override
-    public void onJoin(Player player) {
-        super.onJoin(player);
-    }
-
-    @Override
-    public void onQuit(Player player) {
-        super.onQuit(player);
+    private double getDistance(Player player1, Player player2) {
+        Location loc1 = player1.getLocation();
+        Location loc2 = player2.getLocation();
+        return Math.sqrt(Math.pow(loc1.getX()-loc2.getX(), 2) + Math.pow(loc1.getZ()-loc2.getZ(), 2));
     }
 }

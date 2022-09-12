@@ -38,7 +38,7 @@ public class NameplateUtil {
         stringBuilder.append(FontOffset.getShortestNegChars(16 - ((totalWidth + 1) % 16 + (isEven ? 0 : 1))));
         stringBuilder.append(middle).append(neg_1);
         stringBuilder.append(right).append(neg_1);
-        stringBuilder.append(FontOffset.getShortestNegChars(isEven ? left_offset : left_offset + 1));
+        stringBuilder.append(FontOffset.getShortestNegChars(left_offset - 1));
         return stringBuilder.toString();
     }
 

@@ -1,2 +1,2 @@
-text: '<font:nameplates:default>%nameplates_prefix%</font>%player_name%<font:nameplates:default>%nameplates_suffix%</font>'
+text: '<font:nameplates:default>%nameplates_bg_health%</font><font:nameplates:offset_-11><red>%player_health_rounded% Health</font>               <font:nameplates:default>%nameplates_bg_food%</font><font:nameplates:offset_-11><#F0E68C>%player_food_level% Hunger</font>'
 refresh-rate: 5

@@ -20,11 +20,11 @@ package net.momirealms.customnameplates.nameplates.mode.rd;
 import com.comphenix.protocol.events.PacketContainer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.nameplates.mode.ArmorStandManager;
+import net.momirealms.customnameplates.nameplates.ArmorStandManager;
 import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
-import net.momirealms.customnameplates.nameplates.mode.listener.EntityDestroyListener;
-import net.momirealms.customnameplates.nameplates.mode.listener.EntityMountListener;
-import net.momirealms.customnameplates.nameplates.mode.listener.EntitySpawnListener;
+import net.momirealms.customnameplates.nameplates.listener.EntityDestroyListener;
+import net.momirealms.customnameplates.nameplates.listener.EntityMountListener;
+import net.momirealms.customnameplates.nameplates.listener.EntitySpawnListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -61,7 +61,7 @@ public class RdPacketsHandler extends PacketsHandler {
         super.unload();
         CustomNameplates.protocolManager.removePacketListener(entityDestroyListener);
         CustomNameplates.protocolManager.removePacketListener(entitySpawnListener);
-        if (entityDestroyListener != null) {
+        if (entityMountListener != null) {
             CustomNameplates.protocolManager.removePacketListener(entityMountListener);
         }
     }
@@ -72,9 +72,7 @@ public class RdPacketsHandler extends PacketsHandler {
         if (spawnedPlayer != null) {
             ArmorStandManager asm = ridingTag.getArmorStandManager(spawnedPlayer);
             asm.spawn(receiver);
-            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, ()-> {
-                asm.mount(receiver);
-            });
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, ()-> asm.mount(receiver));
         }
     }
 

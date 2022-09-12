@@ -23,6 +23,6 @@ public class FontUtil {
         for (int i = 0; i < length; i++) {
             n += getInfo(s.charAt(i));
         }
-        return n + length - 1; //总长还需加上字符间距
+        return n + length; //总长还需加上字符间距
     }
 }

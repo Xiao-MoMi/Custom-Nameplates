@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates.mode.listener;
+package net.momirealms.customnameplates.nameplates.listener;
 
 import net.momirealms.customnameplates.nameplates.mode.PacketsHandler;
 import org.bukkit.event.EventHandler;

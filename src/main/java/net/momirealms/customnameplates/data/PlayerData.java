@@ -17,8 +17,6 @@
 
 package net.momirealms.customnameplates.data;
 
-import net.momirealms.customnameplates.ConfigManager;
-
 public class PlayerData {
 
     public static PlayerData EMPTY = new PlayerData("none");

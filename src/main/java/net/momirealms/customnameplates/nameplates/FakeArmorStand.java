@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates.mode;
+package net.momirealms.customnameplates.nameplates;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
@@ -25,7 +25,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.nameplates.ArmorStand;
 import net.momirealms.customnameplates.objects.TextCache;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -48,14 +47,25 @@ public class FakeArmorStand implements ArmorStand {
     private final int entityId = idCounter++;
     private final UUID uuid = UUID.randomUUID();
     private boolean sneaking;
-    private final TextCache text;
+    private TextCache text;
     private final PacketContainer destroyPacket;
+    private WrappedChatComponent wrappedChatComponent;
 
     public FakeArmorStand(ArmorStandManager asm, Player owner, TextCache text, double yOffset) {
         this.asm = asm;
         this.owner = owner;
         this.yOffset = yOffset;
         this.text = text;
+        sneaking = owner.isSneaking();
+        destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
+        destroyPacket.getIntLists().write(0, List.of(entityId));
+    }
+
+    public FakeArmorStand(ArmorStandManager asm, Player owner, WrappedChatComponent wrappedChatComponent) {
+        this.asm = asm;
+        this.owner = owner;
+        this.yOffset = ConfigManager.Bubbles.yOffset;
+        this.wrappedChatComponent = wrappedChatComponent;
         sneaking = owner.isSneaking();
         destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
@@ -176,6 +186,7 @@ public class FakeArmorStand implements ArmorStand {
         spawn(viewer);
     }
 
+
     //传送包
     public PacketContainer getTeleportPacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
@@ -192,7 +203,7 @@ public class FakeArmorStand implements ArmorStand {
         for (Player viewer : asm.getNearbyPlayers()) {
             PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
             metaPacket.getIntegers().write(0, entityId);
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer)).getWatchableObjects());
+            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer), true).getWatchableObjects());
             try {
                 CustomNameplates.protocolManager.sendServerPacket(viewer, metaPacket);
             }
@@ -239,13 +250,18 @@ public class FakeArmorStand implements ArmorStand {
     }
 
     //创建实体信息包
-    public WrappedDataWatcher createDataWatcher(String text) {
+    public WrappedDataWatcher createDataWatcher(String text, boolean dynamic) {
 
         WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
         WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
         WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
         //设置名称
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text))).getHandle()));
+        if (dynamic) {
+            wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text))).getHandle()));
+        }
+        else {
+            wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(wrappedChatComponent));
+        }
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
         byte flag = 0x20; //隐身
         if (sneaking) flag += (byte) 0x02;
@@ -272,8 +288,12 @@ public class FakeArmorStand implements ArmorStand {
 
         PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metaPacket.getIntegers().write(0, entityId);
-        metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer)).getWatchableObjects());
-
+        if (this.wrappedChatComponent == null) {
+            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getViewerText(viewer), true).getWatchableObjects());
+        }
+        else {
+            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher("", false).getWatchableObjects());
+        }
         return new PacketContainer[] {entityPacket, metaPacket};
     }
 }

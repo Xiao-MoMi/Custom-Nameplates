@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.hook.TABTeamHook;
 import net.momirealms.customnameplates.nameplates.NameplatesTeam;
 import net.momirealms.customnameplates.nameplates.TeamInfo;
+import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.TeamPacketManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,6 +42,12 @@ public class TeamPacketA implements TeamPacketManager {
 
     private final HashMap<Player, TeamInfo> teamInfoCache = new HashMap<>();
 
+    private final TeamManager teamManager;
+
+    public TeamPacketA(TeamManager teamManager) {
+        this.teamManager = teamManager;
+    }
+
     public void sendUpdateToOne(Player player) {
 //        boolean accepted = CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).getAccepted();
         for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
@@ -50,7 +57,7 @@ public class TeamPacketA implements TeamPacketManager {
             String teamName = otherPlayer.getName();
             if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
             packet.getStrings().write(0, teamName);
-            NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(teamName);
+            NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
             if (nameplatesTeam == null) return;
             Optional<InternalStructure> optional = packet.getOptionalStructures().read(0);
             if (optional.isEmpty()) return;
@@ -78,7 +85,7 @@ public class TeamPacketA implements TeamPacketManager {
     public void sendUpdateToAll(Player player) {
         String teamName = player.getName();
         if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
-        NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(teamName);
+        NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
         TeamInfo newInfo = new TeamInfo(nameplatesTeam.getPrefixText(), nameplatesTeam.getSuffixText());
         TeamInfo oldInfo = teamInfoCache.put(player, newInfo);
         if (oldInfo != null && oldInfo.equals(newInfo)) return;

@@ -30,6 +30,7 @@ import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.PlaceholderManager;
 import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.TeamPacketManager;
+import net.momirealms.customnameplates.nameplates.bubbles.ChatBubblesManager;
 import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
 import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
 import net.momirealms.customnameplates.nameplates.mode.tm.TeamTag;
@@ -39,7 +40,6 @@ import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketC;
 import net.momirealms.customnameplates.nameplates.mode.tp.TeleportingTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,6 +60,7 @@ public final class CustomNameplates extends JavaPlugin {
     private ActionBarManager actionBarManager;
     private PlaceholderManager placeholderManager;
     private NameplateManager nameplateManager;
+    private ChatBubblesManager chatBubblesManager;
 
     @Override
     public void onLoad(){
@@ -191,8 +192,8 @@ public final class CustomNameplates extends JavaPlugin {
                 this.nameplateManager = null;
             }
             if (ConfigManager.Nameplate.mode.equalsIgnoreCase("team")) {
-                this.teamPacketManager = new TeamPacketA();
-                this.nameplateManager = new TeamTag("TEAM");
+                this.teamPacketManager = new TeamPacketA(teamManager);
+                this.nameplateManager = new TeamTag("TEAM", teamManager);
                 this.nameplateManager.load();
             }
             else {
@@ -206,6 +207,14 @@ public final class CustomNameplates extends JavaPlugin {
                 }else {
                     AdventureUtil.consoleMessage("<red>[CustomNameplates] Unknown nameplate mode!");
                 }
+            }
+            if (ConfigManager.Module.bubbles) {
+                ConfigManager.Bubbles.load();
+                this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
+                this.chatBubblesManager.load();
+            }
+            else if (this.chatBubblesManager != null) {
+                this.chatBubblesManager.unload();
             }
         }
         else {

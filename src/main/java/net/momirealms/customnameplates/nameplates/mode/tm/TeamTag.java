@@ -34,74 +34,59 @@ public class TeamTag extends NameplateManager {
 
     private EventListener listener;
 
+    private BukkitTask task;
+
+    private final TeamManager teamManager;
+
     private final HashMap<Player, BukkitTask> taskCache = new HashMap<>();
 
-    public TeamTag(String name) {
+    public TeamTag(String name, TeamManager teamManager) {
         super(name);
+        this.teamManager = teamManager;
     }
 
     @Override
     public void load() {
         listener = new EventListener(this);
+
         Bukkit.getPluginManager().registerEvents(listener, CustomNameplates.instance);
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
         }
+
+        if (!ConfigManager.Nameplate.update) return;
+
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String teamName = TeamManager.getTeamName(player);
+                NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
+                if (nameplatesTeam != null) {
+                    nameplatesTeam.updateNameplates();
+                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                }
+            }
+        }, 20, ConfigManager.Nameplate.refresh);
     }
 
     @Override
     public void unload() {
         HandlerList.unregisterAll(listener);
         taskCache.clear();
-        listener = null;
+        task.cancel();
     }
 
     @Override
     public void onJoin(Player player) {
-
         super.onJoin(player);
-
-        if (!ConfigManager.Nameplate.update) return;
-
-        startRefresh(player);
-    }
-
-    private void startRefresh(Player player) {
-
-        if (!player.isOnline()) return;
-
-        String teamName = TeamManager.getTeamName(player);
-        TeamManager teamManager = CustomNameplates.instance.getTeamManager();
-        NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
-
-        if (nameplatesTeam != null) {
-            BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.instance, () -> {
-                NameplatesTeam npTeam = teamManager.getTeams().get(teamName);
-                if (npTeam != null) {
-                    nameplatesTeam.updateNameplates();
-                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                }
-                else {
-                    taskCache.remove(player).cancel();
-                }
-            }, 20, ConfigManager.Nameplate.refresh);
-            taskCache.put(player, task);
-        }
-        else {
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, () -> {
-                startRefresh(player);
-            }, 20);
-        }
     }
 
     @Override
     public void onQuit(Player player) {
-
-        super.onQuit(player);
         BukkitTask bukkitTask = taskCache.remove(player);
         if (bukkitTask != null) bukkitTask.cancel();
-
+        super.onQuit(player);
     }
 
 //    @Override

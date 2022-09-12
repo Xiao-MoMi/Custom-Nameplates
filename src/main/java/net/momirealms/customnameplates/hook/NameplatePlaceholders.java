@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.objects.BackGroundText;
 import net.momirealms.customnameplates.objects.NameplateText;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

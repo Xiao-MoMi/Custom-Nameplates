@@ -20,6 +20,7 @@ package net.momirealms.customnameplates;
 import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.bossbar.BossBarConfig;
 import net.momirealms.customnameplates.bossbar.Overlay;
+import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
@@ -69,6 +70,7 @@ public class ConfigManager {
         public static boolean background;
         public static boolean bossBar;
         public static boolean actionbar;
+        public static boolean bubbles;
 
         public static void loadModule(){
             YamlConfiguration module = getConfig("MODULES.yml");
@@ -76,6 +78,7 @@ public class ConfigManager {
             background = module.getBoolean("background", true);
             bossBar = module.getBoolean("bossbar", true);
             actionbar = module.getBoolean("actionbar", true);
+            bubbles = module.getBoolean("bubbles", false);
             try {
                 Reflection.load();
                 ConfigUtil.update();
@@ -265,7 +268,7 @@ public class ConfigManager {
         bgConfig.getConfigurationSection("background").getKeys(false).forEach(key -> backgrounds.put(key, new BackGround(key, bgConfig.getString("background." + key + ".start"),bgConfig.getString("background." + key + ".offset_1"),
                 bgConfig.getString("background." + key + ".offset_2"),bgConfig.getString("background." + key + ".offset_4"),bgConfig.getString("background." + key + ".offset_8"),
                 bgConfig.getString("background." + key + ".offset_16"),bgConfig.getString("background." + key + ".offset_32"),bgConfig.getString("background." + key + ".offset_64"),
-                bgConfig.getString("background." + key + ".offset_128"),bgConfig.getString("background." + key + ".end"),bgConfig.getInt("background." + key + ".y-offset",0),bgConfig.getInt("background." + key + ".x-offset"),bgConfig.getInt("background." + key + ".size",14)
+                bgConfig.getString("background." + key + ".offset_128"),bgConfig.getString("background." + key + ".end"),bgConfig.getInt("background." + key + ".y-offset",0),bgConfig.getInt("background." + key + ".start-offset", 1), bgConfig.getInt("background." + key + ".end-offset", 1),bgConfig.getInt("background." + key + ".size",14)
         )));
     }
 
@@ -325,6 +328,23 @@ public class ConfigManager {
     }
 
     /**
+     * 加载聊天气泡模块功能
+     */
+    public static class Bubbles {
+        public static String defaultBubble;
+        public static double lineSpace;
+        public static double yOffset;
+        public static int stayTime;
+        public static void load() {
+            YamlConfiguration config = getConfig("bubble.yml");
+            defaultBubble = config.getString("bubble.default-bubbles", "none");
+            lineSpace = config.getDouble("bubble.line-spacing");
+            yOffset = config.getDouble("bubble.bottom-line-Y-offset");
+            stayTime = config.getInt("bubble.stay-time", 5);
+        }
+    }
+
+    /**
      * 载入自定义宽度配置
      */
     public static void loadWidth() {
@@ -338,6 +358,8 @@ public class ConfigManager {
         else
             for (int i = 0; i < FontWidthNormal.values().length; i++)
                 fontWidth.put(FontWidthNormal.values()[i].getCharacter(), FontWidthNormal.values()[i].getLength());
+        for (int i = 0; i < FontOffset.values().length; i++)
+            fontWidth.put(FontOffset.values()[i].getCharacter(), FontOffset.values()[i].getSpace() - 1);
     }
 
     /**
