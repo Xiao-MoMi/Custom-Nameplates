@@ -112,12 +112,12 @@ public class ConfigManager {
 
         public static boolean thin_font;
         public static boolean tab;
+        public static boolean tab_bc;
         public static boolean oraxen;
         public static boolean extract;
         public static List<Integer> offsets;
         public static char start;
         public static Key key;
-
 
         public static void reload(){
 
@@ -140,6 +140,7 @@ public class ConfigManager {
             version = config.getString("config-version");
             placeholderAPI = config.getBoolean("config.integrations.PlaceholderAPI",false);
             tab = config.getBoolean("config.integrations.TAB",false);
+            tab_bc = config.getBoolean("config.integrations.TAB-BC",false);
             oraxen = config.getBoolean("config.integrations.Oraxen",false);
             offsets = config.getIntegerList("config.ascii-y-offset.offset");
 
@@ -154,8 +155,7 @@ public class ConfigManager {
                 CustomNameplates.instance.getLogger().warning("Failed to initialize PlaceholderAPI!");
                 placeholderAPI = false;
             }
-            if (tab && CustomNameplates.instance.getServer().getPluginManager().getPlugin("TAB") == null){
-                CustomNameplates.instance.getLogger().warning("Failed to initialize TAB!");
+            if ((tab && CustomNameplates.instance.getServer().getPluginManager().getPlugin("TAB") == null) || tab_bc){
                 tab = false;
             }
             if (oraxen && CustomNameplates.instance.getServer().getPluginManager().getPlugin("Oraxen") == null){
@@ -179,6 +179,7 @@ public class ConfigManager {
         public static boolean tryHook;
         public static boolean removeTag;
         public static boolean smallSize;
+        public static boolean fakeTeam;
         public static HashMap<String, Double> textMap = new HashMap<>();
 
         public static void reload() {
@@ -188,6 +189,7 @@ public class ConfigManager {
             preview = config.getLong("nameplate.preview-duration");
             mode = config.getString("nameplate.mode","team");
             update = config.getBoolean("nameplate.update.enable",true);
+            fakeTeam = config.getBoolean("nameplate.create-fake-team",true);
             refresh = config.getInt("nameplate.update.ticks",20);
             player_prefix = config.getString("nameplate.prefix","");
             player_suffix = config.getString("nameplate.suffix","");

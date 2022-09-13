@@ -1,5 +1,5 @@
 # Do not change
-config-version: '6'
+config-version: '7'
 
 nameplate:
   # mode: Team / Riding / Teleporting
@@ -13,6 +13,10 @@ nameplate:
   #  Plugin would summon fake armor stands packets teleporting the player
   #  to provide additional tag lines for players
   mode: Team
+
+  # When you meet problems of players getting kicked with proxy server you should enable this
+  # Or installing BungeeTabListPlus / TAB on the proxy server would fix
+  create-fake-team: true
 
   update:
     # Nameplates will be updated every x ticks

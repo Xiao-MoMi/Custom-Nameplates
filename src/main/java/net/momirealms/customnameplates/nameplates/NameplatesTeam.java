@@ -22,6 +22,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.PlayerData;
+import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,15 +51,18 @@ public class NameplatesTeam {
         this.color = ChatColor.WHITE;
         this.player = player;
 
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        String teamName = player.getName();
-
-        if (!ConfigManager.Main.tab) {
-            Team teamTemp = scoreboard.getTeam(teamName);
-            if (teamTemp == null) {
-                teamTemp = scoreboard.registerNewTeam(teamName);
+        if (!ConfigManager.Main.tab && !ConfigManager.Main.tab_bc) {
+            if (ConfigManager.Nameplate.fakeTeam) {
+                TeamPacketUtil.createTeamToAll(player);
             }
-            teamTemp.addEntry(player.getName());
+            else {
+                Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+                Team teamTemp = scoreboard.getTeam(player.getName());
+                if (teamTemp == null) {
+                    teamTemp = scoreboard.registerNewTeam(player.getName());
+                }
+                teamTemp.addEntry(player.getName());
+            }
         }
 
         updateNameplates();

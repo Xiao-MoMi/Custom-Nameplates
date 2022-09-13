@@ -1,5 +1,5 @@
 # Do not change
-config-version: '6'
+config-version: '8'
 
 config:
   # Language
@@ -18,6 +18,10 @@ config:
     # When enabled, the plugin will hook into TAB's team management
     # require a restart to apply this
     TAB: true
+    # When enabled, plugin will receive team data from TAB on proxy
+    # You need to install CustomNameplates on BungeeCord too, otherwise you might be kicked from the server if you enabled "create-fake-team" in nameplate.yml
+    TAB-BC: false
+
 
   # Your namespace
   # If you don't know how font works, don't change this

@@ -1,5 +1,5 @@
 # Do not change
-config-version: '6'
+config-version: '7'
 
 #Nameplate module require a restart because it requires a SQL connection
 nameplate: true

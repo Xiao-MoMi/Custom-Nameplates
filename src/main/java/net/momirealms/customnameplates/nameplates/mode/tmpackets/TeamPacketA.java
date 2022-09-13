@@ -54,8 +54,7 @@ public class TeamPacketA implements TeamPacketManager {
             if (player == otherPlayer) return;
             PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
             packet.getIntegers().write(0,2);
-            String teamName = otherPlayer.getName();
-            if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
+            String teamName = TeamManager.getTeamName(otherPlayer);
             packet.getStrings().write(0, teamName);
             NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
             if (nameplatesTeam == null) return;
@@ -83,8 +82,7 @@ public class TeamPacketA implements TeamPacketManager {
     }
 
     public void sendUpdateToAll(Player player) {
-        String teamName = player.getName();
-        if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
+        String teamName = TeamManager.getTeamName(player);
         NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
         TeamInfo newInfo = new TeamInfo(nameplatesTeam.getPrefixText(), nameplatesTeam.getSuffixText());
         TeamInfo oldInfo = teamInfoCache.put(player, newInfo);

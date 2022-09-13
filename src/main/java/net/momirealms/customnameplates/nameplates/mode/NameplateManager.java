@@ -20,6 +20,8 @@ package net.momirealms.customnameplates.nameplates.mode;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.Function;
+import net.momirealms.customnameplates.nameplates.TeamManager;
+import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -44,12 +46,29 @@ public abstract class NameplateManager extends Function {
     }
 
     public void onQuit(Player player) {
+        String teamName;
         CustomNameplates.instance.getDataManager().unloadPlayer(player.getUniqueId());
-        if (ConfigManager.Main.tab) return;
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        String teamName = player.getName();
-        Team team = scoreboard.getTeam(teamName);
-        if (team != null) team.unregister();
+        if (ConfigManager.Main.tab_bc) {
+            teamName = TeamManager.getTeamName(player);
+            CustomNameplates.instance.getTeamManager().getTeams().remove(teamName);
+            TeamManager.teamNames.remove(player.getName());
+            return;
+        }
+        if (ConfigManager.Main.tab) {
+            teamName = TeamManager.getTeamName(player);
+            CustomNameplates.instance.getTeamManager().getTeams().remove(teamName);
+            return;
+        }
+        if (ConfigManager.Nameplate.fakeTeam) {
+            TeamPacketUtil.destroyTeamToAll(player);
+            teamName = TeamManager.getTeamName(player);
+        }
+        else {
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            teamName = player.getName();
+            Team team = scoreboard.getTeam(teamName);
+            if (team != null) team.unregister();
+        }
         CustomNameplates.instance.getTeamManager().getTeams().remove(teamName);
     }
 

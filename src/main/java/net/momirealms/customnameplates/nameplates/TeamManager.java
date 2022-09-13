@@ -17,9 +17,14 @@
 
 package net.momirealms.customnameplates.nameplates;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.hook.TABTeamHook;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,20 +33,49 @@ public class TeamManager {
 
     private final ConcurrentHashMap<String, NameplatesTeam> teams = new ConcurrentHashMap<>();
 
+    public static ConcurrentHashMap<String, String> teamNames = new ConcurrentHashMap<>();
+
     public void createTeam(Player player) {
-        String teamName = player.getName();
-        if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
-        if (!teams.containsKey(teamName)) teams.put(teamName, new NameplatesTeam(player));
-        teams.get(teamName);
+        String teamName = getTeamName(player);
+        if (teamName != null) {
+            if (!teams.containsKey(teamName)) teams.put(teamName, new NameplatesTeam(player));
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
+        }
+        else {
+            if (!player.isOnline()) return;
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, () -> {
+                createTeam(player);
+            },20);
+        }
     }
 
     public Map<String, NameplatesTeam> getTeams() {
         return teams;
     }
 
+    @Nullable
     public static String getTeamName(Player player) {
-        String teamName = player.getName();
-        if (ConfigManager.Main.tab) teamName = TABTeamHook.getTABTeam(teamName);
-        return teamName;
+        String teamName;
+        if (ConfigManager.Main.tab) {
+            return TABTeamHook.getTABTeam(player.getName());
+        }
+        if (ConfigManager.Main.tab_bc) {
+            teamName = teamNames.get(player.getName());
+            if (teamName == null) {
+                sendRequest(player);
+                return null;
+            }
+            else {
+                return teamName;
+            }
+        }
+        return player.getName();
+    }
+
+    private static void sendRequest(Player player) {
+        ByteArrayDataOutput dataOutput = ByteStreams.newDataOutput();
+        dataOutput.writeUTF(player.getName());
+        player.sendPluginMessage(CustomNameplates.instance, "customnameplates:cnp", dataOutput.toByteArray());
     }
 }

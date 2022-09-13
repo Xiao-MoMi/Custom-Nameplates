@@ -30,6 +30,7 @@ import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.hook.PlaceholderManager;
+import net.momirealms.customnameplates.nameplates.ProxyDataListener;
 import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.nameplates.TeamPacketManager;
 import net.momirealms.customnameplates.nameplates.mode.bubbles.ChatBubblesManager;
@@ -38,7 +39,7 @@ import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
 import net.momirealms.customnameplates.nameplates.mode.tm.TeamTag;
 import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketA;
 import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketB;
-import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketC;
+import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketUtil;
 import net.momirealms.customnameplates.nameplates.mode.tp.TeleportingTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
@@ -63,6 +64,7 @@ public final class CustomNameplates extends JavaPlugin {
     private PlaceholderManager placeholderManager;
     private NameplateManager nameplateManager;
     private ChatBubblesManager chatBubblesManager;
+    private ProxyDataListener proxyDataListener;
 
     @Override
     public void onLoad(){
@@ -178,6 +180,15 @@ public final class CustomNameplates extends JavaPlugin {
         if (ConfigManager.Module.nameplate){
             ConfigManager.Nameplate.reload();
             ConfigManager.DatabaseConfig.reload();
+            if (ConfigManager.Main.tab_bc) {
+                proxyDataListener = new ProxyDataListener();
+                this.getServer().getMessenger().registerOutgoingPluginChannel(this, "customnameplates:cnp");
+                this.getServer().getMessenger().registerIncomingPluginChannel(this, "customnameplates:cnp", proxyDataListener);
+            }
+            else if (proxyDataListener != null) {
+                this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "customnameplates:cnp");
+                this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "customnameplates:cnp");
+            }
             if (this.dataManager == null) {
                 this.dataManager = new DataManager();
                 if (!dataManager.create()) {
@@ -223,7 +234,7 @@ public final class CustomNameplates extends JavaPlugin {
         }
         else {
             if (this.nameplateManager != null) {
-                TeamPacketC.clearTeamInfo();
+                TeamPacketUtil.clearTeamInfo();
                 this.nameplateManager.unload();
                 this.nameplateManager = null;
             }

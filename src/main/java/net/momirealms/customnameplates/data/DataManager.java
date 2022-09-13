@@ -47,18 +47,12 @@ public class DataManager {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
                 cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
                 CustomNameplates.instance.getTeamManager().createTeam(player);
-                CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
             });
         }
         else {
             PlayerData playerData = SqlHandler.getPlayerData(uuid);
             cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
             CustomNameplates.instance.getTeamManager().createTeam(player);
-            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
-                CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
-            });
         }
     }
 

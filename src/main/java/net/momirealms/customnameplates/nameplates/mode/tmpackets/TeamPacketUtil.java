@@ -28,9 +28,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Optional;
 
-public class TeamPacketC {
+public class TeamPacketUtil {
 
     public static void clearTeamInfo() {
         for (Player all : Bukkit.getOnlinePlayers()) {
@@ -50,6 +51,40 @@ public class TeamPacketC {
                 catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public static void createTeamToAll(Player joinPlayer) {
+        PacketContainer packetToAll = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+        packetToAll.getIntegers().write(0,0);
+        packetToAll.getStrings().write(0, joinPlayer.getName());
+        packetToAll.getModifier().write(2, Collections.singletonList(joinPlayer.getName()));
+        for (Player all : Bukkit.getOnlinePlayers()) {
+            PacketContainer packetToNew = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+            packetToNew.getIntegers().write(0,0);
+            packetToNew.getStrings().write(0, all.getName());
+            packetToAll.getModifier().write(2, Collections.singletonList(all.getName()));
+            try {
+                CustomNameplates.protocolManager.sendServerPacket(joinPlayer, packetToNew);
+                if (all != joinPlayer) CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
+            }
+            catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void destroyTeamToAll(Player quitPlayer) {
+        PacketContainer packetToAll = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
+        packetToAll.getIntegers().write(0,1);
+        packetToAll.getStrings().write(0, quitPlayer.getName());
+        for (Player all : Bukkit.getOnlinePlayers()) {
+            try {
+                CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
+            }
+            catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
     }
