@@ -1,0 +1,17 @@
+name-color: WHITE
+display-name: Merry Christmas
+left:
+  image: xmas_left
+  height: 16
+  ascent: 12
+  width: 16
+middle:
+  image: xmas_middle
+  height: 16
+  ascent: 12
+  width: 16
+right:
+  image: xmas_right
+  height: 16
+  ascent: 12
+  width: 16

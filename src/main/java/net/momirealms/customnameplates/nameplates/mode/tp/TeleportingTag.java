@@ -51,7 +51,7 @@ public class TeleportingTag extends EntityTag {
             asm.addDefault();
             armorStandManagerMap.put(all, asm);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(all);
-            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all);
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all, true);
             for (Player player : Bukkit.getOnlinePlayers())
                 spawnArmorStands(player, all);
         }

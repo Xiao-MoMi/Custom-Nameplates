@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.0-PRE-8'
+version = '2.0-PRE-9-HOTFIX'
 
 repositories {
     mavenCentral()
@@ -40,7 +40,7 @@ repositories {
 
 dependencies {
     compileOnly fileTree(dir:'libs',includes:['*.jar'])
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.8.0'
     compileOnly 'me.clip:placeholderapi:2.11.1'
     compileOnly 'com.zaxxer:HikariCP:5.0.1'

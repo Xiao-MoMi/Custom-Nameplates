@@ -88,15 +88,15 @@ public class ExecuteN implements CommandExecutor {
 
                     if (sender.hasPermission("nameplates.equip." + args[1]) || sender.isOp()) {
 
-                        if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]) == null) {
+                        if (CustomNameplates.instance.getResourceManager().getNameplateConfig(args[1]) == null) {
                             AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                             return true;
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[1]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
-                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]).getConfig().getName()));
+                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
+                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[1]).name()));
 
                     }
                     else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_notAvailable);
@@ -117,7 +117,7 @@ public class ExecuteN implements CommandExecutor {
                 if (sender.hasPermission("nameplates.forceequip") || sender.isOp()){
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player != null){
-                        if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]) == null){
+                        if (CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]) == null){
                             if(sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                             else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                             return true;
@@ -125,9 +125,9 @@ public class ExecuteN implements CommandExecutor {
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[2]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
-                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
-                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
+                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
+                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]).name()).replace("{Player}", args[1]));
+                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]).name()).replace("{Player}", args[1]));
                     }else {
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
@@ -144,7 +144,7 @@ public class ExecuteN implements CommandExecutor {
                     CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate("none");
                     CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                     CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
-                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
                     AdventureUtil.playerMessage(player, ConfigManager.Message.prefix + ConfigManager.Message.np_unEquip);
                 }
                 else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.no_console);
@@ -167,7 +167,7 @@ public class ExecuteN implements CommandExecutor {
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate("none");
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
                         CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
-                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_unEquip.replace("{Player}", args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_unEquip.replace("{Player}", args[1]));
                     }else {
@@ -236,8 +236,8 @@ public class ExecuteN implements CommandExecutor {
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online);
                         return true;
                     }
-                    NameplateInstance nameplateInstance = CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]);
-                    if (nameplateInstance == null){
+                    NameplateConfig nameplateConfig = CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]);
+                    if (nameplateConfig == null){
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_not_exist);
                         return true;
@@ -251,9 +251,9 @@ public class ExecuteN implements CommandExecutor {
                     if (ConfigManager.Nameplate.mode.equalsIgnoreCase("team")) {
                         String playerPrefix = ConfigManager.Nameplate.hidePrefix ? "" : ConfigManager.Main.placeholderAPI ? CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Nameplate.player_prefix) : ConfigManager.Nameplate.player_prefix;
                         String playerSuffix = ConfigManager.Nameplate.hideSuffix ? "" : ConfigManager.Main.placeholderAPI ? CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Nameplate.player_suffix) : ConfigManager.Nameplate.player_suffix;
-                        Component prefix = Component.text(NameplateUtil.makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), args[1], MiniMessage.miniMessage().stripTags(playerSuffix), nameplateInstance)).font(ConfigManager.Main.key).append(MiniMessage.miniMessage().deserialize(playerPrefix));
+                        Component prefix = Component.text(NameplateUtil.makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), args[1], MiniMessage.miniMessage().stripTags(playerSuffix), nameplateConfig)).font(ConfigManager.Main.key).append(MiniMessage.miniMessage().deserialize(playerPrefix));
                         Component suffix = MiniMessage.miniMessage().deserialize(playerSuffix).append(Component.text(NameplateUtil.getSuffixChar(MiniMessage.miniMessage().stripTags(playerPrefix) + args[1] + MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.Main.key));
-                        Component full = prefix.append(Component.text(player.getName()).color(TextColor.color(color2decimal(nameplateInstance.getConfig().getColor()))).font(Key.key("default")).append(suffix));
+                        Component full = prefix.append(Component.text(player.getName()).color(TextColor.color(color2decimal(nameplateConfig.color()))).font(Key.key("default")).append(suffix));
                         HoloUtil.showHolo(full, player, (int) ConfigManager.Nameplate.preview);
                     }
                     else {
@@ -270,7 +270,6 @@ public class ExecuteN implements CommandExecutor {
                         },ConfigManager.Nameplate.preview * 20);
                     }
                 }
-
                 return true;
             }
             //显示可用铭牌

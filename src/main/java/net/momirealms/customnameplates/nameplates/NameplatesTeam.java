@@ -39,12 +39,14 @@ public class NameplatesTeam {
     private String prefixText;
     private String suffixText;
     private ChatColor color;
+    private String dynamic;
 
     public Component getPrefix() {return this.prefix;}
     public Component getSuffix() {return this.suffix;}
     public ChatColor getColor() {return this.color;}
     public String getPrefixText() {return prefixText;}
     public String getSuffixText() {return suffixText;}
+    public String getDynamic() {return dynamic;}
 
     public NameplatesTeam(Player player) {
 
@@ -98,9 +100,9 @@ public class NameplatesTeam {
             return;
         }
 
-        NameplateInstance nameplateInstance = CustomNameplates.instance.getResourceManager().getNameplateInstance(nameplate);
+        NameplateConfig nameplateConfig = CustomNameplates.instance.getResourceManager().getNameplateConfig(nameplate);
 
-        if (nameplateInstance == null){
+        if (nameplateConfig == null){
             this.prefix = Component.text("");
             this.suffix = Component.text("");
             this.prefixText = "";
@@ -126,41 +128,31 @@ public class NameplatesTeam {
             else playerSuffix = "";
         }
 
+        this.dynamic = playerPrefix + playerSuffix;
+
         String name = this.player.getName();
 
         this.prefixText = NameplateUtil.makeCustomNameplate(
                 MiniMessage.miniMessage().stripTags(playerPrefix),
                 name,
                 MiniMessage.miniMessage().stripTags(playerSuffix),
-                nameplateInstance
-        ) + playerPrefix;
+                nameplateConfig
+        );
 
-        this.suffixText = playerSuffix + NameplateUtil.getSuffixChar(
+        this.suffixText = NameplateUtil.getSuffixChar(
                 MiniMessage.miniMessage().stripTags(playerPrefix) +
                         name +
                         MiniMessage.miniMessage().stripTags(playerSuffix)
         );
 
-        this.prefix = Component.text(
-                NameplateUtil.makeCustomNameplate(
-                        MiniMessage.miniMessage().stripTags(playerPrefix),
-                        name,
-                        MiniMessage.miniMessage().stripTags(playerSuffix),
-                        nameplateInstance
-                )
-        )
+        this.prefix = Component.text(this.prefixText)
                 .font(ConfigManager.Main.key)
                 .append(MiniMessage.miniMessage().deserialize(playerPrefix));
 
         this.suffix = MiniMessage.miniMessage().deserialize(playerSuffix)
-                .append(Component.text(
-                        NameplateUtil.getSuffixChar(
-                                MiniMessage.miniMessage().stripTags(playerPrefix) +
-                                        name +
-                                        MiniMessage.miniMessage().stripTags(playerSuffix))
-                )
+                .append(Component.text(this.suffixText)
                 .font(ConfigManager.Main.key));
 
-        this.color = nameplateInstance.getConfig().getColor();
+        this.color = nameplateConfig.color();
     }
 }

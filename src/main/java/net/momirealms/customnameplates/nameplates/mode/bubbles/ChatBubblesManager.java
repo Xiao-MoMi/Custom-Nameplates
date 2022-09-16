@@ -9,8 +9,8 @@ import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.nameplates.ArmorStandManager;
+import net.momirealms.customnameplates.nameplates.BubbleConfig;
 import net.momirealms.customnameplates.nameplates.FakeArmorStand;
-import net.momirealms.customnameplates.nameplates.NameplateInstance;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.nameplates.mode.EntityTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
@@ -91,9 +91,9 @@ public class ChatBubblesManager extends EntityTag {
     public void onChat(Player player, String text) {
         PlayerData playerData = CustomNameplates.instance.getDataManager().getOrEmpty(player);
         String bubbles = playerData.getBubbles();
-        NameplateInstance bubblesInstance = ResourceManager.NAMEPLATES.get(bubbles);
+        BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubbles);
         WrappedChatComponent wrappedChatComponent;
-        if (bubblesInstance == null || bubbles.equals("none")) {
+        if (bubbleConfig == null || bubbles.equals("none")) {
             text = ConfigManager.Main.placeholderAPI ?
                     CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.prefix) + ConfigManager.Bubbles.defaultFormat + text + CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.suffix)
                     :
@@ -102,15 +102,15 @@ public class ChatBubblesManager extends EntityTag {
         }
         else {
             text = ConfigManager.Main.placeholderAPI ?
-                    CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.prefix) + bubblesInstance.getConfig().bubbleColor() + text + CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.suffix)
+                    CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.prefix) + bubbleConfig.format() + text + CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.suffix)
                     :
                     ConfigManager.Bubbles.prefix + text + ConfigManager.Bubbles.suffix;
             String stripped = MiniMessage.miniMessage().stripTags(text);
-            String bubble = NameplateUtil.makeCustomNameplate("", stripped, "", bubblesInstance);
+            String bubble = NameplateUtil.makeCustomBubble("", stripped, "", bubbleConfig);
             String suffix = NameplateUtil.getSuffixChar(stripped);
             Component armorStand_Name = Component.text(bubble).font(ConfigManager.Main.key)
-                    .append(MiniMessage.miniMessage().deserialize(text).font(Key.key("minecraft:default")))
-                    .append(Component.text(suffix).font(ConfigManager.Main.key));
+                                        .append(MiniMessage.miniMessage().deserialize(text).font(Key.key("minecraft:default")))
+                                        .append(Component.text(suffix).font(ConfigManager.Main.key));
             wrappedChatComponent = WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(armorStand_Name));
         }
         ArmorStandManager asm = getArmorStandManager(player);

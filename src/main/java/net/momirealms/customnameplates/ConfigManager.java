@@ -22,7 +22,6 @@ import net.momirealms.customnameplates.bossbar.BossBarConfig;
 import net.momirealms.customnameplates.bossbar.Overlay;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.font.FontOffset;
-import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
 import net.momirealms.customnameplates.utils.AdventureUtil;
@@ -44,7 +43,6 @@ import java.util.TreeMap;
 
 public class ConfigManager {
 
-    public static TreeMap<String, BackGround> backgrounds = new TreeMap<>();
     public static TreeMap<String, BossBarConfig> bossBars = new TreeMap<>();
     public static HashMap<String, BackGroundText> papiBG = new HashMap<>();
     public static HashMap<String, NameplateText> papiNP = new HashMap<>();
@@ -102,9 +100,10 @@ public class ConfigManager {
         public static String lang;
         public static String version;
 
-        public static String folder_path;
+        public static String np_folder_path;
         public static String bg_folder_path;
         public static String ss_folder_path;
+        public static String bb_folder_path;
         public static String font;
 
         public static boolean itemsAdder;
@@ -131,7 +130,8 @@ public class ConfigManager {
             fontName = namespace + ":" + font;
             start_char = config.getString("config.start-char");
             start = start_char.charAt(0);
-            folder_path = config.getString("config.nameplate-folder-path","font\\nameplates\\");
+            np_folder_path = config.getString("config.nameplate-folder-path","font\\nameplates\\");
+            bb_folder_path = config.getString("config.bubble-folder-path","font\\bubbles\\");
             bg_folder_path = config.getString("config.background-folder-path","font\\backgrounds\\");
             ss_folder_path = config.getString("config.space-split-folder-path","font\\");
             key = Key.key(fontName);
@@ -203,12 +203,12 @@ public class ConfigManager {
                 for (String text : texts) {
                     textMap.put(text, -0.1);
                 }
-                smallSize = config.getBoolean("nameplate.riding.small-size", true);
+                smallSize = config.getBoolean("nameplate.riding.small-height", true);
                 removeTag = config.getBoolean("nameplate.riding.remove-nametag");
             }
             else if (mode.equalsIgnoreCase("teleporting")) {
                 removeTag = config.getBoolean("nameplate.teleporting.remove-nametag");
-                smallSize = config.getBoolean("nameplate.teleporting.small-size", true);
+                smallSize = config.getBoolean("nameplate.teleporting.small-height", true);
                 textMap.clear();
                 config.getConfigurationSection("nameplate.teleporting.text").getKeys(false).forEach(key -> {
                     textMap.put(config.getString("nameplate.teleporting.text." + key + ".content"), config.getDouble("nameplate.teleporting.text." + key + ".offset"));
@@ -286,19 +286,6 @@ public class ConfigManager {
             bb_available = messagesConfig.getString("messages.available-bubbles");
             bb_haveNone = messagesConfig.getString("messages.have-no-bubbles");
         }
-    }
-
-    /*
-    载入背景配置
-     */
-    public static void loadBGConfig(){
-        backgrounds.clear();
-        YamlConfiguration bgConfig = getConfig("background.yml");
-        bgConfig.getConfigurationSection("background").getKeys(false).forEach(key -> backgrounds.put(key, new BackGround(key, bgConfig.getString("background." + key + ".start"),bgConfig.getString("background." + key + ".offset_1"),
-                bgConfig.getString("background." + key + ".offset_2"),bgConfig.getString("background." + key + ".offset_4"),bgConfig.getString("background." + key + ".offset_8"),
-                bgConfig.getString("background." + key + ".offset_16"),bgConfig.getString("background." + key + ".offset_32"),bgConfig.getString("background." + key + ".offset_64"),
-                bgConfig.getString("background." + key + ".offset_128"),bgConfig.getString("background." + key + ".end"),bgConfig.getInt("background." + key + ".y-offset",0),bgConfig.getInt("background." + key + ".start-offset", 1), bgConfig.getInt("background." + key + ".end-offset", 1),bgConfig.getInt("background." + key + ".size",14)
-        )));
     }
 
     /**
@@ -446,7 +433,7 @@ public class ConfigManager {
                 enable_pool = databaseConfig.getBoolean("settings.use-pool");
 
                 if(enable_pool){
-                    maximum_pool_size = databaseConfig.getInt("Pool-Settings.maximum-pool-size");
+                    maximum_pool_size = databaseConfig.getInt("Pool-Settings.maximum-pool-height");
                     minimum_idle = databaseConfig.getInt("Pool-Settings.minimum-idle");
                     maximum_lifetime = databaseConfig.getInt("Pool-Settings.maximum-lifetime");
                     idle_timeout = databaseConfig.getInt("Pool-Settings.idle-timeout");

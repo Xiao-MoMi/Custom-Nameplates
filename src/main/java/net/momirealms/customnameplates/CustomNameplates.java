@@ -46,6 +46,7 @@ import net.momirealms.customnameplates.utils.AdventureUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Team;
 
 import java.util.Objects;
 
@@ -100,22 +101,35 @@ public final class CustomNameplates extends JavaPlugin {
         if (ConfigManager.Module.nameplate){
             SqlHandler.saveAll();
             SqlHandler.close();
+            if (!ConfigManager.Nameplate.fakeTeam && !ConfigManager.Main.tab && !ConfigManager.Main.tab_bc) {
+                for (Team team : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {
+                    team.unregister();
+                }
+            }
         }
-        if (actionBarManager != null){
+        if (actionBarManager != null) {
             actionBarManager.unload();
+        }
+        if (nameplateManager != null) {
+            nameplateManager.unload();
+        }
+        if (bossBarManager != null) {
+            bossBarManager.unload();
+        }
+        if (placeholderManager != null) {
+            placeholderManager.unload();
+        }
+        if (chatBubblesManager != null) {
+            chatBubblesManager.unload();
         }
         if (adventure != null) {
             adventure.close();
         }
-        if (resourceManager != null){
-            resourceManager = null;
+        if (proxyDataListener != null) {
+            this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "customnameplates:cnp");
+            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "customnameplates:cnp");
         }
-        if (teamManager != null){
-            teamManager = null;
-        }
-        if (dataManager != null){
-            dataManager = null;
-        }
+
     }
 
     public void loadConfig() {
@@ -172,11 +186,6 @@ public final class CustomNameplates extends JavaPlugin {
             this.actionBarManager.unload();
             this.actionBarManager = null;
         }
-
-        if (ConfigManager.Module.background){
-            ConfigManager.loadBGConfig();
-        }
-
         if (ConfigManager.Module.nameplate){
             ConfigManager.Nameplate.reload();
             ConfigManager.DatabaseConfig.reload();

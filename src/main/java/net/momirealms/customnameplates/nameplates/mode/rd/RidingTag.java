@@ -47,7 +47,7 @@ public class RidingTag extends EntityTag {
             asm.addDefault();
             armorStandManagerMap.put(all, asm);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(all);
-            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all);
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(all, true);
             for (Player player : Bukkit.getOnlinePlayers())
                 ridingArmorStands(player, all);
         }

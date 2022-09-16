@@ -1,0 +1,17 @@
+name-color: WHITE
+display-name: Star Sky
+left:
+  image: starsky_left
+  height: 16
+  ascent: 12
+  width: 16
+middle:
+  image: starsky_middle
+  height: 16
+  ascent: 12
+  width: 16
+right:
+  image: starsky_right
+  height: 16
+  ascent: 12
+  width: 16

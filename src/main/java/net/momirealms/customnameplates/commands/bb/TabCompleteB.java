@@ -87,7 +87,7 @@ public class TabCompleteB implements TabCompleter {
                 String permission = info.getPermission().toLowerCase();
                 if (permission.startsWith("bubbles.equip.")) {
                     permission = StringUtils.replace(permission, "bubbles.equip.", "");
-                    if (ResourceManager.NAMEPLATES.get(permission) != null){
+                    if (ResourceManager.BUBBLES.get(permission) != null){
                         availableBubbles.add(permission);
                     }
                 }
@@ -97,6 +97,6 @@ public class TabCompleteB implements TabCompleter {
     }
 
     private List<String> bubbles(){
-        return new ArrayList<>(ResourceManager.NAMEPLATES.keySet());
+        return new ArrayList<>(ResourceManager.BUBBLES.keySet());
     }
 }

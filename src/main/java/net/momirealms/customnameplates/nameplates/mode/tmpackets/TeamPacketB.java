@@ -36,7 +36,6 @@ public class TeamPacketB implements TeamPacketManager {
 
     @Override
     public void sendUpdateToOne(Player player) {
-//        boolean accepted = CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).getAccepted();
         for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
             if (player == otherPlayer) return;
             PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
@@ -46,15 +45,9 @@ public class TeamPacketB implements TeamPacketManager {
             Optional<InternalStructure> optional = packet.getOptionalStructures().read(0);
             if (optional.isEmpty()) return;
             InternalStructure internalStructure = optional.get();
-//            if (ConfigManager.Nameplate.show_after && !accepted) {
-//                internalStructure.getStrings().write(0, "always");
-//                internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
-//            }
-//            else {
             if (ConfigManager.Nameplate.removeTag) internalStructure.getStrings().write(0, "never");
             else internalStructure.getStrings().write(0, "always");
             internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
-//            }
             try {
                 CustomNameplates.protocolManager.sendServerPacket(player, packet);
             }
@@ -65,7 +58,7 @@ public class TeamPacketB implements TeamPacketManager {
     }
 
     @Override
-    public void sendUpdateToAll(Player player) {
+    public void sendUpdateToAll(Player player, boolean force) {
         String teamName = TeamManager.getTeamName(player);
         for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
             PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
@@ -74,20 +67,8 @@ public class TeamPacketB implements TeamPacketManager {
             Optional<InternalStructure> optional = packet.getOptionalStructures().read(0);
             if (optional.isEmpty()) return;
             InternalStructure internalStructure = optional.get();
-//            if (ConfigManager.Nameplate.show_after) {
-//                PlayerData playerData = CustomNameplates.instance.getDataManager().getCache().get(otherPlayer.getUniqueId());
-//                if (playerData == null || !playerData.getAccepted()) {
-//                    internalStructure.getStrings().write(0, "always");
-//                }
-//                else {
-//                    if (ConfigManager.Nameplate.removeTag) internalStructure.getStrings().write(0, "never");
-//                    else internalStructure.getStrings().write(0, "always");
-//                }
-//            }
-//            else {
             if (ConfigManager.Nameplate.removeTag) internalStructure.getStrings().write(0, "never");
             else internalStructure.getStrings().write(0, "always");
-//            }
             internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0, ChatColor.WHITE);
             try {
                 CustomNameplates.protocolManager.sendServerPacket(otherPlayer, packet);

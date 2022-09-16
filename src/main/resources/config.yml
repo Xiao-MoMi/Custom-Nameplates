@@ -1,5 +1,5 @@
 # Do not change
-config-version: '8'
+config-version: '9'
 
 config:
   # Language
@@ -18,7 +18,7 @@ config:
     # When enabled, the plugin will hook into TAB's team management
     # require a restart to apply this
     TAB: true
-    # When enabled, plugin will receive team data from TAB on proxy
+    # When enabled, plugin will receive team data from TAB on proxy server
     # You need to install CustomNameplates on BungeeCord too, otherwise you might be kicked from the server if you enabled "create-fake-team" in nameplate.yml
     TAB-BC: false
 
@@ -45,6 +45,7 @@ config:
   # This is useful for those who want to keep their resource pack structure in order.
   nameplate-folder-path: 'font\nameplates\'
   background-folder-path: 'font\backgrounds\'
+  bubble-folder-path: 'font\bubbles\'
   space-split-folder-path: 'font\'
 
   # The initial character of all nameplates.

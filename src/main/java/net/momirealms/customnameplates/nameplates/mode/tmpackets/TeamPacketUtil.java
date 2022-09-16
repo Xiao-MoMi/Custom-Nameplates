@@ -21,6 +21,8 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.nameplates.TeamManager;
 import org.bukkit.Bukkit;
@@ -64,10 +66,13 @@ public class TeamPacketUtil {
             PacketContainer packetToNew = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
             packetToNew.getIntegers().write(0,0);
             packetToNew.getStrings().write(0, all.getName());
-            packetToAll.getModifier().write(2, Collections.singletonList(all.getName()));
+            packetToNew.getModifier().write(2, Collections.singletonList(all.getName()));
             try {
+                Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, () -> {
+                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(joinPlayer);
+                },100);
                 CustomNameplates.protocolManager.sendServerPacket(joinPlayer, packetToNew);
-                if (all != joinPlayer) CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
+                if (joinPlayer != all) CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
             }
             catch (InvocationTargetException e) {
                 e.printStackTrace();

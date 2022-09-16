@@ -17,44 +17,35 @@
 
 package net.momirealms.customnameplates.nameplates;
 
+import net.momirealms.customnameplates.objects.SimpleChar;
 import org.bukkit.ChatColor;
 
-import java.util.Objects;
+public record NameplateConfig(ChatColor color, String name, SimpleChar left, SimpleChar middle, SimpleChar right) {
 
-public record NameplateConfig(ChatColor color, int height, String name, int yoffset, String bubbleColor) {
+    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, "none", SimpleChar.none, SimpleChar.none, SimpleChar.none);
 
-    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, 16, "none", 12, "<white>");
-
-    public ChatColor getColor() {
-        return this.color;
-    }
-
-    public int getHeight() {
-        return this.height;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getYOffset() {
-        return this.yoffset;
-    }
-
-    public String bubbleColor() {
-        return bubbleColor;
+    @Override
+    public ChatColor color() {
+        return color;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NameplateConfig that = (NameplateConfig) o;
-        return height == that.height && yoffset == that.yoffset && color == that.color && Objects.equals(name, that.name);
+    public String name() {
+        return name;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(color, height, name, yoffset);
+    public SimpleChar left() {
+        return left;
+    }
+
+    @Override
+    public SimpleChar middle() {
+        return middle;
+    }
+
+    @Override
+    public SimpleChar right() {
+        return right;
     }
 }

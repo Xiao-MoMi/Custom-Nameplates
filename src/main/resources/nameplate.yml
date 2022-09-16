@@ -14,7 +14,7 @@ nameplate:
   #  to provide additional tag lines for players
   mode: Team
 
-  # When you meet problems of players getting kicked with proxy server you should enable this
+  # When you meet problems of players getting kicked with proxy server you should disable this
   # Or installing BungeeTabListPlus / TAB on the proxy server would fix
   create-fake-team: true
 
@@ -55,7 +55,7 @@ nameplate:
     # Make player's original name-tag invisible
     # If you have another plugin that is using team please disable team management in that plugin or make player's name invisible in that plugin
     remove-nametag: true
-    # If armor stand is the normal size, more lines can be displayed but texts would go obviously abnormal when you look at it in a certain angle
+    # If armor stand is the normal height, more lines can be displayed but texts would go obviously abnormal when you look at it in a certain angle
     small-size: true
     # nameplates content
     text:
@@ -68,7 +68,7 @@ nameplate:
     # Make player's original name-tag invisible
     # If you have another plugin that is using team please disable team management in that plugin or make player's name invisible in that plugin
     remove-nametag: true
-    # Small size armor stand
+    # Small height armor stand
     small-size: true
     # nameplates content
     text:

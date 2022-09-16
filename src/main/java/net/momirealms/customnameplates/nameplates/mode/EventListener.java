@@ -20,7 +20,9 @@ package net.momirealms.customnameplates.nameplates.mode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public record EventListener(NameplateManager nameplateManager) implements Listener {
 
@@ -33,6 +35,7 @@ public record EventListener(NameplateManager nameplateManager) implements Listen
     public void onQuit(PlayerQuitEvent event) {
         nameplateManager.onQuit(event.getPlayer());
     }
+
 
 //    @EventHandler
 //    public void onAccept(PlayerResourcePackStatusEvent event) {

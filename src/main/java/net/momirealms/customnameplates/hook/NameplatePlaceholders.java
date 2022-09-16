@@ -21,14 +21,11 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.nameplates.*;
 import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.data.PlayerData;
-import net.momirealms.customnameplates.nameplates.NameplateInstance;
 import net.momirealms.customnameplates.font.FontUtil;
-import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.resource.ResourceManager;
-import net.momirealms.customnameplates.nameplates.NameplatesTeam;
-import net.momirealms.customnameplates.nameplates.TeamManager;
 import net.momirealms.customnameplates.objects.BackGroundText;
 import net.momirealms.customnameplates.objects.NameplateText;
 import org.bukkit.OfflinePlayer;
@@ -51,14 +48,14 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0";
+        return "1.1";
     }
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (params.equals("equipped")){
             String nameplate = Optional.ofNullable(CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId())).orElse(PlayerData.EMPTY).getEquippedNameplate();
-            if (!nameplate.equals("none")) return ResourceManager.NAMEPLATES.get(nameplate).getName();
+            if (!nameplate.equals("none")) return ResourceManager.NAMEPLATES.get(nameplate).name();
             else return ConfigManager.Message.noNameplate;
         }
         if (params.equals("prefix")){
@@ -75,28 +72,26 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
             String bg = params.substring(3);
             BackGroundText backGroundText = ConfigManager.papiBG.get(bg);
             if (backGroundText == null) return "";
-            BackGround backGround = ConfigManager.backgrounds.get(backGroundText.getBackground());
+            BackGround backGround = ResourceManager.BACKGROUNDS.get(backGroundText.getBackground());
             if (backGround == null) return "";
-            String text = backGroundText.getText();
-            if (ConfigManager.Main.placeholderAPI) text = PlaceholderAPI.setPlaceholders(player, text);
+            String text = PlaceholderAPI.setPlaceholders(player, backGroundText.getText());
             return backGround.getBackGround(FontUtil.getTotalWidth(text));
         }
         if (params.startsWith("npp_")){
             String np = params.substring(4);
             NameplateText nameplateText = ConfigManager.papiNP.get(np);
             if (nameplateText == null) return "";
-            NameplateInstance nameplateInstance = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
-            if (nameplateInstance == null) return "";
-            String text = nameplateText.getText();
-            if (ConfigManager.Main.placeholderAPI) text = PlaceholderAPI.setPlaceholders(player, text);
-            return NameplateUtil.makeCustomNameplate("", text,"", nameplateInstance);
+            NameplateConfig nameplateConfig = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
+            if (nameplateConfig == null) return "";
+            String text = PlaceholderAPI.setPlaceholders(player, nameplateText.getText());
+            return NameplateUtil.makeCustomNameplate("", text,"", nameplateConfig);
         }
         if (params.startsWith("nps_")){
             String np = params.substring(4);
             NameplateText nameplateText = ConfigManager.papiNP.get(np);
             if (nameplateText == null) return "";
-            NameplateInstance nameplateInstance = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
-            if (nameplateInstance == null) return "";
+            NameplateConfig nameplateConfig = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
+            if (nameplateConfig == null) return "";
             String text = nameplateText.getText();
             if (ConfigManager.Main.placeholderAPI) text = PlaceholderAPI.setPlaceholders(player, text);
             return NameplateUtil.getSuffixChar(text);

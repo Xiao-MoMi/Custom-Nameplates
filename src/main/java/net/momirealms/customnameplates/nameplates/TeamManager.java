@@ -39,11 +39,11 @@ public class TeamManager {
         String teamName = getTeamName(player);
         if (teamName != null) {
             if (!teams.containsKey(teamName)) teams.put(teamName, new NameplatesTeam(player));
-            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, false);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
         }
         else {
-            if (!player.isOnline()) return;
+            if (player == null || !player.isOnline()) return;
             Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, () -> {
                 createTeam(player);
             },20);

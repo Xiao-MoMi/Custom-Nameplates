@@ -36,14 +36,13 @@ public class ExecuteB implements CommandExecutor {
                         return true;
                     }
                     if (sender.hasPermission("bubbles.equip." + args[1]) || sender.isOp()) {
-                        if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]) == null) {
+                        if (CustomNameplates.instance.getResourceManager().getBubbleConfig(args[1]) == null) {
                             AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_not_exist);
                             return true;
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).setBubbles(args[1]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
-                        CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
-                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[1]).getConfig().getName()));
+                        AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getBubbleConfig(args[1]).name()));
                     }
                     else AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_notAvailable);
                 }
@@ -56,19 +55,20 @@ public class ExecuteB implements CommandExecutor {
                     else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.lackArgs);
                     return true;
                 }
-                if (sender.hasPermission("bubbles.forceequip") || sender.isOp()){
+                if (sender.hasPermission("bubbles.forceequip") || sender.isOp()) {
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player != null){
-                        if (CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]) == null){
+                        if (CustomNameplates.instance.getResourceManager().getBubbleConfig(args[2]) == null){
                             if(sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_not_exist);
                             else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.bb_not_exist);
                             return true;
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).setBubbles(args[2]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
-                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_force_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
-                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.bb_force_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getNameplateInstance(args[2]).getConfig().getName()).replace("{Player}", args[1]));
-                    }else {
+                        if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.bb_force_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getBubbleConfig(args[2]).name()).replace("{Player}", args[1]));
+                        else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.bb_force_equip.replace("{Bubble}", CustomNameplates.instance.getResourceManager().getBubbleConfig(args[2]).name()).replace("{Player}", args[1]));
+                    }
+                    else {
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.not_online.replace("{Player}",args[1]));
                     }
@@ -109,7 +109,7 @@ public class ExecuteB implements CommandExecutor {
                 if (sender instanceof Player player) {
                     if (player.isOp()) {
                         StringBuilder stringBuilder = new StringBuilder();
-                        ResourceManager.NAMEPLATES.keySet().forEach(key -> {
+                        ResourceManager.BUBBLES.keySet().forEach(key -> {
                             if (key.equalsIgnoreCase("none")) return;
                             stringBuilder.append(key).append(" ");
                         });
@@ -121,7 +121,7 @@ public class ExecuteB implements CommandExecutor {
                             String permission = info.getPermission().toLowerCase();
                             if (permission.startsWith("bubbles.equip.")) {
                                 permission = StringUtils.replace(permission, "bubbles.equip.", "");
-                                if (ResourceManager.NAMEPLATES.get(permission) != null) {
+                                if (ResourceManager.BUBBLES.get(permission) != null) {
                                     availableBubbles.add(permission);
                                 }
                             }
@@ -144,7 +144,7 @@ public class ExecuteB implements CommandExecutor {
             }
             default -> {
                 if (sender instanceof Player player){
-                    if (player.hasPermission("nameplates.help")){
+                    if (player.hasPermission("bubbles.help")){
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/bubbles help - <color:#7FFFAA>show the command list");
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/bubbles equip <nameplate> - <color:#7FFFAA>equip a specified bubble");
                         AdventureUtil.playerMessage(player,"<color:#87CEFA>/bubbles forceequip <player> <nameplate> - <color:#7FFFAA>force a player to equip a specified bubble");

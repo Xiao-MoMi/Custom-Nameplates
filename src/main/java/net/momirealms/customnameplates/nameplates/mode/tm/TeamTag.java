@@ -52,7 +52,7 @@ public class TeamTag extends NameplateManager {
         Bukkit.getPluginManager().registerEvents(listener, CustomNameplates.instance);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+            CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
             CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
         }
 
@@ -64,7 +64,7 @@ public class TeamTag extends NameplateManager {
                 NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
                 if (nameplatesTeam != null) {
                     nameplatesTeam.updateNameplates();
-                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player);
+                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, false);
                 }
             }
         }, 20, ConfigManager.Nameplate.refresh);
