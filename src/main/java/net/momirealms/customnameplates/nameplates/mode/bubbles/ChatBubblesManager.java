@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ChatBubblesManager extends EntityTag {
@@ -26,6 +27,9 @@ public class ChatBubblesManager extends EntityTag {
     private BBPacketsHandle packetsHandle;
 
     private ChatListener chatListener;
+    private TrChatListener trChatListener;
+
+    private final HashMap<Player, Long> coolDown = new HashMap<>();
 
     public ChatBubblesManager(String name) {
         super(name);
@@ -37,9 +41,14 @@ public class ChatBubblesManager extends EntityTag {
         this.packetsHandle = new BBPacketsHandle("BUBBLES", this);
         this.packetsHandle.load();
 
-        this.chatListener = new ChatListener(this);
-        Bukkit.getPluginManager().registerEvents(chatListener, CustomNameplates.instance);
-
+        if (ConfigManager.Main.trChat) {
+            this.trChatListener = new TrChatListener(this);
+            Bukkit.getPluginManager().registerEvents(trChatListener, CustomNameplates.instance);
+        }
+        else {
+            this.chatListener = new ChatListener(this);
+            Bukkit.getPluginManager().registerEvents(chatListener, CustomNameplates.instance);
+        }
         for (Player all : Bukkit.getOnlinePlayers()) {
             armorStandManagerMap.put(all, new ArmorStandManager(all));
             for (Player player : Bukkit.getOnlinePlayers())
@@ -50,7 +59,8 @@ public class ChatBubblesManager extends EntityTag {
     @Override
     public void unload() {
         this.packetsHandle.unload();
-        HandlerList.unregisterAll(chatListener);
+        if (chatListener != null) HandlerList.unregisterAll(chatListener);
+        if (trChatListener != null) HandlerList.unregisterAll(trChatListener);
         super.unload();
     }
 
@@ -86,18 +96,28 @@ public class ChatBubblesManager extends EntityTag {
         if (asm != null) {
             asm.destroy();
         }
+        coolDown.remove(player);
     }
 
     public void onChat(Player player, String text) {
+
+        long time = System.currentTimeMillis();
+        if (time - (coolDown.getOrDefault(player, time - ConfigManager.Bubbles.coolDown)) < ConfigManager.Bubbles.coolDown) return;
+        coolDown.put(player, time);
+
         PlayerData playerData = CustomNameplates.instance.getDataManager().getOrEmpty(player);
         String bubbles = playerData.getBubbles();
         BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubbles);
         WrappedChatComponent wrappedChatComponent;
+        if (CustomNameplates.instance.getImageParser() != null) {
+            text = CustomNameplates.instance.getImageParser().parse(player, text);
+        }
         if (bubbleConfig == null || bubbles.equals("none")) {
             text = ConfigManager.Main.placeholderAPI ?
                     CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.prefix) + ConfigManager.Bubbles.defaultFormat + text + CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Bubbles.suffix)
                     :
                     ConfigManager.Bubbles.prefix + text + ConfigManager.Bubbles.suffix;
+            if (text.length() > ConfigManager.Bubbles.maxChar) return;
             wrappedChatComponent = WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text)));
         }
         else {
@@ -106,6 +126,7 @@ public class ChatBubblesManager extends EntityTag {
                     :
                     ConfigManager.Bubbles.prefix + text + ConfigManager.Bubbles.suffix;
             String stripped = MiniMessage.miniMessage().stripTags(text);
+            if (stripped.length() > ConfigManager.Bubbles.maxChar) return;
             String bubble = NameplateUtil.makeCustomBubble("", stripped, "", bubbleConfig);
             String suffix = NameplateUtil.getSuffixChar(stripped);
             Component armorStand_Name = Component.text(bubble).font(ConfigManager.Main.key)

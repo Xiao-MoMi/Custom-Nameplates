@@ -11,7 +11,8 @@ public record ChatListener(
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-        if (!event.isCancelled())
+        if (!event.isCancelled()) {
             chatBubblesManager.onChat(event.getPlayer(), MiniMessage.miniMessage().stripTags(ChatColor.stripColor(event.getMessage())));
+        }
     }
 }

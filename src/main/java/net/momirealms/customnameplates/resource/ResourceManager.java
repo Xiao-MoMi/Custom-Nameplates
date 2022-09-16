@@ -539,7 +539,7 @@ public class ResourceManager {
         }
         if (ConfigManager.Main.oraxen){
             try {
-                FileUtils.copyDirectory(generated, new File(Bukkit.getPluginManager().getPlugin("Oraxen").getDataFolder() + File.separator + "pack"+ File.separator + "assets"));
+                FileUtils.copyDirectory(new File(generated, File.separator + ConfigManager.Main.namespace), new File(Bukkit.getPluginManager().getPlugin("Oraxen").getDataFolder() + File.separator + "pack"+ File.separator + "assets" + File.separator + ConfigManager.Main.namespace));
                 AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Detected <color:#90EE90>Oraxen!<color:#baffd1> Automatically sent rp to Oraxen folder!");
             }
             catch (IOException e){

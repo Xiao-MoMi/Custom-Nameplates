@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - TAB
   - Oraxen
+  - TrChat
 commands:
   customnameplates:
     usage: /customnameplates
@@ -54,6 +55,7 @@ permissions:
     children:
       bubbles.unequip: true
       bubbles.equip: true
+      bubbles.help: true
       bubbles.forceequip: true
       bubbles.forceunequip: true
       bubbles.list: true

@@ -76,7 +76,7 @@ public class TeamPacketA implements TeamPacketManager {
         NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
         String newInfo = nameplatesTeam.getDynamic();
         String oldInfo = teamInfoCache.get(player);
-        if (newInfo.equals(oldInfo) && !force) {
+        if (newInfo != null && newInfo.equals(oldInfo) && !force) {
             return;
         }
         teamInfoCache.put(player, newInfo);

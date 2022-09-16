@@ -29,6 +29,9 @@ import net.momirealms.customnameplates.commands.np.TabCompleteN;
 import net.momirealms.customnameplates.data.DataManager;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.helper.LibraryLoader;
+import net.momirealms.customnameplates.hook.IAImageHook;
+import net.momirealms.customnameplates.hook.ImageParser;
+import net.momirealms.customnameplates.hook.OXImageHook;
 import net.momirealms.customnameplates.hook.PlaceholderManager;
 import net.momirealms.customnameplates.nameplates.ProxyDataListener;
 import net.momirealms.customnameplates.nameplates.TeamManager;
@@ -66,6 +69,7 @@ public final class CustomNameplates extends JavaPlugin {
     private NameplateManager nameplateManager;
     private ChatBubblesManager chatBubblesManager;
     private ProxyDataListener proxyDataListener;
+    private ImageParser imageParser;
 
     @Override
     public void onLoad(){
@@ -116,11 +120,11 @@ public final class CustomNameplates extends JavaPlugin {
         if (bossBarManager != null) {
             bossBarManager.unload();
         }
-        if (placeholderManager != null) {
-            placeholderManager.unload();
-        }
         if (chatBubblesManager != null) {
             chatBubblesManager.unload();
+        }
+        if (placeholderManager != null) {
+            placeholderManager.unload();
         }
         if (adventure != null) {
             adventure.close();
@@ -236,6 +240,12 @@ public final class CustomNameplates extends JavaPlugin {
                 ConfigManager.Bubbles.load();
                 this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
                 this.chatBubblesManager.load();
+                if (ConfigManager.Main.itemsAdder) {
+                    this.imageParser = new IAImageHook();
+                }
+                if (ConfigManager.Main.oraxen) {
+                    this.imageParser = new OXImageHook();
+                }
             }
             else if (this.chatBubblesManager != null) {
                 this.chatBubblesManager.unload();
@@ -280,5 +290,9 @@ public final class CustomNameplates extends JavaPlugin {
 
     public NameplateManager getNameplateManager() {
         return nameplateManager;
+    }
+
+    public ImageParser getImageParser() {
+        return imageParser;
     }
 }

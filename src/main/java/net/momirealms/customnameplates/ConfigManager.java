@@ -114,6 +114,7 @@ public class ConfigManager {
         public static boolean tab_bc;
         public static boolean oraxen;
         public static boolean extract;
+        public static boolean trChat;
         public static List<Integer> offsets;
         public static char start;
         public static Key key;
@@ -142,6 +143,7 @@ public class ConfigManager {
             tab = config.getBoolean("config.integrations.TAB",false);
             tab_bc = config.getBoolean("config.integrations.TAB-BC",false);
             oraxen = config.getBoolean("config.integrations.Oraxen",false);
+            trChat = config.getBoolean("config.integrations.TrChat",false);
             offsets = config.getIntegerList("config.ascii-y-offset.offset");
 
             if(config.getBoolean("config.extract-shader",true)) {
@@ -161,6 +163,10 @@ public class ConfigManager {
             if (oraxen && CustomNameplates.instance.getServer().getPluginManager().getPlugin("Oraxen") == null){
                 CustomNameplates.instance.getLogger().warning("Failed to initialize Oraxen!");
                 oraxen = false;
+            }
+            if (trChat && CustomNameplates.instance.getServer().getPluginManager().getPlugin("TrChat") == null){
+                CustomNameplates.instance.getLogger().warning("Failed to initialize TrChat!");
+                trChat = false;
             }
         }
     }
@@ -354,6 +360,8 @@ public class ConfigManager {
         public static double lineSpace;
         public static double yOffset;
         public static int stayTime;
+        public static int coolDown;
+        public static int maxChar;
         public static void load() {
             YamlConfiguration config = getConfig("bubble.yml");
             defaultBubble = config.getString("bubble.default-bubbles", "none");
@@ -363,6 +371,8 @@ public class ConfigManager {
             defaultFormat = config.getString("bubble.default-format", "<white><underlined>");
             yOffset = config.getDouble("bubble.bottom-line-Y-offset");
             stayTime = config.getInt("bubble.stay-time", 5);
+            coolDown = config.getInt("bubble.cool-down", 1) * 1000;
+            maxChar = config.getInt("bubble.max-char-length", 35);
         }
     }
 
