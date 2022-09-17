@@ -130,7 +130,16 @@ public class NameplatesTeam {
 
         this.dynamic = playerPrefix + playerSuffix;
 
-        String name = this.player.getName();
+        String name;
+        if (ConfigManager.Nameplate.player_name.equals("%player_name%")) {
+            name = this.player.getName();
+        }
+        else if (ConfigManager.Main.placeholderAPI) {
+            name = CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, ConfigManager.Nameplate.player_name);
+        }
+        else {
+            name = this.player.getName();
+        }
 
         this.prefixText = NameplateUtil.makeCustomNameplate(
                 MiniMessage.miniMessage().stripTags(playerPrefix),

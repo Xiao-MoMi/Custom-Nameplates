@@ -1,5 +1,5 @@
 # Do not change
-config-version: '7'
+config-version: '8'
 
 nameplate:
   # mode: Team / Riding / Teleporting
@@ -17,6 +17,11 @@ nameplate:
   # When you meet problems of players getting kicked with proxy server you should disable this
   # Or installing BungeeTabListPlus / TAB on the proxy server would fix
   create-fake-team: true
+
+  # This decides what %nameplates_prefix/suffix% would return
+  # This only works on Riding / Teleporting mode
+  # Don't change this if you are using Team mode
+  player-name: '%player_name%'
 
   update:
     # Nameplates will be updated every x ticks

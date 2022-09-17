@@ -434,9 +434,9 @@ public class ResourceManager {
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to generate font json...</red>");
         }
 
-        if (NAMEPLATES.size() != 1) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + (NAMEPLATES.size() -1) + " <gray>nameplates");
-        if (BUBBLES.size() != 0) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + BUBBLES.size() + " <gray>bubbles");
-        if (BACKGROUNDS.size() != 0) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + BACKGROUNDS.size() + " <gray>backgrounds");
+        if (NAMEPLATES != null) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + (NAMEPLATES.size() -1) + " <gray>nameplates");
+        if (BUBBLES != null) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + BUBBLES.size() + " <gray>bubbles");
+        if (BACKGROUNDS != null) AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + BACKGROUNDS.size() + " <gray>backgrounds");
         //复制到其他插件文件夹中
         hookCopy(gd_file);
     }

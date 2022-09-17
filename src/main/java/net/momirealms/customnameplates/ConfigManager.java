@@ -176,6 +176,7 @@ public class ConfigManager {
         public static String default_nameplate;
         public static String player_prefix;
         public static String player_suffix;
+        public static String player_name;
         public static long preview;
         public static boolean update;
         public static int refresh;
@@ -192,6 +193,7 @@ public class ConfigManager {
 
             YamlConfiguration config = getConfig("nameplate.yml");
             default_nameplate = config.getString("nameplate.default-nameplate");
+            player_name = config.getString("nameplate.player-name", "%player_name%");
             preview = config.getLong("nameplate.preview-duration");
             mode = config.getString("nameplate.mode","team");
             update = config.getBoolean("nameplate.update.enable",true);
