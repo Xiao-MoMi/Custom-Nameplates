@@ -1,5 +1,5 @@
 bossbar:
-
+  # Please use MiniMessage format: https://docs.adventure.kyori.net/minimessage/format.html
   # Dynamic Boss Bar
   example_1:
     color: YELLOW

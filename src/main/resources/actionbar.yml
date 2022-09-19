@@ -1,2 +1,3 @@
+# Please use MiniMessage format: https://docs.adventure.kyori.net/minimessage/format.html
 text: '<font:nameplates:default>%nameplates_bg_health%</font><font:nameplates:offset_-11><red>%player_health_rounded% Health</font>               <font:nameplates:default>%nameplates_bg_food%</font><font:nameplates:offset_-11><#F0E68C>%player_food_level% Hunger</font>'
 refresh-rate: 5
