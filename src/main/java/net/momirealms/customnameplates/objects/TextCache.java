@@ -44,12 +44,7 @@ public class TextCache {
     }
 
     private void analyze(String value) {
-        List<String> placeholdersOwner = new ArrayList<>();
-        for (String identifier : CustomNameplates.instance.getPlaceholderManager().detectPlaceholders(value)) {
-            if (!identifier.startsWith("%rel_")) {
-                placeholdersOwner.add(identifier);
-            }
-        }
+        List<String> placeholdersOwner = new ArrayList<>(CustomNameplates.instance.getPlaceholderManager().detectPlaceholders(value));
         String origin = value;
         for (String placeholder : placeholdersOwner) {
             origin = origin.replace(placeholder, "%s");

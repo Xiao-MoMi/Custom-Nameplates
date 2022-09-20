@@ -52,6 +52,11 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (params.equals("equipped")){
             String nameplate = Optional.ofNullable(CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId())).orElse(PlayerData.EMPTY).getEquippedNameplate();
