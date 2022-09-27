@@ -19,3 +19,57 @@ bossbar:
     refresh-rate: 5
     color: YELLOW
     overlay: PROGRESS
+    conditions:
+      permission: 'nameplates.admin'
+
+
+# Available conditions & Examples
+#
+#     #Biome
+#     biome:
+#       - minecraft:plains
+#       - minecraft:taiga
+#
+#     #Y coordinate
+#     ypos:
+#       - 50~100
+#       - 150~200
+#
+#     #World weather
+#     weather:
+#       - rain
+#       - clear
+#       - thunder
+#
+#     #Player permission
+#     permission: 'customfishing.rainbowfish'
+#
+#     #Specified world
+#     world:
+#       - world
+#
+#     #Game Time Range
+#     time:
+#        - 0~12000
+#
+#     Requires PlaceholderAPI
+#     Create complex condition as you want
+#     "||" means one of the conditions is true, it would be true
+#     "&&" means all the conditions must be true to be true
+#     available types "==" "!=" ">" "<" ">=" "<="
+#
+#     papi-condition:
+#        '||':
+#          condition_1:
+#            type: '=='
+#            papi: '%player_world%'
+#            value: world
+#          '&&':
+#            condition_1:
+#              type: '>='
+#              papi: '%player_health%'
+#              value: 5
+#            condition_2:
+#              type: '<'
+#              papi: '%player_health%'
+#              value: 15

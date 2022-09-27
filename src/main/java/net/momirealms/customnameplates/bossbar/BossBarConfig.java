@@ -17,62 +17,51 @@
 
 package net.momirealms.customnameplates.bossbar;
 
+import net.momirealms.customnameplates.requirements.Requirement;
 import org.bukkit.boss.BarColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class BossBarConfig {
 
-    private String[] text;
-    private int internal;
-    private Overlay overlay;
-    private BarColor color;
-    private int rate;
+    private final String[] text;
+    private final int interval;
+    private final Overlay overlay;
+    private final BarColor color;
+    private final int rate;
+    private final List<Requirement> conditions;
 
-    public BossBarConfig(String[] text, Overlay overlay, BarColor color, int rate) {
+    public BossBarConfig(String[] text, Overlay overlay, BarColor color, int rate, int interval, @NotNull List<Requirement> conditions) {
         this.text = text;
         this.overlay = overlay;
         this.color = color;
         this.rate = rate;
+        this.interval = interval;
+        this.conditions = conditions;
     }
 
     public String[] getText() {
         return text;
     }
 
-    public void setText(String[] text) {
-        this.text = text;
-    }
-
-    public int getInternal() {
-        return internal;
-    }
-
-    public void setInternal(int internal) {
-        this.internal = internal;
+    public int getInterval() {
+        return interval;
     }
 
     public Overlay getOverlay() {
         return overlay;
     }
 
-    public void setOverlay(Overlay overlay) {
-        this.overlay = overlay;
-    }
-
     public BarColor getColor() {
         return color;
-    }
-
-    public void setColor(BarColor color) {
-        this.color = color;
     }
 
     public int getRate() {
         return rate;
     }
 
-    public void setRate(int rate) {
-        this.rate = rate;
+    public List<Requirement> getConditions() {
+        return conditions;
     }
 }

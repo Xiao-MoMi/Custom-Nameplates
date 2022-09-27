@@ -176,7 +176,7 @@ public final class CustomNameplates extends JavaPlugin {
         }
 
         if (ConfigManager.Module.actionbar){
-            ConfigManager.ActionbarConfig.load();
+            ConfigManager.loadActionBar();
             if (actionBarManager != null) {
                 this.actionBarManager.unload();
                 this.actionBarManager.load();

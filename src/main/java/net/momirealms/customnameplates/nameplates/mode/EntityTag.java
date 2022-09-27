@@ -53,11 +53,6 @@ public abstract class EntityTag extends NameplateManager {
         super.onQuit(player);
     }
 
-//    @Override
-//    public void onRP(Player player, PlayerResourcePackStatusEvent.Status status) {
-//        super.onRP(player, status);
-//    }
-
     public void onSneak(Player player, boolean isSneaking) {
     }
 

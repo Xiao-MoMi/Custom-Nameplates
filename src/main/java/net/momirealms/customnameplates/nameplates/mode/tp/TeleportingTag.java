@@ -131,10 +131,6 @@ public class TeleportingTag extends EntityTag {
 
     @Override
     public void onQuit(Player player) {
-//        for (Player all : Bukkit.getOnlinePlayers()) {
-//            if (getArmorStandManager(all) == null) continue;
-//            getArmorStandManager(all) .unregisterPlayer(player);
-//        }
         ArmorStandManager asm = armorStandManagerMap.remove(player);
         if (asm != null) {
             asm.destroy();

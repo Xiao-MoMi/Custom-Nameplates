@@ -18,12 +18,15 @@
 package net.momirealms.customnameplates;
 
 import net.kyori.adventure.key.Key;
+import net.momirealms.customnameplates.actionbar.ActionBarConfig;
 import net.momirealms.customnameplates.bossbar.BossBarConfig;
 import net.momirealms.customnameplates.bossbar.Overlay;
 import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
+import net.momirealms.customnameplates.helper.Log;
+import net.momirealms.customnameplates.requirements.*;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.objects.BackGroundText;
 import net.momirealms.customnameplates.objects.NameplateText;
@@ -36,14 +39,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ConfigManager {
 
     public static TreeMap<String, BossBarConfig> bossBars = new TreeMap<>();
+    public static HashMap<String, ActionBarConfig> actionBars = new HashMap<>();
     public static HashMap<String, BackGroundText> papiBG = new HashMap<>();
     public static HashMap<String, NameplateText> papiNP = new HashMap<>();
     public static HashMap<Character, Integer> fontWidth = new HashMap<>();
@@ -302,25 +303,59 @@ public class ConfigManager {
     public static void loadBossBar() {
         bossBars.clear();
         YamlConfiguration config = getConfig("bossbar.yml");
-        Objects.requireNonNull(config.getConfigurationSection("bossbar")).getKeys(false).forEach(key -> {
-            String[] texts;
-            String text = config.getString("bossbar." + key + ".text");
-            if (text != null) {
-                texts = new String[]{text};
+        if (config.contains("bossbar")) {
+            config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
+                String[] texts;
+                String text = config.getString("bossbar." + key + ".text");
+                if (text != null) {
+                    texts = new String[]{text};
+                }
+                else {
+                    List<String> strings = config.getStringList("bossbar." + key + ".dynamic-text");
+                    texts = strings.toArray(new String[0]);
+                }
+                List<Requirement> requirements = new ArrayList<>();
+                if (config.contains("bossbar." + key + ".conditions")){
+                    config.getConfigurationSection("bossbar." + key + ".conditions").getKeys(false).forEach(requirement -> {
+                        switch (requirement){
+                            case "weather" -> requirements.add(new Weather(config.getStringList("bossbar." + key + ".conditions.weather")));
+                            case "ypos" -> requirements.add(new YPos(config.getStringList("bossbar." + key + ".conditions.ypos")));
+                            case "world" -> requirements.add(new World(config.getStringList("bossbar." + key + ".conditions.world")));
+                            case "biome" -> requirements.add(new Biome(config.getStringList("bossbar." + key + ".conditions.biome")));
+                            case "permission" -> requirements.add(new Permission(config.getString("bossbar." + key + ".conditions.permission")));
+                            case "time" -> requirements.add(new Time(config.getStringList("bossbar." + key + ".conditions.time")));
+                            case "papi-condition" -> {
+                                if (Main.placeholderAPI) requirements.add(new CustomPapi(config.getConfigurationSection("bossbar." + key + ".conditions.papi-condition").getValues(false)));
+                                else AdventureUtil.consoleMessage("<red>[CustomNameplates] You need to enable PlaceholderAPI Integration to use papi condition!</red>");
+                            }
+                        }
+                    });
+                }
+                BossBarConfig bossBarConfig = new BossBarConfig(
+                        texts,
+                        Overlay.valueOf(config.getString("bossbar."+key+".overlay","progress").toUpperCase()),
+                        BarColor.valueOf(config.getString("bossbar."+key+".color","white").toUpperCase()),
+                        config.getInt("bossbar." + key + ".refresh-rate", 15) - 1,
+                        config.getInt("bossbar." + key + ".switch-interval", 5) * 20,
+                        requirements
+                );
+                bossBars.put(key, bossBarConfig);
+            });
+            AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + bossBars.size() + " <gray>bossbars");
+        }
+        else {
+            File file = new File(CustomNameplates.instance.getDataFolder(), "bossbar.yml");
+            File backFile = new File(CustomNameplates.instance.getDataFolder(), "bossbar_backup.yml");
+            try {
+                config.save(backFile);
             }
-            else {
-                List<String> strings = config.getStringList("bossbar." + key + ".dynamic-text");
-                texts = strings.toArray(new String[0]);
+            catch (IOException e) {
+                e.printStackTrace();
             }
-            BossBarConfig bossBarConfig = new BossBarConfig(
-                    texts,
-                    Overlay.valueOf(config.getString("bossbar."+key+".overlay","progress").toUpperCase()),
-                    BarColor.valueOf(config.getString("bossbar."+key+".color","white").toUpperCase()),
-                    config.getInt("bossbar." + key + ".refresh-rate") - 1
-            );
-            bossBarConfig.setInternal(config.getInt("bossbar." + key + ".switch-interval", 5) * 20);
-            bossBars.put(key, bossBarConfig);
-        });
+            if (file.delete()) {
+                loadBossBar();
+            }
+        }
     }
 
     /**
@@ -341,13 +376,60 @@ public class ConfigManager {
     /**
      * 加载actionbar模块相关功能
      */
-    public static class ActionbarConfig {
-        public static int rate;
-        public static String text;
-        public static void load() {
-            YamlConfiguration config = getConfig("actionbar.yml");
-            rate = config.getInt("refresh-rate") - 1;
-            text = config.getString("text");
+
+    public static void loadActionBar() {
+        actionBars.clear();
+        YamlConfiguration config = getConfig("actionbar.yml");
+        if (config.contains("actionbar")) {
+            for (String key : config.getConfigurationSection("actionbar").getKeys(false)) {
+                String[] texts;
+                String text = config.getString("actionbar." + key + ".text");
+                if (text != null) {
+                    texts = new String[]{text};
+                }
+                else {
+                    List<String> strings = config.getStringList("actionbar." + key + ".dynamic-text");
+                    texts = strings.toArray(new String[0]);
+                }
+                List<Requirement> requirements = new ArrayList<>();
+                if (config.contains("actionbar." + key + ".conditions")){
+                    config.getConfigurationSection("actionbar." + key + ".conditions").getKeys(false).forEach(requirement -> {
+                        switch (requirement){
+                            case "weather" -> requirements.add(new Weather(config.getStringList("actionbar." + key + ".conditions.weather")));
+                            case "ypos" -> requirements.add(new YPos(config.getStringList("actionbar." + key + ".conditions.ypos")));
+                            case "world" -> requirements.add(new World(config.getStringList("actionbar." + key + ".conditions.world")));
+                            case "biome" -> requirements.add(new Biome(config.getStringList("actionbar." + key + ".conditions.biome")));
+                            case "permission" -> requirements.add(new Permission(config.getString("actionbar." + key + ".conditions.permission")));
+                            case "time" -> requirements.add(new Time(config.getStringList("actionbar." + key + ".conditions.time")));
+                            case "papi-condition" -> {
+                                if (Main.placeholderAPI) requirements.add(new CustomPapi(config.getConfigurationSection("actionbar." + key + ".conditions.papi-condition").getValues(false)));
+                                else AdventureUtil.consoleMessage("<red>[CustomNameplates] You need to enable PlaceholderAPI Integration to use papi condition!</red>");
+                            }
+                        }
+                    });
+                }
+                ActionBarConfig actionBarConfig = new ActionBarConfig(
+                        config.getInt("actionbar." + key + ".refresh-rate", 5) - 1,
+                        config.getInt("actionbar." + key + ".switch-interval", 15) * 20,
+                        texts,
+                        requirements
+                );
+                actionBars.put(key, actionBarConfig);
+            }
+            AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + actionBars.size() + " <gray>actionbars");
+        }
+        else {
+            File file = new File(CustomNameplates.instance.getDataFolder(), "actionbar.yml");
+            if (file.delete()) {
+                loadActionBar();
+            }
+            File backFile = new File(CustomNameplates.instance.getDataFolder(), "actionbar_backup.yml");
+            try {
+                config.save(backFile);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -384,7 +466,14 @@ public class ConfigManager {
     public static void loadWidth() {
         fontWidth.clear();
         YamlConfiguration config = getConfig("char-width.yml");
-        config.getConfigurationSection("").getKeys(false).forEach(key -> fontWidth.put(key.charAt(0), config.getInt(key)));
+        for (String key : config.getKeys(false)) {
+            if (key.length() == 1) {
+                fontWidth.put(key.charAt(0), config.getInt(key));
+            }
+            else {
+                AdventureUtil.consoleMessage("<red>[CustomNameplates] " + key + " in custom char-width.yml is in wrong format or not supported");
+            }
+        }
         AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + fontWidth.size() + " <gray>custom char-width");
         if (Main.thin_font)
             for (int i = 0; i < FontWidthThin.values().length; i++)

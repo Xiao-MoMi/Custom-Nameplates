@@ -2,7 +2,7 @@ package net.momirealms.customnameplates.bungeecord;
 
 public class BungeeConfig {
 
-    private Main plugin;
+    private final Main plugin;
 
     public BungeeConfig(Main plugin) {
         this.plugin = plugin;

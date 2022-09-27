@@ -15,25 +15,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates.mode;
+package net.momirealms.customnameplates.requirements;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import org.apache.commons.lang.StringUtils;
 
-public record EventListener(NameplateManager nameplateManager) implements Listener {
+import java.util.List;
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        nameplateManager.onJoin(event.getPlayer());
+public record Time(List<String> times) implements Requirement{
+
+    public List<String> getTimes() {
+        return this.times;
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        nameplateManager.onQuit(event.getPlayer());
+    @Override
+    public boolean isConditionMet(PlayerCondition playerCondition) {
+        long time = playerCondition.getLocation().getWorld().getTime();
+        for (String range : times) {
+            String[] timeMinMax = StringUtils.split(range, "~");
+            if (time > Long.parseLong(timeMinMax[0]) && time < Long.parseLong(timeMinMax[1])) {
+                return true;
+            }
+        }
+        return false;
     }
-
 }

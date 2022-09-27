@@ -23,6 +23,7 @@ papi:
     text: '%player_food_level% Hunger'
     background: bedrock_3
 
+
   #This papi will not return text with nameplate
   #It will only return the nameplate
   #So you need to do something like this in your bossbar/actionbar plugin:

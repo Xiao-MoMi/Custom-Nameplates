@@ -91,6 +91,7 @@ public class TextCache {
     }
 
     public String getViewerText(Player viewer) {
+        //还没写完
         return latestValue;
     }
 }

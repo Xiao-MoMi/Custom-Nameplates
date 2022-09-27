@@ -41,11 +41,14 @@ public class Sender {
     private int timer_1;
     private int timer_2;
     private int counter;
+    private final int size;
     private final TextCache[] texts;
     private TextCache text;
-    private final BukkitTask bukkitTask;
+    private BukkitTask bukkitTask;
     private final UUID uuid;
     private boolean force;
+    private final BossBarConfig config;
+    private boolean isShown;
 
     public void setText(int position) {
         this.text = texts[position];
@@ -54,7 +57,7 @@ public class Sender {
 
     public Sender(Player player, BossBarConfig config){
         String[] str = config.getText();
-        int size = str.length;
+        this.size = str.length;
         texts = new TextCache[str.length];
         for (int i = 0; i < str.length; i++) {
             texts[i] = new TextCache(player, str[i]);
@@ -62,58 +65,55 @@ public class Sender {
         text = texts[0];
         this.player = player;
         this.uuid = UUID.randomUUID();
-
-        show(config);
-
-        this.bukkitTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (size != 1) {
-                        timer_2++;
-                        if (timer_2 > config.getInternal()) {
-                            timer_2 = 0;
-                            counter++;
-                            if (counter == size) {
-                                counter = 0;
-                            }
-                            setText(counter);
-                        }
-                    }
-                    if (timer_1 < config.getRate()){
-                        timer_1++;
-                    }
-                    else {
-                        timer_1 = 0;
-                        if (text.update() || force) {
-                            force = false;
-                            PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
-                            packet.getModifier().write(0, uuid);
-                            InternalStructure internalStructure = packet.getStructures().read(1);
-                            internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text.getLatestValue()))));
-                            internalStructure.getFloat().write(0,1F);
-                            internalStructure.getEnumModifier(BarColor.class, 2).write(0, config.getColor());
-                            internalStructure.getEnumModifier(Overlay.class, 3).write(0, config.getOverlay());
-                            internalStructure.getModifier().write(4, false);
-                            internalStructure.getModifier().write(5, false);
-                            internalStructure.getModifier().write(6, false);
-                            try{
-                                CustomNameplates.protocolManager.sendServerPacket(player, packet);
-                            }catch (InvocationTargetException e){
-                                AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
-                            }
-                        }
-                    }
-            }
-        }.runTaskTimerAsynchronously(CustomNameplates.instance,1,1);
-
+        this.config = config;
+        this.isShown = false;
     }
 
-    private void show(BossBarConfig config){
+    public void show() {
+        this.isShown = true;
 
+        try{
+            CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
+        }catch (InvocationTargetException e){
+            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
+        }
+
+        this.bukkitTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (size != 1) {
+                    timer_2++;
+                    if (timer_2 > config.getInterval()) {
+                        timer_2 = 0;
+                        counter++;
+                        if (counter == size) {
+                            counter = 0;
+                        }
+                        setText(counter);
+                    }
+                }
+                if (timer_1 < config.getRate()){
+                    timer_1++;
+                }
+                else {
+                    timer_1 = 0;
+                    if (text.update() || force) {
+                        force = false;
+                        try{
+                            CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
+                        }
+                        catch (InvocationTargetException e){
+                            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
+                        }
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(CustomNameplates.instance,1,1);
+    }
+
+    private PacketContainer getPacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
-
         packet.getModifier().write(0, uuid);
-
         InternalStructure internalStructure = packet.getStructures().read(1);
         internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text.getLatestValue()))));
         internalStructure.getFloat().write(0,1F);
@@ -122,16 +122,13 @@ public class Sender {
         internalStructure.getModifier().write(4, false);
         internalStructure.getModifier().write(5, false);
         internalStructure.getModifier().write(6, false);
-        try{
-            CustomNameplates.protocolManager.sendServerPacket(player, packet);
-        }catch (InvocationTargetException e){
-            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
-        }
+        return packet;
     }
 
     public void hide() {
         remove();
         bukkitTask.cancel();
+        this.isShown = false;
     }
 
     private void remove() {
@@ -143,5 +140,13 @@ public class Sender {
         }catch (InvocationTargetException e){
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to remove bossbar for " + player.getName());
         }
+    }
+
+    public boolean getStatus() {
+        return this.isShown;
+    }
+
+    public BossBarConfig getConfig() {
+        return config;
     }
 }

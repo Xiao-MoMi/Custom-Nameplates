@@ -71,25 +71,4 @@ public abstract class NameplateManager extends Function {
         }
         CustomNameplates.instance.getTeamManager().getTeams().remove(teamName);
     }
-
-//    public void onRP(Player player, PlayerResourcePackStatusEvent.Status status) {
-//        if (!ConfigManager.Nameplate.show_after) return;
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                PlayerData playerData = CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId());
-//                if (playerData == null) return;
-//                if (status == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
-//                    playerData.setAccepted(true);
-//                    SqlHandler.save(playerData, player.getUniqueId());
-//                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
-//                }
-//                else if (status == PlayerResourcePackStatusEvent.Status.DECLINED || status == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
-//                    playerData.setAccepted(false);
-//                    SqlHandler.save(playerData, player.getUniqueId());
-//                    CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(player);
-//                }
-//            }
-//        }.runTaskAsynchronously(CustomNameplates.instance);
-//    }
 }

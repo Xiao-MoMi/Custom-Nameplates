@@ -1,0 +1,77 @@
+package net.momirealms.customnameplates.actionbar;
+
+import net.momirealms.customnameplates.ConfigManager;
+import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.requirements.PlayerCondition;
+import net.momirealms.customnameplates.requirements.Requirement;
+import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+public class ActionBarTask {
+
+    private ActionBarConfig config;
+    private int timer_1;
+    private int timer_2;
+    private int counter;
+    private String text;
+    private final int size;
+    private BukkitTask task;
+
+    public ActionBarTask(ActionBarConfig config) {
+        this.config = config;
+        size = config.getText().length;
+        text = config.getText()[0];
+        start();
+    }
+
+    public void setText(int position) {
+        this.text = config.getText()[position];
+    }
+
+    private void start() {
+
+        this.task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (size != 1) {
+                    timer_2++;
+                    if (timer_2 > config.getInterval()) {
+                        timer_2 = 0;
+                        counter++;
+                        if (counter == size) {
+                            counter = 0;
+                        }
+                        setText(counter);
+                    }
+                }
+                if (timer_1 < config.getRate()){
+                    timer_1++;
+                }
+                else {
+                    outer:
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+
+                        PlayerCondition condition = new PlayerCondition(player.getLocation(), player);
+
+                        for (Requirement requirement : config.getConditions()) {
+                            if (!requirement.isConditionMet(condition)) {
+                                continue outer;
+                            }
+                        }
+
+                        AdventureUtil.playerActionbar(player, ConfigManager.Main.placeholderAPI ? CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(player, text) : text);
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(CustomNameplates.instance, 1, 1);
+    }
+
+    public void stop() {
+        if (this.task != null) {
+            task.cancel();
+        }
+    }
+}

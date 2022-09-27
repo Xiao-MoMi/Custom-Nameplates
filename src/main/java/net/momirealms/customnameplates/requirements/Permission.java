@@ -15,25 +15,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.nameplates.mode;
+package net.momirealms.customnameplates.requirements;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+public record Permission(String permission) implements Requirement {
 
-public record EventListener(NameplateManager nameplateManager) implements Listener {
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        nameplateManager.onJoin(event.getPlayer());
+    public String getPermission() {
+        return this.permission;
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        nameplateManager.onQuit(event.getPlayer());
+    @Override
+    public boolean isConditionMet(PlayerCondition playerCondition) {
+        return playerCondition.getPlayer().hasPermission(permission);
     }
-
 }
