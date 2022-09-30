@@ -47,18 +47,18 @@ public class SqlConnection {
     private void createNewHikariConfiguration() {
         hikari = new HikariDataSource();
         hikari.setPoolName("[Nameplates]");
-        hikari.setJdbcUrl(ConfigManager.DatabaseConfig.url);
-        hikari.setUsername(ConfigManager.DatabaseConfig.user);
-        hikari.setPassword(ConfigManager.DatabaseConfig.password);
-        hikari.setMaximumPoolSize(ConfigManager.DatabaseConfig.maximum_pool_size);
-        hikari.setMinimumIdle(ConfigManager.DatabaseConfig.minimum_idle);
-        hikari.setMaxLifetime(ConfigManager.DatabaseConfig.maximum_lifetime);
+        hikari.setJdbcUrl(ConfigManager.Database.url);
+        hikari.setUsername(ConfigManager.Database.user);
+        hikari.setPassword(ConfigManager.Database.password);
+        hikari.setMaximumPoolSize(ConfigManager.Database.maximum_pool_size);
+        hikari.setMinimumIdle(ConfigManager.Database.minimum_idle);
+        hikari.setMaxLifetime(ConfigManager.Database.maximum_lifetime);
         hikari.addDataSourceProperty("cachePrepStmts", "true");
         hikari.addDataSourceProperty("prepStmtCacheSize", "250");
         hikari.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         hikari.addDataSourceProperty("userServerPrepStmts", "true");
         if (hikari.getMinimumIdle() < hikari.getMaximumPoolSize()) {
-            hikari.setIdleTimeout(ConfigManager.DatabaseConfig.idle_timeout);
+            hikari.setIdleTimeout(ConfigManager.Database.idle_timeout);
         } else {
             hikari.setIdleTimeout(0);
         }
@@ -68,7 +68,7 @@ public class SqlConnection {
     设置驱动，区分Mysql5与8
      */
     private void setDriver() {
-        if(ConfigManager.DatabaseConfig.use_mysql){
+        if(ConfigManager.Database.use_mysql){
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (ClassNotFoundException e) {
@@ -84,14 +84,14 @@ public class SqlConnection {
     public boolean setGlobalConnection() {
         setDriver();
         try {
-            if (ConfigManager.DatabaseConfig.enable_pool) {
+            if (ConfigManager.Database.enable_pool) {
                 createNewHikariConfiguration();
                 Connection connection = getConnection();
                 closeHikariConnection(connection);
             } else {
                 Class.forName(driver);
-                if(ConfigManager.DatabaseConfig.use_mysql){
-                    connection = DriverManager.getConnection(ConfigManager.DatabaseConfig.url, ConfigManager.DatabaseConfig.user, ConfigManager.DatabaseConfig.password);
+                if(ConfigManager.Database.use_mysql){
+                    connection = DriverManager.getConnection(ConfigManager.Database.url, ConfigManager.Database.user, ConfigManager.Database.password);
                 }else {
                     connection = DriverManager.getConnection("jdbc:sqlite:" + userdata.toString());
                 }
@@ -135,7 +135,7 @@ public class SqlConnection {
     }
 
     public Connection getConnection() throws SQLException {
-        if (ConfigManager.DatabaseConfig.enable_pool) {
+        if (ConfigManager.Database.enable_pool) {
             return hikari.getConnection();
         } else {
             return connection;
@@ -145,7 +145,7 @@ public class SqlConnection {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canConnect() {
         try {
-            if (ConfigManager.DatabaseConfig.enable_pool) {
+            if (ConfigManager.Database.enable_pool) {
                 if (hikari == null) {
                     return setGlobalConnection();
                 }
@@ -159,7 +159,7 @@ public class SqlConnection {
                 if (connection.isClosed()) {
                     return setGlobalConnection();
                 }
-                if (ConfigManager.DatabaseConfig.use_mysql) {
+                if (ConfigManager.Database.use_mysql) {
                     if (!connection.isValid(waitTimeOut)) {
                         secon = false;
                         return setGlobalConnection();
@@ -174,7 +174,7 @@ public class SqlConnection {
     }
 
     public void closeHikariConnection(Connection connection) {
-        if (!ConfigManager.DatabaseConfig.enable_pool) {
+        if (!ConfigManager.Database.enable_pool) {
             return;
         }
         try {

@@ -127,7 +127,7 @@ public class Sender {
 
     public void hide() {
         remove();
-        bukkitTask.cancel();
+        if (bukkitTask != null) bukkitTask.cancel();
         this.isShown = false;
     }
 

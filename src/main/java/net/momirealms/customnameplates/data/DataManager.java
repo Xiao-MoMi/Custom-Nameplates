@@ -42,7 +42,7 @@ public class DataManager {
 
     public void loadData(Player player) {
         UUID uuid = player.getUniqueId();
-        if (ConfigManager.DatabaseConfig.async) {
+        if (ConfigManager.Database.async) {
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
                 cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
@@ -72,7 +72,7 @@ public class DataManager {
         if (!cache.containsKey(uuid)) {
             return;
         }
-        if (ConfigManager.DatabaseConfig.async){
+        if (ConfigManager.Database.async){
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, ()-> {
                 SqlHandler.save(cache.get(uuid), uuid);
                 cache.remove(uuid);
@@ -85,7 +85,7 @@ public class DataManager {
     }
 
     public void savePlayer(UUID uuid) {
-        if (ConfigManager.DatabaseConfig.async){
+        if (ConfigManager.Database.async){
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 SqlHandler.save(cache.get(uuid), uuid);
             });
@@ -95,10 +95,10 @@ public class DataManager {
     }
 
     public boolean create() {
-        if (ConfigManager.DatabaseConfig.use_mysql) AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode - <green>MYSQL");
+        if (ConfigManager.Database.use_mysql) AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode - <green>MYSQL");
         else AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode - <green>SQLite");
         if (SqlHandler.connect()) {
-            if (ConfigManager.DatabaseConfig.use_mysql) {
+            if (ConfigManager.Database.use_mysql) {
                 SqlHandler.getWaitTimeOut();
             }
             SqlHandler.createTable();

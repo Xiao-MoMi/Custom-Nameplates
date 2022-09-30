@@ -41,7 +41,7 @@ public class SqlHandler {
     }
 
     public static void getWaitTimeOut() {
-        if (ConfigManager.DatabaseConfig.use_mysql && !ConfigManager.DatabaseConfig.enable_pool) {
+        if (ConfigManager.Database.use_mysql && !ConfigManager.Database.enable_pool) {
             try {
                 Connection connection = database.getConnectionAndCheck();
                 String query = "show variables LIKE 'wait_timeout'";
@@ -70,12 +70,12 @@ public class SqlHandler {
                 return;
             }
             String query;
-            if (ConfigManager.DatabaseConfig.use_mysql) {
-                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.DatabaseConfig.tableName
+            if (ConfigManager.Database.use_mysql) {
+                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.Database.tableName
                         + "(player VARCHAR(50) NOT NULL, equipped VARCHAR(50) NOT NULL, bubble VARCHAR(50) NOT NULL,"
-                        + " PRIMARY KEY (player)) DEFAULT charset = " + ConfigManager.DatabaseConfig.ENCODING + ";";
+                        + " PRIMARY KEY (player)) DEFAULT charset = " + ConfigManager.Database.ENCODING + ";";
             } else {
-                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.DatabaseConfig.tableName
+                query = "CREATE TABLE IF NOT EXISTS " + ConfigManager.Database.tableName
                         + "(player VARCHAR(50) NOT NULL, equipped VARCHAR(50) NOT NULL, bubble VARCHAR(50) NOT NULL,"
                         + " PRIMARY KEY (player));";
             }
@@ -94,8 +94,8 @@ public class SqlHandler {
             if (statement == null) {
                 return;
             }
-            String query1 = "ALTER TABLE " + ConfigManager.DatabaseConfig.tableName + " DROP COLUMN accepted;";
-            String query2 = "ALTER TABLE " + ConfigManager.DatabaseConfig.tableName + " ADD COLUMN bubble VARCHAR(50) NOT NULL DEFAULT 'none';";
+            String query1 = "ALTER TABLE " + ConfigManager.Database.tableName + " DROP COLUMN accepted;";
+            String query2 = "ALTER TABLE " + ConfigManager.Database.tableName + " ADD COLUMN bubble VARCHAR(50) NOT NULL DEFAULT 'none';";
             statement.executeUpdate(query1);
             statement.executeUpdate(query2);
             statement.close();
@@ -110,14 +110,14 @@ public class SqlHandler {
         PlayerData playerData = null;
         try {
             Connection connection = database.getConnectionAndCheck();
-            String sql = "SELECT * FROM " + ConfigManager.DatabaseConfig.tableName + " WHERE player = ?";
+            String sql = "SELECT * FROM " + ConfigManager.Database.tableName + " WHERE player = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 playerData = new PlayerData(rs.getString(2), rs.getString(3));
             }else {
-                sql = "INSERT INTO " + ConfigManager.DatabaseConfig.tableName + "(player,equipped,bubble) values(?,?,?)";
+                sql = "INSERT INTO " + ConfigManager.Database.tableName + "(player,equipped,bubble) values(?,?,?)";
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, uuid.toString());
                 statement.setString(2, ConfigManager.Nameplate.default_nameplate);
@@ -137,7 +137,7 @@ public class SqlHandler {
         Connection connection = database.getConnectionAndCheck();
         try {
             String query = " SET equipped = ?, bubble = ? WHERE player = ?";
-            PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
+            PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.Database.tableName + query);
             statement.setString(1, playerData.getEquippedNameplate());
             statement.setString(2, playerData.getBubbles());
             statement.setString(3, uuid.toString());
@@ -156,7 +156,7 @@ public class SqlHandler {
             try {
                 PlayerData playerData = data.get(player.getUniqueId());
                 String query = " SET equipped = ?, bubble = ? WHERE player = ?";
-                PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.DatabaseConfig.tableName + query);
+                PreparedStatement statement = connection.prepareStatement("UPDATE " + ConfigManager.Database.tableName + query);
                 statement.setString(1, playerData.getEquippedNameplate());
                 statement.setString(2, playerData.getBubbles());
                 statement.setString(3, String.valueOf(player.getUniqueId()));

@@ -25,7 +25,6 @@ import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
-import net.momirealms.customnameplates.helper.Log;
 import net.momirealms.customnameplates.requirements.*;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.objects.BackGroundText;
@@ -106,6 +105,7 @@ public class ConfigManager {
         public static String ss_folder_path;
         public static String bb_folder_path;
         public static String font;
+        public static String trChatChannel;
 
         public static boolean itemsAdder;
         public static boolean placeholderAPI;
@@ -145,6 +145,7 @@ public class ConfigManager {
             tab_bc = config.getBoolean("config.integrations.TAB-BC",false);
             oraxen = config.getBoolean("config.integrations.Oraxen",false);
             trChat = config.getBoolean("config.integrations.TrChat",false);
+            trChatChannel = config.getString("config.integrations.TrChat-private-channel","Private");
             offsets = config.getIntegerList("config.ascii-y-offset.offset");
 
             if(config.getBoolean("config.extract-shader",true)) {
@@ -488,7 +489,7 @@ public class ConfigManager {
     /**
      * 数据库设置
      */
-    public static class DatabaseConfig{
+    public static class Database {
 
         public static String user;
         public static String password;
@@ -534,7 +535,7 @@ public class ConfigManager {
                 enable_pool = databaseConfig.getBoolean("settings.use-pool");
 
                 if(enable_pool){
-                    maximum_pool_size = databaseConfig.getInt("Pool-Settings.maximum-pool-height");
+                    maximum_pool_size = databaseConfig.getInt("Pool-Settings.maximum-pool-size");
                     minimum_idle = databaseConfig.getInt("Pool-Settings.minimum-idle");
                     maximum_lifetime = databaseConfig.getInt("Pool-Settings.maximum-lifetime");
                     idle_timeout = databaseConfig.getInt("Pool-Settings.idle-timeout");

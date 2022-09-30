@@ -36,8 +36,4 @@ public record BukkitListener(
         handler.onQuit(event.getPlayer());
     }
 
-//    @EventHandler
-//    public void onMove(PlayerMoveEvent event) {
-//        handler.onPlayerMove(event.getPlayer());
-//    }
 }

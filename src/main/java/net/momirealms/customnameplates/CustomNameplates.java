@@ -192,7 +192,7 @@ public final class CustomNameplates extends JavaPlugin {
         }
         if (ConfigManager.Module.nameplate){
             ConfigManager.Nameplate.reload();
-            ConfigManager.DatabaseConfig.reload();
+            ConfigManager.Database.reload();
             if (ConfigManager.Main.tab_bc) {
                 proxyDataListener = new ProxyDataListener();
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "customnameplates:cnp");
@@ -236,6 +236,9 @@ public final class CustomNameplates extends JavaPlugin {
                     AdventureUtil.consoleMessage("<red>[CustomNameplates] Unknown nameplate mode!");
                 }
             }
+            if (this.chatBubblesManager != null) {
+                this.chatBubblesManager.unload();
+            }
             if (ConfigManager.Module.bubbles) {
                 ConfigManager.Bubbles.load();
                 this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
@@ -246,9 +249,6 @@ public final class CustomNameplates extends JavaPlugin {
                 if (ConfigManager.Main.oraxen) {
                     this.imageParser = new OXImageHook();
                 }
-            }
-            else if (this.chatBubblesManager != null) {
-                this.chatBubblesManager.unload();
             }
         }
         else {
