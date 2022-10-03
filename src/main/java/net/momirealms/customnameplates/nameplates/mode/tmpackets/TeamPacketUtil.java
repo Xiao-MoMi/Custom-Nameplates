@@ -62,11 +62,19 @@ public class TeamPacketUtil {
         packetToAll.getIntegers().write(0,0);
         packetToAll.getStrings().write(0, joinPlayer.getName());
         packetToAll.getModifier().write(2, Collections.singletonList(joinPlayer.getName()));
+        Optional<InternalStructure> optional = packetToAll.getOptionalStructures().read(0);
+        if (optional.isEmpty()) return;
+        InternalStructure internalStructure = optional.get();
+        internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
         for (Player all : Bukkit.getOnlinePlayers()) {
             PacketContainer packetToNew = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
             packetToNew.getIntegers().write(0,0);
             packetToNew.getStrings().write(0, all.getName());
             packetToNew.getModifier().write(2, Collections.singletonList(all.getName()));
+            Optional<InternalStructure> optional2 = packetToNew.getOptionalStructures().read(0);
+            if (optional2.isEmpty()) return;
+            InternalStructure internalStructure2 = optional.get();
+            internalStructure2.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
             try {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.instance, () -> {
                     CustomNameplates.instance.getTeamPacketManager().sendUpdateToOne(joinPlayer);

@@ -74,7 +74,7 @@ public class TeamTag extends NameplateManager {
     public void unload() {
         HandlerList.unregisterAll(listener);
         taskCache.clear();
-        task.cancel();
+        if (task != null) task.cancel();
     }
 
     @Override

@@ -17,8 +17,10 @@
 
 package net.momirealms.customnameplates;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.momirealms.customnameplates.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.bossbar.BossBarManager;
@@ -84,6 +86,8 @@ public final class CustomNameplates extends JavaPlugin {
 
         adventure = BukkitAudiences.create(this);
         protocolManager = ProtocolLibrary.getProtocolManager();
+
+        PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
 
         AdventureUtil.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
 

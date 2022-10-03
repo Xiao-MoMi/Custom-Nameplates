@@ -94,7 +94,8 @@ public class ExecuteN implements CommandExecutor {
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[1]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
-                        CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
+                        NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player));
+                        if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
                         CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
                         AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[1]).name()));
 
@@ -124,7 +125,8 @@ public class ExecuteN implements CommandExecutor {
                         }
                         CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId()).equipNameplate(args[2]);
                         CustomNameplates.instance.getDataManager().savePlayer(player.getUniqueId());
-                        CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player)).updateNameplates();
+                        NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player));
+                        if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
                         CustomNameplates.instance.getTeamPacketManager().sendUpdateToAll(player, true);
                         if (sender instanceof Player) AdventureUtil.playerMessage((Player) sender, ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]).name()).replace("{Player}", args[1]));
                         else AdventureUtil.consoleMessage(ConfigManager.Message.prefix + ConfigManager.Message.np_force_equip.replace("{Nameplate}", CustomNameplates.instance.getResourceManager().getNameplateConfig(args[2]).name()).replace("{Player}", args[1]));

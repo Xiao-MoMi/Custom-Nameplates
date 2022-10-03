@@ -53,6 +53,8 @@ public class NameplatesTeam {
         this.color = ChatColor.WHITE;
         this.player = player;
 
+        updateNameplates();
+
         if (!ConfigManager.Main.tab && !ConfigManager.Main.tab_bc) {
             if (ConfigManager.Nameplate.fakeTeam) {
                 TeamPacketUtil.createTeamToAll(player);
@@ -66,8 +68,6 @@ public class NameplatesTeam {
                 teamTemp.addEntry(player.getName());
             }
         }
-
-        updateNameplates();
     }
 
     public void updateNameplates() {
