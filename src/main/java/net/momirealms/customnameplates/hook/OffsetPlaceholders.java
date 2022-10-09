@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.hook;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.font.FontOffset;
+import net.momirealms.customnameplates.font.FontUtil;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,14 +49,8 @@ public class OffsetPlaceholders extends PlaceholderExpansion {
         if (params == null) return null;
         try {
             int offset = Integer.parseInt(params);
-            if (offset > 0) {
-                return FontOffset.getShortestPosChars(offset);
-            }
-            else {
-                return FontOffset.getShortestNegChars(-offset);
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+            return FontUtil.getOffset(offset);
+        } catch (NumberFormatException ignored) {
         }
         return null;
     }

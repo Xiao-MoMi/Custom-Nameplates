@@ -21,10 +21,12 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.helper.Log;
 import net.momirealms.customnameplates.nameplates.*;
 import net.momirealms.customnameplates.objects.BackGround;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.font.FontUtil;
+import net.momirealms.customnameplates.objects.StaticText;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.objects.BackGroundText;
 import net.momirealms.customnameplates.objects.NameplateText;
@@ -48,7 +50,7 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1";
+        return "1.2";
     }
 
     @Override
@@ -81,6 +83,14 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
             if (backGround == null) return "";
             String text = PlaceholderAPI.setPlaceholders(player, backGroundText.getText());
             return backGround.getBackGround(FontUtil.getTotalWidth(text));
+        }
+        if (params.startsWith("static_")){
+            String staticKey = params.substring(7);
+            StaticText staticText = ConfigManager.papiST.get(staticKey);
+            if (staticText == null) return "";
+            String text = PlaceholderAPI.setPlaceholders(player, staticText.getText());
+            int offset = staticText.getStaticValue() - FontUtil.getTotalWidth(text);
+            return FontUtil.getOffset(offset);
         }
         if (params.startsWith("npp_")){
             String np = params.substring(4);

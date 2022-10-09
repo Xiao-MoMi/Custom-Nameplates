@@ -46,13 +46,13 @@ public class DataManager {
             Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, () -> {
                 PlayerData playerData = SqlHandler.getPlayerData(uuid);
                 cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
-                CustomNameplates.instance.getTeamManager().createTeam(player);
+                if (ConfigManager.Module.nameplate) CustomNameplates.instance.getTeamManager().createTeam(player);
             });
         }
         else {
             PlayerData playerData = SqlHandler.getPlayerData(uuid);
             cache.put(uuid, Optional.ofNullable(playerData).orElse(new PlayerData(ConfigManager.Nameplate.default_nameplate, ConfigManager.Bubbles.defaultBubble)));
-            CustomNameplates.instance.getTeamManager().createTeam(player);
+            if (ConfigManager.Module.nameplate) CustomNameplates.instance.getTeamManager().createTeam(player);
         }
     }
 

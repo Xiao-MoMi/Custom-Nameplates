@@ -1,4 +1,5 @@
 # %nameplates_bg_xx%  BackGround
+# %nameplates_static_%
 # %nameplates_npp_xx%  NamePlatePrefix
 # %nameplates_nps_xx%  NamePlateSuffix
 
@@ -23,6 +24,11 @@ papi:
     text: '%player_food_level% Hunger'
     background: bedrock_3
 
+  money:
+    text: '%xconomy_balance%'
+    # If the text's total width is 40, this papi would return offset characters with width 145
+    # You can use the offset characters by using <font:nameplates:default>%nameplates_static_money%</font><font:nameplates:offset_-11>%xconomy_balance%</font>
+    static: 185
 
   #This papi will not return text with nameplate
   #It will only return the nameplate

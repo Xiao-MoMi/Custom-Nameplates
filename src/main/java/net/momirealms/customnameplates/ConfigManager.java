@@ -25,6 +25,7 @@ import net.momirealms.customnameplates.data.SqlHandler;
 import net.momirealms.customnameplates.font.FontOffset;
 import net.momirealms.customnameplates.font.FontWidthNormal;
 import net.momirealms.customnameplates.font.FontWidthThin;
+import net.momirealms.customnameplates.objects.StaticText;
 import net.momirealms.customnameplates.requirements.*;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.objects.BackGroundText;
@@ -46,6 +47,7 @@ public class ConfigManager {
     public static HashMap<String, ActionBarConfig> actionBars = new HashMap<>();
     public static HashMap<String, BackGroundText> papiBG = new HashMap<>();
     public static HashMap<String, NameplateText> papiNP = new HashMap<>();
+    public static HashMap<String, StaticText> papiST = new HashMap<>();
     public static HashMap<Character, Integer> fontWidth = new HashMap<>();
 
     /**
@@ -365,12 +367,15 @@ public class ConfigManager {
     public static void loadPapi() {
         papiBG.clear();
         papiNP.clear();
+        papiST.clear();
         YamlConfiguration papiInfo = getConfig("custom-papi.yml");
         papiInfo.getConfigurationSection("papi").getKeys(false).forEach(key -> {
             if (papiInfo.contains("papi." + key + ".background"))
                 papiBG.put(key, new BackGroundText(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".background")));
             if (papiInfo.contains("papi." + key + ".nameplate"))
                 papiNP.put(key, new NameplateText(papiInfo.getString("papi."+key+".text"), papiInfo.getString("papi." + key + ".nameplate")));
+            if (papiInfo.contains("papi." + key + ".static"))
+                papiST.put(key, new StaticText(papiInfo.getString("papi."+key+".text"), papiInfo.getInt("papi." + key + ".static")));
         });
     }
 

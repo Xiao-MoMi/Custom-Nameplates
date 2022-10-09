@@ -30,6 +30,7 @@ import net.momirealms.customnameplates.nameplates.BubbleConfig;
 import net.momirealms.customnameplates.nameplates.FakeArmorStand;
 import net.momirealms.customnameplates.nameplates.NameplateUtil;
 import net.momirealms.customnameplates.nameplates.mode.EntityTag;
+import net.momirealms.customnameplates.nameplates.mode.EventListener;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,6 +46,7 @@ public class ChatBubblesManager extends EntityTag {
 
     private ChatListener chatListener;
     private TrChatListener trChatListener;
+    private EventListener jqListener;
 
     private final HashMap<Player, Long> coolDown = new HashMap<>();
 
@@ -66,6 +68,12 @@ public class ChatBubblesManager extends EntityTag {
             this.chatListener = new ChatListener(this);
             Bukkit.getPluginManager().registerEvents(chatListener, CustomNameplates.instance);
         }
+
+        if (!ConfigManager.Module.nameplate) {
+            this.jqListener = new EventListener(this);
+            Bukkit.getPluginManager().registerEvents(jqListener, CustomNameplates.instance);
+        }
+
         for (Player all : Bukkit.getOnlinePlayers()) {
             armorStandManagerMap.put(all, new ArmorStandManager(all));
             for (Player player : Bukkit.getOnlinePlayers())
@@ -78,6 +86,7 @@ public class ChatBubblesManager extends EntityTag {
         this.packetsHandle.unload();
         if (chatListener != null) HandlerList.unregisterAll(chatListener);
         if (trChatListener != null) HandlerList.unregisterAll(trChatListener);
+        if (jqListener != null) HandlerList.unregisterAll(jqListener);
         super.unload();
     }
 
@@ -100,6 +109,7 @@ public class ChatBubblesManager extends EntityTag {
 
     @Override
     public void onJoin(Player player) {
+        super.onJoin(player);
         armorStandManagerMap.put(player, new ArmorStandManager(player));
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             spawnArmorStands(viewer, player);
@@ -109,6 +119,7 @@ public class ChatBubblesManager extends EntityTag {
 
     @Override
     public void onQuit(Player player) {
+        super.onQuit(player);
         ArmorStandManager asm = armorStandManagerMap.remove(player);
         if (asm != null) {
             asm.destroy();

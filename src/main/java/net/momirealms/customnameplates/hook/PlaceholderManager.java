@@ -52,6 +52,7 @@ public class PlaceholderManager extends Function {
     }
 
     public String parsePlaceholders(Player player, String papi) {
+        if (papi == null || papi.equals("")) return "";
         return PlaceholderAPI.setPlaceholders(player, papi);
     }
 

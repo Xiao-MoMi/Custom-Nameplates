@@ -41,4 +41,13 @@ public class FontUtil {
         }
         return n + length; //总长还需加上字符间距
     }
+
+    public static String getOffset(int offset) {
+        if (offset >= 0) {
+            return FontOffset.getShortestPosChars(offset);
+        }
+        else {
+            return FontOffset.getShortestNegChars(-offset);
+        }
+    }
 }

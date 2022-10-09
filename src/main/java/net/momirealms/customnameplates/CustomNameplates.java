@@ -146,6 +146,15 @@ public final class CustomNameplates extends JavaPlugin {
         ConfigManager.Main.reload();
         ConfigManager.Message.reload();
         ConfigManager.loadWidth();
+        ConfigManager.Database.reload();
+
+        if (this.dataManager == null) {
+            this.dataManager = new DataManager();
+            if (!dataManager.create()) {
+                AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager!</red>");
+                return;
+            }
+        }
 
         if (ConfigManager.Main.placeholderAPI){
             ConfigManager.loadPapi();
@@ -196,7 +205,7 @@ public final class CustomNameplates extends JavaPlugin {
         }
         if (ConfigManager.Module.nameplate){
             ConfigManager.Nameplate.reload();
-            ConfigManager.Database.reload();
+
             if (ConfigManager.Main.tab_bc) {
                 proxyDataListener = new ProxyDataListener();
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "customnameplates:cnp");
@@ -206,13 +215,7 @@ public final class CustomNameplates extends JavaPlugin {
                 this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "customnameplates:cnp");
                 this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "customnameplates:cnp");
             }
-            if (this.dataManager == null) {
-                this.dataManager = new DataManager();
-                if (!dataManager.create()) {
-                    AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager!</red>");
-                    return;
-                }
-            }
+
             if (this.teamManager == null) {
                 this.teamManager = new TeamManager();
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -240,26 +243,27 @@ public final class CustomNameplates extends JavaPlugin {
                     AdventureUtil.consoleMessage("<red>[CustomNameplates] Unknown nameplate mode!");
                 }
             }
-            if (this.chatBubblesManager != null) {
-                this.chatBubblesManager.unload();
-            }
-            if (ConfigManager.Module.bubbles) {
-                ConfigManager.Bubbles.load();
-                this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
-                this.chatBubblesManager.load();
-                if (ConfigManager.Main.itemsAdder) {
-                    this.imageParser = new IAImageHook();
-                }
-                if (ConfigManager.Main.oraxen) {
-                    this.imageParser = new OXImageHook();
-                }
-            }
         }
         else {
             if (this.nameplateManager != null) {
                 TeamPacketUtil.clearTeamInfo();
                 this.nameplateManager.unload();
                 this.nameplateManager = null;
+            }
+        }
+
+        if (this.chatBubblesManager != null) {
+            this.chatBubblesManager.unload();
+        }
+        if (ConfigManager.Module.bubbles) {
+            ConfigManager.Bubbles.load();
+            this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
+            this.chatBubblesManager.load();
+            if (ConfigManager.Main.itemsAdder) {
+                this.imageParser = new IAImageHook();
+            }
+            if (ConfigManager.Main.oraxen) {
+                this.imageParser = new OXImageHook();
             }
         }
     }
