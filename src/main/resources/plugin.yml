@@ -59,6 +59,7 @@ permissions:
       bubbles.forceequip: true
       bubbles.forceunequip: true
       bubbles.list: true
+      bubbles.use: true
 
   bubbles.help:
     default: op
@@ -72,3 +73,5 @@ permissions:
     default: op
   bubbles.forceunequip:
     default: op
+  bubbles.use:
+    default: true

@@ -26,10 +26,11 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataManager {
 
-    private final HashMap<UUID, PlayerData> cache = new HashMap<>();
+    private final ConcurrentHashMap<UUID, PlayerData> cache = new ConcurrentHashMap<>();
 
     public PlayerData getOrEmpty(Player player) {
         if (cache.get(player.getUniqueId()) == null) {
@@ -107,7 +108,7 @@ public class DataManager {
         else return false;
     }
 
-    public HashMap<UUID, PlayerData> getCache() {
+    public ConcurrentHashMap<UUID, PlayerData> getCache() {
         return cache;
     }
 }

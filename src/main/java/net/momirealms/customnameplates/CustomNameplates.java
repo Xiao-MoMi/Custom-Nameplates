@@ -48,6 +48,7 @@ import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketUtil;
 import net.momirealms.customnameplates.nameplates.mode.tp.TeleportingTag;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -102,6 +103,8 @@ public final class CustomNameplates extends JavaPlugin {
         this.resourceManager.generateResourcePack();
 
         AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
+
+        new Metrics(this, 16649);
     }
 
     @Override

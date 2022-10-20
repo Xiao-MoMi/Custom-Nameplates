@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class ActionBarTask {
 
-    private ActionBarConfig config;
+    private final ActionBarConfig config;
     private int timer_1;
     private int timer_2;
     private int counter;

@@ -29,7 +29,9 @@ public record TrChatListener(
     public void onTrChat(TrChatEvent event) {
         if (event.isCancelled()) return;
         if (!event.getForward()) return;
-        if (event.getChannel().getId().equals(ConfigManager.Main.trChatChannel)) return;
+        for (String channel : ConfigManager.Main.trChatChannel) {
+            if (event.getChannel().getId().equals(channel)) return;
+        }
         chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage());
     }
 }

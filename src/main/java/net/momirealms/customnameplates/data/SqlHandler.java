@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SqlHandler {
 
@@ -63,8 +64,9 @@ public class SqlHandler {
     }
 
     public static void createTable() {
+        Connection connection = database.getConnectionAndCheck();
+
         try {
-            Connection connection = database.getConnectionAndCheck();
             Statement statement = connection.createStatement();
             if (statement == null) {
                 return;
@@ -116,7 +118,8 @@ public class SqlHandler {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 playerData = new PlayerData(rs.getString(2), rs.getString(3));
-            }else {
+            }
+            else {
                 sql = "INSERT INTO " + ConfigManager.Database.tableName + "(player,equipped,bubble) values(?,?,?)";
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, uuid.toString());
@@ -151,7 +154,7 @@ public class SqlHandler {
 
     public static void saveAll() {
         Connection connection = database.getConnectionAndCheck();
-        HashMap<UUID, PlayerData> data = CustomNameplates.instance.getDataManager().getCache();
+        ConcurrentHashMap<UUID, PlayerData> data = CustomNameplates.instance.getDataManager().getCache();
         Bukkit.getOnlinePlayers().forEach(player -> {
             try {
                 PlayerData playerData = data.get(player.getUniqueId());

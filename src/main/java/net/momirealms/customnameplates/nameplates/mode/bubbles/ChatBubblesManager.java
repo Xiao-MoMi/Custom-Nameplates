@@ -24,6 +24,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.api.events.BubblesEvent;
 import net.momirealms.customnameplates.data.PlayerData;
 import net.momirealms.customnameplates.nameplates.ArmorStandManager;
 import net.momirealms.customnameplates.nameplates.BubbleConfig;
@@ -33,6 +34,7 @@ import net.momirealms.customnameplates.nameplates.mode.EntityTag;
 import net.momirealms.customnameplates.nameplates.mode.EventListener;
 import net.momirealms.customnameplates.resource.ResourceManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -129,13 +131,23 @@ public class ChatBubblesManager extends EntityTag {
 
     public void onChat(Player player, String text) {
 
+        if (player.getGameMode() == GameMode.SPECTATOR) return;
+        if (!player.hasPermission("bubbles.use")) return;
+
         long time = System.currentTimeMillis();
         if (time - (coolDown.getOrDefault(player, time - ConfigManager.Bubbles.coolDown)) < ConfigManager.Bubbles.coolDown) return;
         coolDown.put(player, time);
 
         PlayerData playerData = CustomNameplates.instance.getDataManager().getOrEmpty(player);
         String bubbles = playerData.getBubbles();
-        BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubbles);
+
+        BubblesEvent bubblesEvent = new BubblesEvent(player, bubbles, text);
+        Bukkit.getPluginManager().callEvent(bubblesEvent);
+        if (bubblesEvent.isCancelled()) {
+            return;
+        }
+        text = bubblesEvent.getText();
+        BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubblesEvent.getBubble());
         WrappedChatComponent wrappedChatComponent;
         if (CustomNameplates.instance.getImageParser() != null) {
             text = CustomNameplates.instance.getImageParser().parse(player, text);

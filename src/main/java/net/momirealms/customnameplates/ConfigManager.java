@@ -107,7 +107,7 @@ public class ConfigManager {
         public static String ss_folder_path;
         public static String bb_folder_path;
         public static String font;
-        public static String trChatChannel;
+        public static String[] trChatChannel;
 
         public static boolean itemsAdder;
         public static boolean placeholderAPI;
@@ -147,7 +147,7 @@ public class ConfigManager {
             tab_bc = config.getBoolean("config.integrations.TAB-BC",false);
             oraxen = config.getBoolean("config.integrations.Oraxen",false);
             trChat = config.getBoolean("config.integrations.TrChat",false);
-            trChatChannel = config.getString("config.integrations.TrChat-private-channel","Private");
+            trChatChannel = config.getStringList("config.integrations.TrChat-exlude-channels").toArray(new String[0]);
             offsets = config.getIntegerList("config.ascii-y-offset.offset");
 
             if(config.getBoolean("config.extract-shader",true)) {

@@ -1,5 +1,5 @@
 # Do not change
-config-version: '11'
+config-version: '12'
 
 config:
   # Language
@@ -24,7 +24,10 @@ config:
     TAB-BC: false
     # TrChat
     TrChat: false
-    TrChat-private-channel: 'Private'
+    # Prevent players from seeing chatting bubble texts in specified channels
+    TrChat-exlude-channels:
+      - 'Private'
+      - 'Staff'
 
   # Your namespace
   # If you don't know how font works, don't change this

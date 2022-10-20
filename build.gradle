@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.0.5-hotfix-2'
+version = '2.0.6'
 
 repositories {
     mavenCentral()
@@ -54,6 +54,7 @@ dependencies {
     implementation('net.kyori:adventure-platform-bukkit:4.1.2')
     implementation('net.kyori:adventure-text-minimessage:4.11.0')
     implementation('net.kyori:adventure-text-serializer-gson:4.11.0')
+    implementation("org.bstats:bstats-bukkit:3.0.0")
 }
 
 def targetJavaVersion = 16
@@ -86,7 +87,8 @@ tasks.withType(JavaCompile) {
 }
 
 shadowJar {
-    relocate ('net.kyori', 'net.momirealms.customnameplates.libs')
+    relocate ('net.kyori', 'net.momirealms.customnameplates.libs.net.kyori')
+    relocate ('org.bstats', 'net.momirealms.customnameplates.libs.org.bstats')
 }
 
 tasks.register("delete", Delete).get().delete("build/libs/"+project.name+"-"+project.version+".jar")
