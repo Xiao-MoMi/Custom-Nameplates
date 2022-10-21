@@ -18,6 +18,8 @@
 package net.momirealms.customnameplates.nameplates.mode.bubbles;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.momirealms.customnameplates.CustomNameplates;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,9 +35,11 @@ public class ChatListener implements Listener {
     }
 
     @EventHandler
-    public void onChat(PlayerChatEvent event) {
+    public void onChat(AsyncPlayerChatEvent event) {
         if (!event.isCancelled()) {
-            chatBubblesManager.onChat(event.getPlayer(), MiniMessage.miniMessage().stripTags(ChatColor.stripColor(event.getMessage())));
+            Bukkit.getScheduler().runTask(CustomNameplates.instance, () -> {
+                chatBubblesManager.onChat(event.getPlayer(), MiniMessage.miniMessage().stripTags(ChatColor.stripColor(event.getMessage())));
+            });
         }
     }
 }
