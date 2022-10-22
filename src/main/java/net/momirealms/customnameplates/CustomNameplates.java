@@ -110,7 +110,6 @@ public final class CustomNameplates extends JavaPlugin {
     @Override
     public void onDisable() {
         if (ConfigManager.Module.nameplate){
-            SqlHandler.saveAll();
             SqlHandler.close();
             if (!ConfigManager.Nameplate.fakeTeam && !ConfigManager.Main.tab && !ConfigManager.Main.tab_bc) {
                 for (Team team : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {

@@ -70,19 +70,7 @@ public class DataManager {
     }
 
     public void unloadPlayer(UUID uuid) {
-        if (!cache.containsKey(uuid)) {
-            return;
-        }
-        if (ConfigManager.Database.async){
-            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.instance, ()-> {
-                SqlHandler.save(cache.get(uuid), uuid);
-                cache.remove(uuid);
-            });
-        }
-        else {
-            SqlHandler.save(cache.get(uuid), uuid);
-            cache.remove(uuid);
-        }
+        cache.remove(uuid);
     }
 
     public void savePlayer(UUID uuid) {
