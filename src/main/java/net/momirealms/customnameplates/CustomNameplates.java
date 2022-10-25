@@ -22,101 +22,80 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.momirealms.customnameplates.actionbar.ActionBarManager;
-import net.momirealms.customnameplates.bossbar.BossBarManager;
-import net.momirealms.customnameplates.commands.bb.ExecuteB;
-import net.momirealms.customnameplates.commands.bb.TabCompleteB;
-import net.momirealms.customnameplates.commands.np.ExecuteN;
-import net.momirealms.customnameplates.commands.np.TabCompleteN;
-import net.momirealms.customnameplates.data.DataManager;
-import net.momirealms.customnameplates.data.SqlHandler;
+import net.momirealms.customnameplates.commands.BubblesCommand;
+import net.momirealms.customnameplates.commands.NameplateCommand;
 import net.momirealms.customnameplates.helper.LibraryLoader;
-import net.momirealms.customnameplates.hook.IAImageHook;
-import net.momirealms.customnameplates.hook.ImageParser;
-import net.momirealms.customnameplates.hook.OXImageHook;
-import net.momirealms.customnameplates.hook.PlaceholderManager;
-import net.momirealms.customnameplates.nameplates.ProxyDataListener;
-import net.momirealms.customnameplates.nameplates.TeamManager;
-import net.momirealms.customnameplates.nameplates.TeamPacketManager;
-import net.momirealms.customnameplates.nameplates.mode.bubbles.ChatBubblesManager;
-import net.momirealms.customnameplates.nameplates.mode.NameplateManager;
-import net.momirealms.customnameplates.nameplates.mode.rd.RidingTag;
-import net.momirealms.customnameplates.nameplates.mode.tm.TeamTag;
-import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketA;
-import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketB;
-import net.momirealms.customnameplates.nameplates.mode.tmpackets.TeamPacketUtil;
-import net.momirealms.customnameplates.nameplates.mode.tp.TeleportingTag;
-import net.momirealms.customnameplates.resource.ResourceManager;
+import net.momirealms.customnameplates.manager.*;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import net.momirealms.customnameplates.utils.ConfigUtil;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Team;
-
-import java.util.Objects;
 
 public final class CustomNameplates extends JavaPlugin {
 
-    public static CustomNameplates instance;
+    public static CustomNameplates plugin;
     public static BukkitAudiences adventure;
     public static ProtocolManager protocolManager;
 
     private ResourceManager resourceManager;
-    private DataManager dataManager;
-    private TeamManager teamManager;
-    private TeamPacketManager teamPacketManager;
     private BossBarManager bossBarManager;
     private ActionBarManager actionBarManager;
     private PlaceholderManager placeholderManager;
     private NameplateManager nameplateManager;
     private ChatBubblesManager chatBubblesManager;
-    private ProxyDataListener proxyDataListener;
-    private ImageParser imageParser;
+    private DataManager dataManager;
+    private ConfigManager configManager;
+    private MessageManager messageManager;
+    private WidthManager widthManager;
 
     @Override
     public void onLoad(){
-        instance = this;
+        plugin = this;
         LibraryLoader.load("commons-io","commons-io","2.11.0","https://repo.maven.apache.org/maven2/");
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1","https://repo.maven.apache.org/maven2/");
         LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3","https://repo.maven.apache.org/maven2/");
+        LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.0.6","https://repo.maven.apache.org/maven2/");
     }
 
     @Override
     public void onEnable() {
-
         adventure = BukkitAudiences.create(this);
         protocolManager = ProtocolLibrary.getProtocolManager();
 
+        //Don't delete this
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
 
         AdventureUtil.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
 
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setExecutor(new ExecuteN());
-        Objects.requireNonNull(Bukkit.getPluginCommand("customnameplates")).setTabCompleter(new TabCompleteN());
-        Objects.requireNonNull(Bukkit.getPluginCommand("chatbubbles")).setExecutor(new ExecuteB());
-        Objects.requireNonNull(Bukkit.getPluginCommand("chatbubbles")).setTabCompleter(new TabCompleteB());
-
-        loadConfig();
-
+        this.placeholderManager = new PlaceholderManager();
+        this.actionBarManager = new ActionBarManager();
+        this.bossBarManager = new BossBarManager();
         this.resourceManager = new ResourceManager();
-        this.resourceManager.generateResourcePack();
+        this.dataManager = new DataManager();
+        this.nameplateManager = new NameplateManager();
+        this.configManager = new ConfigManager();
+        this.messageManager = new MessageManager();
+        this.widthManager = new WidthManager();
+        this.chatBubblesManager = new ChatBubblesManager();
 
-        AdventureUtil.consoleMessage("<gradient:#2E8B57:#48D1CC>[CustomNameplates]</gradient> <color:#baffd1>Plugin Enabled!");
+        ConfigUtil.reloadConfigs();
+
+        NameplateCommand nameplateCommand = new NameplateCommand();
+        Bukkit.getPluginCommand("customnameplates").setExecutor(nameplateCommand);
+        Bukkit.getPluginCommand("customnameplates").setTabCompleter(nameplateCommand);
+
+        BubblesCommand bubblesCommand = new BubblesCommand();
+        Bukkit.getPluginCommand("bubbles").setExecutor(bubblesCommand);
+        Bukkit.getPluginCommand("bubbles").setTabCompleter(bubblesCommand);
+
+        AdventureUtil.consoleMessage("[CustomNameplates] Plugin Enabled!");
 
         new Metrics(this, 16649);
     }
 
     @Override
     public void onDisable() {
-        if (ConfigManager.Module.nameplate){
-            SqlHandler.close();
-            if (!ConfigManager.Nameplate.fakeTeam && !ConfigManager.Main.tab && !ConfigManager.Main.tab_bc) {
-                for (Team team : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {
-                    team.unregister();
-                }
-            }
-        }
         if (actionBarManager != null) {
             actionBarManager.unload();
         }
@@ -132,141 +111,11 @@ public final class CustomNameplates extends JavaPlugin {
         if (placeholderManager != null) {
             placeholderManager.unload();
         }
+        if (dataManager != null) {
+            dataManager.disable();
+        }
         if (adventure != null) {
             adventure.close();
-        }
-        if (proxyDataListener != null) {
-            this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "customnameplates:cnp");
-            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "customnameplates:cnp");
-        }
-
-    }
-
-    public void loadConfig() {
-
-        ConfigManager.Module.loadModule();
-        ConfigManager.Main.reload();
-        ConfigManager.Message.reload();
-        ConfigManager.loadWidth();
-        ConfigManager.Database.reload();
-
-        if (this.dataManager == null) {
-            this.dataManager = new DataManager();
-            if (!dataManager.create()) {
-                AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to enable Data Manager!</red>");
-                return;
-            }
-        }
-
-        if (ConfigManager.Main.placeholderAPI){
-            ConfigManager.loadPapi();
-            if (this.placeholderManager != null) {
-                this.placeholderManager.unload();
-                this.placeholderManager.load();
-            }
-            else {
-                this.placeholderManager = new PlaceholderManager("PAPI");
-                this.placeholderManager.load();
-            }
-        }
-        else if (this.placeholderManager != null) {
-            this.placeholderManager.unload();
-            this.placeholderManager = null;
-        }
-
-        if (ConfigManager.Module.bossBar){
-            ConfigManager.loadBossBar();
-            if (this.bossBarManager != null) {
-                this.bossBarManager.unload();
-                this.bossBarManager.load();
-            }
-            else {
-                this.bossBarManager = new BossBarManager("BossBar");
-                this.bossBarManager.load();
-            }
-        }
-        else if (this.bossBarManager != null) {
-            this.bossBarManager.unload();
-            this.bossBarManager = null;
-        }
-
-        if (ConfigManager.Module.actionbar){
-            ConfigManager.loadActionBar();
-            if (actionBarManager != null) {
-                this.actionBarManager.unload();
-                this.actionBarManager.load();
-            }
-            else {
-                this.actionBarManager = new ActionBarManager("ActionBar");
-                this.actionBarManager.load();
-            }
-        }
-        else if (this.actionBarManager != null) {
-            this.actionBarManager.unload();
-            this.actionBarManager = null;
-        }
-        if (ConfigManager.Module.nameplate){
-            ConfigManager.Nameplate.reload();
-
-            if (ConfigManager.Main.tab_bc) {
-                proxyDataListener = new ProxyDataListener();
-                this.getServer().getMessenger().registerOutgoingPluginChannel(this, "customnameplates:cnp");
-                this.getServer().getMessenger().registerIncomingPluginChannel(this, "customnameplates:cnp", proxyDataListener);
-            }
-            else if (proxyDataListener != null) {
-                this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "customnameplates:cnp");
-                this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "customnameplates:cnp");
-            }
-
-            if (this.teamManager == null) {
-                this.teamManager = new TeamManager();
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    CustomNameplates.instance.getDataManager().loadData(player);
-                }
-            }
-            if (this.nameplateManager != null) {
-                this.nameplateManager.unload();
-                this.nameplateManager = null;
-            }
-            if (ConfigManager.Nameplate.mode.equalsIgnoreCase("team")) {
-                this.teamPacketManager = new TeamPacketA(teamManager);
-                this.nameplateManager = new TeamTag("TEAM", teamManager);
-                this.nameplateManager.load();
-            }
-            else {
-                this.teamPacketManager = new TeamPacketB();
-                if (ConfigManager.Nameplate.mode.equalsIgnoreCase("riding")) {
-                    this.nameplateManager = new RidingTag("RIDING");
-                    this.nameplateManager.load();
-                }else if (ConfigManager.Nameplate.mode.equalsIgnoreCase("teleporting")){
-                    this.nameplateManager = new TeleportingTag("TELEPORTING");
-                    this.nameplateManager.load();
-                }else {
-                    AdventureUtil.consoleMessage("<red>[CustomNameplates] Unknown nameplate mode!");
-                }
-            }
-        }
-        else {
-            if (this.nameplateManager != null) {
-                TeamPacketUtil.clearTeamInfo();
-                this.nameplateManager.unload();
-                this.nameplateManager = null;
-            }
-        }
-
-        if (this.chatBubblesManager != null) {
-            this.chatBubblesManager.unload();
-        }
-        if (ConfigManager.Module.bubbles) {
-            ConfigManager.Bubbles.load();
-            this.chatBubblesManager = new ChatBubblesManager("BUBBLE");
-            this.chatBubblesManager.load();
-            if (ConfigManager.Main.itemsAdder) {
-                this.imageParser = new IAImageHook();
-            }
-            if (ConfigManager.Main.oraxen) {
-                this.imageParser = new OXImageHook();
-            }
         }
     }
 
@@ -276,14 +125,6 @@ public final class CustomNameplates extends JavaPlugin {
 
     public DataManager getDataManager() {
         return this.dataManager;
-    }
-
-    public TeamManager getTeamManager() {
-        return this.teamManager;
-    }
-
-    public TeamPacketManager getTeamPacketManager() {
-        return teamPacketManager;
     }
 
     public PlaceholderManager getPlaceholderManager() {
@@ -302,7 +143,19 @@ public final class CustomNameplates extends JavaPlugin {
         return nameplateManager;
     }
 
-    public ImageParser getImageParser() {
-        return imageParser;
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public MessageManager getMessageManager() {
+        return messageManager;
+    }
+
+    public ChatBubblesManager getChatBubblesManager() {
+        return chatBubblesManager;
+    }
+
+    public WidthManager getWidthManager() {
+        return widthManager;
     }
 }

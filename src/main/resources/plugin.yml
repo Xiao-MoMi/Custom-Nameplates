@@ -5,9 +5,9 @@ api-version: 1.17
 authors: [ XiaoMoMi ]
 depend:
   - ProtocolLib
+  - PlaceholderAPI
 softdepend:
   - ItemsAdder
-  - PlaceholderAPI
   - TAB
   - Oraxen
   - TrChat

@@ -23,7 +23,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
@@ -80,12 +79,12 @@ public class HoloUtil {
         }
 
         for (int i = 1; i < duration * 20 - 1; i++){
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, ()->{
                 updatePlace(player, id);
             }, i);
         }
 
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.instance, ()->{
+        Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, ()->{
             removeHolo(player, id);
             cache.remove(location);
         }, duration * 20L);

@@ -28,9 +28,8 @@ package net.momirealms.customnameplates.helper;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
 
-import java.util.logging.Level;
-
 import javax.annotation.Nonnull;
+import java.util.logging.Level;
 
 /**
  * Utility for quickly accessing a logger instance without using {@link Bukkit#getLogger()}
@@ -38,23 +37,23 @@ import javax.annotation.Nonnull;
 public final class Log {
 
     public static void info(@Nonnull String s) {
-        CustomNameplates.instance.getLogger().info(s);
+        CustomNameplates.plugin.getLogger().info(s);
     }
 
     public static void warn(@Nonnull String s) {
-        CustomNameplates.instance.getLogger().warning(s);
+        CustomNameplates.plugin.getLogger().warning(s);
     }
 
     public static void severe(@Nonnull String s) {
-        CustomNameplates.instance.getLogger().severe(s);
+        CustomNameplates.plugin.getLogger().severe(s);
     }
 
     public static void warn(@Nonnull String s, Throwable t) {
-        CustomNameplates.instance.getLogger().log(Level.WARNING, s, t);
+        CustomNameplates.plugin.getLogger().log(Level.WARNING, s, t);
     }
 
     public static void severe(@Nonnull String s, Throwable t) {
-        CustomNameplates.instance.getLogger().log(Level.SEVERE, s, t);
+        CustomNameplates.plugin.getLogger().log(Level.SEVERE, s, t);
     }
 
     private Log() {

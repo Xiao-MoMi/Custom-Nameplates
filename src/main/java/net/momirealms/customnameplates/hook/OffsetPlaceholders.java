@@ -18,12 +18,12 @@
 package net.momirealms.customnameplates.hook;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.momirealms.customnameplates.font.FontOffset;
-import net.momirealms.customnameplates.font.FontUtil;
+import net.momirealms.customnameplates.objects.font.FontUtil;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class OffsetPlaceholders extends PlaceholderExpansion {
+
     @Override
     public @NotNull String getIdentifier() {
         return "offset";
@@ -45,13 +45,12 @@ public class OffsetPlaceholders extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
-        if (params == null) return null;
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
         try {
             int offset = Integer.parseInt(params);
             return FontUtil.getOffset(offset);
         } catch (NumberFormatException ignored) {
+            return "";
         }
-        return null;
     }
 }

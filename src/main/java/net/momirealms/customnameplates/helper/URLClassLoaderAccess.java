@@ -25,12 +25,11 @@
 
 package net.momirealms.customnameplates.helper;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 /**
  * Provides access to {@link URLClassLoader}#addURL.

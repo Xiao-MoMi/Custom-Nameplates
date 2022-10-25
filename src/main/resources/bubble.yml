@@ -1,5 +1,10 @@
 # Do not change
-config-version: '8'
+config-version: '9'
+
+# Currently supported chat plugins: TrChat
+blacklist-channels:
+  - Private
+  - Staff
 
 bubble:
 

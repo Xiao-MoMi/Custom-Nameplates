@@ -1,11 +1,10 @@
 # Do not change
 config-version: '7'
 
-#Nameplate module require a restart because it requires a SQL connection
+#You should reload your resource pack when toggle these three modules
 nameplate: true
-
-#These modules can be toggled by reloading
 background: true
+bubbles: true
+
 bossbar: true
 actionbar: true
-bubbles: true

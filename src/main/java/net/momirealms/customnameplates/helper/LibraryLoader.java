@@ -27,7 +27,6 @@ package net.momirealms.customnameplates.helper;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-
 import net.momirealms.customnameplates.CustomNameplates;
 import org.apache.commons.lang.StringUtils;
 
@@ -47,7 +46,7 @@ import java.util.Objects;
 public final class LibraryLoader {
 
     @SuppressWarnings("Guava")
-    private static final Supplier<URLClassLoaderAccess> URL_INJECTOR = Suppliers.memoize(() -> URLClassLoaderAccess.create((URLClassLoader) CustomNameplates.instance.getClass().getClassLoader()));
+    private static final Supplier<URLClassLoaderAccess> URL_INJECTOR = Suppliers.memoize(() -> URLClassLoaderAccess.create((URLClassLoader) CustomNameplates.plugin.getClass().getClassLoader()));
 
     /**
      * Resolves all {@link MavenLibrary} annotations on the given object.
@@ -111,7 +110,7 @@ public final class LibraryLoader {
     }
 
     private static File getLibFolder(Dependency dependency) {
-        File pluginDataFolder = CustomNameplates.instance.getDataFolder();
+        File pluginDataFolder = CustomNameplates.plugin.getDataFolder();
         File serverDir = pluginDataFolder.getParentFile().getParentFile();
 
         File helperDir = new File(serverDir, "libraries");

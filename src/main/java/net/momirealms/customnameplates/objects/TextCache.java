@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.objects;
 
-import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.entity.Player;
 
@@ -26,25 +25,18 @@ import java.util.List;
 
 public class TextCache {
 
-    //所属玩家
     private final Player owner;
-    //初始值
-    private final String rawValue;
-    //原始文字加工后的值
     private String originalValue;
-    //最近一次替换值
     private String latestValue;
-    //持有者占位符
     private String[] ownerPlaceholders;
 
     public TextCache(Player owner, String rawValue) {
         this.owner = owner;
-        this.rawValue = rawValue;
-        analyze(this.rawValue);
+        analyze(rawValue);
     }
 
     private void analyze(String value) {
-        List<String> placeholdersOwner = new ArrayList<>(CustomNameplates.instance.getPlaceholderManager().detectPlaceholders(value));
+        List<String> placeholdersOwner = new ArrayList<>(CustomNameplates.plugin.getPlaceholderManager().detectPlaceholders(value));
         String origin = value;
         for (String placeholder : placeholdersOwner) {
             origin = origin.replace(placeholder, "%s");
@@ -55,31 +47,20 @@ public class TextCache {
         update();
     }
 
-    public String getRawValue() {
-        return rawValue;
-    }
-
-    public String updateAndGet() {
-        update();
-        return getLatestValue();
-    }
-
     public String getLatestValue() {
         return latestValue;
     }
 
-    //返回更新结果是否不一致
     public boolean update() {
         if (ownerPlaceholders.length == 0) return false;
-        if (!ConfigManager.Main.placeholderAPI) return false;
         String string;
         if ("%s".equals(originalValue)) {
-            string = CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(owner, ownerPlaceholders[0]);
+            string = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(owner, ownerPlaceholders[0]);
         }
         else {
             Object[] values = new String[ownerPlaceholders.length];
             for (int i = 0; i < ownerPlaceholders.length; i++) {
-                values[i] = CustomNameplates.instance.getPlaceholderManager().parsePlaceholders(owner, ownerPlaceholders[i]);
+                values[i] = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(owner, ownerPlaceholders[i]);
             }
             string = String.format(originalValue, values);
         }
@@ -90,8 +71,7 @@ public class TextCache {
         return false;
     }
 
-    public String getViewerText(Player viewer) {
-        //还没写完
+    public String getLatestText() {
         return latestValue;
     }
 }

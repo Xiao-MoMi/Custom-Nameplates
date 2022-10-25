@@ -25,14 +25,8 @@
 
 package net.momirealms.customnameplates.helper;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import javax.annotation.Nonnull;
+import java.lang.annotation.*;
 
 /**
  * Annotation to indicate a required library for a class.

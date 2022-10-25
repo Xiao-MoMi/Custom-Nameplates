@@ -20,12 +20,12 @@ package net.momirealms.customnameplates.bungeecord;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import me.neznamy.tab.shared.TAB;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.momirealms.customnameplates.hook.TABTeamHook;
+import net.momirealms.customnameplates.objects.team.TABTeamHook;
 
 import java.util.Objects;
 
@@ -51,7 +51,8 @@ public class BungeeEventListener implements Listener {
         String playerName = dataInput.readUTF();
         String teamName = playerName;
         if (plugin.getBungeeConfig().isTab()) {
-            teamName = TABTeamHook.getTABTeam(playerName);
+            teamName = TAB.getInstance().getPlayer(playerName).getTeamName();
+            teamName = teamName == null ? playerName : teamName;
         }
         ProxiedPlayer proxiedPlayer = plugin.getProxy().getPlayer(playerName);
         ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();

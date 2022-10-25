@@ -18,18 +18,19 @@
 package net.momirealms.customnameplates.utils;
 
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.title.Title;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
-
 public class AdventureUtil {
+
+    public static void sendMessage(CommandSender sender, String s) {
+        if (sender instanceof Player player) playerMessage(player, s);
+        else consoleMessage(s);
+    }
 
     public static void consoleMessage(String s) {
         Audience au = CustomNameplates.adventure.sender(Bukkit.getConsoleSender());
@@ -45,23 +46,9 @@ public class AdventureUtil {
         au.sendMessage(parsed);
     }
 
-    public static void playerTitle(Player player, String s1, String s2, int in, int duration, int out) {
-        Audience au = CustomNameplates.adventure.player(player);
-        MiniMessage mm = MiniMessage.miniMessage();
-        Title.Times times = Title.Times.times(Duration.ofMillis(in), Duration.ofMillis(duration), Duration.ofMillis(out));
-        Title title = Title.title(mm.deserialize(s1), mm.deserialize(s2), times);
-        au.showTitle(title);
-    }
-
     public static void playerActionbar(Player player, String s) {
         Audience au = CustomNameplates.adventure.player(player);
         MiniMessage mm = MiniMessage.miniMessage();
         au.sendActionBar(mm.deserialize(s));
-    }
-
-    public static void playerSound(Player player, Sound.Source source, Key key) {
-        Sound sound = Sound.sound(key, source, 1, 1);
-        Audience au = CustomNameplates.adventure.player(player);
-        au.playSound(sound);
     }
 }

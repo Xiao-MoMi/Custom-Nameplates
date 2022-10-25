@@ -19,24 +19,27 @@ package net.momirealms.customnameplates.hook;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.momirealms.customnameplates.ConfigManager;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.helper.Log;
-import net.momirealms.customnameplates.nameplates.*;
-import net.momirealms.customnameplates.objects.BackGround;
-import net.momirealms.customnameplates.data.PlayerData;
-import net.momirealms.customnameplates.font.FontUtil;
+import net.momirealms.customnameplates.manager.MessageManager;
+import net.momirealms.customnameplates.manager.PlaceholderManager;
+import net.momirealms.customnameplates.manager.ResourceManager;
 import net.momirealms.customnameplates.objects.StaticText;
-import net.momirealms.customnameplates.resource.ResourceManager;
-import net.momirealms.customnameplates.objects.BackGroundText;
-import net.momirealms.customnameplates.objects.NameplateText;
-import org.bukkit.OfflinePlayer;
+import net.momirealms.customnameplates.objects.background.BackGround;
+import net.momirealms.customnameplates.objects.background.BackGroundText;
+import net.momirealms.customnameplates.objects.font.FontUtil;
+import net.momirealms.customnameplates.objects.nameplates.NameplateConfig;
+import net.momirealms.customnameplates.objects.nameplates.NameplateText;
+import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 public class NameplatePlaceholders extends PlaceholderExpansion {
+
+    private final PlaceholderManager placeholderManager;
+
+    public NameplatePlaceholders(PlaceholderManager placeholderManager) {
+        this.placeholderManager = placeholderManager;
+    }
 
     @Override
     public @NotNull String getIdentifier() {
@@ -59,25 +62,25 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
+    public String onPlaceholderRequest(Player player, String params) {
         if (params.equals("equipped")){
-            String nameplate = Optional.ofNullable(CustomNameplates.instance.getDataManager().getCache().get(player.getUniqueId())).orElse(PlayerData.EMPTY).getEquippedNameplate();
+            String nameplate = CustomNameplates.plugin.getDataManager().getPlayerData(player).getEquippedNameplate();
             if (!nameplate.equals("none")) return ResourceManager.NAMEPLATES.get(nameplate).name();
-            else return ConfigManager.Message.noNameplate;
+            return MessageManager.noNameplate;
         }
         if (params.equals("prefix")){
-            NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player.getPlayer()));
+            NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
             if (nameplatesTeam != null) return nameplatesTeam.getPrefixText();
-            else return "";
+            return "";
         }
         if (params.equals("suffix")){
-            NameplatesTeam nameplatesTeam = CustomNameplates.instance.getTeamManager().getTeams().get(TeamManager.getTeamName(player.getPlayer()));
+            NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
             if (nameplatesTeam != null) return nameplatesTeam.getSuffixText();
-            else return "";
+            return "";
         }
         if (params.startsWith("bg_")){
             String bg = params.substring(3);
-            BackGroundText backGroundText = ConfigManager.papiBG.get(bg);
+            BackGroundText backGroundText = placeholderManager.getPapiBG().get(bg);;
             if (backGroundText == null) return "";
             BackGround backGround = ResourceManager.BACKGROUNDS.get(backGroundText.getBackground());
             if (backGround == null) return "";
@@ -86,7 +89,7 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         }
         if (params.startsWith("static_")){
             String staticKey = params.substring(7);
-            StaticText staticText = ConfigManager.papiST.get(staticKey);
+            StaticText staticText = placeholderManager.getPapiST().get(staticKey);
             if (staticText == null) return "";
             String text = PlaceholderAPI.setPlaceholders(player, staticText.getText());
             int offset = staticText.getStaticValue() - FontUtil.getTotalWidth(text);
@@ -94,22 +97,21 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         }
         if (params.startsWith("npp_")){
             String np = params.substring(4);
-            NameplateText nameplateText = ConfigManager.papiNP.get(np);
+            NameplateText nameplateText = placeholderManager.getPapiNP().get(np);
             if (nameplateText == null) return "";
             NameplateConfig nameplateConfig = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
             if (nameplateConfig == null) return "";
-            String text = PlaceholderAPI.setPlaceholders(player, nameplateText.getText());
-            return NameplateUtil.makeCustomNameplate("", text,"", nameplateConfig);
+            String text = placeholderManager.parsePlaceholders(player, nameplateText.getText());
+            return CustomNameplates.plugin.getNameplateManager().makeCustomNameplate("", text,"", nameplateConfig);
         }
         if (params.startsWith("nps_")){
             String np = params.substring(4);
-            NameplateText nameplateText = ConfigManager.papiNP.get(np);
+            NameplateText nameplateText = placeholderManager.getPapiNP().get(np);
             if (nameplateText == null) return "";
             NameplateConfig nameplateConfig = ResourceManager.NAMEPLATES.get(nameplateText.getNameplate());
             if (nameplateConfig == null) return "";
-            String text = nameplateText.getText();
-            if (ConfigManager.Main.placeholderAPI) text = PlaceholderAPI.setPlaceholders(player, text);
-            return NameplateUtil.getSuffixChar(text);
+            String text = placeholderManager.parsePlaceholders(player, nameplateText.getText());
+            return CustomNameplates.plugin.getNameplateManager().getSuffixChar(text);
         }
         return null;
     }
