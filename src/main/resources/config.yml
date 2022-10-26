@@ -1,5 +1,5 @@
 # Do not change
-config-version: '13'
+config-version: '14'
 
 config:
   # Language
@@ -20,6 +20,8 @@ config:
     TAB-BC: false
     # TrChat
     TrChat: false
+    # VentureChat
+    VentureChat: false
 
   # Your namespace
   # If you don't know how font works, don't change this

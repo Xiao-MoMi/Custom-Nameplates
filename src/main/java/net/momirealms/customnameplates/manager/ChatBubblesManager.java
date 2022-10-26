@@ -29,6 +29,7 @@ import net.momirealms.customnameplates.hook.ImageParser;
 import net.momirealms.customnameplates.hook.OXImageHook;
 import net.momirealms.customnameplates.listener.ChatListener;
 import net.momirealms.customnameplates.listener.TrChatListener;
+import net.momirealms.customnameplates.listener.VentureChatListener;
 import net.momirealms.customnameplates.objects.nameplates.ArmorStandManager;
 import net.momirealms.customnameplates.objects.nameplates.BubbleConfig;
 import net.momirealms.customnameplates.objects.nameplates.FakeArmorStand;
@@ -49,6 +50,7 @@ public class ChatBubblesManager extends EntityTag {
     private final BBPacketsHandle packetsHandle;
     private ChatListener chatListener;
     private TrChatListener trChatListener;
+    private VentureChatListener ventureChatListener;
     private ImageParser imageParser;
     public static String defaultBubble;
     public static String defaultFormat;
@@ -92,6 +94,10 @@ public class ChatBubblesManager extends EntityTag {
             this.trChatListener = new TrChatListener(this);
             Bukkit.getPluginManager().registerEvents(trChatListener, CustomNameplates.plugin);
         }
+        else if (ConfigManager.ventureChat_Hook) {
+            this.ventureChatListener = new VentureChatListener(this);
+            Bukkit.getPluginManager().registerEvents(ventureChatListener, CustomNameplates.plugin);
+        }
         else {
             this.chatListener = new ChatListener(this);
             Bukkit.getPluginManager().registerEvents(chatListener, CustomNameplates.plugin);
@@ -123,6 +129,10 @@ public class ChatBubblesManager extends EntityTag {
         if (trChatListener != null) {
             HandlerList.unregisterAll(trChatListener);
             trChatListener = null;
+        }
+        if (ventureChatListener != null) {
+            HandlerList.unregisterAll(ventureChatListener);
+            ventureChatListener = null;
         }
     }
 

@@ -31,7 +31,7 @@ public class TABbcHook implements TeamNameInterface {
         String teamName = teamNames.get(player.getName());
         if (teamName == null) {
             sendRequest(player);
-            return null;
+            return player.getName();
         }
         else {
             return teamName;

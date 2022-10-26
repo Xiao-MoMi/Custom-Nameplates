@@ -27,6 +27,7 @@ public class ConfigManager extends Function {
     public static boolean oraxenHook;
     public static boolean extract;
     public static boolean trChat_Hook;
+    public static boolean ventureChat_Hook;
     public static List<Integer> offsets;
     public static char start;
     public static Key key;
@@ -58,6 +59,7 @@ public class ConfigManager extends Function {
         oraxenHook = config.getBoolean("config.integrations.Oraxen",false);
         if (oraxenHook && Bukkit.getPluginManager().getPlugin("Oraxen") == null) oraxenHook = false;
         trChat_Hook = config.getBoolean("config.integrations.TrChat",false);
+        ventureChat_Hook = config.getBoolean("config.integrations.VentureChat",false);
         offsets = config.getIntegerList("config.ascii-y-offset.offset");
         extract = config.getBoolean("config.extract-shader",true);
 

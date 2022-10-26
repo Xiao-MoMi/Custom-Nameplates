@@ -38,7 +38,7 @@ public class ChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         if (!event.isCancelled()) {
             Bukkit.getScheduler().runTask(CustomNameplates.plugin, () -> {
-                chatBubblesManager.onChat(event.getPlayer(), MiniMessage.miniMessage().stripTags(ChatColor.stripColor(event.getMessage())));
+                chatBubblesManager.onChat(event.getPlayer(), ChatColor.stripColor(event.getMessage()));
             });
         }
     }

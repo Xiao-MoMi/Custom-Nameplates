@@ -111,6 +111,9 @@ public final class CustomNameplates extends JavaPlugin {
         if (placeholderManager != null) {
             placeholderManager.unload();
         }
+        if (widthManager != null) {
+            widthManager.unload();
+        }
         if (dataManager != null) {
             dataManager.disable();
         }

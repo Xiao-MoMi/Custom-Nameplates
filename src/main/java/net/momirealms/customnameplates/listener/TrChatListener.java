@@ -21,6 +21,7 @@ import me.arasple.mc.trchat.api.event.TrChatEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ChatBubblesManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -35,7 +36,7 @@ public record TrChatListener(ChatBubblesManager chatBubblesManager) implements L
             if (channelName.equals(channel)) return;
         }
         Bukkit.getScheduler().runTask(CustomNameplates.plugin, () -> {
-            chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage());
+            chatBubblesManager.onChat(event.getSession().getPlayer(), ChatColor.stripColor(event.getMessage()));
         });
     }
 }
