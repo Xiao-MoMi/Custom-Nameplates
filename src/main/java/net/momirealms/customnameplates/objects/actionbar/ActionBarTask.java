@@ -79,7 +79,7 @@ public class ActionBarTask {
                             }
                         }
 
-                        AdventureUtil.playerActionbar(player, PlaceholderAPI.setPlaceholders(player, text));
+                        AdventureUtil.playerActionbar(player, AdventureUtil.replaceLegacy(PlaceholderAPI.setPlaceholders(player, text)));
                     }
                 }
             }

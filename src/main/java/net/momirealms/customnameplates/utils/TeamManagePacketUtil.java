@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.manager.TeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;

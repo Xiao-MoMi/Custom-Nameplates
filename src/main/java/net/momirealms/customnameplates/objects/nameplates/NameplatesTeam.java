@@ -23,6 +23,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ConfigManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.manager.TeamManager;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -66,8 +67,8 @@ public class NameplatesTeam {
         String nameplate = CustomNameplates.plugin.getDataManager().getPlayerData(this.player).getEquippedNameplate();
 
         if (nameplate.equals("none")) {
-            this.prefix = MiniMessage.miniMessage().deserialize(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_prefix));
-            this.suffix = MiniMessage.miniMessage().deserialize(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_suffix));
+            this.prefix = MiniMessage.miniMessage().deserialize(AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_prefix)));
+            this.suffix = MiniMessage.miniMessage().deserialize(AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_suffix)));
 
             this.prefixText = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_prefix);
             this.suffixText = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_suffix);
@@ -91,9 +92,9 @@ public class NameplatesTeam {
         String playerPrefix;
         String playerSuffix;
 
-        if (!NameplateManager.hidePrefix) playerPrefix = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_prefix);
+        if (!NameplateManager.hidePrefix) playerPrefix = AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_prefix));
         else playerPrefix = "";
-        if (!NameplateManager.hideSuffix) playerSuffix = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_suffix);
+        if (!NameplateManager.hideSuffix) playerSuffix = AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(this.player, NameplateManager.player_suffix));
         else playerSuffix = "";
 
         this.dynamic = playerPrefix + playerSuffix;

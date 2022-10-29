@@ -39,10 +39,7 @@ nameplate:
   # Placeholder based prefix and suffix system. When enabled, it is recommended
   # to use PlaceholderAPI to be able to use this feature to the fullest extent.
   # keep it empty if you don't want to enable this feature.
-  # You should make sure the papi doesn't contain "&" (legacy color code)
-  # Nameplates work on the custom font system where legacy color code is not supported!
   # Please use MiniMessage format: https://docs.adventure.kyori.net/minimessage/format.html
-  # keep in mind that %nameplates_prefix/suffix% would only return the nameplate unicode without prefix and suffix
   prefix: '<font:minecraft:default><rainbow>Hello! </rainbow></font>'
   suffix: '<font:minecraft:default> <red>%player_health_rounded%♥</font>'
 

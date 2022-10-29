@@ -115,7 +115,7 @@ public class BossBarSender {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
         packet.getModifier().write(0, uuid);
         InternalStructure internalStructure = packet.getStructures().read(1);
-        internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text.getLatestValue()))));
+        internalStructure.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(AdventureUtil.replaceLegacy(text.getLatestValue())))));
         internalStructure.getFloat().write(0,1F);
         internalStructure.getEnumModifier(BarColor.class, 2).write(0, config.getColor());
         internalStructure.getEnumModifier(Overlay.class, 3).write(0, config.getOverlay());

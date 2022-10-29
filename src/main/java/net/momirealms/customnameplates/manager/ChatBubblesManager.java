@@ -35,6 +35,7 @@ import net.momirealms.customnameplates.objects.nameplates.BubbleConfig;
 import net.momirealms.customnameplates.objects.nameplates.FakeArmorStand;
 import net.momirealms.customnameplates.objects.nameplates.mode.EntityTag;
 import net.momirealms.customnameplates.objects.nameplates.mode.bubbles.BBPacketsHandle;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -172,6 +173,8 @@ public class ChatBubblesManager extends EntityTag {
         if (bubblesEvent.isCancelled()) {
             return;
         }
+
+        text = AdventureUtil.replaceLegacy(text);
 
         BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubblesEvent.getBubble());
         WrappedChatComponent wrappedChatComponent;

@@ -27,6 +27,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ChatBubblesManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.objects.TextCache;
+import net.momirealms.customnameplates.utils.AdventureUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -258,7 +259,7 @@ public class FakeArmorStand implements ArmorStand {
         WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
         //设置名称
         if (dynamic) {
-            wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text))).getHandle()));
+            wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(AdventureUtil.replaceLegacy(text)))).getHandle()));
         }
         else {
             wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(wrappedChatComponent));

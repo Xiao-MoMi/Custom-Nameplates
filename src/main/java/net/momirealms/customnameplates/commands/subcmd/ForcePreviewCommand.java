@@ -64,8 +64,8 @@ public class ForcePreviewCommand extends AbstractSubCommand {
                 AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_not_exist);
                 return true;
             }
-            String playerPrefix = NameplateManager.hidePrefix ? "" : CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, NameplateManager.player_prefix);
-            String playerSuffix = NameplateManager.hideSuffix ? "" : CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, NameplateManager.player_suffix);
+            String playerPrefix = NameplateManager.hidePrefix ? "" : AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, NameplateManager.player_prefix));
+            String playerSuffix = NameplateManager.hideSuffix ? "" : AdventureUtil.replaceLegacy(CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, NameplateManager.player_suffix));
             Component prefix = Component.text(CustomNameplates.plugin.getNameplateManager().makeCustomNameplate(MiniMessage.miniMessage().stripTags(playerPrefix), args.get(0), MiniMessage.miniMessage().stripTags(playerSuffix), nameplateConfig)).font(ConfigManager.key).append(MiniMessage.miniMessage().deserialize(playerPrefix));
             Component suffix = MiniMessage.miniMessage().deserialize(playerSuffix).append(Component.text(CustomNameplates.plugin.getNameplateManager().getSuffixChar(MiniMessage.miniMessage().stripTags(playerPrefix) + args.get(0) + MiniMessage.miniMessage().stripTags(playerSuffix))).font(ConfigManager.key));
             Component full = prefix.append(Component.text(player.getName()).color(TextColor.color(color2decimal(nameplateConfig.color()))).font(Key.key("default")).append(suffix));
