@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.commands.subcmd;
 
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
 import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
@@ -37,8 +38,12 @@ public class NameplatesForceUnequipCommand extends AbstractSubCommand {
             AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.not_online.replace("{Player}",args.get(0)));
             return true;
         }
-        super.unequipNameplate(player);
-        AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_unEquip.replace("{Player}", args.get(0)));
+
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            super.unequipNameplate(player);
+            AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_unEquip.replace("{Player}", args.get(0)));
+        });
+
         return true;
     }
 

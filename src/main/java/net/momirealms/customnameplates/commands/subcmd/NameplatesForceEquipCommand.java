@@ -43,14 +43,17 @@ public class NameplatesForceEquipCommand extends AbstractSubCommand {
             AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_not_exist);
             return true;
         }
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate(args.get(1));
-        CustomNameplates.plugin.getDataManager().saveData(player);
-        NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
-        if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
-        CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
-        AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_equip.replace("{Nameplate}", CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(1)).name()).replace("{Player}", args.get(0)));
 
-        return super.onCommand(sender, args);
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate(args.get(1));
+            CustomNameplates.plugin.getDataManager().saveData(player);
+            NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
+            if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
+            CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
+            AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_equip.replace("{Nameplate}", CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(1)).name()).replace("{Player}", args.get(0)));
+        });
+
+        return true;
     }
 
     @Override

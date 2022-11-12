@@ -1,9 +1,11 @@
 package net.momirealms.customnameplates.commands.subcmd;
 
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
 import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,8 +32,10 @@ public class NameplatesUnequipCommand extends AbstractSubCommand {
             return true;
         }
 
-        super.unequipNameplate(player);
-        AdventureUtil.playerMessage(player, MessageManager.prefix + MessageManager.np_unEquip);
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            super.unequipNameplate(player);
+            AdventureUtil.playerMessage(player, MessageManager.prefix + MessageManager.np_unEquip);
+        });
         return super.onCommand(sender, args);
     }
 }

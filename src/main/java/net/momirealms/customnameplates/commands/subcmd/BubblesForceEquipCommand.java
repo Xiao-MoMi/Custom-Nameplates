@@ -40,10 +40,14 @@ public class BubblesForceEquipCommand extends AbstractSubCommand {
             AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.bb_not_exist);
             return true;
         }
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles(args.get(0));
-        CustomNameplates.plugin.getDataManager().saveData(player);
 
-        AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.bb_force_equip.replace("{Bubble}", CustomNameplates.plugin.getResourceManager().getBubbleConfig(args.get(1)).name()).replace("{Player}", args.get(0)));
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles(args.get(0));
+            CustomNameplates.plugin.getDataManager().saveData(player);
+
+            AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.bb_force_equip.replace("{Bubble}", CustomNameplates.plugin.getResourceManager().getBubbleConfig(args.get(1)).name()).replace("{Player}", args.get(0)));
+        });
+
         return true;
     }
 

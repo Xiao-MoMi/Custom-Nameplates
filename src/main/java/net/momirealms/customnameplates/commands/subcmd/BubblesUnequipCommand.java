@@ -5,6 +5,7 @@ import net.momirealms.customnameplates.commands.AbstractSubCommand;
 import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,9 +31,12 @@ public class BubblesUnequipCommand extends AbstractSubCommand {
             return true;
         }
 
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles("none");
-        CustomNameplates.plugin.getDataManager().saveData(player);
-        AdventureUtil.playerMessage(player, MessageManager.prefix + MessageManager.bb_unEquip);
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles("none");
+            CustomNameplates.plugin.getDataManager().saveData(player);
+            AdventureUtil.playerMessage(player, MessageManager.prefix + MessageManager.bb_unEquip);
+        });
+
         return true;
     }
 }

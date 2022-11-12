@@ -66,6 +66,7 @@ public class DataManager extends Function {
     public void onJoin(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
             PlayerData playerData = dataStorageInterface.loadData(player);
+            if (playerData == null) return;
             playerDataCache.put(player.getUniqueId(), playerData);
             //wait
             if (ConfigUtil.isModuleEnabled("nameplate")) {

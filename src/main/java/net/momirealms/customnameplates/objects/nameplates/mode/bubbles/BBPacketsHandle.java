@@ -28,25 +28,25 @@ import java.util.List;
 public class BBPacketsHandle extends PacketsHandler {
 
     private final ChatBubblesManager chatBubblesManager;
-    private EntityDestroyListener entityDestroyListener;
-    private EntityMoveListener entityMoveListener;
-    private EntitySpawnListener entitySpawnListener;
-    private EntityTeleportListener entityTeleportListener;
-    private EntityLookListener entityLookListener;
+    private final EntityDestroyListener entityDestroyListener;
+    private final EntityMoveListener entityMoveListener;
+    private final EntitySpawnListener entitySpawnListener;
+    private final EntityTeleportListener entityTeleportListener;
+    private final EntityLookListener entityLookListener;
 
     public BBPacketsHandle(ChatBubblesManager chatBubblesManager) {
         super(chatBubblesManager);
         this.chatBubblesManager = chatBubblesManager;
-    }
-
-    @Override
-    public void load() {
-        super.load();
         this.entityDestroyListener = new EntityDestroyListener(this);
         this.entityMoveListener = new EntityMoveListener(this);
         this.entitySpawnListener = new EntitySpawnListener(this);
         this.entityTeleportListener = new EntityTeleportListener(this);
         this.entityLookListener = new EntityLookListener(this);
+    }
+
+    @Override
+    public void load() {
+        super.load();
         CustomNameplates.protocolManager.addPacketListener(entityDestroyListener);
         CustomNameplates.protocolManager.addPacketListener(entityMoveListener);
         CustomNameplates.protocolManager.addPacketListener(entitySpawnListener);

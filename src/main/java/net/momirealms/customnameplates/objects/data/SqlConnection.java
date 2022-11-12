@@ -53,6 +53,7 @@ public class SqlConnection {
         hikariConfig.setMaximumPoolSize(config.getInt(storageMode + ".Pool-Settings.maximum-pool-size"));
         hikariConfig.setMinimumIdle(config.getInt(storageMode + ".Pool-Settings.minimum-idle"));
         hikariConfig.setMaxLifetime(config.getInt(storageMode + ".Pool-Settings.maximum-lifetime"));
+        hikariConfig.setConnectionTimeout(5000);
         for (String property : config.getConfigurationSection(storageMode + ".properties").getKeys(false)) {
             hikariConfig.addDataSourceProperty(property, config.getString(storageMode + ".properties." + property));
         }
@@ -64,7 +65,6 @@ public class SqlConnection {
 
         try {
             hikariDataSource = new HikariDataSource(hikariConfig);
-
         } catch (HikariPool.PoolInitializationException e) {
             AdventureUtil.consoleMessage("[CustomNameplates] Failed to create sql connection");
         }
@@ -72,22 +72,13 @@ public class SqlConnection {
     }
 
     public boolean setGlobalConnection() {
-        try {
-            createNewHikariConfiguration();
-            Connection connection = getConnection();
-            connection.close();
-            if (secondTry) {
-                AdventureUtil.consoleMessage("[CustomNameplates] Successfully reconnect to SQL!");
-            } else {
-                secondTry = true;
-            }
-            return true;
-        } catch (SQLException e) {
-            AdventureUtil.consoleMessage("<red>[CustomNameplates] Error! Failed to connect to SQL!</red>");
-            e.printStackTrace();
-            close();
-            return false;
+        createNewHikariConfiguration();
+        if (secondTry) {
+            AdventureUtil.consoleMessage("[CustomNameplates] Successfully reconnect to SQL!");
+        } else {
+            secondTry = true;
         }
+        return true;
     }
 
     public Connection getConnection() throws SQLException {

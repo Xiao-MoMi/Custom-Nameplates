@@ -40,9 +40,12 @@ public class BubblesForceUnequipCommand extends AbstractSubCommand {
             return true;
         }
 
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles("none");
-        CustomNameplates.plugin.getDataManager().saveData(player);
-        AdventureUtil.sendMessage(sender,MessageManager.prefix + MessageManager.bb_force_unEquip.replace("{Player}", args.get(0)));
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles("none");
+            CustomNameplates.plugin.getDataManager().saveData(player);
+            AdventureUtil.sendMessage(sender,MessageManager.prefix + MessageManager.bb_force_unEquip.replace("{Player}", args.get(0)));
+        });
+
         return true;
     }
 

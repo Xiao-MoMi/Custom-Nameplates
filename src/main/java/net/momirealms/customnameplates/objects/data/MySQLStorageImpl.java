@@ -48,6 +48,7 @@ public class MySQLStorageImpl implements DataStorageInterface {
         PlayerData playerData = null;
         try {
             Connection connection = sqlConnection.getConnectionAndCheck();
+            if (connection == null) return new PlayerData(player, NameplateManager.defaultNameplate, ChatBubblesManager.defaultBubble);
             String sql = String.format(SqlConstants.SQL_SELECT_BY_UUID, sqlConnection.getTable_name());
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, player.getUniqueId().toString());
@@ -60,6 +61,7 @@ public class MySQLStorageImpl implements DataStorageInterface {
             else {
                 playerData = new PlayerData(player, NameplateManager.defaultNameplate, ChatBubblesManager.defaultBubble);
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -79,8 +81,11 @@ public class MySQLStorageImpl implements DataStorageInterface {
 
     private void createTableIfNotExist(String table) {
         String sql = String.format(SqlConstants.SQL_CREATE_TABLE, table);
-        try (Connection connection = sqlConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try {
+            Connection connection = sqlConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeUpdate();
+            connection.close();
         } catch (SQLException ex) {
             AdventureUtil.consoleMessage("[CustomNameplates] Failed to create table");
         }
@@ -88,11 +93,14 @@ public class MySQLStorageImpl implements DataStorageInterface {
 
     private void insertData(UUID uuid, String nameplate, String bubbles) {
         String sql = String.format(SqlConstants.SQL_INSERT, sqlConnection.getTable_name());
-        try (Connection connection = sqlConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try {
+            Connection connection = sqlConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, uuid.toString());
             statement.setString(2, nameplate);
             statement.setString(3, bubbles);
             statement.executeUpdate();
+            connection.close();
         } catch (SQLException ex) {
             AdventureUtil.consoleMessage("[CustomNameplates] Failed to insert data for " + uuid);
         }
@@ -100,11 +108,14 @@ public class MySQLStorageImpl implements DataStorageInterface {
 
     private void updateData(UUID uuid, String nameplate, String bubbles) {
         String sql = String.format(SqlConstants.SQL_UPDATE_BY_UUID, sqlConnection.getTable_name());
-        try (Connection connection = sqlConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try {
+            Connection connection = sqlConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, nameplate);
             statement.setString(2, bubbles);
             statement.setString(3, uuid.toString());
             statement.executeUpdate();
+            connection.close();
         } catch (SQLException ex) {
             AdventureUtil.consoleMessage("[CustomNameplates] Failed to update data for " + uuid);
         }
@@ -113,10 +124,13 @@ public class MySQLStorageImpl implements DataStorageInterface {
     public boolean exists(UUID uuid) {
         String sql = String.format(SqlConstants.SQL_SELECT_BY_UUID, sqlConnection.getTable_name());
         boolean exist;
-        try (Connection connection = sqlConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try {
+            Connection connection = sqlConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, uuid.toString());
             ResultSet rs = statement.executeQuery();
             exist = rs.next();
+            connection.close();
         } catch (SQLException ex) {
             AdventureUtil.consoleMessage("[CustomNameplates] Failed to select data for " + uuid);
             return false;

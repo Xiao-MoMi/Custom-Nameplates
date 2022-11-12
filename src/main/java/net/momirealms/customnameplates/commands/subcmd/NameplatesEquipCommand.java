@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,12 +38,16 @@ public class NameplatesEquipCommand extends AbstractSubCommand {
                 AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_not_exist);
                 return true;
             }
-            CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate(args.get(0));
-            CustomNameplates.plugin.getDataManager().saveData(player);
-            NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
-            if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
-            CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
-            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_equip.replace("{Nameplate}", CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(0)).name()));
+
+            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+                CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate(args.get(0));
+                CustomNameplates.plugin.getDataManager().saveData(player);
+                NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
+                if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
+                CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
+                AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_equip.replace("{Nameplate}", CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(0)).name()));
+            });
+
         }
         else {
             AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_notAvailable);

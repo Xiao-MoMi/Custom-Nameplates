@@ -5,6 +5,7 @@ import net.momirealms.customnameplates.commands.AbstractSubCommand;
 import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.utils.AdventureUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,9 +40,13 @@ public class BubblesEquipCommand extends AbstractSubCommand {
             AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_notAvailable);
             return true;
         }
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles(args.get(0));
-        CustomNameplates.plugin.getDataManager().saveData(player);
-        AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_equip.replace("{Bubble}", CustomNameplates.plugin.getResourceManager().getBubbleConfig(args.get(0)).name()));
+
+        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
+            CustomNameplates.plugin.getDataManager().getPlayerData(player).setBubbles(args.get(0));
+            CustomNameplates.plugin.getDataManager().saveData(player);
+            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_equip.replace("{Bubble}", CustomNameplates.plugin.getResourceManager().getBubbleConfig(args.get(0)).name()));
+        });
+
         return true;
     }
 
