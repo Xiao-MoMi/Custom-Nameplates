@@ -90,11 +90,5 @@ public class ConfigUtil {
         CustomNameplates.plugin.getDataManager().unload();
         CustomNameplates.plugin.getDataManager().load();
         CustomNameplates.plugin.getResourceManager().generateResourcePack();
-        try {
-            Reflection.load();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -447,7 +447,7 @@ public class ResourceManager {
     private void hookCopy(File generated) {
         if (ConfigManager.itemsAdderHook){
             try {
-                FileUtils.copyDirectory(generated, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "data"+ File.separator + "resource_pack" + File.separator + "assets") );
+                FileUtils.copyDirectory(generated, new File(Bukkit.getPluginManager().getPlugin("ItemsAdder").getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack" + File.separator + "assets") );
             }
             catch (IOException e){
                 e.printStackTrace();

@@ -48,24 +48,26 @@ public class TimerTaskP {
 
                 outer:
                     for (BossBarSender bossBarSender : bossBarCache) {
-                        for (Requirement requirement : bossBarSender.getConfig().getConditions()) {
-                            if (!requirement.isConditionMet(playerCondition)) {
-                                if (bossBarSender.getStatus()) {
-                                    bossBarSender.hide();
+                        if (bossBarSender.canConditionCheck()) {
+                            for (Requirement requirement : bossBarSender.getConfig().getConditions()) {
+                                if (!requirement.isConditionMet(playerCondition)) {
+                                    if (bossBarSender.getStatus()) {
+                                        bossBarSender.hide();
+                                    }
+                                    continue outer;
                                 }
-                                continue outer;
                             }
-                        }
-                        if (!bossBarSender.getStatus()) {
-                            bossBarSender.show();
+                            if (!bossBarSender.getStatus()) {
+                                bossBarSender.show();
+                            }
                         }
                     }
 
             }
-        }.runTaskTimerAsynchronously(CustomNameplates.plugin, 1, 20);
+        }.runTaskTimerAsynchronously(CustomNameplates.plugin, 1, 1);
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
         if (this.conditionTask != null) {
             this.conditionTask.cancel();
         }

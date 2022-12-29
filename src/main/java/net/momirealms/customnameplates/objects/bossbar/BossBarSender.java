@@ -20,19 +20,23 @@ package net.momirealms.customnameplates.objects.bossbar;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.objects.TextCache;
 import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.Reflection;
+import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class BossBarSender {
@@ -40,6 +44,7 @@ public class BossBarSender {
     private final Player player;
     private int timer_1;
     private int timer_2;
+    private int timer_3;
     private int counter;
     private final int size;
     private final TextCache[] texts;
@@ -67,14 +72,24 @@ public class BossBarSender {
         this.uuid = UUID.randomUUID();
         this.config = config;
         this.isShown = false;
+        this.timer_3 = config.getRate();
+    }
+
+    public boolean canConditionCheck() {
+        timer_3++;
+        if (timer_3 > config.getRate()) {
+            timer_3 = 0;
+            return true;
+        }
+        return false;
     }
 
     public void show() {
         this.isShown = true;
 
-        try{
+        try {
             CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
-        }catch (InvocationTargetException e){
+        } catch (InvocationTargetException e) {
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
         }
 
@@ -92,15 +107,15 @@ public class BossBarSender {
                         setText(counter);
                     }
                 }
-                if (timer_1 < config.getRate()){
+                if (timer_1 < config.getRate()) {
                     timer_1++;
                 }
                 else {
                     timer_1 = 0;
                     if (text.update() || force) {
                         force = false;
-                        try{
-                            CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
+                        try {
+                            CustomNameplates.protocolManager.sendServerPacket(player, getUpdatePacket());
                         }
                         catch (InvocationTargetException e){
                             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
@@ -108,7 +123,7 @@ public class BossBarSender {
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(CustomNameplates.plugin,1,1);
+        }.runTaskTimerAsynchronously(CustomNameplates.plugin,0,1);
     }
 
     private PacketContainer getPacket() {
@@ -125,20 +140,44 @@ public class BossBarSender {
         return packet;
     }
 
+    private PacketContainer getUpdatePacket() {
+        PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
+        packet.getModifier().write(0, uuid);
+        try {
+            Method sMethod = MinecraftReflection.getChatSerializerClass().getMethod("a", String.class);
+            sMethod.setAccessible(true);
+            Object chatComponent = sMethod.invoke(null, GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(AdventureUtil.replaceLegacy(text.getLatestValue()))));
+            Class<?> packetBossClass = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss$e");
+            Constructor<?> packetConstructor = packetBossClass.getDeclaredConstructor(MinecraftReflection.getIChatBaseComponentClass());
+            packetConstructor.setAccessible(true);
+            Object updatePacket = packetConstructor.newInstance(chatComponent);
+            packet.getModifier().write(1, updatePacket);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException |
+                 InstantiationException e) {
+            throw new RuntimeException(e);
+        }
+        return packet;
+    }
+
     public void hide() {
-        remove();
         if (bukkitTask != null) bukkitTask.cancel();
+        remove();
         this.isShown = false;
     }
 
     private void remove() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
         packet.getModifier().write(0, uuid);
-        packet.getModifier().write(1, Reflection.removeBar);
-        try{
+        try {
+            Class<?> bar = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss");
+            Field remove = bar.getDeclaredField("f");
+            remove.setAccessible(true);
+            packet.getModifier().write(1, remove.get(null));
             CustomNameplates.protocolManager.sendServerPacket(player, packet);
-        }catch (InvocationTargetException e){
+        } catch (InvocationTargetException | ClassNotFoundException e){
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to remove bossbar for " + player.getName());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
