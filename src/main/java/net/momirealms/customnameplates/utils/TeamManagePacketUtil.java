@@ -43,13 +43,8 @@ public class TeamManagePacketUtil {
         PacketContainer packetToAll = getPlayerTeamPacket(joinPlayer);
         for (Player all : Bukkit.getOnlinePlayers()) {
             getPlayerTeamPacket(all);
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(joinPlayer, getPlayerTeamPacket(all));
-                if (joinPlayer != all) CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(joinPlayer, getPlayerTeamPacket(all));
+            if (joinPlayer != all) CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
         }
     }
 
@@ -68,12 +63,7 @@ public class TeamManagePacketUtil {
         packetToAll.getIntegers().write(0,1);
         packetToAll.getStrings().write(0, quitPlayer.getName());
         for (Player all : Bukkit.getOnlinePlayers()) {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(all, packetToAll);
         }
     }
 }

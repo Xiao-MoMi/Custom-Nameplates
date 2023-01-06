@@ -20,7 +20,9 @@ package net.momirealms.customnameplates.objects.nameplates;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.google.common.collect.Lists;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
@@ -34,8 +36,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,60 +95,35 @@ public class FakeArmorStand implements ArmorStand {
         if (yOffset == offset) return;
         yOffset = offset;
         for (Player all : asm.getNearbyPlayers()) {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(all, getTeleportPacket());
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(all, getTeleportPacket());
         }
     }
 
     @Override
     public void spawn(Player viewer) {
-        for (PacketContainer packet : getSpawnPackets(viewer)) {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(viewer, packet);
-            }
-            catch (InvocationTargetException e){
-                e.printStackTrace();
-            }
+        for (PacketContainer packet : getSpawnPackets()) {
+            CustomNameplates.protocolManager.sendServerPacket(viewer, packet);
         }
     }
 
     @Override
     public void destroy() {
         for (Player all : asm.getNearbyPlayers()) {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(all, destroyPacket);
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(all, destroyPacket);
         }
     }
 
 
     @Override
     public void destroy(Player viewer) {
-        try {
-            CustomNameplates.protocolManager.sendServerPacket(viewer, destroyPacket);
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        CustomNameplates.protocolManager.sendServerPacket(viewer, destroyPacket);
     }
 
     @Override
     public void teleport() {
         PacketContainer packet = getTeleportPacket();
         for (Player all : asm.getNearbyPlayers()) {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(all, packet);
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(all, packet);
         }
     }
 
@@ -155,12 +132,7 @@ public class FakeArmorStand implements ArmorStand {
         if (!asm.isNearby(viewer) && viewer != owner) {
             asm.spawn(viewer);
         } else {
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(viewer, getTeleportPacket());
-            }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(viewer, getTeleportPacket());
         }
     }
 
@@ -188,7 +160,6 @@ public class FakeArmorStand implements ArmorStand {
         spawn(viewer);
     }
 
-
     //传送包
     public PacketContainer getTeleportPacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
@@ -205,13 +176,18 @@ public class FakeArmorStand implements ArmorStand {
         for (Player viewer : asm.getNearbyPlayers()) {
             PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
             metaPacket.getIntegers().write(0, entityId);
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getLatestText(), true).getWatchableObjects());
-            try {
-                CustomNameplates.protocolManager.sendServerPacket(viewer, metaPacket);
+            if (CustomNameplates.version.equals("v1_19_R2")) {
+                WrappedDataWatcher wrappedDataWatcher = createDataWatcher(getText().getLatestText(), true);
+                List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
+                wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
+                    final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
+                    wrappedDataValueList.add(new WrappedDataValue(dataWatcherObject.getIndex(), dataWatcherObject.getSerializer(), entry.getRawValue()));
+                });
+                metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+            } else {
+                metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getLatestText(), true).getWatchableObjects());
             }
-            catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            CustomNameplates.protocolManager.sendServerPacket(viewer, metaPacket);
         }
     }
 
@@ -277,7 +253,7 @@ public class FakeArmorStand implements ArmorStand {
     }
 
     //创建生成包
-    public PacketContainer[] getSpawnPackets(Player viewer) {
+    public PacketContainer[] getSpawnPackets() {
 
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
@@ -291,10 +267,30 @@ public class FakeArmorStand implements ArmorStand {
         PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metaPacket.getIntegers().write(0, entityId);
         if (this.wrappedChatComponent == null) {
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getLatestText(), true).getWatchableObjects());
+            if (CustomNameplates.version.equals("v1_19_R2")) {
+                WrappedDataWatcher wrappedDataWatcher = createDataWatcher(getText().getLatestText(), true);
+                List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
+                wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
+                    final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
+                    wrappedDataValueList.add(new WrappedDataValue(dataWatcherObject.getIndex(), dataWatcherObject.getSerializer(), entry.getRawValue()));
+                });
+                metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+            } else {
+                metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(getText().getLatestText(), true).getWatchableObjects());
+            }
         }
         else {
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher("", false).getWatchableObjects());
+            if (CustomNameplates.version.equals("v1_19_R2")) {
+                WrappedDataWatcher wrappedDataWatcher = createDataWatcher("", false);
+                List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
+                wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
+                    final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
+                    wrappedDataValueList.add(new WrappedDataValue(dataWatcherObject.getIndex(), dataWatcherObject.getSerializer(), entry.getRawValue()));
+                });
+                metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+            } else {
+                metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher("", false).getWatchableObjects());
+            }
         }
         return new PacketContainer[] {entityPacket, metaPacket};
     }

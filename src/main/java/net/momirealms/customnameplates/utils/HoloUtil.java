@@ -21,7 +21,9 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
@@ -66,7 +68,17 @@ public class HoloUtil {
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), mask1);
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), mask2);
         packet2.getModifier().write(0,id);
-        packet2.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+
+        if (CustomNameplates.version.equals("v1_19_R2")) {
+            List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
+            wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
+                final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
+                wrappedDataValueList.add(new WrappedDataValue(dataWatcherObject.getIndex(), dataWatcherObject.getSerializer(), entry.getRawValue()));
+            });
+            packet2.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+        } else {
+            packet2.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+        }
         cache.put(player, id);
 
         try {

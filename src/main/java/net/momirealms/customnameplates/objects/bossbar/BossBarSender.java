@@ -87,11 +87,7 @@ public class BossBarSender {
     public void show() {
         this.isShown = true;
 
-        try {
-            CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
-        } catch (InvocationTargetException e) {
-            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to display bossbar for " + player.getName());
-        }
+        CustomNameplates.protocolManager.sendServerPacket(player, getPacket());
 
         this.bukkitTask = new BukkitRunnable() {
             @Override
@@ -114,12 +110,7 @@ public class BossBarSender {
                     timer_1 = 0;
                     if (text.update() || force) {
                         force = false;
-                        try {
-                            CustomNameplates.protocolManager.sendServerPacket(player, getUpdatePacket());
-                        }
-                        catch (InvocationTargetException e){
-                            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to update bossbar for " + player.getName());
-                        }
+                        CustomNameplates.protocolManager.sendServerPacket(player, getUpdatePacket());
                     }
                 }
             }
@@ -174,7 +165,7 @@ public class BossBarSender {
             remove.setAccessible(true);
             packet.getModifier().write(1, remove.get(null));
             CustomNameplates.protocolManager.sendServerPacket(player, packet);
-        } catch (InvocationTargetException | ClassNotFoundException e){
+        } catch (ClassNotFoundException e){
             AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to remove bossbar for " + player.getName());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);

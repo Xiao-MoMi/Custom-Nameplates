@@ -70,11 +70,6 @@ public class SimpleTeamVisibility implements TeamPacketInterface {
         if (NameplateManager.removeTag) internalStructure.getStrings().write(0, "never");
         else internalStructure.getStrings().write(0, "always");
         internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
-        try {
-            CustomNameplates.protocolManager.sendServerPacket(player, packet);
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        CustomNameplates.protocolManager.sendServerPacket(player, packet);
     }
 }

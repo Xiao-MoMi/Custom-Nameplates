@@ -57,13 +57,7 @@ public class ArmorStandManager {
     }
 
     public void mount(Player receiver) {
-        try {
-            CustomNameplates.protocolManager.sendServerPacket(receiver, getMountPacket(getArmorStandIDs()));
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-            AdventureUtil.consoleMessage("<red>[CustomNameplates] Failed to mount player");
-        }
+        CustomNameplates.protocolManager.sendServerPacket(receiver, getMountPacket(getArmorStandIDs()));
     }
 
     private PacketContainer getMountPacket(int[] passengers) {

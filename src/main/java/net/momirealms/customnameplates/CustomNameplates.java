@@ -37,6 +37,7 @@ public final class CustomNameplates extends JavaPlugin {
     public static CustomNameplates plugin;
     public static BukkitAudiences adventure;
     public static ProtocolManager protocolManager;
+    public static String version;
 
     private ResourceManager resourceManager;
     private BossBarManager bossBarManager;
@@ -62,6 +63,7 @@ public final class CustomNameplates extends JavaPlugin {
     public void onEnable() {
         adventure = BukkitAudiences.create(this);
         protocolManager = ProtocolLibrary.getProtocolManager();
+        version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
         //Don't delete this
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);

@@ -82,11 +82,6 @@ public class TeamPrefixSuffix implements TeamPacketInterface {
         internalStructure.getChatComponents().write(1, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(nameplatesTeam.getPrefix())));
         internalStructure.getChatComponents().write(2, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(nameplatesTeam.getSuffix())));
         internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0, nameplatesTeam.getColor());
-        try {
-            CustomNameplates.protocolManager.sendServerPacket(player, packet);
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        CustomNameplates.protocolManager.sendServerPacket(player, packet);
     }
 }
