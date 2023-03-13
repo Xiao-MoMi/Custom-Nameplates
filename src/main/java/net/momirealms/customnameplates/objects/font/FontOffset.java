@@ -36,17 +36,17 @@ public enum FontOffset {
     NEG_128('\uf80c', -128, -130),
 
     POS_1('\uf811', 1, -1),
-    POS_2('\uf812', 2, 0),
-    POS_3('\uf813', 3, 1),
-    POS_4('\uf814', 4, 2),
-    POS_5('\uf815', 5, 3),
-    POS_6('\uf816', 6, 4),
-    POS_7('\uf817', 7, 5),
-    POS_8('\uf818', 8, 6),
-    POS_16('\uf819', 16, 14),
-    POS_32('\uf81a', 32, 30),
-    POS_64('\uf81b', 64, 62),
-    POS_128('\uf81c', 128, 126);
+    POS_2('\uf812', 2, 1),
+    POS_3('\uf813', 3, 2),
+    POS_4('\uf814', 4, 3),
+    POS_5('\uf815', 5, 4),
+    POS_6('\uf816', 6, 5),
+    POS_7('\uf817', 7, 6),
+    POS_8('\uf818', 8, 7),
+    POS_16('\uf819', 16, 15),
+    POS_32('\uf81a', 32, 31),
+    POS_64('\uf81b', 64, 63),
+    POS_128('\uf81c', 128, 127);
 
     private final char character;
     private final int space;

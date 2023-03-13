@@ -47,24 +47,23 @@ public class TimerTaskP {
                 PlayerCondition playerCondition = new PlayerCondition(player.getLocation(), player);
 
                 outer:
-                    for (BossBarSender bossBarSender : bossBarCache) {
-                        if (bossBarSender.canConditionCheck()) {
-                            for (Requirement requirement : bossBarSender.getConfig().getConditions()) {
-                                if (!requirement.isConditionMet(playerCondition)) {
-                                    if (bossBarSender.getStatus()) {
-                                        bossBarSender.hide();
-                                    }
-                                    continue outer;
+                for (BossBarSender bossBarSender : bossBarCache) {
+                    if (bossBarSender.canConditionCheck()) {
+                        for (Requirement requirement : bossBarSender.getConfig().getConditions()) {
+                            if (!requirement.isConditionMet(playerCondition)) {
+                                if (bossBarSender.getStatus()) {
+                                    bossBarSender.hide();
                                 }
-                            }
-                            if (!bossBarSender.getStatus()) {
-                                bossBarSender.show();
+                                continue outer;
                             }
                         }
+                        if (!bossBarSender.getStatus()) {
+                            bossBarSender.show();
+                        }
                     }
-
+                }
             }
-        }.runTaskTimerAsynchronously(CustomNameplates.plugin, 1, 1);
+        }.runTaskTimerAsynchronously(CustomNameplates.plugin, 0, 1);
     }
 
     public void stopTimer() {

@@ -114,7 +114,7 @@ public class BossBarSender {
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(CustomNameplates.plugin,0,1);
+        }.runTaskTimerAsynchronously(CustomNameplates.plugin, 0,1);
     }
 
     private PacketContainer getPacket() {

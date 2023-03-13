@@ -25,6 +25,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.momirealms.customnameplates.commands.BubblesCommand;
 import net.momirealms.customnameplates.commands.NameplateCommand;
 import net.momirealms.customnameplates.helper.LibraryLoader;
+import net.momirealms.customnameplates.helper.VersionHelper;
 import net.momirealms.customnameplates.manager.*;
 import net.momirealms.customnameplates.utils.AdventureUtil;
 import net.momirealms.customnameplates.utils.ConfigUtil;
@@ -37,7 +38,6 @@ public final class CustomNameplates extends JavaPlugin {
     public static CustomNameplates plugin;
     public static BukkitAudiences adventure;
     public static ProtocolManager protocolManager;
-    public static String version;
 
     private ResourceManager resourceManager;
     private BossBarManager bossBarManager;
@@ -49,6 +49,7 @@ public final class CustomNameplates extends JavaPlugin {
     private ConfigManager configManager;
     private MessageManager messageManager;
     private WidthManager widthManager;
+    private VersionHelper versionHelper;
 
     @Override
     public void onLoad(){
@@ -63,7 +64,6 @@ public final class CustomNameplates extends JavaPlugin {
     public void onEnable() {
         adventure = BukkitAudiences.create(this);
         protocolManager = ProtocolLibrary.getProtocolManager();
-        version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
         //Don't delete this
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
@@ -80,6 +80,7 @@ public final class CustomNameplates extends JavaPlugin {
         this.messageManager = new MessageManager();
         this.widthManager = new WidthManager();
         this.chatBubblesManager = new ChatBubblesManager();
+        this.versionHelper = new VersionHelper();
 
         ConfigUtil.reloadConfigs();
 
@@ -162,5 +163,9 @@ public final class CustomNameplates extends JavaPlugin {
 
     public WidthManager getWidthManager() {
         return widthManager;
+    }
+
+    public VersionHelper getVersionHelper() {
+        return versionHelper;
     }
 }

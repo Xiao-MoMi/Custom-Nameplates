@@ -60,6 +60,7 @@ public class TeamPrefixSuffix implements TeamPacketInterface {
     public void sendUpdateToAll(Player player, boolean force) {
         String teamName = teamManager.getTeamName(player);
         NameplatesTeam nameplatesTeam = teamManager.getTeams().get(teamName);
+        if (nameplatesTeam == null) return;
         String newInfo = nameplatesTeam.getDynamic();
         String oldInfo = teamInfoCache.get(player);
         if (newInfo != null && newInfo.equals(oldInfo) && !force) {

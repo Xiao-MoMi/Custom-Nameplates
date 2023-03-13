@@ -32,21 +32,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BossBarManager extends Function {
 
     private final SimpleListener simpleListener;
-    private final TreeMap<String, BossBarConfig> bossBars;
+    private final LinkedHashMap<String, BossBarConfig> bossBars;
     private final HashMap<Player, TimerTaskP> taskCache;
 
     public BossBarManager() {
         this.simpleListener = new SimpleListener(this);
         this.taskCache = new HashMap<>();
-        this.bossBars = new TreeMap<>();
+        this.bossBars = new LinkedHashMap<>();
     }
 
     @Override
@@ -119,7 +116,7 @@ public class BossBarManager extends Function {
         AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + bossBars.size() + " <gray>bossbars");
     }
 
-    public TreeMap<String, BossBarConfig> getBossBars() {
+    public LinkedHashMap<String, BossBarConfig> getBossBars() {
         return bossBars;
     }
 }

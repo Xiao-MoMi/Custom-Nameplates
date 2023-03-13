@@ -174,7 +174,7 @@ public class ChatBubblesManager extends EntityTag {
             return;
         }
 
-        text = AdventureUtil.replaceLegacy(text);
+        text = AdventureUtil.replaceLegacy(bubblesEvent.getText());
 
         BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubblesEvent.getBubble());
         WrappedChatComponent wrappedChatComponent;
@@ -199,6 +199,7 @@ public class ChatBubblesManager extends EntityTag {
         }
 
         ArmorStandManager asm = getArmorStandManager(player);
+        if (asm == null) return;
         asm.ascent();
         String name = UUID.randomUUID().toString();
         FakeArmorStand fakeArmorStand = new FakeArmorStand(asm, player, wrappedChatComponent);

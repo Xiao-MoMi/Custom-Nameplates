@@ -54,12 +54,14 @@ public class FakeArmorStand implements ArmorStand {
     private TextCache text;
     private final PacketContainer destroyPacket;
     private WrappedChatComponent wrappedChatComponent;
+    private int counter;
 
     public FakeArmorStand(ArmorStandManager asm, Player owner, TextCache text, double yOffset) {
         this.asm = asm;
         this.owner = owner;
         this.yOffset = yOffset;
         this.text = text;
+        this.counter = 0;
         sneaking = owner.isSneaking();
         destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
@@ -176,7 +178,7 @@ public class FakeArmorStand implements ArmorStand {
         for (Player viewer : asm.getNearbyPlayers()) {
             PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
             metaPacket.getIntegers().write(0, entityId);
-            if (CustomNameplates.version.equals("v1_19_R2")) {
+            if (CustomNameplates.plugin.getVersionHelper().isVersionNewerThan1_19_R2()) {
                 WrappedDataWatcher wrappedDataWatcher = createDataWatcher(getText().getLatestText(), true);
                 List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
                 wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
@@ -197,7 +199,7 @@ public class FakeArmorStand implements ArmorStand {
         double y = getY() + yOffset;
         double z = owner.getLocation().getZ();
         if (!owner.isSleeping()) {
-            if (sneaking) y += 1.37;
+            if (sneaking) y += 1.5;
             else y += 1.8;
         }
         else y += 0.2;
@@ -267,7 +269,7 @@ public class FakeArmorStand implements ArmorStand {
         PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metaPacket.getIntegers().write(0, entityId);
         if (this.wrappedChatComponent == null) {
-            if (CustomNameplates.version.equals("v1_19_R2")) {
+            if (CustomNameplates.plugin.getVersionHelper().isVersionNewerThan1_19_R2()) {
                 WrappedDataWatcher wrappedDataWatcher = createDataWatcher(getText().getLatestText(), true);
                 List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
                 wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
@@ -280,7 +282,7 @@ public class FakeArmorStand implements ArmorStand {
             }
         }
         else {
-            if (CustomNameplates.version.equals("v1_19_R2")) {
+            if (CustomNameplates.plugin.getVersionHelper().isVersionNewerThan1_19_R2()) {
                 WrappedDataWatcher wrappedDataWatcher = createDataWatcher("", false);
                 List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
                 wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {

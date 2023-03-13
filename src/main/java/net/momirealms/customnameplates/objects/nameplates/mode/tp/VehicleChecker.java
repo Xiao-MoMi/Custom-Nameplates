@@ -25,10 +25,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class VehicleChecker extends Function {
 
-    private final WeakHashMap<Player, Entity> playersOnVehicle = new WeakHashMap<>();
+    private final ConcurrentHashMap<Player, Entity> playersOnVehicle;
 
     private final TeleportingTag teleportingTag;
 
@@ -36,6 +37,7 @@ public class VehicleChecker extends Function {
 
     public VehicleChecker(TeleportingTag teleportingTag) {
         this.teleportingTag = teleportingTag;
+        this.playersOnVehicle = new ConcurrentHashMap<>();
     }
 
     @Override

@@ -69,7 +69,7 @@ public class HoloUtil {
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), mask2);
         packet2.getModifier().write(0,id);
 
-        if (CustomNameplates.version.equals("v1_19_R2")) {
+        if (CustomNameplates.plugin.getVersionHelper().isVersionNewerThan1_19_R2()) {
             List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
             wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
                 final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
@@ -98,7 +98,7 @@ public class HoloUtil {
 
         Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, ()->{
             removeHolo(player, id);
-            cache.remove(location);
+            cache.remove(player);
         }, duration * 20L);
     }
 
