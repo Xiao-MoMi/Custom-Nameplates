@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.listener;
 
-import net.momirealms.customnameplates.objects.nameplates.mode.EntityTag;
+import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;

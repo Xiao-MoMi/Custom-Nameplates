@@ -1,47 +1,58 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands.subcmd;
 
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
-import net.momirealms.customnameplates.commands.SubCommand;
-import net.momirealms.customnameplates.utils.AdventureUtil;
+import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class HelpCommand extends AbstractSubCommand {
 
-    public static final SubCommand INSTANCE = new HelpCommand();
+    public static final AbstractSubCommand INSTANCE = new HelpCommand();
 
     public HelpCommand() {
-        super("help", null);
+        super("help");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-        if (sender instanceof Player player) {
-            if (player.hasPermission("nameplates.help")){
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates help - <color:#7FFFAA>show the command list");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates reload - <color:#7FFFAA>reload the configuration");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates equip <nameplate> - <color:#7FFFAA>equip a specified nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates forceequip <player> <nameplate> - <color:#7FFFAA>force a player to equip a specified nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates unequip - <color:#7FFFAA>unequip your nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates forceunequip - <color:#7FFFAA>force unequip a player's nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
-                AdventureUtil.playerMessage(player,"<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-            }
-        }
-        else {
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates help - <color:#7FFFAA>show the command list");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates reload - <color:#7FFFAA>reload the configuration");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates equip <nameplate> - <color:#7FFFAA>equip a specified nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates forceequip <player> <nameplate> - <color:#7FFFAA>force a player to equip a specified nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates unequip - <color:#7FFFAA>unequip your nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates forceunequip - <color:#7FFFAA>force unequip a player's nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates preview - <color:#7FFFAA>preview your nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates forcepreview  <player> <nameplate> - <color:#7FFFAA>force a player to preview a nameplate");
-            AdventureUtil.consoleMessage("<color:#87CEFA>/nameplates list - <color:#7FFFAA>list your available nameplates");
-        }
+        AdventureUtils.sendMessage(sender, "<#3CB371>Command usage:");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<#FFFACD><Required Augument> ");
+        AdventureUtils.sendMessage(sender, "  <gray>└─<#FFFACD><#E1FFFF>[Optional Augument]");
+        AdventureUtils.sendMessage(sender, "<#3CB371>/nameplates");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>help");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>about");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>reload <#87CEFA>Reload the plugin");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#87CEFA>Show a list of available nameplates");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate><#87CEFA>Equip a nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate><#87CEFA>Force a player to equip a nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#87CEFA>Unequip the current nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceunequip <#FFFACD><player> <#87CEFA>Force a player to unequip his nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>preview <#87CEFA>Preview your current nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forcepreview <player> <#87CEFA>Force a player to preview the nameplate");
+        AdventureUtils.sendMessage(sender, "<#3CB371>/bubbles");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#87CEFA>Show a list of available bubbles");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate><#87CEFA>Equip a bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate><#87CEFA>Force a player to equip a bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#87CEFA>Unequip the current bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forceunequip <#FFFACD><player> <#87CEFA>Force a player to unequip his bubble");
         return true;
     }
 }

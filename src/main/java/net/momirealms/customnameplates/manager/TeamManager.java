@@ -18,52 +18,77 @@
 package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
-import net.momirealms.customnameplates.objects.team.*;
-import net.momirealms.customnameplates.utils.TeamManagePacketUtil;
+import net.momirealms.customnameplates.listener.JoinQuitListener;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
+import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.object.team.TeamNameInterface;
+import net.momirealms.customnameplates.object.team.TeamPacketInterface;
+import net.momirealms.customnameplates.object.team.name.PlayerNameTeamImpl;
+import net.momirealms.customnameplates.object.team.name.TABBungeeCordImpl;
+import net.momirealms.customnameplates.object.team.name.TABImpl;
+import net.momirealms.customnameplates.object.team.packet.TeamInfoImpl;
+import net.momirealms.customnameplates.object.team.packet.TeamVisibilityImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager extends Function {
 
-    private final ConcurrentHashMap<String, NameplatesTeam> teams ;
+    private final ConcurrentHashMap<UUID, NameplatesTeam> teams ;
     private TeamPacketInterface teamPacketInterface;
     private TeamNameInterface teamNameInterface;
-    private final TeamManagePacketUtil teamManagePacketUtil;
+    private final JoinQuitListener joinQuitListener;
+    private final CustomNameplates plugin;
+    private final ConcurrentHashMap<UUID, Integer> triedTimes;
 
-    public TeamManager() {
-        teams = new ConcurrentHashMap<>();
-        this.teamManagePacketUtil = new TeamManagePacketUtil(this);
+    public TeamManager(CustomNameplates plugin) {
+        this.plugin = plugin;
+        this.teams = new ConcurrentHashMap<>();
+        this.joinQuitListener = new JoinQuitListener(this);
+        this.triedTimes = new ConcurrentHashMap<>();
     }
 
     @Override
     public void load() {
-        if (NameplateManager.mode.equalsIgnoreCase("Team")) {
-            teamPacketInterface = new TeamPrefixSuffix(this);
-        }
-        if (NameplateManager.mode.equalsIgnoreCase("Teleporting") || NameplateManager.mode.equalsIgnoreCase("Riding")) {
-            teamPacketInterface = new SimpleTeamVisibility(this);
-        }
-
+        Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
         if (ConfigManager.tab_BC_hook) {
-            teamNameInterface = new TABbcHook();
+            teamNameInterface = new TABBungeeCordImpl();
+        } else if (ConfigManager.tab_hook) {
+            teamNameInterface = new TABImpl();
+        } else {
+            teamNameInterface = new PlayerNameTeamImpl(this);
         }
-        else if (ConfigManager.tab_hook) {
-            teamNameInterface = new TABTeamHook();
-        }
-        else {
-            teamNameInterface = new SimpleTeam();
-        }
+        teamNameInterface.load();
     }
 
     @Override
     public void unload() {
-        if (teamNameInterface != null) teamNameInterface.unload();
+        HandlerList.unregisterAll(joinQuitListener);
+        if (teamNameInterface != null) {
+            teamNameInterface.unload();
+        }
+        teamPacketInterface = null;
+    }
+
+    @Override
+    public void onQuit(Player player) {
+        this.removePlayerFromTeamCache(player);
+        teamNameInterface.onQuit(player);
+        triedTimes.remove(player.getUniqueId());
+    }
+
+    public void setTeamPacketInterface() {
+        if (plugin.getNameplateManager().getMode() == DisplayMode.TEAM) {
+            teamPacketInterface = new TeamInfoImpl(this);
+        } else if (plugin.getNameplateManager().getMode() == DisplayMode.ARMOR_STAND) {
+            teamPacketInterface = new TeamVisibilityImpl(this);
+        }
     }
 
     public void sendUpdateToOne(Player player) {
@@ -74,39 +99,55 @@ public class TeamManager extends Function {
         if (teamPacketInterface != null) teamPacketInterface.sendUpdateToAll(player, force);
     }
 
-    public void createTeam(Player player) {
-        String teamName = getTeamName(player);
+    public void createTeam(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null || !player.isOnline() || !checkTriedTimes(player.getUniqueId())) return;
+        String teamName = getCurrentTeamName(player);
         if (teamName != null) {
-            if (!teams.containsKey(teamName)) teams.put(teamName, new NameplatesTeam(player, this));
-            teamPacketInterface.sendUpdateToAll(player, false);
+            if (!teams.containsKey(uuid)) teams.put(uuid, new NameplatesTeam(plugin.getNameplateManager(), player, teamName));
+            teamPacketInterface.sendUpdateToAll(player, true);
             teamPacketInterface.sendUpdateToOne(player);
         }
+        // wait for bc
         else {
-            if (player == null || !player.isOnline()) return;
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, () -> {
-                createTeam(player);
-            },20);
+            Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.getInstance(), () -> createTeam(uuid),10);
         }
     }
 
-    public Map<String, NameplatesTeam> getTeams() {
-        return teams;
+    @Nullable
+    public NameplatesTeam getNameplateTeam(UUID uuid) {
+        return teams.get(uuid);
     }
 
-    public String getTeamName(Player player) {
+    public String getCurrentTeamName(Player player) {
         return teamNameInterface.getTeamName(player);
     }
 
     public void removePlayerFromTeamCache(Player player) {
-        teams.remove(getTeamName(player));
+        teams.remove(player.getUniqueId());
     }
 
-    @Nullable
-    public NameplatesTeam getNameplatesTeam(Player player) {
-        return teams.get(getTeamName(player));
+    public boolean isFakeTeam() {
+        return plugin.getNameplateManager().isFakeTeam();
     }
 
-    public TeamManagePacketUtil getTeamManagePacketUtil() {
-        return teamManagePacketUtil;
+    protected boolean checkTriedTimes(UUID uuid) {
+        Integer previous = triedTimes.get(uuid);
+        if (previous == null) {
+            triedTimes.put(uuid, 1);
+            return true;
+        }
+        else if (previous > 4) {
+            triedTimes.remove(uuid);
+            return false;
+        }
+        else {
+            triedTimes.put(uuid, previous + 1);
+            return true;
+        }
+    }
+
+    public TeamNameInterface getTeamNameInterface() {
+        return teamNameInterface;
     }
 }

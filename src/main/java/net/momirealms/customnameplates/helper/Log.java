@@ -37,23 +37,23 @@ import java.util.logging.Level;
 public final class Log {
 
     public static void info(@Nonnull String s) {
-        CustomNameplates.plugin.getLogger().info(s);
+        CustomNameplates.getInstance().getLogger().info(s);
     }
 
     public static void warn(@Nonnull String s) {
-        CustomNameplates.plugin.getLogger().warning(s);
+        CustomNameplates.getInstance().getLogger().warning(s);
     }
 
     public static void severe(@Nonnull String s) {
-        CustomNameplates.plugin.getLogger().severe(s);
+        CustomNameplates.getInstance().getLogger().severe(s);
     }
 
     public static void warn(@Nonnull String s, Throwable t) {
-        CustomNameplates.plugin.getLogger().log(Level.WARNING, s, t);
+        CustomNameplates.getInstance().getLogger().log(Level.WARNING, s, t);
     }
 
     public static void severe(@Nonnull String s, Throwable t) {
-        CustomNameplates.plugin.getLogger().log(Level.SEVERE, s, t);
+        CustomNameplates.getInstance().getLogger().log(Level.SEVERE, s, t);
     }
 
     private Log() {

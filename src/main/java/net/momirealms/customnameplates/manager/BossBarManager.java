@@ -18,102 +18,84 @@
 package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.listener.SimpleListener;
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.objects.bossbar.BossBarConfig;
-import net.momirealms.customnameplates.objects.bossbar.Overlay;
-import net.momirealms.customnameplates.objects.bossbar.TimerTaskP;
-import net.momirealms.customnameplates.objects.requirements.*;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.listener.JoinQuitListener;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.bossbar.BossBarConfig;
+import net.momirealms.customnameplates.object.bossbar.BossBarTask;
+import net.momirealms.customnameplates.object.bossbar.Overlay;
+import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-import java.util.*;
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BossBarManager extends Function {
 
-    private final SimpleListener simpleListener;
     private final LinkedHashMap<String, BossBarConfig> bossBars;
-    private final HashMap<Player, TimerTaskP> taskCache;
+    private final ConcurrentHashMap<UUID, BossBarTask> bossBarTaskMap;
+    private final JoinQuitListener joinQuitListener;
+    private final CustomNameplates plugin;
 
-    public BossBarManager() {
-        this.simpleListener = new SimpleListener(this);
-        this.taskCache = new HashMap<>();
+    public BossBarManager(CustomNameplates plugin) {
+        this.plugin = plugin;
+        this.joinQuitListener = new JoinQuitListener(this);
+        this.bossBarTaskMap = new ConcurrentHashMap<>();
         this.bossBars = new LinkedHashMap<>();
     }
 
     @Override
     public void load() {
-        if (!ConfigUtil.isModuleEnabled("bossbar")) return;
-        loadConfig();
+        if (!ConfigManager.enableBossBar) return;
+        this.loadConfig();
+        Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            taskCache.put(player, new TimerTaskP(player));
+            onJoin(player);
         }
-        Bukkit.getPluginManager().registerEvents(simpleListener, CustomNameplates.plugin);
     }
 
     @Override
     public void unload() {
-        for (TimerTaskP timerTask : taskCache.values()) {
-            timerTask.stopTimer();
+        for (BossBarTask bossBarTask : bossBarTaskMap.values()) {
+            bossBarTask.stop();
         }
-        taskCache.clear();
-        HandlerList.unregisterAll(simpleListener);
+        bossBarTaskMap.clear();
+        HandlerList.unregisterAll(joinQuitListener);
     }
 
     public void onJoin(Player player) {
-        taskCache.put(player, new TimerTaskP(player));
+        BossBarTask bossBarTask = new BossBarTask(player, bossBars.values().toArray(new BossBarConfig[0]));
+        bossBarTaskMap.put(player.getUniqueId(), bossBarTask);
+        bossBarTask.start();
     }
 
     public void onQuit(Player player) {
-        TimerTaskP timerTask = taskCache.remove(player);
-        if (timerTask != null){
-            timerTask.stopTimer();
-        }
+        BossBarTask bossBarTask = bossBarTaskMap.remove(player.getUniqueId());
+        if (bossBarTask != null) bossBarTask.stop();
     }
 
     private void loadConfig() {
         bossBars.clear();
-        YamlConfiguration config = ConfigUtil.getConfig("bossbar.yml");
-        config.getConfigurationSection("bossbar").getKeys(false).forEach(key -> {
-            String[] texts;
-            String text = config.getString("bossbar." + key + ".text");
-            if (text != null) {
-                texts = new String[]{text};
-            }
-            else {
-                List<String> strings = config.getStringList("bossbar." + key + ".dynamic-text");
-                texts = strings.toArray(new String[0]);
-            }
-            List<Requirement> requirements = new ArrayList<>();
-            if (config.contains("bossbar." + key + ".conditions")){
-                config.getConfigurationSection("bossbar." + key + ".conditions").getKeys(false).forEach(requirement -> {
-                    switch (requirement){
-                        case "weather" -> requirements.add(new Weather(config.getStringList("bossbar." + key + ".conditions.weather")));
-                        case "ypos" -> requirements.add(new YPos(config.getStringList("bossbar." + key + ".conditions.ypos")));
-                        case "world" -> requirements.add(new World(config.getStringList("bossbar." + key + ".conditions.world")));
-                        case "biome" -> requirements.add(new Biome(config.getStringList("bossbar." + key + ".conditions.biome")));
-                        case "permission" -> requirements.add(new Permission(config.getString("bossbar." + key + ".conditions.permission")));
-                        case "time" -> requirements.add(new Time(config.getStringList("bossbar." + key + ".conditions.time")));
-                        case "papi-condition" -> requirements.add(new CustomPapi(config.getConfigurationSection("bossbar." + key + ".conditions.papi-condition").getValues(false)));
-                    }
-                });
-            }
-            BossBarConfig bossBarConfig = new BossBarConfig(
-                    texts,
-                    Overlay.valueOf(config.getString("bossbar."+key+".overlay","progress").toUpperCase()),
-                    BarColor.valueOf(config.getString("bossbar."+key+".color","white").toUpperCase()),
-                    config.getInt("bossbar." + key + ".refresh-rate", 15) - 1,
-                    config.getInt("bossbar." + key + ".switch-interval", 5) * 20,
-                    requirements
-            );
-            bossBars.put(key, bossBarConfig);
-        });
-        AdventureUtil.consoleMessage("[CustomNameplates] Loaded <green>" + bossBars.size() + " <gray>bossbars");
+        YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "bossbar.yml");
+        for (String key : config.getKeys(false)) {
+            ConfigurationSection bossBarSection = config.getConfigurationSection(key);
+            if (bossBarSection == null) continue;
+            bossBars.put(key, new BossBarConfig(
+                    bossBarSection.getString("text") == null ? bossBarSection.getStringList("dynamic-text").toArray(new String[0]) : new String[]{bossBarSection.getString("text")},
+                    Overlay.valueOf(bossBarSection.getString("overlay","progress").toUpperCase()),
+                    BarColor.valueOf(bossBarSection.getString("color","white").toUpperCase()),
+                    bossBarSection.getInt("switch-interval", 5) * 20,
+                    ConfigUtils.getRequirements(bossBarSection.getConfigurationSection("conditions"))
+            ));
+        }
+        AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + bossBars.size() + " <gray>bossbars");
     }
 
     public LinkedHashMap<String, BossBarConfig> getBossBars() {

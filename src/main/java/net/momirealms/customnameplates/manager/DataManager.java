@@ -1,81 +1,149 @@
 package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.listener.SimpleListener;
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.objects.data.DataStorageInterface;
-import net.momirealms.customnameplates.objects.data.FileStorageImpl;
-import net.momirealms.customnameplates.objects.data.MySQLStorageImpl;
-import net.momirealms.customnameplates.objects.data.PlayerData;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.data.*;
+import net.momirealms.customnameplates.listener.JoinQuitListener;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DataManager extends Function {
 
-    private final ConcurrentHashMap<UUID, PlayerData> playerDataCache;
-    private final SimpleListener simpleListener;
-    private final DataStorageInterface dataStorageInterface;
+    private final CustomNameplates plugin;
+    private DataStorageInterface dataStorageInterface;
+    private final JoinQuitListener joinQuitListener;
+    private StorageType storageType;
+    private final ConcurrentHashMap<UUID, PlayerData> playerDataMap;
+    private final ConcurrentHashMap<UUID, Integer> triedTimes;
 
-    public DataManager() {
-        this.playerDataCache = new ConcurrentHashMap<>();
-        this.simpleListener = new SimpleListener(this);
-        ConfigUtil.update("database.yml");
-        YamlConfiguration config = ConfigUtil.getConfig("database.yml");
-        if (config.getString("data-storage-method","YAML").equalsIgnoreCase("YAML")) {
-            this.dataStorageInterface = new FileStorageImpl();
-            AdventureUtil.consoleMessage("[CustomNameplates] Storage Mode: YAML");
-        } else this.dataStorageInterface = new MySQLStorageImpl();
-        this.dataStorageInterface.initialize();
-    }
-
-    @NotNull
-    public PlayerData getPlayerData(OfflinePlayer player) {
-        PlayerData playerData = playerDataCache.get(player.getUniqueId());
-        if (playerData != null) {
-            return playerData;
-        }
-        return new PlayerData(player, NameplateManager.defaultNameplate, ChatBubblesManager.defaultBubble);
+    public DataManager(CustomNameplates plugin) {
+        this.plugin = plugin;
+        this.playerDataMap = new ConcurrentHashMap<>();
+        this.joinQuitListener = new JoinQuitListener(this);
+        this.triedTimes = new ConcurrentHashMap<>();
     }
 
     @Override
     public void load() {
-        Bukkit.getPluginManager().registerEvents(simpleListener, CustomNameplates.plugin);
+        if (loadStorageMode()) this.dataStorageInterface.initialize();
+        Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
     }
 
     @Override
     public void unload() {
-        HandlerList.unregisterAll(simpleListener);
+        YamlConfiguration config = ConfigUtils.getConfig("database.yml");
+        StorageType st = config.getString("data-storage-method","YAML").equalsIgnoreCase("YAML") ? StorageType.YAML : StorageType.SQL;
+        if (this.dataStorageInterface != null && dataStorageInterface.getStorageType() != st) this.dataStorageInterface.disable();
+        HandlerList.unregisterAll(joinQuitListener);
     }
 
+    @Override
     public void disable() {
-        unload();
-        this.playerDataCache.clear();
-        this.dataStorageInterface.disable();
+        if (this.dataStorageInterface != null) {
+            this.dataStorageInterface.disable();
+        }
     }
 
     @Override
     public void onJoin(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
-            PlayerData playerData = dataStorageInterface.loadData(player);
-            if (playerData == null) return;
-            playerDataCache.put(player.getUniqueId(), playerData);
-            //wait
-            if (ConfigUtil.isModuleEnabled("nameplate")) {
-                CustomNameplates.plugin.getNameplateManager().getTeamManager().createTeam(player);
-            }
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> readData(player.getUniqueId()));
+    }
+
+    public void readData(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null || !player.isOnline() || !checkTriedTimes(uuid)) return;
+        PlayerData playerData = this.dataStorageInterface.loadData(uuid);
+        if (playerData == null) {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> readData(uuid), 20);
+        }
+        else {
+            playerDataMap.put(uuid, playerData);
+            plugin.getTeamManager().getTeamNameInterface().onJoin(player);
+            plugin.getTeamManager().createTeam(uuid);
+        }
+    }
+
+    @Override
+    public void onQuit(Player player) {
+        PlayerData playerData = playerDataMap.remove(player.getUniqueId());
+        if (playerData != null) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> this.dataStorageInterface.saveData(playerData));
+        }
+        plugin.getTeamManager().onQuit(player);
+        triedTimes.remove(player.getUniqueId());
     }
 
     public void saveData(Player player) {
-        this.dataStorageInterface.saveData(getPlayerData(player));
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> this.dataStorageInterface.saveData(playerData));
+        }
+    }
+
+    public DataStorageInterface getDataStorageInterface() {
+        return dataStorageInterface;
+    }
+
+    private boolean loadStorageMode() {
+        YamlConfiguration config = ConfigUtils.getConfig("database.yml");
+        if (config.getString("data-storage-method","YAML").equalsIgnoreCase("YAML")) {
+            if (storageType != StorageType.YAML) {
+                this.dataStorageInterface = new FileStorageImpl(plugin);
+                this.storageType = StorageType.YAML;
+                return true;
+            }
+        } else {
+            if (storageType != StorageType.SQL) {
+                this.dataStorageInterface = new MySQLStorageImpl(plugin);
+                this.storageType = StorageType.SQL;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getEquippedNameplate(Player player) {
+        return Optional.ofNullable(playerDataMap.get(player.getUniqueId())).orElse(PlayerData.EMPTY).getNameplate();
+    }
+
+    public String getEquippedBubble(Player player) {
+        return Optional.ofNullable(playerDataMap.get(player.getUniqueId())).orElse(PlayerData.EMPTY).getBubble();
+    }
+
+    public void equipNameplate(Player player, String nameplate) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setNameplate(nameplate);
+        }
+    }
+
+    public void equipBubble(Player player, String bubble) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setBubble(bubble);
+        }
+    }
+
+    protected boolean checkTriedTimes(UUID uuid) {
+        Integer previous = triedTimes.get(uuid);
+        if (previous == null) {
+            triedTimes.put(uuid, 1);
+            return true;
+        }
+        else if (previous > 2) {
+            triedTimes.remove(uuid);
+            return false;
+        }
+        else {
+            triedTimes.put(uuid, previous + 1);
+            return true;
+        }
     }
 }

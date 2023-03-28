@@ -1,37 +1,43 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands.subcmd;
 
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
-import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class ReloadCommand extends AbstractSubCommand {
 
-    public static final SubCommand INSTANCE = new ReloadCommand();
+    public static final AbstractSubCommand INSTANCE = new ReloadCommand();
 
     private ReloadCommand() {
-        super("reload", null);
+        super("reload");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-
-        if (!(sender.hasPermission("nameplates.reload"))) {
-            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.noPerm);
-            return true;
-        }
-
-        if (args.size() < 1) {
-            long time1 = System.currentTimeMillis();
-            ConfigUtil.reloadConfigs();
-            AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.reload.replace("{time}", String.valueOf(System.currentTimeMillis() - time1)));
-            return true;
-        }
-        return super.onCommand(sender, args);
+        long time1 = System.currentTimeMillis();
+        CustomNameplates.getInstance().reload();
+        AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.reload.replace("{time}", String.valueOf(System.currentTimeMillis() - time1)));
+        return true;
     }
 }

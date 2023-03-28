@@ -23,14 +23,14 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.objects.nameplates.mode.PacketsHandler;
+import net.momirealms.customnameplates.object.nameplate.mode.PacketsHandler;
 
 public class EntityMoveListener extends PacketAdapter {
 
     private final PacketsHandler handler;
 
     public EntityMoveListener(PacketsHandler handler) {
-        super(CustomNameplates.plugin, ListenerPriority.NORMAL, PacketType.Play.Server.REL_ENTITY_MOVE);
+        super(CustomNameplates.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.REL_ENTITY_MOVE);
         this.handler = handler;
     }
 

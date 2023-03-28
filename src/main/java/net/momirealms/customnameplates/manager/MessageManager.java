@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.manager;
 
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -19,7 +19,6 @@ public class MessageManager extends Function {
     public static String generate;
     public static String noNameplate;
     public static String generateDone;
-
     public static String np_equip;
     public static String np_unEquip;
     public static String np_force_equip;
@@ -28,7 +27,6 @@ public class MessageManager extends Function {
     public static String np_notAvailable;
     public static String np_available;
     public static String np_haveNone;
-
     public static String bb_equip;
     public static String bb_unEquip;
     public static String bb_force_equip;
@@ -42,7 +40,7 @@ public class MessageManager extends Function {
 
     @Override
     public void load(){
-        YamlConfiguration config = ConfigUtil.getConfig("messages" + File.separator + ConfigManager.lang +".yml");
+        YamlConfiguration config = ConfigUtils.getConfig("messages" + File.separator + ConfigManager.lang +".yml");
         noPerm = config.getString("messages.no-perm");
         prefix = config.getString("messages.prefix");
         lackArgs = config.getString("messages.lack-args");
@@ -56,7 +54,6 @@ public class MessageManager extends Function {
         no_console = config.getString("messages.no-console");
         nonArgs = config.getString("messages.none-args");
         unavailableArgs = config.getString("messages.invalid-args");
-
         np_equip = config.getString("messages.equip-nameplates");
         np_unEquip = config.getString("messages.unequip-nameplates");
         np_force_equip = config.getString("messages.force-equip-nameplates");
@@ -65,7 +62,6 @@ public class MessageManager extends Function {
         np_notAvailable = config.getString("messages.not-available-nameplates");
         np_available = config.getString("messages.available-nameplates");
         np_haveNone = config.getString("messages.have-no-nameplates");
-
         bb_equip = config.getString("messages.equip-bubbles");
         bb_unEquip = config.getString("messages.unequip-bubbles");
         bb_force_equip = config.getString("messages.force-equip-bubbles");

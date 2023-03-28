@@ -1,4 +1,4 @@
-config-version: '8'
+config-version: '15'
 
 # YAML/MySQL/MariaDB
 # 存储模式

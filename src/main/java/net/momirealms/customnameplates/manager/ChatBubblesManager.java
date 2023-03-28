@@ -17,193 +17,321 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.api.events.BubblesEvent;
-import net.momirealms.customnameplates.hook.IAImageHook;
-import net.momirealms.customnameplates.hook.ImageParser;
-import net.momirealms.customnameplates.hook.OXImageHook;
-import net.momirealms.customnameplates.listener.ChatListener;
+import net.momirealms.customnameplates.listener.AbstractChatListener;
+import net.momirealms.customnameplates.listener.AsyncChatListener;
 import net.momirealms.customnameplates.listener.TrChatListener;
 import net.momirealms.customnameplates.listener.VentureChatListener;
-import net.momirealms.customnameplates.objects.nameplates.ArmorStandManager;
-import net.momirealms.customnameplates.objects.nameplates.BubbleConfig;
-import net.momirealms.customnameplates.objects.nameplates.FakeArmorStand;
-import net.momirealms.customnameplates.objects.nameplates.mode.EntityTag;
-import net.momirealms.customnameplates.objects.nameplates.mode.bubbles.BBPacketsHandle;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.object.SimpleChar;
+import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
+import net.momirealms.customnameplates.object.armorstand.FakeArmorStand;
+import net.momirealms.customnameplates.object.bubble.BBPacketsHandle;
+import net.momirealms.customnameplates.object.bubble.BubbleConfig;
+import net.momirealms.customnameplates.object.emoji.ImageParser;
+import net.momirealms.customnameplates.object.emoji.ItemsAdderImpl;
+import net.momirealms.customnameplates.object.emoji.OraxenImpl;
+import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
+import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatBubblesManager extends EntityTag {
 
-    private final BBPacketsHandle packetsHandle;
-    private ChatListener chatListener;
-    private TrChatListener trChatListener;
-    private VentureChatListener ventureChatListener;
+    private AbstractChatListener chatListener;
     private ImageParser imageParser;
-    public static String defaultBubble;
-    public static String defaultFormat;
-    public static String prefix;
-    public static String suffix;
-    public static double lineSpace;
-    public static double yOffset;
-    public static int stayTime;
-    public static int coolDown;
-    public static int maxChar;
-    public static String[] channels;
+    private String defaultBubble;
+    private String defaultStartFormat;
+    private String defaultEndFormat;
+    private String prefix;
+    private String suffix;
+    private double lineSpace;
+    private double yOffset;
+    private int stayTime;
+    private int coolDown;
+    private int maxCharLength;
+    private int lengthPerLine;
+    private String[] channels;
+    private final ConcurrentHashMap<Player, Long> coolDownMap;
+    private final HashMap<String, BubbleConfig> bubbleConfigMap;
+    private final CustomNameplates plugin;
 
-    private final HashMap<Player, Long> coolDownCache = new HashMap<>();
+    public ChatBubblesManager(CustomNameplates plugin) {
+        super(plugin);
+        this.plugin = plugin;
+        this.bubbleConfigMap = new HashMap<>();
+        this.coolDownMap = new ConcurrentHashMap<>();
+        super.handler = new BBPacketsHandle(this);
+    }
 
-    public ChatBubblesManager() {
-        super(null);
-        this.packetsHandle = new BBPacketsHandle(this);
+    @Override
+    public void loadToAllPlayers() {
+        for (Player all : Bukkit.getOnlinePlayers()) {
+            createArmorStandManager(all);
+            for (Player player : Bukkit.getOnlinePlayers())
+                spawnArmorStands(player, all);
+        }
     }
 
     @Override
     public void load() {
-        ConfigUtil.update("bubble.yml");
-        YamlConfiguration config = ConfigUtil.getConfig("bubble.yml");
-        defaultBubble = config.getString("bubble.default-bubbles", "none");
-
-        if (!ConfigUtil.isModuleEnabled("bubbles")) return;
-
-        prefix = config.getString("bubble.text-prefix", "");
-        suffix = config.getString("bubble.text-suffix", "");
-        lineSpace = config.getDouble("bubble.line-spacing");
-        defaultFormat = config.getString("bubble.default-format", "<white><underlined>");
-        yOffset = config.getDouble("bubble.bottom-line-Y-offset");
-        stayTime = config.getInt("bubble.stay-time", 5);
-        coolDown = config.getInt("bubble.cool-down", 1) * 1000;
-        maxChar = config.getInt("bubble.max-char-length", 35);
-        channels = config.getStringList("blacklist-channels").toArray(new String[0]);
-
-        this.packetsHandle.load();
-
-        if (ConfigManager.trChat_Hook) {
-            this.trChatListener = new TrChatListener(this);
-            Bukkit.getPluginManager().registerEvents(trChatListener, CustomNameplates.plugin);
-        }
-        else if (ConfigManager.ventureChat_Hook) {
-            this.ventureChatListener = new VentureChatListener(this);
-            Bukkit.getPluginManager().registerEvents(ventureChatListener, CustomNameplates.plugin);
-        }
-        else {
-            this.chatListener = new ChatListener(this);
-            Bukkit.getPluginManager().registerEvents(chatListener, CustomNameplates.plugin);
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("Oraxen") != null) {
-            this.imageParser = new OXImageHook();
-        }
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
-            this.imageParser = new IAImageHook();
-        }
-
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            armorStandManagerMap.put(all, new ArmorStandManager(all));
-            for (Player player : Bukkit.getOnlinePlayers())
-                spawnArmorStands(player, all, false);
-        }
+        if (!ConfigManager.enableBubbles) return;
+        super.load();
+        this.loadConfig();
+        this.loadBubbles();
+        this.registerListener();
+        this.registerImageParser();
     }
 
     @Override
     public void unload() {
         super.unload();
-        this.packetsHandle.unload();
         this.imageParser = null;
-        if (chatListener != null) {
-            HandlerList.unregisterAll(chatListener);
-            chatListener = null;
+        this.bubbleConfigMap.clear();
+        this.coolDownMap.clear();
+        if (chatListener != null) HandlerList.unregisterAll(chatListener);
+    }
+
+    private void loadConfig() {
+        YamlConfiguration config = ConfigUtils.getConfig("configs"  + File.separator + "bubble.yml");
+        defaultBubble = config.getString("default-bubbles", "none");
+        prefix = config.getString("text-prefix", "");
+        suffix = config.getString("text-suffix", "");
+        lineSpace = config.getDouble("line-spacing");
+        defaultStartFormat = config.getString("default-startFormat.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
+        defaultEndFormat = config.getString("default-startFormat.end", "<!u></gradient>");
+        yOffset = config.getDouble("bottom-line-Y-offset");
+        stayTime = config.getInt("stay-time", 5);
+        coolDown = (int) (config.getDouble("cool-down", 1) * 1000);
+        maxCharLength = config.getInt("max-character-length", 100);
+        channels = config.getStringList("blacklist-channels").toArray(new String[0]);
+        lengthPerLine = config.getInt("characters-per-line", 30);
+    }
+
+    private void registerImageParser() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        if (pluginManager.isPluginEnabled("Oraxen")) {
+            this.imageParser = new OraxenImpl();
         }
-        if (trChatListener != null) {
-            HandlerList.unregisterAll(trChatListener);
-            trChatListener = null;
-        }
-        if (ventureChatListener != null) {
-            HandlerList.unregisterAll(ventureChatListener);
-            ventureChatListener = null;
+        else if (pluginManager.isPluginEnabled("ItemsAdder")) {
+            this.imageParser = new ItemsAdderImpl();
         }
     }
 
-    public ArmorStandManager getArmorStandManager(Player player) {
-        return armorStandManagerMap.get(player);
+    private void registerListener() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        if (ConfigManager.trChat_Hook) {
+            this.chatListener = new TrChatListener(this);
+        } else if (ConfigManager.ventureChat_Hook) {
+            this.chatListener = new VentureChatListener(this);
+        } else {
+            this.chatListener = new AsyncChatListener(this);
+        }
+        pluginManager.registerEvents(chatListener, plugin);
+    }
+
+    private void loadBubbles() {
+        File bb_file = new File(plugin.getDataFolder(), "contents" + File.separator + "bubbles");
+        if (!bb_file.exists() && bb_file.mkdirs()) {
+            saveDefaultBubbles();
+        }
+        File[] bb_config_files = bb_file.listFiles(file -> file.getName().endsWith(".yml"));
+        if (bb_config_files == null) return;
+        for (File bb_config_file : bb_config_files) {
+            char left = ConfigManager.start_char;
+            char middle;
+            char right;
+            char tail;
+            ConfigManager.start_char = (char) ((tail = (char)((right = (char)((middle = (char)(ConfigManager.start_char + '\u0001')) + '\u0001')) + '\u0001')) + '\u0001');
+            String key = bb_config_file.getName().substring(0, bb_config_file.getName().length() - 4);
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(bb_config_file);
+            if (!config.contains("display-display_name")) config.set("display-display_name", key);
+            if (!config.contains("text-format.start")) config.set("text-format.start", "<white>");
+            if (!config.contains("text-format.end")) config.set("text-format.end", "");
+            if (!config.contains("left.image")) config.set("left.image", key + "_left");
+            if (!config.contains("left.height")) config.set("left.height", 16);
+            if (!config.contains("left.width")) config.set("left.width", 16);
+            if (!config.contains("left.ascent")) config.set("left.ascent", 12);
+            if (!config.contains("middle.image")) config.set("middle.image", key + "_middle");
+            if (!config.contains("middle.height")) config.set("middle.height", 16);
+            if (!config.contains("middle.width")) config.set("middle.width", 16);
+            if (!config.contains("middle.ascent")) config.set("middle.ascent", 12);
+            if (!config.contains("right.image")) config.set("right.image", key + "_right");
+            if (!config.contains("right.height")) config.set("right.height", 16);
+            if (!config.contains("right.width")) config.set("right.width", 16);
+            if (!config.contains("right.ascent")) config.set("right.ascent", 12);
+            if (!config.contains("tail.image")) config.set("tail.image", key + "_tail");
+            if (!config.contains("tail.height")) config.set("tail.height", 16);
+            if (!config.contains("tail.width")) config.set("tail.width", 16);
+            if (!config.contains("tail.ascent")) config.set("tail.ascent", 12);
+            try {
+                config.save(bb_config_file);
+            }
+            catch (IOException ignored) {
+            }
+            SimpleChar leftChar = new SimpleChar(config.getInt("left.height"), config.getInt("left.ascent"), config.getInt("left.width"), left, config.getString("left.image") + ".png");
+            SimpleChar middleChar = new SimpleChar(config.getInt("middle.height"), config.getInt("middle.ascent"), config.getInt("middle.width"), middle, config.getString("middle.image") + ".png");
+            SimpleChar rightChar = new SimpleChar(config.getInt("right.height"), config.getInt("right.ascent"), config.getInt("right.width"), right, config.getString("right.image") + ".png");
+            SimpleChar tailChar = new SimpleChar(config.getInt("tail.height"), config.getInt("tail.ascent"), config.getInt("tail.width"), tail, config.getString("tail.image") + ".png");
+            bubbleConfigMap.put(key,
+                    new BubbleConfig(
+                            config.getString("text-format.start"), config.getString("text-format.end"),
+                            config.getString("display-display_name"),
+                            leftChar, middleChar,
+                            rightChar, tailChar
+                    )
+            );
+        }
     }
 
     @Override
     public void onJoin(Player player) {
         super.onJoin(player);
-    }
-
-    @Override
-    public void addDefaultText(ArmorStandManager asm) {
-        //empty
+        super.createArmorStandManager(player);
     }
 
     @Override
     public void onQuit(Player player) {
         super.onQuit(player);
-        coolDownCache.remove(player);
+        coolDownMap.remove(player);
+    }
+
+    private boolean isCoolDown(Player player, int lines) {
+        long time = System.currentTimeMillis();
+        if (time - (coolDownMap.getOrDefault(player, time - (long) coolDown * lines)) < (long) coolDown * lines) return true;
+        coolDownMap.put(player, time);
+        return false;
     }
 
     public void onChat(Player player, String text) {
-
         if (player.getGameMode() == GameMode.SPECTATOR || !player.hasPermission("bubbles.use")) return;
 
-        long time = System.currentTimeMillis();
-        if (time - (coolDownCache.getOrDefault(player, time - coolDown)) < coolDown) return;
-        coolDownCache.put(player, time);
-
-        String bubbles = CustomNameplates.plugin.getDataManager().getPlayerData(player).getBubbles();
-        if (imageParser != null) text = imageParser.parse(player, text);
-
-        BubblesEvent bubblesEvent = new BubblesEvent(player, bubbles, text);
+        String bubble = plugin.getDataManager().getEquippedBubble(player);
+        BubblesEvent bubblesEvent = new BubblesEvent(player, bubble, text);
         Bukkit.getPluginManager().callEvent(bubblesEvent);
         if (bubblesEvent.isCancelled()) {
             return;
         }
 
-        text = AdventureUtil.replaceLegacy(bubblesEvent.getText());
+        bubble = bubblesEvent.getBubble();
+        BubbleConfig bubbleConfig = getBubble(bubble);
+        String miniText = AdventureUtils.replaceLegacy(bubblesEvent.getText());
+        String stripped_text = MiniMessage.miniMessage().stripTags(miniText);
+        if (stripped_text.length() > maxCharLength) return;
+        String[] split = splitString(stripped_text, lengthPerLine);
+        if (isCoolDown(player, split.length)) return;
+        for (int i = 0; i < split.length; i++) {
+            int finalI = i;
+            String finalBubble = bubble;
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> sendBubble(player, split[finalI], bubbleConfig, finalBubble), (long) i * coolDown / 50);
+        }
+    }
 
-        BubbleConfig bubbleConfig = ResourceManager.BUBBLES.get(bubblesEvent.getBubble());
-        WrappedChatComponent wrappedChatComponent;
-
-        if (bubbleConfig == null || bubblesEvent.getBubble().equals("none")) {
-            text = MiniMessage.miniMessage().stripTags(text);
-            text = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, ChatBubblesManager.prefix) + ChatBubblesManager.defaultFormat + text + CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, ChatBubblesManager.suffix);
-            if (text.length() > ChatBubblesManager.maxChar) return;
-            wrappedChatComponent = WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text)));
+    private void sendBubble(Player player, String text, BubbleConfig bubbleConfig, String key) {
+        String json;
+        if (bubbleConfig == null || key.equals("none")) {
+            text = defaultStartFormat + PlaceholderAPI.setPlaceholders(player, prefix) + text + PlaceholderAPI.setPlaceholders(player, suffix) + defaultEndFormat;
+            json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(imageParser != null ? imageParser.parse(player, text) : text));
         }
         else {
-            text = CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, ChatBubblesManager.prefix) + bubbleConfig.format() + text + CustomNameplates.plugin.getPlaceholderManager().parsePlaceholders(player, ChatBubblesManager.suffix);
-            String stripped = MiniMessage.miniMessage().stripTags(text);
-            if (stripped.length() > ChatBubblesManager.maxChar) return;
-
-            String bubble = CustomNameplates.plugin.getNameplateManager().makeCustomBubble("", stripped, "", bubbleConfig);
-            String suffix = CustomNameplates.plugin.getNameplateManager().getSuffixChar(stripped);
-            Component armorStand_Name = Component.text(bubble).font(ConfigManager.key)
-                                        .append(MiniMessage.miniMessage().deserialize(text).font(Key.key("minecraft:default")))
-                                        .append(Component.text(suffix).font(ConfigManager.key));
-            wrappedChatComponent = WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(armorStand_Name));
+            String parsedPrefix = PlaceholderAPI.setPlaceholders(player, prefix);
+            String parsedSuffix = PlaceholderAPI.setPlaceholders(player, suffix);
+            String strippedPrefix = AdventureUtils.stripAllTags(parsedPrefix);
+            String strippedSuffix = AdventureUtils.stripAllTags(parsedSuffix);
+            String bubbleImage = plugin.getNameplateManager().makeCustomBubble(strippedPrefix, text, strippedSuffix, bubbleConfig);
+            String suffixImage = plugin.getNameplateManager().getNameplateSuffix(strippedPrefix + text + strippedSuffix);
+            String finalStr = ConfigManager.surroundWithFont(bubbleImage) + bubbleConfig.startFormat() + parsedPrefix + text + parsedSuffix + bubbleConfig.endFormat() + ConfigManager.surroundWithFont(suffixImage);
+            json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(finalStr));
         }
 
         ArmorStandManager asm = getArmorStandManager(player);
-        if (asm == null) return;
-        asm.ascent();
-        String name = UUID.randomUUID().toString();
-        FakeArmorStand fakeArmorStand = new FakeArmorStand(asm, player, wrappedChatComponent);
-        asm.addArmorStand(name, fakeArmorStand);
-        asm.countdown(name, fakeArmorStand);
+        if (asm != null) {
+            asm.addBubble(UUID.randomUUID(), new FakeArmorStand(asm, player, json, yOffset), stayTime, lineSpace);
+        }
+    }
+
+    private String[] splitString(String str, int len) {
+        int size = (int) Math.ceil((double) str.length() / (double) len);
+        String[] result = new String[size];
+        int index = 0;
+        for (int i = 0; i < str.length(); i += len) {
+            if (i + len > str.length()) {
+                result[index++] = str.substring(i);
+            } else {
+                result[index++] = str.substring(i, i + len);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void arrangeRefreshTask() {
+
+    }
+
+    @Nullable
+    public BubbleConfig getBubble(String bubble) {
+        return bubbleConfigMap.get(bubble);
+    }
+
+    public ArrayList<String> getAvailableBubbles(Player player) {
+        ArrayList<String> availableBubbles = new ArrayList<>();
+        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
+            String permission = info.getPermission().toLowerCase();
+            if (permission.startsWith("bubbles.equip.")) {
+                permission = permission.substring(14);
+                if (bubbleConfigMap.get(permission) != null) {
+                    availableBubbles.add(permission);
+                }
+            }
+        }
+        return availableBubbles;
+    }
+
+    private void saveDefaultBubbles() {
+        String[] png_list = new String[]{"chat"};
+        String[] part_list = new String[]{"_left.png", "_middle.png", "_right.png", "_tail.png", ".yml"};
+        for (String name : png_list) {
+            for (String part : part_list) {
+                plugin.saveResource("contents" + File.separator + "bubbles" + File.separatorChar + name + part, false);
+            }
+        }
+    }
+
+    public String getDefaultBubble() {
+        return defaultBubble;
+    }
+
+    public String[] getChannels() {
+        return channels;
+    }
+
+    public HashMap<String, BubbleConfig> getBubbleConfigMap() {
+        return bubbleConfigMap;
+    }
+
+    public boolean existBubble(String bubble) {
+        return bubbleConfigMap.containsKey(bubble);
+    }
+
+    public BubbleConfig getBubbleConfig(String bubble) {
+        return bubbleConfigMap.get(bubble);
     }
 }

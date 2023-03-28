@@ -21,22 +21,21 @@ import me.arasple.mc.trchat.api.event.TrChatEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ChatBubblesManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
-public record TrChatListener(ChatBubblesManager chatBubblesManager) implements Listener {
+public class TrChatListener extends AbstractChatListener {
+
+    public TrChatListener(ChatBubblesManager chatBubblesManager) {
+        super(chatBubblesManager);
+    }
 
     @EventHandler
     public void onTrChat(TrChatEvent event) {
-        if (event.isCancelled()) return;
-        if (!event.getForward()) return;
+        if (event.isCancelled() || !event.getForward()) return;
         String channelName = event.getChannel().getId();
-        for (String channel : ChatBubblesManager.channels) {
+        for (String channel : chatBubblesManager.getChannels()) {
             if (channelName.equals(channel)) return;
         }
-        Bukkit.getScheduler().runTask(CustomNameplates.plugin, () -> {
-            chatBubblesManager.onChat(event.getSession().getPlayer(), ChatColor.stripColor(event.getMessage()));
-        });
+        Bukkit.getScheduler().runTask(CustomNameplates.getInstance(), () -> chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage()));
     }
 }

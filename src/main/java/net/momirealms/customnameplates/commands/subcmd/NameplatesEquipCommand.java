@@ -1,67 +1,58 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands.subcmd;
 
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
-import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
-import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import org.bukkit.Bukkit;
+import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NameplatesEquipCommand extends AbstractSubCommand {
 
-    public static final SubCommand INSTANCE = new NameplatesEquipCommand();
+    public static final AbstractSubCommand INSTANCE = new NameplatesEquipCommand();
 
     public NameplatesEquipCommand() {
-        super("equip", null);
+        super("equip");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-        if (!(sender instanceof Player player)) {
-            AdventureUtil.consoleMessage(MessageManager.prefix + MessageManager.no_console);
+        if (noConsoleExecute(sender) || lackArgs(sender, 1, args.size()) || notExist(sender, "nameplate", args.get(0))) return true;
+        if (!sender.hasPermission("nameplates.equip." + args.get(0))) {
+            AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_notAvailable);
             return true;
         }
-        if (args.size() < 1) {
-            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.lackArgs);
-            return true;
-        }
-
-        if (sender.hasPermission("nameplates.equip." + args.get(0))) {
-
-            if (CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(0)) == null) {
-                AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_not_exist);
-                return true;
-            }
-
-            Bukkit.getScheduler().runTaskAsynchronously(CustomNameplates.plugin, () -> {
-                CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate(args.get(0));
-                CustomNameplates.plugin.getDataManager().saveData(player);
-                NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
-                if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
-                CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
-                AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_equip.replace("{Nameplate}", CustomNameplates.plugin.getResourceManager().getNameplateConfig(args.get(0)).name()));
-            });
-
-        }
-        else {
-            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.np_notAvailable);
-        }
+        Player player = (Player) sender;
+        CustomNameplatesAPI.getAPI().equipNameplate(player, args.get(0));
+        AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_equip.replace("{Nameplate}", CustomNameplates.getInstance().getNameplateManager().getNameplateConfig(args.get(0)).display_name()));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, List<String> args) {
-        List<String> arrayList = new ArrayList<>();
-        for (String cmd : availableNameplates(sender)) {
-            if (cmd.startsWith(args.get(0)))
-                arrayList.add(cmd);
+        if (args.size() == 1 && sender instanceof Player player) {
+            return filterStartingWith(CustomNameplates.getInstance().getNameplateManager().getAvailableNameplates(player), args.get(0));
         }
-        return arrayList;
+        return null;
     }
 }

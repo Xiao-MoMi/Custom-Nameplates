@@ -1,0 +1,122 @@
+# %nameplates_conditional_{0}%
+conditional-text:
+  region:
+    priority_1:
+      text: '%nameplates_background_region%'
+      conditions:
+        papi-condition:
+          condition_1:
+            type: '!='
+            papi: '%worldguard_region%'
+            value: ""
+    priority_2:
+      text: ''
+  weather:
+    priority_1:
+      text: 'Sun'
+      conditions:
+        weather:
+          - clear
+    priority_2:
+      text: 'Rain'
+      conditions:
+        weather:
+          - rain
+    priority_3:
+      text: 'Thunder'
+      conditions:
+        weather:
+          - thunder
+    priority_4:
+      text: 'Rainstorm'
+      conditions:
+        weather:
+          - rainstorm
+  prefix:
+    priority_1:
+      text: '%nameplates_background_prefix%   '
+      conditions:
+        papi-condition:
+          condition_1:
+            type: '!='
+            papi: '%vault_prefix%'
+            value: ""
+    priority_2:
+      text: ''
+
+# %nameplates_nameplate_{0}%
+nameplate-text:
+  halloween:
+    nameplate: halloween
+    text: 'Today is Halloween! Trick or treat!'
+
+# %nameplates_background_{0}%
+background-text:
+  prefix:
+    background: bedrock_1
+    text: '%vault_prefix% %nameplates_descent_player%'
+    remove-shadow: true
+  position:
+    background: bedrock_1
+    text: '<#FFFEFD>%nameplates_image_compass%</#FFFEFD> %nameplates_descent_position%'
+    remove-shadow: true
+  time:
+    background: bedrock_1
+    text: '<#FFFEFD>%nameplates_image_clock%</#FFFEFD> %nameplates_descent_time%'
+    remove-shadow: true
+  weather:
+    background: bedrock_1
+    text: '<#FFFEFD>%nameplates_image_weather%</#FFFEFD> %nameplates_descent_weather%'
+    remove-shadow: true
+  region:
+    background: bedrock_1
+    text: '<#FFFEFD>%nameplates_image_compass%</#FFFEFD> %nameplates_descent_region%'
+    remove-shadow: true
+  update:
+    background: bedrock_2
+    text: '<#FFFEFD>%nameplates_image_bell%</#FFFEFD> %nameplates_descent_update%'
+    remove-shadow: true
+# %nameplates_static_{0}%
+static-text:
+  money_hud:
+    # left/right
+    position: right
+    text: '<#FFFEFD>%nameplates_image_coin%</#FFFEFD> %nameplates_descent_money%'
+    value: 180
+
+# Only ASCII characters are allowed here
+# %nameplates_descent_{0}%
+descent-text:
+  player:
+    text: "%player_name%"
+    descent: 5
+  position:
+    text: "Your Position: %player_x%, %player_y%, %player_z%"
+    descent: 5
+  time:
+    text: "Time: %nameplates_time%"
+    descent: 5
+  weather:
+    text: "Weather: %nameplates_conditional_weather%"
+    descent: 5
+  region:
+    text: "Region: %worldguard_region%"
+    descent: 5
+  update:
+    text: "A new version of CustomNameplates is available!"
+    descent: 3
+  money:
+    text: "%vault_eco_balance%"
+    descent: 12
+
+# %nameplates_vanilla_{0}%
+vanilla-hud:
+  stamina_hud:
+    images:
+      empty: "%nameplates_image_stamina_0%"
+      half: "%nameplates_image_stamina_1%"
+      full: "%nameplates_image_stamina_2%"
+    placeholder:
+      # value/max-value can be placeholders
+      value: '1.1'
+      max-value: '2'

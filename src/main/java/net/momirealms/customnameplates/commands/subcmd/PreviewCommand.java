@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.commands.subcmd;
 
 import net.kyori.adventure.key.Key;
@@ -5,12 +22,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.commands.AbstractSubCommand;
-import net.momirealms.customnameplates.commands.SubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
-import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
-import net.momirealms.customnameplates.utils.AdventureUtil;
-import net.momirealms.customnameplates.utils.HoloUtil;
+import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
+import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.utils.HoloUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,40 +35,29 @@ import java.util.List;
 
 public class PreviewCommand extends AbstractSubCommand {
 
-    public static final SubCommand INSTANCE = new PreviewCommand();
+    public static final AbstractSubCommand INSTANCE = new PreviewCommand();
     public PreviewCommand() {
-        super("preview", null);
+        super("preview");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-        if (!(sender instanceof Player player)) {
-            AdventureUtil.consoleMessage(MessageManager.prefix + MessageManager.no_console);
-            return true;
-        }
-        if (!(sender.hasPermission("nameplates.preview"))) {
-            AdventureUtil.playerMessage((Player) sender, MessageManager.prefix + MessageManager.noPerm);
-            return true;
-        }
-
-        long time = System.currentTimeMillis();
-        if (time - (coolDown.getOrDefault(player, time - NameplateManager.preview * 1050)) < NameplateManager.preview * 1050) {
-            AdventureUtil.playerMessage(player, MessageManager.prefix + MessageManager.coolDown);
-            return true;
-        }
-        coolDown.put(player, time);
-
-        AdventureUtil.playerMessage(player, MessageManager.prefix +MessageManager.preview);
-        if (NameplateManager.mode.equalsIgnoreCase("team")) {
-            NameplatesTeam team = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
+        if (noConsoleExecute(sender)) return true;
+        Player player = (Player) sender;
+        NameplateManager nameplateManager = CustomNameplates.getInstance().getNameplateManager();
+        if (nameplateManager.getMode() == DisplayMode.TEAM) {
+            NameplatesTeam team = CustomNameplates.getInstance().getTeamManager().getNameplateTeam(player.getUniqueId());
             if (team != null) {
-                Component full = team.getPrefix().append(Component.text(player.getName()).color(TextColor.color(color2decimal(team.getColor()))).font(Key.key("default")).append(team.getSuffix()));
-                HoloUtil.showHolo(full, player, (int) NameplateManager.preview);
+                Component full = team.getNameplatePrefixComponent()
+                        .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(team.getColor()))).font(Key.key("minecraft:default"))
+                                .append(team.getNameplateSuffixComponent()));
+                HoloUtils.showHolo(full, player, (int) nameplateManager.getPreview_time());
             }
         }
         else {
-            showPlayerArmorStandTags(player);
+            nameplateManager.showPlayerArmorStandTags(player);
         }
+        AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.preview);
         return true;
     }
 }

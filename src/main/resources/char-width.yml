@@ -1,8 +1,0 @@
-# Font is processed by client
-# Server side doesn't know the width of you custom font
-# So you can tell the plugin each character's width here
-# You can use command /papi parse player %placeholder% to get the unicode in the console
-
-# unicode
-♥: 5
-뀈: 8

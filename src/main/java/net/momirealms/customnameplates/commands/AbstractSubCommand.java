@@ -18,48 +18,43 @@
 package net.momirealms.customnameplates.commands;
 
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.manager.MessageManager;
-import net.momirealms.customnameplates.manager.NameplateManager;
-import net.momirealms.customnameplates.manager.ResourceManager;
-import net.momirealms.customnameplates.objects.nameplates.ArmorStandManager;
-import net.momirealms.customnameplates.objects.nameplates.NameplatesTeam;
-import net.momirealms.customnameplates.objects.nameplates.mode.EntityTag;
-import net.momirealms.customnameplates.utils.AdventureUtil;
+import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-public abstract class AbstractSubCommand implements SubCommand {
+public abstract class AbstractSubCommand {
 
     private final String command;
-    private Map<String, SubCommand> subCommandMap;
-    protected HashMap<Player, Long> coolDown = new HashMap<>();
+    private Map<String, AbstractSubCommand> subCommandMap;
 
-    public AbstractSubCommand(String command, Map<String, SubCommand> subCommandMap) {
+    public AbstractSubCommand(String command) {
         this.command = command;
-        this.subCommandMap = subCommandMap;
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
         if (subCommandMap == null || args.size() < 1) {
             return true;
         }
-        SubCommand subCommand = subCommandMap.get(args.get(0));
+        AbstractSubCommand subCommand = subCommandMap.get(args.get(0));
         if (subCommand == null) {
-            AdventureUtil.sendMessage(sender, MessageManager.prefix + MessageManager.unavailableArgs);
+            AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.unavailableArgs);
         } else {
             subCommand.onCommand(sender, args.subList(1, args.size()));
         }
         return true;
     }
 
-    @Override
     public List<String> onTabComplete(CommandSender sender, List<String> args) {
         if (subCommandMap == null)
             return Collections.singletonList("");
@@ -68,160 +63,79 @@ public abstract class AbstractSubCommand implements SubCommand {
             returnList.removeIf(str -> !str.startsWith(args.get(0)));
             return returnList;
         }
-        SubCommand subCmd = subCommandMap.get(args.get(0));
+        AbstractSubCommand subCmd = subCommandMap.get(args.get(0));
         if (subCmd != null)
             return subCommandMap.get(args.get(0)).onTabComplete(sender, args.subList(1, args.size()));
         return Collections.singletonList("");
     }
 
-    @Override
     public String getSubCommand() {
         return command;
     }
 
-    @Override
-    public Map<String, SubCommand> getSubCommands() {
+    public Map<String, AbstractSubCommand> getSubCommands() {
         return Collections.unmodifiableMap(subCommandMap);
     }
 
-    @Override
-    public void regSubCommand(SubCommand command) {
+    public void regSubCommand(AbstractSubCommand command) {
         if (subCommandMap == null) {
             subCommandMap = new ConcurrentHashMap<>();
         }
         subCommandMap.put(command.getSubCommand(), command);
     }
 
-    protected List<String> availableNameplates(CommandSender sender){
-        List<String> availableNameplates = new ArrayList<>();
-        if (sender instanceof Player player){
-            getAvailableNameplates(player, availableNameplates);
-        }
-        return availableNameplates;
+    protected List<String> online_players() {
+        return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
     }
 
-    protected List<String> availableBubbles(CommandSender sender){
-        List<String> availableBubbles = new ArrayList<>();
-        if (sender instanceof Player player){
-            getAvailableBubbles(player, availableBubbles);
-        }
-        return availableBubbles;
+    protected List<String> allNameplates() {
+        return new ArrayList<>(CustomNameplates.getInstance().getNameplateManager().getNameplateConfigMap().keySet());
     }
 
-    protected List<String> online_players(){
-        List<String> online = new ArrayList<>();
-        Bukkit.getOnlinePlayers().forEach((player -> online.add(player.getName())));
-        return online;
+    protected List<String> allBubbles() {
+        return new ArrayList<>(CustomNameplates.getInstance().getChatBubblesManager().getBubbleConfigMap().keySet());
     }
 
-    protected List<String> nameplates(){
-        return new ArrayList<>(ResourceManager.NAMEPLATES.keySet());
-    }
-
-    protected List<String> bubbles(){
-        return new ArrayList<>(ResourceManager.BUBBLES.keySet());
-    }
-
-    protected void unequipNameplate(Player player) {
-        CustomNameplates.plugin.getDataManager().getPlayerData(player).equipNameplate("none");
-        CustomNameplates.plugin.getDataManager().saveData(player);
-        NameplatesTeam nameplatesTeam = CustomNameplates.plugin.getNameplateManager().getTeamManager().getNameplatesTeam(player);
-        if (nameplatesTeam != null) nameplatesTeam.updateNameplates();
-        CustomNameplates.plugin.getNameplateManager().getTeamManager().sendUpdateToAll(player, true);
-    }
-
-    protected void showPlayerArmorStandTags(Player player) {
-        EntityTag entityTag = (EntityTag) CustomNameplates.plugin.getNameplateManager().getNameplateMode();
-        ArmorStandManager asm = entityTag.getArmorStandManager(player);
-        asm.spawn(player);
-        for (int i = 0; i < NameplateManager.preview * 20; i++) {
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, ()-> {
-                asm.teleport(player);
-            },i);
-        }
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.plugin, ()-> {
-            asm.destroy(player);
-        },NameplateManager.preview * 20);
-    }
-
-    protected void getAvailableNameplates(Player player, List<String> availableNameplates) {
-        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
-            String permission = info.getPermission().toLowerCase();
-            if (permission.startsWith("nameplates.equip.")) {
-                permission = permission.substring(17);
-                if (ResourceManager.NAMEPLATES.get(permission) != null) {
-                    availableNameplates.add(permission);
-                }
+    protected boolean notExist(CommandSender commandSender, String type, String value) {
+        if (type.equals("nameplate")) {
+            if (!CustomNameplatesAPI.getAPI().doesNameplateExist(value)) {
+                AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.np_not_exist);
+                return true;
+            }
+        } else if (type.equals("bubble")) {
+            if (!CustomNameplatesAPI.getAPI().doesBubbleExist(value)) {
+                AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.bb_not_exist);
+                return true;
             }
         }
+        return false;
     }
 
-    protected void getAvailableBubbles(Player player, List<String> availableBubbles) {
-        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
-            String permission = info.getPermission().toLowerCase();
-            if (permission.startsWith("bubbles.equip.")) {
-                permission = permission.substring(14);
-                if (ResourceManager.BUBBLES.get(permission) != null) {
-                    availableBubbles.add(permission);
-                }
-            }
+    protected boolean noConsoleExecute(CommandSender commandSender) {
+        if (!(commandSender instanceof Player)) {
+            AdventureUtils.consoleMessage(MessageManager.prefix + MessageManager.no_console);
+            return true;
         }
+        return false;
     }
 
-    protected int color2decimal(ChatColor color){
-        switch (String.valueOf(color.getChar())){
-            case "0" -> {
-                return 0;
-            }
-            case "c" -> {
-                return 16733525;
-            }
-            case "6" -> {
-                return 16755200;
-            }
-            case "4" -> {
-                return 11141120;
-            }
-            case "e" -> {
-                return 16777045;
-            }
-            case "2" -> {
-                return 43520;
-            }
-            case "a" -> {
-                return 5635925;
-            }
-            case "b" -> {
-                return 5636095;
-            }
-            case "3" -> {
-                return 43690;
-            }
-            case "1" -> {
-                return 170;
-            }
-            case "9" -> {
-                return 5592575;
-            }
-            case "d" -> {
-                return 16733695;
-            }
-            case "5" -> {
-                return 11141290;
-            }
-            case "8" -> {
-                return 5592405;
-            }
-            case "7" -> {
-                return 11184810;
-            }
-            default -> {
-                return 16777215;
-            }
+    protected boolean lackArgs(CommandSender commandSender, int required, int current) {
+        if (required > current) {
+            AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.lackArgs);
+            return true;
         }
+        return false;
     }
 
-    public void setSubCommandMap(Map<String, SubCommand> subCommandMap) {
-        this.subCommandMap = subCommandMap;
+    protected boolean playerNotOnline(CommandSender commandSender, String player) {
+        if (Bukkit.getPlayer(player) == null) {
+            AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.not_online.replace("{Player}", player));
+            return true;
+        }
+        return false;
+    }
+
+    protected List<String> filterStartingWith(List<String> list, String prefix) {
+        return list.stream().filter(s -> s.startsWith(prefix)).collect(Collectors.toList());
     }
 }

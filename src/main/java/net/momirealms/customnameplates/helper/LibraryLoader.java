@@ -37,6 +37,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Resolves {@link MavenLibrary} annotations for a class, and loads the dependency
@@ -46,7 +47,7 @@ import java.util.Objects;
 public final class LibraryLoader {
 
     @SuppressWarnings("Guava")
-    private static final Supplier<URLClassLoaderAccess> URL_INJECTOR = Suppliers.memoize(() -> URLClassLoaderAccess.create((URLClassLoader) CustomNameplates.plugin.getClass().getClassLoader()));
+    private static final Supplier<URLClassLoaderAccess> URL_INJECTOR = Suppliers.memoize(() -> URLClassLoaderAccess.create((URLClassLoader) CustomNameplates.getInstance().getClass().getClassLoader()));
 
     /**
      * Resolves all {@link MavenLibrary} annotations on the given object.
@@ -64,10 +65,6 @@ public final class LibraryLoader {
      */
     public static void loadAll(Class<?> clazz) {
         MavenLibrary[] libs = clazz.getDeclaredAnnotationsByType(MavenLibrary.class);
-        if (libs == null) {
-            return;
-        }
-
         for (MavenLibrary lib : libs) {
             load(lib.groupId(), lib.artifactId(), lib.version(), lib.repo().url());
         }
@@ -78,7 +75,7 @@ public final class LibraryLoader {
     }
 
     public static void load(Dependency d) {
-        //Log.info(String.format("Loading dependency %s:%s:%s from %s", d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getRepoUrl()));
+        //Log.info(String.startFormat("Loading dependency %s:%s:%s from %s", d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getRepoUrl()));
         String name = d.getArtifactId() + "-" + d.getVersion();
 
         File saveLocation = new File(getLibFolder(d), name + ".jar");
@@ -110,17 +107,17 @@ public final class LibraryLoader {
     }
 
     private static File getLibFolder(Dependency dependency) {
-        File pluginDataFolder = CustomNameplates.plugin.getDataFolder();
+        File pluginDataFolder = CustomNameplates.getInstance().getDataFolder();
         File serverDir = pluginDataFolder.getParentFile().getParentFile();
 
         File helperDir = new File(serverDir, "libraries");
         String[] split = StringUtils.split(dependency.getGroupId(), ".");
         File jarDir;
-        if (split.length > 1){
-            jarDir = new File(helperDir, split[0] + File.separator + split[1] + File.separator + dependency.artifactId + File.separator + dependency.version );
-        }else {
-            jarDir = new File(helperDir, dependency.getGroupId() + File.separator + dependency.artifactId + File.separator + dependency.version );
+        StringJoiner stringJoiner = new StringJoiner(File.separator);
+        for (String str : split) {
+            stringJoiner.add(str);
         }
+        jarDir = new File(helperDir, stringJoiner + File.separator + dependency.artifactId + File.separator + dependency.version);
         jarDir.mkdirs();
         return jarDir;
     }

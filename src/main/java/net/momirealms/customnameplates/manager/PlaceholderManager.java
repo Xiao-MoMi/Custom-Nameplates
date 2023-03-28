@@ -18,92 +18,188 @@
 package net.momirealms.customnameplates.manager;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.hook.NameplatePlaceholders;
-import net.momirealms.customnameplates.hook.OffsetPlaceholders;
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.objects.StaticText;
-import net.momirealms.customnameplates.objects.background.BackGroundText;
-import net.momirealms.customnameplates.objects.nameplates.NameplateText;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.object.ConditionalText;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.StaticText;
+import net.momirealms.customnameplates.object.font.OffsetFont;
+import net.momirealms.customnameplates.placeholders.*;
+import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.utils.ConfigUtils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlaceholderManager extends Function {
 
     private final NameplatePlaceholders nameplatePlaceholders;
-    private final OffsetPlaceholders offsetPlaceholders;
+    private final Pattern placeholderPattern = Pattern.compile("%([^%]*)%");
+    private final HashSet<Integer> descent_fonts;
+    private final HashMap<String, NameplateText> nameplateTextMap;
+    private final HashMap<String, BackGroundText> backGroundTextMap;
+    private final HashMap<String, StaticText> stringStaticTextMap;
+    private final HashMap<String, DescentText> descentTextMap;
+    private final HashMap<String, ConditionalTexts> conditionalTextsMap;
+    private final HashMap<String, VanillaHud> vanillaHudMap;
 
-    private final HashMap<String, BackGroundText> papiBG;
-    private final HashMap<String, NameplateText> papiNP;
-    private final HashMap<String, StaticText> papiST;
-
-    public PlaceholderManager() {
-        this.papiBG = new HashMap<>();
-        this.papiNP = new HashMap<>();
-        this.papiST = new HashMap<>();
-        this.nameplatePlaceholders = new NameplatePlaceholders(this);
-        this.offsetPlaceholders = new OffsetPlaceholders();
+    public PlaceholderManager(CustomNameplates plugin) {
+        this.nameplatePlaceholders = new NameplatePlaceholders(plugin, this);
+        this.descent_fonts = new HashSet<>();
+        this.nameplateTextMap = new HashMap<>();
+        this.backGroundTextMap = new HashMap<>();
+        this.stringStaticTextMap = new HashMap<>();
+        this.descentTextMap = new HashMap<>();
+        this.conditionalTextsMap = new HashMap<>();
+        this.vanillaHudMap = new HashMap<>();
     }
 
     @Override
     public void load() {
-        loadPapi();
         this.nameplatePlaceholders.register();
-        this.offsetPlaceholders.register();
+        this.loadConfig();
     }
 
     @Override
     public void unload() {
         this.nameplatePlaceholders.unregister();
-        this.offsetPlaceholders.unregister();
+        this.descent_fonts.clear();
+        this.nameplateTextMap.clear();
+        this.backGroundTextMap.clear();
+        this.stringStaticTextMap.clear();
+        this.descentTextMap.clear();
+        this.conditionalTextsMap.clear();
+        this.vanillaHudMap.clear();
     }
 
-    public String parsePlaceholders(Player player, String papi) {
-        if (papi == null || papi.equals("")) return "";
-        return PlaceholderAPI.setPlaceholders(player, papi);
+    private void loadConfig() {
+        YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "custom-placeholders.yml");
+
+        ConfigurationSection nameplateSection = config.getConfigurationSection("nameplate-text");
+        if (nameplateSection != null && ConfigManager.enableNameplates) {
+            loadNameplateText(nameplateSection);
+        }
+
+        ConfigurationSection backgroundSection = config.getConfigurationSection("background-text");
+        if (backgroundSection != null && ConfigManager.enableBackground) {
+            loadBackgroundText(backgroundSection);
+        }
+
+        ConfigurationSection staticTextSection = config.getConfigurationSection("static-text");
+        if (staticTextSection != null) {
+            loadStaticText(staticTextSection);
+        }
+
+        ConfigurationSection descentSection = config.getConfigurationSection("descent-text");
+        if (descentSection != null) {
+            loadDescentText(descentSection);
+        }
+
+        ConfigurationSection conditionalSection = config.getConfigurationSection("conditional-text");
+        if (conditionalSection != null) {
+            loadConditionalText(conditionalSection);
+        }
+
+        ConfigurationSection vanillaHudSection = config.getConfigurationSection("vanilla-hud");
+        if (vanillaHudSection != null) {
+            loadVanillaHud(vanillaHudSection);
+        }
     }
 
-    private final Pattern placeholderPattern = Pattern.compile("%([^%]*)%");
+    private void loadVanillaHud(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            vanillaHudMap.put(key, new VanillaHud(
+               PlaceholderAPI.setPlaceholders(null, section.getString(key + ".images.empty", "")) + ConfigManager.surroundWithFont(String.valueOf(OffsetFont.NEG_2.getCharacter())),
+               PlaceholderAPI.setPlaceholders(null, section.getString(key + ".images.half", "")) + ConfigManager.surroundWithFont(String.valueOf(OffsetFont.NEG_2.getCharacter())),
+               PlaceholderAPI.setPlaceholders(null, section.getString(key + ".images.full", "")) + ConfigManager.surroundWithFont(String.valueOf(OffsetFont.NEG_2.getCharacter())),
+                    section.getString(key + ".placeholder.value"),
+                    section.getString(key + ".placeholder.max-value")
+            ));
+        }
+    }
+
+    private void loadConditionalText(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection innerSection = section.getConfigurationSection(key);
+            if (innerSection != null) {
+                ArrayList<ConditionalText> conditionalTexts = new ArrayList<>();
+                for (String priority : innerSection.getKeys(false)) {
+                    ConditionalText conditionalText = new ConditionalText(
+                            ConfigUtils.getRequirements(innerSection.getConfigurationSection(priority + ".conditions")),
+                            innerSection.getString(priority + ".text")
+                    );
+                    conditionalTexts.add(conditionalText);
+                }
+                conditionalTextsMap.put(key, new ConditionalTexts(conditionalTexts.toArray(new ConditionalText[0])));
+            }
+        }
+    }
+
+    private void loadDescentText(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            descent_fonts.add(8 - section.getInt(key + ".descent"));
+            descentTextMap.put(key, new DescentText(section.getString(key + ".text"), 8 - section.getInt(key + ".descent")));
+        }
+    }
+
+    private void loadStaticText(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            stringStaticTextMap.put(key, new StaticText(section.getString(key + ".text"), section.getInt(key + ".value"), section.getString(key + ".position", "left").equalsIgnoreCase("left")));
+        }
+    }
+
+    private void loadNameplateText(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            nameplateTextMap.put(key, new NameplateText(section.getString(key + ".text"), section.getString(key + ".nameplate")));
+        }
+    }
+
+    private void loadBackgroundText(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            backGroundTextMap.put(key, new BackGroundText(
+                    section.getString(key + ".text"),
+                    section.getString(key + ".background"),
+                    section.getBoolean(key + ".remove-shadow", true)
+                    )
+            );
+        }
+    }
 
     public List<String> detectPlaceholders(String text){
-        if (text == null || !text.contains("%")) return Collections.emptyList();
         List<String> placeholders = new ArrayList<>();
         Matcher matcher = placeholderPattern.matcher(text);
         while (matcher.find()) placeholders.add(matcher.group());
         return placeholders;
     }
 
-    public void loadPapi() {
-        papiBG.clear();
-        papiNP.clear();
-        papiST.clear();
-        YamlConfiguration papiInfo = ConfigUtil.getConfig("custom-papi.yml");
-        papiInfo.getConfigurationSection("papi").getKeys(false).forEach(key -> {
-            if (papiInfo.contains("papi." + key + ".background"))
-                papiBG.put(key, new BackGroundText(papiInfo.getString("papi." + key + ".text"), papiInfo.getString("papi." + key + ".background")));
-            if (papiInfo.contains("papi." + key + ".nameplate"))
-                papiNP.put(key, new NameplateText(papiInfo.getString("papi." + key + ".text"), papiInfo.getString("papi." + key + ".nameplate")));
-            if (papiInfo.contains("papi." + key + ".static"))
-                papiST.put(key, new StaticText(papiInfo.getString("papi." + key + ".text"), papiInfo.getInt("papi." + key + ".static")));
-        });
+    public ConditionalTexts getConditionalTexts(String key) {
+        return conditionalTextsMap.get(key);
     }
 
-    public HashMap<String, BackGroundText> getPapiBG() {
-        return papiBG;
+    public BackGroundText getBackgroundText(String key) {
+        return backGroundTextMap.get(key);
     }
 
-    public HashMap<String, NameplateText> getPapiNP() {
-        return papiNP;
+    public NameplateText getNameplateText(String key) {
+        return nameplateTextMap.get(key);
     }
 
-    public HashMap<String, StaticText> getPapiST() {
-        return papiST;
+    public StaticText getStaticText(String key) {
+        return stringStaticTextMap.get(key);
+    }
+
+    public DescentText getDescentText(String key) {
+        return descentTextMap.get(key);
+    }
+
+    public VanillaHud getVanillaHud(String key) {
+        return vanillaHudMap.get(key);
+    }
+
+    public HashSet<Integer> getDescent_fonts() {
+        return descent_fonts;
     }
 }

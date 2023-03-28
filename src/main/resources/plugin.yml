@@ -32,6 +32,7 @@ permissions:
       nameplates.unequip: true
       nameplates.preview: true
       nameplates.list: true
+      nameplates.about: true
 
   nameplates.reload:
     default: op
@@ -40,6 +41,8 @@ permissions:
   nameplates.forceunequip:
     default: op
   nameplates.help:
+    default: op
+  nameplates.about:
     default: op
   nameplates.unequip:
     default: true

@@ -1,0 +1,38 @@
+# mode: Team / Armor_Stand
+mode: Team
+
+# Disable this when you are running a BungeeCord server
+# You can also install BungeeTabListPlus or TAB on BungeeCord side to fix
+create-fake-team: true
+
+# This decides what %nameplates_prefix/suffix% would return
+player-name: '%player_name%'
+
+# The duration (in seconds) that the nameplate preview will last for.
+preview-duration: 5
+
+# If your nameplate's text is static, disable refresh for better performance
+refresh: true
+
+# The default nameplate.
+# "none" represents no default nameplate.
+default-nameplate: 'none'
+
+# Prefix & Suffix
+# Rejoin the server to apply the changes
+prefix: ''
+suffix: ''
+
+armor_stand:
+  text_1:
+    text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
+    vertical-offset: -1
+  text_2:
+    text: '%vault_prefix%'
+    vertical-offset: -0.7
+    conditions:
+      papi-condition:
+        condition_1:
+          type: '!='
+          papi: '%vault_prefix%'
+          value: ''

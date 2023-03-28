@@ -25,19 +25,19 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.momirealms.customnameplates.objects.team.TABTeamHook;
 
 import java.util.Objects;
 
 public class BungeeEventListener implements Listener {
 
-    private final Main plugin;
+    private final NameplatesBungeeCord plugin;
 
-    public BungeeEventListener (Main plugin) {
+    public BungeeEventListener (NameplatesBungeeCord plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
+    @SuppressWarnings("UnstableApiUsage")
     public void onReceived(PluginMessageEvent event) {
         String channel = event.getTag();
         if (event.isCancelled() || !Objects.equals("customnameplates:cnp", channel)) {
@@ -47,6 +47,7 @@ public class BungeeEventListener implements Listener {
         parseMessage(dataInput);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void parseMessage(ByteArrayDataInput dataInput) {
         String playerName = dataInput.readUTF();
         String teamName = playerName;

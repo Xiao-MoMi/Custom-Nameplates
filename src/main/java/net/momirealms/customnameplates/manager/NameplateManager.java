@@ -1,119 +1,176 @@
 package net.momirealms.customnameplates.manager;
 
-import codecrafter47.bungeetablistplus.config.MainConfig;
-import net.momirealms.customnameplates.objects.Function;
-import net.momirealms.customnameplates.objects.SimpleChar;
-import net.momirealms.customnameplates.objects.font.FontOffset;
-import net.momirealms.customnameplates.objects.font.FontUtil;
-import net.momirealms.customnameplates.objects.nameplates.BubbleConfig;
-import net.momirealms.customnameplates.objects.nameplates.NameplateConfig;
-import net.momirealms.customnameplates.objects.nameplates.NameplateMode;
-import net.momirealms.customnameplates.objects.nameplates.mode.rd.RidingTag;
-import net.momirealms.customnameplates.objects.nameplates.mode.tm.TeamTag;
-import net.momirealms.customnameplates.objects.nameplates.mode.tp.TeleportingTag;
-import net.momirealms.customnameplates.utils.ConfigUtil;
+import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.object.ConditionalText;
+import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.SimpleChar;
+import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
+import net.momirealms.customnameplates.object.bubble.BubbleConfig;
+import net.momirealms.customnameplates.object.font.OffsetFont;
+import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
+import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;
+import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
+import net.momirealms.customnameplates.object.nameplate.mode.team.TeamTag;
+import net.momirealms.customnameplates.object.nameplate.mode.armorstand.ArmorStandTag;
+import net.momirealms.customnameplates.object.requirements.Requirement;
+import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.utils.ConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class NameplateManager extends Function {
 
-    public static String defaultNameplate;
-    public static String player_prefix;
-    public static String player_suffix;
-    public static String player_name;
-    public static long preview;
-    public static boolean update;
-    public static int refresh;
-    public static String mode;
-    public static boolean hidePrefix;
-    public static boolean hideSuffix;
-    public static boolean tryHook;
-    public static boolean removeTag;
-    public static boolean smallSize;
-    public static boolean fakeTeam;
-    private final HashMap<String, Double> textMap = new HashMap<>();
-    private NameplateMode nameplateMode;
-    private final TeamManager teamManager;
+    private String default_nameplate;
+    private String player_prefix;
+    private String player_suffix;
+    private String player_name_papi;
+    private long preview_time;
+    private DisplayMode mode;
+    private boolean fakeTeam;
+    private final HashMap<ConditionalText, Double> contentMap;
+    private final HashMap<String, NameplateConfig> nameplateConfigMap;
+    private final CustomNameplates plugin;
+    private AbstractNameplateTag nameplateTag;
+    protected HashMap<UUID, Long> previewCoolDown = new HashMap<>();
 
-    public NameplateManager() {
-        this.teamManager = new TeamManager();
+    public NameplateManager(CustomNameplates plugin) {
+        this.plugin = plugin;
+        this.nameplateConfigMap = new HashMap<>();
+        this.contentMap = new HashMap<>();
     }
 
     @Override
     public void load() {
-        YamlConfiguration config = ConfigUtil.getConfig("nameplate.yml");
-        defaultNameplate = config.getString("nameplate.default-nameplate");
-
-        if (!ConfigUtil.isModuleEnabled("nameplate")) return;
-
-        player_name = config.getString("nameplate.player-name", "%player_name%");
-        preview = config.getLong("nameplate.preview-duration");
-        mode = config.getString("nameplate.mode","team");
-        update = config.getBoolean("nameplate.update.enable",true);
-        fakeTeam = config.getBoolean("nameplate.create-fake-team",true);
-        refresh = config.getInt("nameplate.update.ticks",20);
-        player_prefix = config.getString("nameplate.prefix","");
-        player_suffix = config.getString("nameplate.suffix","");
-        hidePrefix = config.getBoolean("nameplate.team.hide-prefix-when-equipped",true);
-        hideSuffix = config.getBoolean("nameplate.team.hide-suffix-when-equipped",true);
-
-        if (ConfigManager.tab_hook || ConfigManager.tab_BC_hook) fakeTeam = true;
-        teamManager.load();
-
-        if (mode.equalsIgnoreCase("team")) {
-            removeTag = false;
-            nameplateMode = new TeamTag(teamManager);
-        }
-        else if (mode.equalsIgnoreCase("riding")) {
-            tryHook = config.getBoolean("nameplate.riding.try-to-hook-cosmetics-plugin", false);
-            List<String> texts = config.getStringList("nameplate.riding.text");
-            textMap.clear();
-            for (String text : texts) {
-                textMap.put(text, -0.1);
-            }
-            smallSize = config.getBoolean("nameplate.riding.small-height", true);
-            removeTag = config.getBoolean("nameplate.riding.remove-nametag");
-            nameplateMode = new RidingTag(teamManager);
-        }
-        else if (mode.equalsIgnoreCase("teleporting")) {
-            removeTag = config.getBoolean("nameplate.teleporting.remove-nametag");
-            smallSize = config.getBoolean("nameplate.teleporting.small-height", true);
-            textMap.clear();
-            for (String key : config.getConfigurationSection("nameplate.teleporting.text").getKeys(false)) {
-                textMap.put(config.getString("nameplate.teleporting.text." + key + ".content"), config.getDouble("nameplate.teleporting.text." + key + ".offset"));
-            }
-            nameplateMode = new TeleportingTag(teamManager);
-        }
-        nameplateMode.load();
+        if (!ConfigManager.enableNameplates) return;
+        YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "nameplate.yml");
+        loadConfig(config);
+        loadNameplates();
+        loadMode(config);
     }
 
     @Override
     public void unload() {
-        if (nameplateMode != null) nameplateMode.unload();
-        teamManager.unload();
+        if (this.nameplateTag != null) {
+            this.nameplateTag.unload();
+            this.nameplateTag = null;
+        }
+        this.contentMap.clear();
+        this.nameplateConfigMap.clear();
     }
 
-    public HashMap<String, Double> getTextMap() {
-        return textMap;
+    private void loadConfig(ConfigurationSection config) {
+        this.default_nameplate = config.getString("default-nameplate", "none");
+        this.player_name_papi = config.getString("player-display_name", "%player_name%");
+        this.preview_time = config.getLong("preview-duration", 5);
+        this.fakeTeam = config.getBoolean("create-fake-team",true);
+        this.player_prefix = config.getString("prefix","");
+        this.player_suffix = config.getString("suffix","");
     }
 
-    public TeamManager getTeamManager() {
-        return teamManager;
+    private void loadNameplates() {
+        File np_file = new File(plugin.getDataFolder(), "contents" + File.separator + "nameplates");
+        if (!np_file.exists() && np_file.mkdirs()) {
+            saveDefaultNameplates();
+        }
+        File[] np_config_files = np_file.listFiles(file -> file.getName().endsWith(".yml"));
+        if (np_config_files == null) return;
+        nameplateConfigMap.put("none", NameplateConfig.EMPTY);
+        for (File np_config_file : np_config_files) {
+            char left = ConfigManager.start_char;
+            char middle;
+            char right;
+            ConfigManager.start_char = (char) ((right = (char) ((middle = (char) (ConfigManager.start_char + '\u0001')) + '\u0001')) + '\u0001');
+            String key = np_config_file.getName().substring(0, np_config_file.getName().length() - 4);
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(np_config_file);
+            if (!config.contains("display-display_name")) config.set("display-display_name", key);
+            if (!config.contains("display_name-color")) config.set("display_name-color", "white");
+            if (!config.contains("left.image")) config.set("left.image", key + "_left");
+            if (!config.contains("left.height")) config.set("left.height", 16);
+            if (!config.contains("left.ascent")) config.set("left.ascent", 12);
+            if (!config.contains("left.width")) config.set("left.width", 16);
+            if (!config.contains("middle.image")) config.set("middle.image", key + "_middle");
+            if (!config.contains("middle.height")) config.set("middle.height", 16);
+            if (!config.contains("middle.ascent")) config.set("middle.ascent", 12);
+            if (!config.contains("middle.width")) config.set("middle.width", 16);
+            if (!config.contains("right.image")) config.set("right.image", key + "_right");
+            if (!config.contains("right.height")) config.set("right.height", 16);
+            if (!config.contains("right.ascent")) config.set("right.ascent", 12);
+            if (!config.contains("right.width")) config.set("right.width", 16);
+            try {
+                config.save(np_config_file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            SimpleChar leftChar = new SimpleChar(config.getInt("left.height"), config.getInt("left.ascent"), config.getInt("left.width"), left, config.getString("left.image") + ".png");
+            SimpleChar middleChar = new SimpleChar(config.getInt("middle.height"), config.getInt("middle.ascent"), config.getInt("middle.width"), middle, config.getString("middle.image") + ".png");
+            SimpleChar rightChar = new SimpleChar(config.getInt("right.height"), config.getInt("right.ascent"), config.getInt("right.width"), right, config.getString("right.image") + ".png");
+            ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color", "WHITE")).toUpperCase());
+            nameplateConfigMap.put(key, new NameplateConfig(color, config.getString("display-display_name"), leftChar, middleChar, rightChar));
+        }
+        AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + (nameplateConfigMap.size() -1) + " <gray>nameplates");
     }
 
+    private void saveDefaultNameplates() {
+        String[] png_list = new String[]{"cat", "egg", "cheems", "wither", "xmas", "halloween", "hutao", "starsky", "trident", "rabbit"};
+        String[] part_list = new String[]{"_left.png", "_middle.png", "_right.png", ".yml"};
+        for (String name : png_list) {
+            for (String part : part_list) {
+                plugin.saveResource("contents" + File.separator + "nameplates" + File.separator + name + part, false);
+            }
+        }
+    }
 
-    public String makeCustomNameplate(String prefix, String name, String suffix, NameplateConfig nameplate) {
-        int totalWidth = FontUtil.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
+    private void loadMode(ConfigurationSection config) {
+        this.mode = DisplayMode.valueOf(config.getString("mode","Team").toUpperCase());
+        if (mode == DisplayMode.TEAM) {
+            this.nameplateTag = new TeamTag(plugin);
+        }
+        else if (mode == DisplayMode.ARMOR_STAND) {
+            this.nameplateTag = new ArmorStandTag(plugin);
+            ConfigurationSection armorStandSection = config.getConfigurationSection("armor_stand");
+            if (armorStandSection != null) {
+                for (String key :armorStandSection.getKeys(false)) {
+                    String text = armorStandSection.getString(key + ".text");
+                    double offset = armorStandSection.getDouble(key + ".vertical-offset");
+                    Requirement[] requirements = ConfigUtils.getRequirements(armorStandSection.getConfigurationSection(key + ".conditions"));
+                    contentMap.put(new ConditionalText(requirements, text), offset);
+                }
+            }
+        }
+        plugin.getTeamManager().setTeamPacketInterface();
+        if (this.nameplateTag != null) {
+            this.nameplateTag.load();
+        }
+    }
+
+    public HashMap<ConditionalText, Double> getContentMap() {
+        return contentMap;
+    }
+
+    public String getNameplatePrefix(String parsed, String nameplate) {
+        NameplateConfig nameplateConfig = nameplateConfigMap.get(nameplate);
+        if (nameplateConfig == null) return nameplate + " NOT FOUND";
+        return getNameplatePrefix("", parsed, "", nameplateConfig);
+    }
+
+    public String getNameplatePrefix(String prefix, String name, String suffix, NameplateConfig nameplate) {
+        int totalWidth = plugin.getFontManager().getTotalWidth(prefix + name + suffix);
         char middle = nameplate.middle().getChars();
-        char neg_1 = FontOffset.NEG_1.getCharacter();
+        char neg_1 = OffsetFont.NEG_1.getCharacter();
         int offset_2 = nameplate.right().getWidth() - nameplate.middle().getWidth();
         int left_offset = totalWidth + (nameplate.left().getWidth() + nameplate.right().getWidth())/2 + 1;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(FontOffset.getShortestNegChars(totalWidth % 2 == 0 ? left_offset : left_offset + 1 ));
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? left_offset : left_offset + 1 ));
         stringBuilder.append(nameplate.left().getChars()).append(neg_1);
         int mid_amount = (totalWidth + 1 + offset_2) / (nameplate.middle().getWidth());
         if (mid_amount == 0) {
@@ -127,20 +184,20 @@ public class NameplateManager extends Function {
         return getString(totalWidth, middle, neg_1, offset_2, left_offset, stringBuilder, nameplate.right(), nameplate.middle());
     }
 
-    public String getSuffixChar(String name) {
-        int totalWidth = FontUtil.getTotalWidth(ChatColor.stripColor(name));
-        return FontOffset.getShortestNegChars(totalWidth + totalWidth % 2 + 1);
+    public String getNameplateSuffix(String text) {
+        int totalWidth = plugin.getFontManager().getTotalWidth(text);
+        return plugin.getFontManager().getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 
     public String makeCustomBubble(String prefix, String name, String suffix, BubbleConfig bubble) {
-        int totalWidth = FontUtil.getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
+        int totalWidth = plugin.getFontManager().getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
         char middle = bubble.middle().getChars();
         char tail = bubble.tail().getChars();
-        char neg_1 = FontOffset.NEG_1.getCharacter();
+        char neg_1 = OffsetFont.NEG_1.getCharacter();
         int offset = bubble.middle().getWidth() - bubble.tail().getWidth();
         int left_offset = totalWidth + bubble.left().getWidth() + 1;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(FontOffset.getShortestNegChars(totalWidth % 2 == 0 ? left_offset - offset : left_offset + 1 - offset));
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? left_offset - offset : left_offset + 1 - offset));
         stringBuilder.append(bubble.left().getChars()).append(neg_1);
         int mid_amount = (totalWidth + 1 - bubble.tail().getWidth()) / (bubble.middle().getWidth());
         if (mid_amount == 0) {
@@ -161,14 +218,95 @@ public class NameplateManager extends Function {
 
     @NotNull
     protected String getString(int totalWidth, char middle, char neg_1, int offset, int left_offset, StringBuilder stringBuilder, SimpleChar right, SimpleChar middle2) {
-        stringBuilder.append(FontOffset.getShortestNegChars(right.getWidth() - ((totalWidth + 1 + offset) % middle2.getWidth() + (totalWidth % 2 == 0 ? 0 : -1))));
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(right.getWidth() - ((totalWidth + 1 + offset) % middle2.getWidth() + (totalWidth % 2 == 0 ? 0 : -1))));
         stringBuilder.append(middle).append(neg_1);
         stringBuilder.append(right.getChars()).append(neg_1);
-        stringBuilder.append(FontOffset.getShortestNegChars(left_offset - 1));
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(left_offset - 1));
         return stringBuilder.toString();
     }
 
-    public NameplateMode getNameplateMode() {
-        return nameplateMode;
+    public List<String> getAvailableNameplates(Player player) {
+        List<String> nameplates = new ArrayList<>();
+        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
+            String permission = info.getPermission().toLowerCase();
+            if (permission.startsWith("nameplates.equip.")) {
+                permission = permission.substring(17);
+                if (nameplateConfigMap.get(permission) != null) {
+                    nameplates.add(permission);
+                }
+            }
+        }
+        return nameplates;
+    }
+
+    // return false if in cool down
+    public boolean showPlayerArmorStandTags(Player player) {
+        long time = System.currentTimeMillis();
+        if (time - (previewCoolDown.getOrDefault(player.getUniqueId(), time - this.getPreview_time() * 1050)) < this.getPreview_time() * 1050) {
+            AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.coolDown);
+            return false;
+        }
+        previewCoolDown.put(player.getUniqueId(), time);
+
+        EntityTag entityTag = (EntityTag) this.getNameplateTag();
+        ArmorStandManager asm = entityTag.getArmorStandManager(player);
+        asm.spawn(player);
+        for (int i = 0; i < this.getPreview_time() * 20; i++) {
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
+                asm.teleport(player);
+            },i);
+        }
+        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
+            asm.destroy(player);
+        },this.getPreview_time() * 20);
+        return true;
+    }
+
+    public boolean existNameplate(String nameplate) {
+        return nameplateConfigMap.containsKey(nameplate);
+    }
+
+    public AbstractNameplateTag getNameplateTag() {
+        return nameplateTag;
+    }
+
+    public HashMap<String, NameplateConfig> getNameplateConfigMap() {
+        return nameplateConfigMap;
+    }
+
+    public boolean isFakeTeam() {
+        return fakeTeam;
+    }
+
+    public DisplayMode getMode() {
+        return mode;
+    }
+
+    public String getEquippedNameplate(Player player) {
+        return plugin.getDataManager().getEquippedNameplate(player);
+    }
+
+    public String getDefault_nameplate() {
+        return default_nameplate;
+    }
+
+    public String getPrefix() {
+        return player_prefix;
+    }
+
+    public String getSuffix() {
+        return player_suffix;
+    }
+
+    public NameplateConfig getNameplateConfig(String nameplate) {
+        return nameplateConfigMap.get(nameplate);
+    }
+
+    public String getPlayer_name_papi() {
+        return player_name_papi;
+    }
+
+    public long getPreview_time() {
+        return preview_time;
     }
 }
