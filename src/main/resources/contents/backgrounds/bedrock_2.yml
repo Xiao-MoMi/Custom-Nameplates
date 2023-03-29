@@ -1,5 +1,5 @@
-start-width: 1
-end-width: 1
+left-margin: 1
+right-margin: 1
 
 left:
   image: b0

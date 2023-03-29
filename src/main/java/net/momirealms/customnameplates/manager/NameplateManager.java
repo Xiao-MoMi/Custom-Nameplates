@@ -90,8 +90,8 @@ public class NameplateManager extends Function {
             ConfigManager.start_char = (char) ((right = (char) ((middle = (char) (ConfigManager.start_char + '\u0001')) + '\u0001')) + '\u0001');
             String key = np_config_file.getName().substring(0, np_config_file.getName().length() - 4);
             YamlConfiguration config = YamlConfiguration.loadConfiguration(np_config_file);
-            if (!config.contains("display-display_name")) config.set("display-display_name", key);
-            if (!config.contains("display_name-color")) config.set("display_name-color", "white");
+            if (!config.contains("display-name")) config.set("display-name", key);
+            if (!config.contains("name-color")) config.set("name-color", "white");
             if (!config.contains("left.image")) config.set("left.image", key + "_left");
             if (!config.contains("left.height")) config.set("left.height", 16);
             if (!config.contains("left.ascent")) config.set("left.ascent", 12);

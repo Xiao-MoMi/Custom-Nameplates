@@ -116,8 +116,8 @@ public class ChatBubblesManager extends EntityTag {
         prefix = config.getString("text-prefix", "");
         suffix = config.getString("text-suffix", "");
         lineSpace = config.getDouble("line-spacing");
-        defaultStartFormat = config.getString("default-startFormat.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
-        defaultEndFormat = config.getString("default-startFormat.end", "<!u></gradient>");
+        defaultStartFormat = config.getString("default-format.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
+        defaultEndFormat = config.getString("default-format.end", "<!u></gradient>");
         yOffset = config.getDouble("bottom-line-Y-offset");
         stayTime = config.getInt("stay-time", 5);
         coolDown = (int) (config.getDouble("cool-down", 1) * 1000);
