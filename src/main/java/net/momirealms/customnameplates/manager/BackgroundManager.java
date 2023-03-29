@@ -5,7 +5,7 @@ import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
 import net.momirealms.customnameplates.object.font.OffsetFont;
-import net.momirealms.customnameplates.placeholders.BackGroundText;
+import net.momirealms.customnameplates.object.placeholders.BackGroundText;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 

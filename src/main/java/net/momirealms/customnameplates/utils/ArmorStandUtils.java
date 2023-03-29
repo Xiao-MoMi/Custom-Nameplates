@@ -32,16 +32,26 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class HoloUtils {
+public class ArmorStandUtils {
 
-    public static void showHolo(Component component, Player player, int duration){
+    public static void preview(Component component, Player player, int duration) {
+        int id = new Random().nextInt(Integer.MAX_VALUE);
+        sendSpawnPacket(player, id);
+        sendMetaPacket(player, id, component);
+        for (int i = 1; i < duration * 20 - 1; i++){
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
+                sendTeleportPacket(player, id);
+            }, i);
+        }
+        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
+            sendDestroyPacket(player, id);
+        }, duration * 20L);
+    }
 
+    public static void sendSpawnPacket(Player player, int id) {
         PacketContainer spawnPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
-
-        int id = new Random().nextInt(1000000000);
         spawnPacket.getModifier().write(0, id);
         spawnPacket.getModifier().write(1, UUID.randomUUID());
         spawnPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
@@ -49,9 +59,11 @@ public class HoloUtils {
         spawnPacket.getDoubles().write(0, location.getX());
         spawnPacket.getDoubles().write(1, location.getY()+0.8);
         spawnPacket.getDoubles().write(2, location.getZ());
+        ProtocolLibrary.getProtocolManager().sendServerPacket(player, spawnPacket);
+    }
 
-        PacketContainer packet2 = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-
+    public static void sendMetaPacket(Player player, int id, Component component) {
+        PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
         WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
         WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
@@ -62,38 +74,23 @@ public class HoloUtils {
         byte mask2 = 0x01;
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), mask1);
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), mask2);
-        packet2.getModifier().write(0,id);
-
+        metaPacket.getModifier().write(0, id);
         if (CustomNameplates.getInstance().getVersionHelper().isVersionNewerThan1_19_R2()) {
             List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
             wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> {
                 final WrappedDataWatcher.WrappedDataWatcherObject dataWatcherObject = entry.getWatcherObject();
                 wrappedDataValueList.add(new WrappedDataValue(dataWatcherObject.getIndex(), dataWatcherObject.getSerializer(), entry.getRawValue()));
             });
-            packet2.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+            metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
         } else {
-            packet2.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+            metaPacket.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
         }
-
-
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, spawnPacket);
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet2);
-
-
-        for (int i = 1; i < duration * 20 - 1; i++){
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
-                updatePosition(player, id);
-            }, i);
-        }
-
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
-            removeHolo(player, id);
-        }, duration * 20L);
+        ProtocolLibrary.getProtocolManager().sendServerPacket(player, metaPacket);
     }
 
-    public static void updatePosition(Player player, int entityId){
+    public static void sendTeleportPacket(Player player, int id){
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
-        packet.getIntegers().write(0, entityId);
+        packet.getIntegers().write(0, id);
         Location location = player.getLocation();
         packet.getDoubles().write(0, location.getX());
         packet.getDoubles().write(1, location.getY()+0.8);
@@ -101,9 +98,9 @@ public class HoloUtils {
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
     }
 
-    public static void removeHolo(Player player, int entityId) {
+    public static void sendDestroyPacket(Player player, int id) {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        packet.getIntLists().write(0, List.of(entityId));
+        packet.getIntLists().write(0, List.of(id));
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
     }
 }

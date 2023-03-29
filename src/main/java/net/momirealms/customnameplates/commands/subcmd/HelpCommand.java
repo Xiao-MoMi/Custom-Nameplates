@@ -39,20 +39,20 @@ public class HelpCommand extends AbstractSubCommand {
         AdventureUtils.sendMessage(sender, "<#3CB371>/nameplates");
         AdventureUtils.sendMessage(sender, "  <gray>├─<white>help");
         AdventureUtils.sendMessage(sender, "  <gray>├─<white>about");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>reload <#87CEFA>Reload the plugin");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#87CEFA>Show a list of available nameplates");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate><#87CEFA>Equip a nameplate");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate><#87CEFA>Force a player to equip a nameplate");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#87CEFA>Unequip the current nameplate");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceunequip <#FFFACD><player> <#87CEFA>Force a player to unequip his nameplate");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>preview <#87CEFA>Preview your current nameplate");
-        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forcepreview <player> <#87CEFA>Force a player to preview the nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>reload <#98FB98>Reload the plugin");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#98FB98>Show a list of available nameplates");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate> <#98FB98>Equip a nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate> <#98FB98>Force a player to equip a nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#98FB98>Unequip the current nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceunequip <#FFFACD><player> <#98FB98>Force a player to unequip his nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>preview <#98FB98>Preview your current nameplate");
+        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forcepreview <player> <#E1FFFF>[nameplate] <#98FB98>Force a player to preview the nameplate");
         AdventureUtils.sendMessage(sender, "<#3CB371>/bubbles");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#87CEFA>Show a list of available bubbles");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate><#87CEFA>Equip a bubble");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate><#87CEFA>Force a player to equip a bubble");
-        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#87CEFA>Unequip the current bubble");
-        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forceunequip <#FFFACD><player> <#87CEFA>Force a player to unequip his bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>list <#98FB98>Show a list of available bubbles");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>equip <#FFFACD><nameplate><#98FB98>Equip a bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>forceequip <#FFFACD><player> <nameplate><#98FB98>Force a player to equip a bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>├─<white>unequip <#98FB98>Unequip the current bubble");
+        AdventureUtils.sendMessage(sender, "  <gray>└─<white>forceunequip <#FFFACD><player> <#98FB98>Force a player to unequip his bubble");
         return true;
     }
 }

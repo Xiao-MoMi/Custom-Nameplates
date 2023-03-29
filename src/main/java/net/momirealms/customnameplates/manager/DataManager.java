@@ -65,6 +65,7 @@ public class DataManager extends Function {
         }
         else {
             playerDataMap.put(uuid, playerData);
+            if (!ConfigManager.enableNameplates) return;
             plugin.getTeamManager().getTeamNameInterface().onJoin(player);
             plugin.getTeamManager().createTeam(uuid);
         }

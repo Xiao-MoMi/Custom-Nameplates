@@ -4,7 +4,7 @@ messages:
   lack-args: '<white>参数不足!</white>'
   none-args: '<white>非空参数'
   invalid-args: '<white>无效参数'
-  reload: '<white>插件已重载!</white>'
+  reload: '<white>插件已重载! 请不要忘记重载你的资源包.</white>'
   not-online: '<white>玩家 {Player} 不在线!</white>'
   no-console: '<white>这个指令不能由控制台执行!</white>'
   cooldown: '<white>上一个预览还没结束!</white>'

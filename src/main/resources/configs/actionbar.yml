@@ -1,21 +1,10 @@
 actionbar_1:
-  text: '%nameplates_offset_94% %nameplates_vanilla_stamina_hud% %nameplates_offset_-183%%nameplates_static_money_hud%'
+  text: '%nameplates_conditional_stamina%%nameplates_static_money_hud%%nameplates_conditional_income_actionbar%'
   conditions:
     papi-condition:
-      '&&':
-        condition_1:
-          type: '=='
-          papi: '%player_remaining_air%'
-          value: 300
-        condition_2:
-          type: '=='
-          papi: '%player_gamemode%'
-          value: 'SURVIVAL'
+      condition_2:
+        type: '=='
+        papi: '%player_gamemode%'
+        value: 'SURVIVAL'
 actionbar_2:
-  text: '%nameplates_static_money_hud%'
-  conditions:
-    papi-condition:
-      condition_1:
-        type: '!='
-        papi: '%player_remaining_air%'
-        value: 300
+  text: '%nameplates_actionbar%'

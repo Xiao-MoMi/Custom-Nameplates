@@ -3,16 +3,13 @@ package net.momirealms.customnameplates.manager;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
-import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.utils.AdventureUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class ImageManager extends Function {
 

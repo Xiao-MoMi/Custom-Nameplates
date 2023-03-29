@@ -17,14 +17,11 @@
 
 package net.momirealms.customnameplates.object.armorstand;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.DynamicText;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Map;
 import java.util.Set;

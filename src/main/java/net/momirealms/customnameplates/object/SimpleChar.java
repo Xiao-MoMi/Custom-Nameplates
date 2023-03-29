@@ -19,8 +19,6 @@ package net.momirealms.customnameplates.object;
 
 public class SimpleChar {
 
-    public static SimpleChar NONE = new SimpleChar(16, 12, 16,'默', "none.png");
-
     private final int height;
     private final int ascent;
     private final char chars;

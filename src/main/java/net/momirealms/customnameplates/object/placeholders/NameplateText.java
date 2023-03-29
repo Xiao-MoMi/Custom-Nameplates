@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.placeholders;
+package net.momirealms.customnameplates.object.placeholders;
 
 public record NameplateText(String text, String nameplate) {
 

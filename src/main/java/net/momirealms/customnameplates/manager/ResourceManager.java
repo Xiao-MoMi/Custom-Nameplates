@@ -26,7 +26,6 @@ import net.momirealms.customnameplates.object.background.BackGroundConfig;
 import net.momirealms.customnameplates.object.bubble.BubbleConfig;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
-import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -64,7 +63,7 @@ public class ResourceManager {
         this.loadBubbles(fontJsonArray, textures_folder);
         this.loadBackgrounds(fontJsonArray, textures_folder);
         this.loadImages(fontJsonArray, textures_folder);
-        this.extractShaders();
+        this.extractDefault();
         this.saveOffsets();
         this.saveSplit(textures_folder.getPath());
         try (FileWriter fileWriter = new FileWriter(
@@ -102,7 +101,6 @@ public class ResourceManager {
     private void loadNameplates(JsonArray jsonArray, File textures_file) {
         if (!ConfigManager.enableNameplates) return;
         for (NameplateConfig nameplateConfig : plugin.getNameplateManager().getNameplateConfigMap().values()) {
-            if (nameplateConfig == NameplateConfig.EMPTY) continue;
             for (SimpleChar simpleChar : new SimpleChar[]{nameplateConfig.left(), nameplateConfig.middle(), nameplateConfig.right()}) {
                 JsonObject jo_np = new JsonObject();
                 jo_np.add("type", new JsonPrimitive("bitmap"));
@@ -168,12 +166,16 @@ public class ResourceManager {
         jsonArray.add(jsonObject);
     }
 
-    private void extractShaders() {
-        if (ConfigManager.extract) {
+    private void extractDefault() {
+        if (ConfigManager.extractShader) {
             String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator;
             plugin.saveResource(path + "rendertype_text.fsh", true);
             plugin.saveResource(path + "rendertype_text.json", true);
             plugin.saveResource(path + "rendertype_text.vsh", true);
+        }
+        if (ConfigManager.extractBars) {
+            String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator;
+            plugin.saveResource(path + "bars.png", true);
         }
     }
 
@@ -183,12 +185,14 @@ public class ResourceManager {
             JsonArray jsonArray_offset = new JsonArray();
             jsonObject_offset.add("providers", jsonArray_offset);
             JsonObject jo_providers = new JsonObject();
+
             jo_providers.add("type", new JsonPrimitive("space"));
             JsonObject jo_space = new JsonObject();
             jo_space.add(" ", new JsonPrimitive(4));
             jo_space.add("\\u200c", new JsonPrimitive(0));
             jo_providers.add("advances", jo_space);
             jsonArray_offset.add(jo_providers);
+
             JsonObject jo_ascii = new JsonObject();
             jo_ascii.add("type", new JsonPrimitive("bitmap"));
             jo_ascii.add("file", new JsonPrimitive("minecraft:font/ascii.png"));
@@ -213,6 +217,13 @@ public class ResourceManager {
             ja_ascii.add("\\u2261\\u00b1\\u2265\\u2264\\u2320\\u2321\\u00f7\\u2248\\u00b0\\u2219\\u0000\\u221a\\u207f\\u00b2\\u25a0\\u0000");
             jo_ascii.add("chars", ja_ascii);
             jsonArray_offset.add(jo_ascii);
+
+            JsonObject legacy_unicode = new JsonObject();
+            legacy_unicode.add("type", new JsonPrimitive("legacy_unicode"));
+            legacy_unicode.add("sizes", new JsonPrimitive("minecraft:font/glyph_sizes.bin"));
+            legacy_unicode.add("template", new JsonPrimitive("minecraft:font/unicode_page_%s.png"));
+            jsonArray_offset.add(legacy_unicode);
+
             try (FileWriter fileWriter = new FileWriter(
                     plugin.getDataFolder() +
                             File.separator + "ResourcePack" +

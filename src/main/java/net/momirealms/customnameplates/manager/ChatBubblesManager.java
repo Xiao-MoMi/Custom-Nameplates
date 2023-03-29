@@ -34,6 +34,7 @@ import net.momirealms.customnameplates.object.bubble.BubbleConfig;
 import net.momirealms.customnameplates.object.emoji.ImageParser;
 import net.momirealms.customnameplates.object.emoji.ItemsAdderImpl;
 import net.momirealms.customnameplates.object.emoji.OraxenImpl;
+import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
@@ -220,6 +221,48 @@ public class ChatBubblesManager extends EntityTag {
         return false;
     }
 
+    public String getBubblePrefix(String text, BubbleConfig bubble) {
+        int totalWidth = plugin.getFontManager().getTotalWidth(text);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? totalWidth + bubble.left().getWidth() : totalWidth + bubble.left().getWidth() + 1))
+                .append(bubble.left().getChars()).append(OffsetFont.NEG_1.getCharacter());
+        int mid_amount;
+        if (totalWidth - 1 <= bubble.tail().getWidth() ) {
+            mid_amount = -1;
+        }
+        else {
+            mid_amount = (totalWidth - 1 - bubble.tail().getWidth()) / (bubble.middle().getWidth());
+        }
+        if (mid_amount == -1) {
+            stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
+        }
+        else if (mid_amount == 0) {
+            stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
+            stringBuilder.append(
+                    plugin.getFontManager().getShortestNegChars(
+                            bubble.middle().getWidth() - (totalWidth - 1 - bubble.tail().getWidth()) % bubble.middle().getWidth()
+                    )
+            );
+            stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
+        }
+        else {
+            stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
+            for (int i = 0; i < mid_amount; i++) {
+                if (i == mid_amount / 2) stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
+                else stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
+            }
+            stringBuilder.append(
+                    plugin.getFontManager().getShortestNegChars(
+                            bubble.middle().getWidth() - (totalWidth - 1 - bubble.tail().getWidth()) % bubble.middle().getWidth()
+                    )
+            );
+            stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
+        }
+        stringBuilder.append(bubble.right().getChars());
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth + bubble.right().getWidth()));
+        return stringBuilder.toString();
+    }
+
     public void onChat(Player player, String text) {
         if (player.getGameMode() == GameMode.SPECTATOR || !player.hasPermission("bubbles.use")) return;
 
@@ -255,8 +298,9 @@ public class ChatBubblesManager extends EntityTag {
             String parsedSuffix = PlaceholderAPI.setPlaceholders(player, suffix);
             String strippedPrefix = AdventureUtils.stripAllTags(parsedPrefix);
             String strippedSuffix = AdventureUtils.stripAllTags(parsedSuffix);
-            String bubbleImage = plugin.getNameplateManager().makeCustomBubble(strippedPrefix, text, strippedSuffix, bubbleConfig);
-            String suffixImage = plugin.getNameplateManager().getNameplateSuffix(strippedPrefix + text + strippedSuffix);
+            String all = strippedPrefix + text + strippedSuffix;
+            String bubbleImage = getBubblePrefix(all, bubbleConfig);
+            String suffixImage = plugin.getFontManager().getSuffixStringWithFont(all);
             String finalStr = ConfigManager.surroundWithFont(bubbleImage) + bubbleConfig.startFormat() + parsedPrefix + text + parsedSuffix + bubbleConfig.endFormat() + ConfigManager.surroundWithFont(suffixImage);
             json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(finalStr));
         }

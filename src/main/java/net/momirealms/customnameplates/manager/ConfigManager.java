@@ -1,6 +1,5 @@
 package net.momirealms.customnameplates.manager;
 
-import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
@@ -24,7 +23,8 @@ public class ConfigManager extends Function {
     public static boolean oraxenHook;
     public static boolean trChat_Hook;
     public static boolean ventureChat_Hook;
-    public static boolean extract;
+    public static boolean extractShader;
+    public static boolean extractBars;
     public static char start_char;
     public static boolean checkUpdate;
     public static boolean enableBStats;
@@ -71,7 +71,8 @@ public class ConfigManager extends Function {
             space_split_folder_path = section.getString("image-path.space-split","font\\base\\");
             images_folder_path = section.getString("image-path.images","font\\images\\");
             thin_font = section.getBoolean("use-thin-font",false);
-            extract = section.getBoolean("extract-shader",true);
+            extractShader = section.getBoolean("extract-shader",true);
+            extractBars = section.getBoolean("extract-bar-image",true);
         }
     }
 

@@ -49,11 +49,11 @@ public class VersionHelper {
                 inputStream.close();
                 isLatest = !compareVer(newest, current);
                 if (isLatest) {
-                    AdventureUtils.consoleMessage(ConfigManager.lang.equalsIgnoreCase("cn") ? "[CustomNameplates] 当前已是最新版本" : "[CustomNameplates] You are using the latest version.");
+                    AdventureUtils.consoleMessage(ConfigManager.lang.equalsIgnoreCase("chinese") ? "[CustomNameplates] 当前已是最新版本" : "[CustomNameplates] You are using the latest version.");
                     return;
                 }
 
-                if (ConfigManager.lang.equalsIgnoreCase("cn")) {
+                if (ConfigManager.lang.equalsIgnoreCase("chinese")) {
                     AdventureUtils.consoleMessage("[CustomNameplates] 当前版本: <red>" + current);
                     AdventureUtils.consoleMessage("[CustomNameplates] 最新版本: <green>" + newest);
                     AdventureUtils.consoleMessage("[CustomNameplates] 请到 <u>售后群<!u> 或 <u>https://polymart.org/resource/customnameplates.2543<!u> 获取最新版本.");

@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.placeholders;
+package net.momirealms.customnameplates.object.placeholders;
 
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.requirements.PlayerCondition;

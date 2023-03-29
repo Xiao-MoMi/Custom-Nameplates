@@ -23,14 +23,16 @@ import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.StaticText;
 import net.momirealms.customnameplates.object.font.OffsetFont;
-import net.momirealms.customnameplates.placeholders.*;
-import net.momirealms.customnameplates.utils.AdventureUtils;
+import net.momirealms.customnameplates.object.placeholders.*;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,7 +149,7 @@ public class PlaceholderManager extends Function {
 
     private void loadStaticText(ConfigurationSection section) {
         for (String key : section.getKeys(false)) {
-            stringStaticTextMap.put(key, new StaticText(section.getString(key + ".text"), section.getInt(key + ".value"), section.getString(key + ".position", "left").equalsIgnoreCase("left")));
+            stringStaticTextMap.put(key, new StaticText(section.getString(key + ".text"), section.getInt(key + ".value"), StaticText.StaticState.valueOf(section.getString(key + ".position", "left").toUpperCase())));
         }
     }
 

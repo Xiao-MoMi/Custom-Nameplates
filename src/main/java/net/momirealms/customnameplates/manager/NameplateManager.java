@@ -11,8 +11,8 @@ import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;
 import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
 import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
-import net.momirealms.customnameplates.object.nameplate.mode.team.TeamTag;
 import net.momirealms.customnameplates.object.nameplate.mode.armorstand.ArmorStandTag;
+import net.momirealms.customnameplates.object.nameplate.mode.team.TeamTag;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
@@ -22,7 +22,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +83,6 @@ public class NameplateManager extends Function {
         }
         File[] np_config_files = np_file.listFiles(file -> file.getName().endsWith(".yml"));
         if (np_config_files == null) return;
-        nameplateConfigMap.put("none", NameplateConfig.EMPTY);
         for (File np_config_file : np_config_files) {
             char left = ConfigManager.start_char;
             char middle;
@@ -117,7 +115,7 @@ public class NameplateManager extends Function {
             ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color", "WHITE")).toUpperCase());
             nameplateConfigMap.put(key, new NameplateConfig(color, config.getString("display-display_name"), leftChar, middleChar, rightChar));
         }
-        AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + (nameplateConfigMap.size() -1) + " <gray>nameplates");
+        AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + nameplateConfigMap.size() + " <gray>nameplates");
     }
 
     private void saveDefaultNameplates() {
@@ -157,71 +155,32 @@ public class NameplateManager extends Function {
         return contentMap;
     }
 
-    public String getNameplatePrefix(String parsed, String nameplate) {
-        NameplateConfig nameplateConfig = nameplateConfigMap.get(nameplate);
-        if (nameplateConfig == null) return nameplate + " NOT FOUND";
-        return getNameplatePrefix("", parsed, "", nameplateConfig);
+    public String getNameplatePrefixWithFont(String text, NameplateConfig nameplate) {
+        return ConfigManager.surroundWithFont(getNameplatePrefix(text, nameplate));
     }
 
-    public String getNameplatePrefix(String prefix, String name, String suffix, NameplateConfig nameplate) {
-        int totalWidth = plugin.getFontManager().getTotalWidth(prefix + name + suffix);
-        char middle = nameplate.middle().getChars();
-        char neg_1 = OffsetFont.NEG_1.getCharacter();
-        int offset_2 = nameplate.right().getWidth() - nameplate.middle().getWidth();
-        int left_offset = totalWidth + (nameplate.left().getWidth() + nameplate.right().getWidth())/2 + 1;
+    public String getNameplatePrefix(String text, NameplateConfig nameplate) {
+        int totalWidth = plugin.getFontManager().getTotalWidth(text);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? left_offset : left_offset + 1 ));
-        stringBuilder.append(nameplate.left().getChars()).append(neg_1);
-        int mid_amount = (totalWidth + 1 + offset_2) / (nameplate.middle().getWidth());
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? totalWidth + nameplate.left().getWidth() : totalWidth + nameplate.left().getWidth() + 1))
+                .append(nameplate.left().getChars()).append(OffsetFont.NEG_1.getCharacter());
+        int mid_amount = (totalWidth - 1) / (nameplate.middle().getWidth());
         if (mid_amount == 0) {
-            stringBuilder.append(middle).append(neg_1);
+            stringBuilder.append(nameplate.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
         }
         else {
             for (int i = 0; i < mid_amount; i++) {
-                stringBuilder.append(middle).append(neg_1);
+                stringBuilder.append(nameplate.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
             }
+            stringBuilder.append(
+                    plugin.getFontManager().getShortestNegChars(
+                            nameplate.middle().getWidth() - (totalWidth - 1) % nameplate.middle().getWidth()
+                    )
+            );
+            stringBuilder.append(nameplate.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
         }
-        return getString(totalWidth, middle, neg_1, offset_2, left_offset, stringBuilder, nameplate.right(), nameplate.middle());
-    }
-
-    public String getNameplateSuffix(String text) {
-        int totalWidth = plugin.getFontManager().getTotalWidth(text);
-        return plugin.getFontManager().getShortestNegChars(totalWidth + totalWidth % 2 + 1);
-    }
-
-    public String makeCustomBubble(String prefix, String name, String suffix, BubbleConfig bubble) {
-        int totalWidth = plugin.getFontManager().getTotalWidth(ChatColor.stripColor(prefix + name + suffix));
-        char middle = bubble.middle().getChars();
-        char tail = bubble.tail().getChars();
-        char neg_1 = OffsetFont.NEG_1.getCharacter();
-        int offset = bubble.middle().getWidth() - bubble.tail().getWidth();
-        int left_offset = totalWidth + bubble.left().getWidth() + 1;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth % 2 == 0 ? left_offset - offset : left_offset + 1 - offset));
-        stringBuilder.append(bubble.left().getChars()).append(neg_1);
-        int mid_amount = (totalWidth + 1 - bubble.tail().getWidth()) / (bubble.middle().getWidth());
-        if (mid_amount == 0) {
-            stringBuilder.append(tail).append(neg_1);
-        }
-        else {
-            for (int i = 0; i <= mid_amount; i++) {
-                if (i == mid_amount/2) {
-                    stringBuilder.append(tail).append(neg_1);
-                }
-                else {
-                    stringBuilder.append(middle).append(neg_1);
-                }
-            }
-        }
-        return getString(totalWidth, middle, neg_1, offset, left_offset, stringBuilder, bubble.right(), bubble.middle());
-    }
-
-    @NotNull
-    protected String getString(int totalWidth, char middle, char neg_1, int offset, int left_offset, StringBuilder stringBuilder, SimpleChar right, SimpleChar middle2) {
-        stringBuilder.append(plugin.getFontManager().getShortestNegChars(right.getWidth() - ((totalWidth + 1 + offset) % middle2.getWidth() + (totalWidth % 2 == 0 ? 0 : -1))));
-        stringBuilder.append(middle).append(neg_1);
-        stringBuilder.append(right.getChars()).append(neg_1);
-        stringBuilder.append(plugin.getFontManager().getShortestNegChars(left_offset - 1));
+        stringBuilder.append(nameplate.right().getChars());
+        stringBuilder.append(plugin.getFontManager().getShortestNegChars(totalWidth + nameplate.right().getWidth()));
         return stringBuilder.toString();
     }
 
@@ -239,15 +198,16 @@ public class NameplateManager extends Function {
         return nameplates;
     }
 
-    // return false if in cool down
-    public boolean showPlayerArmorStandTags(Player player) {
+    public boolean isInCoolDown(Player player) {
         long time = System.currentTimeMillis();
         if (time - (previewCoolDown.getOrDefault(player.getUniqueId(), time - this.getPreview_time() * 1050)) < this.getPreview_time() * 1050) {
-            AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.coolDown);
-            return false;
+            return true;
         }
         previewCoolDown.put(player.getUniqueId(), time);
+        return false;
+    }
 
+    public void showPlayerArmorStandTags(Player player) {
         EntityTag entityTag = (EntityTag) this.getNameplateTag();
         ArmorStandManager asm = entityTag.getArmorStandManager(player);
         asm.spawn(player);
@@ -259,7 +219,15 @@ public class NameplateManager extends Function {
         Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
             asm.destroy(player);
         },this.getPreview_time() * 20);
-        return true;
+    }
+
+    public void showPlayerArmorStandTags(Player player, String nameplate) {
+        String current = getEquippedNameplate(player);
+        if (!nameplate.equals(current)) {
+            plugin.getDataManager().equipNameplate(player, nameplate);
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> plugin.getDataManager().equipNameplate(player, current),this.getPreview_time() * 20);
+        }
+        showPlayerArmorStandTags(player);
     }
 
     public boolean existNameplate(String nameplate) {

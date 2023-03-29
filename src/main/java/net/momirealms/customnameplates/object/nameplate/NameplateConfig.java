@@ -22,5 +22,4 @@ import org.bukkit.ChatColor;
 
 public record NameplateConfig(ChatColor color, String display_name, SimpleChar left, SimpleChar middle, SimpleChar right) {
 
-    public static NameplateConfig EMPTY = new NameplateConfig(ChatColor.WHITE, "none", SimpleChar.NONE, SimpleChar.NONE, SimpleChar.NONE);
 }

@@ -1,6 +1,7 @@
 package net.momirealms.customnameplates.object.bossbar;
 
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.object.requirements.PlayerCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,9 +10,11 @@ public class BossBarTask {
 
     private BukkitTask timerTask;
     private final BossBarSender[] bossBarSenders;
+    private final Player player;
 
     public BossBarTask(Player player, BossBarConfig[] configs) {
         this.bossBarSenders = new BossBarSender[configs.length];
+        this.player = player;
         for (int i = 0; i < configs.length; i++) {
             BossBarConfig bossBarConfig = configs[i];
             this.bossBarSenders[i] = new BossBarSender(
@@ -34,8 +37,9 @@ public class BossBarTask {
 
     public void start() {
         this.timerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+            PlayerCondition playerCondition = new PlayerCondition(player);
             for (BossBarSender bossBarSender : bossBarSenders) {
-                if (!bossBarSender.canSend()) {
+                if (!bossBarSender.canSend(playerCondition)) {
                     if (bossBarSender.isShown()) {
                         bossBarSender.hide();
                         return;

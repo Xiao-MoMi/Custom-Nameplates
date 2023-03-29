@@ -19,6 +19,8 @@ package net.momirealms.customnameplates.utils;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.Bukkit;
@@ -50,10 +52,9 @@ public class AdventureUtils {
         au.sendMessage(getComponentFromMiniMessage(s));
     }
 
-    public static void playerActionbar(Player player, String s) {
-        if (s == null) return;
+    public static void playerActionbar(Player player, Component component) {
         Audience au = CustomNameplates.getAdventure().player(player);
-        au.sendActionBar(getComponentFromMiniMessage(s));
+        au.sendActionBar(component);
     }
 
     public static String replaceLegacy(String str) {
@@ -119,5 +120,9 @@ public class AdventureUtils {
 
     public static String stripAllTags(String text) {
         return MiniMessage.miniMessage().stripTags(replaceLegacy(text));
+    }
+
+    public static String getMiniMessageFormat(Component component) {
+        return MiniMessage.miniMessage().serialize(component);
     }
 }

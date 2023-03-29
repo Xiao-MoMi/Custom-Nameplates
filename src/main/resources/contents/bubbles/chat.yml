@@ -17,7 +17,7 @@ right:
   image: chat_right
   height: 13
   ascent: 9
-  width: 5
+  width: 3
 tail:
   image: chat_tail
   height: 13

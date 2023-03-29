@@ -15,20 +15,25 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.placeholders;
+package net.momirealms.customnameplates.object.placeholders;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ConfigManager;
+import net.momirealms.customnameplates.manager.FontManager;
+import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.manager.PlaceholderManager;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.StaticText;
+import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class NameplatePlaceholders extends PlaceholderExpansion {
 
@@ -103,8 +108,15 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
             case "checkupdate" -> {
                 return String.valueOf(!plugin.getVersionHelper().isLatest());
             }
+            case "actionbar" -> {
+                return getOtherActionBar(player);
+            }
         }
         return null;
+    }
+
+    private String getOtherActionBar(Player player) {
+        return plugin.getActionBarManager().getOtherPluginActionBarText(player);
     }
 
     private String getOffset(String s) {
@@ -115,7 +127,11 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         NameplateText nameplateText = placeholderManager.getNameplateText(param);
         if (nameplateText == null) return param + " NOT FOUND";
         String parsed = PlaceholderAPI.setPlaceholders(player, nameplateText.text());
-        return plugin.getNameplateManager().getNameplatePrefix(parsed, nameplateText.nameplate());
+        NameplateManager nameplateManager = plugin.getNameplateManager();
+        NameplateConfig nameplateConfig = nameplateManager.getNameplateConfig(nameplateText.nameplate());
+        if (nameplateConfig == null) return nameplateText.nameplate() + " NOT FOUND";
+        String text = AdventureUtils.stripAllTags(parsed);
+        return nameplateManager.getNameplatePrefixWithFont(text, nameplateConfig) + parsed + plugin.getFontManager().getSuffixStringWithFont(text);
     }
 
     private String getEquipped(String param, Player player) {
@@ -164,14 +180,20 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     private String getStatic(String param, Player player) {
         StaticText staticText = placeholderManager.getStaticText(param);
         if (staticText == null) return param + " NOT FOUND";
+        FontManager fontManager = plugin.getFontManager();
         String parsed = PlaceholderAPI.setPlaceholders(player, staticText.text());
-        int parsedWidth = plugin.getFontManager().getTotalWidth(AdventureUtils.stripAllTags(parsed));
-        if (staticText.left()) {
-            return parsed + ConfigManager.surroundWithFont(plugin.getFontManager().getOffset(staticText.value() - parsedWidth));
+        int parsedWidth = fontManager.getTotalWidth(AdventureUtils.stripAllTags(parsed));
+        if (staticText.staticState() == StaticText.StaticState.LEFT) {
+            return parsed + ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth));
+        }
+        else if (staticText.staticState() == StaticText.StaticState.RIGHT) {
+            return ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth)) + parsed;
         }
         else {
-            return ConfigManager.surroundWithFont(plugin.getFontManager().getOffset(staticText.value() - parsedWidth)) + parsed;
-
+            int half = (staticText.value() - parsedWidth) / 2;
+            String left = ConfigManager.surroundWithFont(fontManager.getOffset(half));
+            String right = ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth - half));
+            return left + parsed + right;
         }
     }
 

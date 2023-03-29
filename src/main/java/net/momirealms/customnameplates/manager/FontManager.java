@@ -1,11 +1,13 @@
 package net.momirealms.customnameplates.manager;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.font.ASCIIWidth;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.font.UnicodeWidth;
+import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -49,8 +51,17 @@ public class FontManager extends Function {
         }
         YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "image-width.yml");
         for (String image : config.getKeys(false)) {
-            customImageWidth.put(image.charAt(0), config.getInt(image, 8));
+            customImageWidth.put(AdventureUtils.stripAllTags(PlaceholderAPI.setPlaceholders(null, image)).charAt(0), config.getInt(image, 8));
         }
+    }
+
+    public String getSuffixStringWithFont(String text) {
+        return ConfigManager.surroundWithFont(getSuffixString(text));
+    }
+
+    public String getSuffixString(String text) {
+        int totalWidth = plugin.getFontManager().getTotalWidth(text);
+        return plugin.getFontManager().getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 
     public int getCharWidth(char c) {

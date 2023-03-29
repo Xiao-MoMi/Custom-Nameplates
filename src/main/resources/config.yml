@@ -8,8 +8,8 @@ metrics: true
 update-checker: true
 
 # Language
-# en/cn/es
-lang: en
+# english/chinese/spanish
+lang: english
 
 # Modules
 modules:
@@ -45,6 +45,8 @@ integrations:
 resource-pack:
   # extract the shader
   extract-shader: true
+  # extract the minecraft bars.png
+  extract-bar-image: true
   # Your namespace
   namespace: "nameplates"
   # Font Name
@@ -59,5 +61,5 @@ resource-pack:
     space-split: 'font\base\'
   # The initial character of a font
   initial-char: '뀁'
-  # Thin-font support
+  # Thin-font support for ASCII
   thin-font: false

@@ -53,9 +53,10 @@ public class BossBarSender {
         return isShown;
     }
 
-    public boolean canSend() {
+    public boolean canSend(PlayerCondition playerCondition) {
+        if (requirements.length == 0) return true;
         for (Requirement requirement : requirements) {
-            if (!requirement.isConditionMet(new PlayerCondition(player))) {
+            if (!requirement.isConditionMet(playerCondition)) {
                 return false;
             }
         }

@@ -34,7 +34,7 @@ conditional-text:
           - rainstorm
   prefix:
     priority_1:
-      text: '%nameplates_background_prefix%   '
+      text: '%nameplates_background_prefix%'
       conditions:
         papi-condition:
           condition_1:
@@ -43,12 +43,34 @@ conditional-text:
             value: ""
     priority_2:
       text: ''
+  stamina:
+    priority_1:
+      text: '%nameplates_offset_98%%nameplates_vanilla_stamina_hud%%nameplates_offset_-179%'
+      conditions:
+        papi-condition:
+          condition_1:
+            type: '=='
+            papi: '%player_remaining_air%'
+            value: "300"
+    priority_2:
+      text: ''
+  income_actionbar:
+    priority_1:
+      text: '%nameplates_offset_-180%%nameplates_static_income_actionbar%'
+      conditions:
+        papi-condition:
+          condition_1:
+            type: '!='
+            papi: '%nameplates_actionbar%'
+            value: ""
+    priority_2:
+      text: ''
 
 # %nameplates_nameplate_{0}%
 nameplate-text:
   halloween:
     nameplate: halloween
-    text: 'Today is Halloween! Trick or treat!'
+    text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
 
 # %nameplates_background_{0}%
 background-text:
@@ -79,12 +101,16 @@ background-text:
 # %nameplates_static_{0}%
 static-text:
   money_hud:
-    # left/right
+    # left/right/middle
     position: right
     text: '<#FFFEFD>%nameplates_image_coin%</#FFFEFD> %nameplates_descent_money%'
     value: 180
-
-# Only ASCII characters are allowed here
+  income_actionbar:
+    position: middle
+    text: '%nameplates_actionbar%'
+    value: 180
+# Only ASCII characters are supported here
+# Read the wiki to learn how to make all the unicodes work
 # %nameplates_descent_{0}%
 descent-text:
   player:
@@ -107,7 +133,7 @@ descent-text:
     descent: 3
   money:
     text: "%vault_eco_balance%"
-    descent: 12
+    descent: 13
 
 # %nameplates_vanilla_{0}%
 vanilla-hud:

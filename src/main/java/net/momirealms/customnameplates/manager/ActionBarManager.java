@@ -17,8 +17,16 @@
 
 package net.momirealms.customnameplates.manager;
 
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ScoreComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
+import net.momirealms.customnameplates.listener.packet.ActionBarListener;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.actionbar.ActionBarConfig;
 import net.momirealms.customnameplates.object.actionbar.ActionBarTask;
@@ -29,6 +37,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -39,6 +48,7 @@ public class ActionBarManager extends Function {
 
     private final LinkedHashMap<String, ActionBarConfig> actionBarConfigMap;
     private final ConcurrentHashMap<UUID, ActionBarTask> actionBarTaskMap;
+    private final ActionBarListener actionBarListener;
     private final JoinQuitListener joinQuitListener;
     private final CustomNameplates plugin;
 
@@ -47,6 +57,7 @@ public class ActionBarManager extends Function {
         this.actionBarConfigMap = new LinkedHashMap<>();
         this.actionBarTaskMap = new ConcurrentHashMap<>();
         this.joinQuitListener = new JoinQuitListener(this);
+        this.actionBarListener = new ActionBarListener(this);
     }
 
     @Override
@@ -54,6 +65,7 @@ public class ActionBarManager extends Function {
         if (!ConfigManager.enableActionBar) return;
         this.loadConfig();
         Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
+        CustomNameplates.getProtocolManager().addPacketListener(actionBarListener);
         for (Player player : Bukkit.getOnlinePlayers()) {
             onJoin(player);
         }
@@ -65,6 +77,7 @@ public class ActionBarManager extends Function {
             actionBarTask.stop();
         }
         actionBarConfigMap.clear();
+        CustomNameplates.getProtocolManager().removePacketListener(actionBarListener);
         HandlerList.unregisterAll(joinQuitListener);
     }
 
@@ -81,6 +94,11 @@ public class ActionBarManager extends Function {
         if (actionBarTask != null) actionBarTask.stop();
     }
 
+    @Nullable
+    public ActionBarTask getActionBarTask(UUID uuid) {
+        return actionBarTaskMap.get(uuid);
+    }
+
     private void loadConfig() {
         YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "actionbar.yml");
         for (String key : config.getKeys(false)) {
@@ -93,5 +111,31 @@ public class ActionBarManager extends Function {
             ));
         }
         AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + actionBarConfigMap.size() + " <gray>actionbars");
+    }
+
+    public void onReceivePacket(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        WrappedChatComponent wrappedChatComponent = packet.getChatComponents().read(0);
+        if (wrappedChatComponent != null) {
+            ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
+            if (actionBarTask != null) {
+                Component component = GsonComponentSerializer.gson().deserialize(wrappedChatComponent.getJson());
+                if (component instanceof ScoreComponent scoreComponent) {
+                    if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
+                        return;
+                    }
+                }
+                event.setCancelled(true);
+                actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
+            }
+        }
+    }
+
+    public String getOtherPluginActionBarText(Player player) {
+        ActionBarTask actionBarTask = getActionBarTask(player.getUniqueId());
+        if (actionBarTask != null) {
+            return actionBarTask.getOtherText();
+        }
+        return "";
     }
 }

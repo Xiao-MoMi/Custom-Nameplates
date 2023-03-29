@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.object.nameplate.mode;
 
-import com.comphenix.protocol.events.PacketContainer;
 import net.momirealms.customnameplates.object.Function;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

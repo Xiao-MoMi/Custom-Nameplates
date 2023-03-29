@@ -27,7 +27,7 @@ import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
 import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
 import net.momirealms.customnameplates.utils.AdventureUtils;
-import net.momirealms.customnameplates.utils.HoloUtils;
+import net.momirealms.customnameplates.utils.ArmorStandUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,13 +45,17 @@ public class PreviewCommand extends AbstractSubCommand {
         if (noConsoleExecute(sender)) return true;
         Player player = (Player) sender;
         NameplateManager nameplateManager = CustomNameplates.getInstance().getNameplateManager();
+        if (nameplateManager.isInCoolDown(player)) {
+            AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.coolDown);
+            return true;
+        }
         if (nameplateManager.getMode() == DisplayMode.TEAM) {
             NameplatesTeam team = CustomNameplates.getInstance().getTeamManager().getNameplateTeam(player.getUniqueId());
             if (team != null) {
                 Component full = team.getNameplatePrefixComponent()
                         .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(team.getColor()))).font(Key.key("minecraft:default"))
                                 .append(team.getNameplateSuffixComponent()));
-                HoloUtils.showHolo(full, player, (int) nameplateManager.getPreview_time());
+                ArmorStandUtils.preview(full, player, (int) nameplateManager.getPreview_time());
             }
         }
         else {

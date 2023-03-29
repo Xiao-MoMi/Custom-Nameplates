@@ -2,7 +2,7 @@ messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
   no-perm: '<red>No Permission!</red>'
   lack-args: '<white>Insufficient parameters!</white>'
-  reload: '<white>Reloaded!</white>'
+  reload: '<white>Reloaded! Don''t forget to reinstall your resource pack.</white>'
   none-args: '<white>Non arguments'
   invalid-args: '<white>Invalid arguments'
   not-online: '<white>Player {Player} is not online!</white>'

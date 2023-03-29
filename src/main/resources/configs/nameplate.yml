@@ -1,32 +1,35 @@
 # mode: Team / Armor_Stand
+# 模式 队伍/盔甲架
 mode: Team
 
 # Disable this when you are running a BungeeCord server
 # You can also install BungeeTabListPlus or TAB on BungeeCord side to fix
+# 当你使用BungeeCord服务端的时候请禁用此选项或在bc上安装BungeeTabListPlus或TAB
 create-fake-team: true
 
 # This decides what %nameplates_prefix/suffix% would return
+# 玩家名变量，这会影响铭牌的长度判断
 player-name: '%player_name%'
 
 # The duration (in seconds) that the nameplate preview will last for.
+# 预览持续时间
 preview-duration: 5
 
-# If your nameplate's text is static, disable refresh for better performance
-refresh: true
-
 # The default nameplate.
+# 默认铭牌, none代表无
 # "none" represents no default nameplate.
 default-nameplate: 'none'
 
 # Prefix & Suffix
 # Rejoin the server to apply the changes
+# 前缀和后缀，重新进入服务器以应用更改
 prefix: ''
 suffix: ''
 
 armor_stand:
   text_1:
     text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
-    vertical-offset: -1
+    vertical-offset: -0.99
   text_2:
     text: '%vault_prefix%'
     vertical-offset: -0.7

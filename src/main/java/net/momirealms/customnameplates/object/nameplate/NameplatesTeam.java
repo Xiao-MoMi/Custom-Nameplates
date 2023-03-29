@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.object.nameplate;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ConfigManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.DynamicText;
@@ -66,17 +67,11 @@ public class NameplatesTeam {
             String name = PlaceholderAPI.setPlaceholders(player, nameplateManager.getPlayer_name_papi());
             if (updated) {
                 nameplate = newNameplate;
-                this.nameplate_prefix = ConfigManager.surroundWithFont(nameplateManager.getNameplatePrefix(
-                        AdventureUtils.stripAllTags(prefix.getLatestValue()),
-                        name,
-                        AdventureUtils.stripAllTags(suffix.getLatestValue()),
-                        nameplateConfig
-                )) + prefix.getLatestValue();
-                this.nameplate_suffix = ConfigManager.surroundWithFont(nameplateManager.getNameplateSuffix(
-                        AdventureUtils.stripAllTags(prefix.getLatestValue()) +
-                                name +
-                                AdventureUtils.stripAllTags(suffix.getLatestValue())
-                )) + suffix.getLatestValue();
+                String text = AdventureUtils.stripAllTags(prefix.getLatestValue())
+                        + name +
+                        AdventureUtils.stripAllTags(suffix.getLatestValue());
+                this.nameplate_prefix = nameplateManager.getNameplatePrefixWithFont(text, nameplateConfig) + prefix.getLatestValue();
+                this.nameplate_suffix = CustomNameplates.getInstance().getFontManager().getSuffixStringWithFont(text) + suffix.getLatestValue();
             }
         }
         return updated;

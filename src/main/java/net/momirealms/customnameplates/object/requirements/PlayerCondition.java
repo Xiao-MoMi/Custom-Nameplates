@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.object.requirements;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.CustomNameplates;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
