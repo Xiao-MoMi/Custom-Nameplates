@@ -6,7 +6,6 @@ import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
-import net.momirealms.customnameplates.object.bubble.BubbleConfig;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;

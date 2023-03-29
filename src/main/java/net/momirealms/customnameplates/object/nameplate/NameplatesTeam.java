@@ -21,7 +21,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.manager.ConfigManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.DynamicText;
 import net.momirealms.customnameplates.utils.AdventureUtils;

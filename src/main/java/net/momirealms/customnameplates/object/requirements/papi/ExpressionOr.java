@@ -19,15 +19,14 @@ package net.momirealms.customnameplates.object.requirements.papi;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.List;
 
 public record ExpressionOr(List<PapiRequirement> requirements) implements PapiRequirement{
 
     @Override
-    public boolean isMet(HashMap<String, String> papiMap, Player player) {
+    public boolean isMet(Player player) {
         for (PapiRequirement requirement : requirements) {
-            if (requirement.isMet(papiMap, player)) return true;
+            if (requirement.isMet(player)) return true;
         }
         return false;
     }

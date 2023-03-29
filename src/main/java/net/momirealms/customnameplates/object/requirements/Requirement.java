@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.object.requirements;
 
+import org.bukkit.entity.Player;
+
 public interface Requirement {
-    boolean isConditionMet(PlayerCondition playerCondition);
+    boolean isConditionMet(Player player);
 }

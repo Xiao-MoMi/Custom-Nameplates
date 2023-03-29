@@ -2,9 +2,7 @@ package net.momirealms.customnameplates.object.actionbar;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ScoreComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.object.DynamicText;
-import net.momirealms.customnameplates.object.requirements.PlayerCondition;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.entity.Player;
@@ -17,10 +15,8 @@ public class ActionBarSender {
     private int current_text_id;
     private final DynamicText[] dynamicTexts;
     private final Requirement[] requirements;
-    private final ActionBarTask actionBarTask;
 
-    public ActionBarSender(int switch_interval, String[] texts, Requirement[] requirements, Player player, ActionBarTask actionBarTask) {
-        this.actionBarTask = actionBarTask;
+    public ActionBarSender(int switch_interval, String[] texts, Requirement[] requirements, Player player) {
         this.player = player;
         this.switch_interval = switch_interval;
         this.requirements = requirements;
@@ -31,10 +27,10 @@ public class ActionBarSender {
         this.current_text_id = 0;
     }
 
-    public boolean canSend(PlayerCondition playerCondition) {
+    public boolean canSend() {
         if (requirements.length == 0) return true;
         for (Requirement requirement : requirements) {
-            if (!requirement.isConditionMet(playerCondition)) {
+            if (!requirement.isConditionMet(player)) {
                 return false;
             }
         }

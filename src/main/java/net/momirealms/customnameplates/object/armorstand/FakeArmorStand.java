@@ -25,7 +25,6 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.DynamicText;
-import net.momirealms.customnameplates.object.requirements.PlayerCondition;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -76,7 +75,7 @@ public class FakeArmorStand {
     public boolean canShow() {
         if (requirements == null) return true;
         for (Requirement requirement : requirements) {
-            if (!requirement.isConditionMet(new PlayerCondition(owner))) {
+            if (!requirement.isConditionMet(owner)) {
                 return false;
             }
         }

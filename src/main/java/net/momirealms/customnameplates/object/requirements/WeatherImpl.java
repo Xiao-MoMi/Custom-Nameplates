@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.object.requirements;
 
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public record WeatherImpl(List<String> weathers) implements Requirement {
     }
 
     @Override
-    public boolean isConditionMet(PlayerCondition playerCondition) {
-        World world = playerCondition.getPlayer().getWorld();
+    public boolean isConditionMet(Player player) {
+        World world = player.getWorld();
         String currentWeather;
         if (world.isThundering()) {
             if (world.isClearWeather()) currentWeather = "thunder";

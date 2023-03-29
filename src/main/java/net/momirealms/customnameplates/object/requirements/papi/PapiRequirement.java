@@ -19,8 +19,6 @@ package net.momirealms.customnameplates.object.requirements.papi;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-
 public interface PapiRequirement {
-    boolean isMet(HashMap<String, String> papiMap, Player player);
+    boolean isMet(Player player);
 }

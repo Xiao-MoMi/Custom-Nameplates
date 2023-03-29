@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.object.requirements;
 
+import org.bukkit.entity.Player;
+
 import java.util.List;
 
 public record WorldImpl(List<String> worlds) implements Requirement {
@@ -26,8 +28,8 @@ public record WorldImpl(List<String> worlds) implements Requirement {
     }
 
     @Override
-    public boolean isConditionMet(PlayerCondition playerCondition) {
-        org.bukkit.World world = playerCondition.getPlayer().getWorld();
+    public boolean isConditionMet(Player player) {
+        org.bukkit.World world = player.getWorld();
         return worlds.contains(world.getName());
     }
 }

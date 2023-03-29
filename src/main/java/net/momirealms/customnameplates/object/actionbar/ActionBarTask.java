@@ -1,7 +1,6 @@
 package net.momirealms.customnameplates.object.actionbar;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.object.requirements.PlayerCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -12,10 +11,8 @@ public class ActionBarTask {
     private final ActionBarSender[] actionBarSenders;
     private String otherText;
     private long expireTime;
-    private final Player player;
 
     public ActionBarTask(Player player, ActionBarConfig[] configs) {
-        this.player = player;
         this.actionBarSenders = new ActionBarSender[configs.length];
         this.otherText = "";
         for (int i = 0; i < configs.length; i++) {
@@ -24,8 +21,7 @@ public class ActionBarTask {
                     actionBarConfig.getInterval(),
                     actionBarConfig.getTexts(),
                     actionBarConfig.getConditions(),
-                    player,
-                     this
+                    player
             );
         }
     }
@@ -39,9 +35,8 @@ public class ActionBarTask {
             if (System.currentTimeMillis() > getExpireTime()) {
                 this.otherText = "";
             }
-            PlayerCondition playerCondition = new PlayerCondition(player);
             for (ActionBarSender actionBarSender : actionBarSenders) {
-                if (actionBarSender.canSend(playerCondition)) {
+                if (actionBarSender.canSend()) {
                     actionBarSender.send();
                     return;
                 }

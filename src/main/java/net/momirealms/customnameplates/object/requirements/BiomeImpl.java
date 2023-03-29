@@ -18,13 +18,14 @@
 package net.momirealms.customnameplates.object.requirements;
 
 import net.momirealms.biomeapi.BiomeAPI;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
 public record BiomeImpl(HashSet<String> biomes) implements Requirement {
 
     @Override
-    public boolean isConditionMet(PlayerCondition playerCondition) {
-        return biomes.contains(BiomeAPI.getBiome(playerCondition.getPlayer().getLocation()));
+    public boolean isConditionMet(Player player) {
+        return biomes.contains(BiomeAPI.getBiome(player.getLocation()));
     }
 }

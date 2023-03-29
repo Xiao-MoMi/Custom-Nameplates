@@ -9,7 +9,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.DynamicText;
-import net.momirealms.customnameplates.object.requirements.PlayerCondition;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.boss.BarColor;
@@ -53,10 +52,10 @@ public class BossBarSender {
         return isShown;
     }
 
-    public boolean canSend(PlayerCondition playerCondition) {
+    public boolean canSend() {
         if (requirements.length == 0) return true;
         for (Requirement requirement : requirements) {
-            if (!requirement.isConditionMet(playerCondition)) {
+            if (!requirement.isConditionMet(player)) {
                 return false;
             }
         }

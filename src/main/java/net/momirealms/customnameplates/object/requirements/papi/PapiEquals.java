@@ -20,14 +20,13 @@ package net.momirealms.customnameplates.object.requirements.papi;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public record PapiEquals(String papi, String requirement) implements PapiRequirement{
 
     @Override
-    public boolean isMet(HashMap<String, String> papiMap, Player player) {
-        String value = papiMap.get(papi);
+    public boolean isMet(Player player) {
+        String value = PlaceholderAPI.setPlaceholders(player, papi);
         return Objects.equals(value, PlaceholderAPI.setPlaceholders(player, requirement));
     }
 }

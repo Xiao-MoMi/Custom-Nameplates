@@ -33,8 +33,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 public class NameplatePlaceholders extends PlaceholderExpansion {
 
     private final PlaceholderManager placeholderManager;

@@ -22,11 +22,11 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ScoreComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.listener.packet.ActionBarListener;
+import net.momirealms.customnameplates.listener.packet.SystemChatListener;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.actionbar.ActionBarConfig;
 import net.momirealms.customnameplates.object.actionbar.ActionBarTask;
@@ -49,6 +49,7 @@ public class ActionBarManager extends Function {
     private final LinkedHashMap<String, ActionBarConfig> actionBarConfigMap;
     private final ConcurrentHashMap<UUID, ActionBarTask> actionBarTaskMap;
     private final ActionBarListener actionBarListener;
+    private final SystemChatListener systemChatListener;
     private final JoinQuitListener joinQuitListener;
     private final CustomNameplates plugin;
 
@@ -58,6 +59,7 @@ public class ActionBarManager extends Function {
         this.actionBarTaskMap = new ConcurrentHashMap<>();
         this.joinQuitListener = new JoinQuitListener(this);
         this.actionBarListener = new ActionBarListener(this);
+        this.systemChatListener = new SystemChatListener(this);
     }
 
     @Override
@@ -66,6 +68,7 @@ public class ActionBarManager extends Function {
         this.loadConfig();
         Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
         CustomNameplates.getProtocolManager().addPacketListener(actionBarListener);
+        CustomNameplates.getProtocolManager().addPacketListener(systemChatListener);
         for (Player player : Bukkit.getOnlinePlayers()) {
             onJoin(player);
         }
@@ -78,6 +81,7 @@ public class ActionBarManager extends Function {
         }
         actionBarConfigMap.clear();
         CustomNameplates.getProtocolManager().removePacketListener(actionBarListener);
+        CustomNameplates.getProtocolManager().removePacketListener(systemChatListener);
         HandlerList.unregisterAll(joinQuitListener);
     }
 
@@ -113,13 +117,34 @@ public class ActionBarManager extends Function {
         AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + actionBarConfigMap.size() + " <gray>actionbars");
     }
 
-    public void onReceivePacket(PacketEvent event) {
+    public void onReceiveActionBarPacket(PacketEvent event) {
         PacketContainer packet = event.getPacket();
         WrappedChatComponent wrappedChatComponent = packet.getChatComponents().read(0);
         if (wrappedChatComponent != null) {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
                 Component component = GsonComponentSerializer.gson().deserialize(wrappedChatComponent.getJson());
+                if (component instanceof ScoreComponent scoreComponent) {
+                    if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
+                        return;
+                    }
+                }
+                event.setCancelled(true);
+                actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
+            }
+        }
+    }
+
+    public void onReceiveSystemChatPacket(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        // 1.19+
+        Boolean overlay = packet.getBooleans().readSafely(0);
+        // lower version
+        Integer position = packet.getIntegers().readSafely(0);
+        if ((overlay != null && overlay || position != null && position == 2)) {
+            ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
+            if (actionBarTask != null) {
+                Component component = GsonComponentSerializer.gson().deserialize(packet.getStrings().read(0));
                 if (component instanceof ScoreComponent scoreComponent) {
                     if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
                         return;

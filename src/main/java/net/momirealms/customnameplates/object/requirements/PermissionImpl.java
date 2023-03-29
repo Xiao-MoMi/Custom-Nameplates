@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.object.requirements;
 
+import org.bukkit.entity.Player;
+
 public record PermissionImpl(String permission) implements Requirement {
 
     public String getPermission() {
@@ -24,7 +26,7 @@ public record PermissionImpl(String permission) implements Requirement {
     }
 
     @Override
-    public boolean isConditionMet(PlayerCondition playerCondition) {
-        return playerCondition.getPlayer().hasPermission(permission);
+    public boolean isConditionMet(Player player) {
+        return player.hasPermission(permission);
     }
 }

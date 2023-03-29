@@ -19,15 +19,14 @@ package net.momirealms.customnameplates.object.requirements;
 
 import net.momirealms.customnameplates.object.requirements.papi.*;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 public class CustomPapiImpl implements Requirement {
 
-    public static HashSet<String> allPapi = new HashSet<>();
     private final List<PapiRequirement> papiRequirement;
 
     public CustomPapiImpl(Map<String, Object> expressions){
@@ -35,9 +34,9 @@ public class CustomPapiImpl implements Requirement {
     }
 
     @Override
-    public boolean isConditionMet(PlayerCondition condition) {
+    public boolean isConditionMet(Player player) {
         for (PapiRequirement requirement : papiRequirement) {
-            if (!requirement.isMet(condition.getPapiMap(), condition.getPlayer())) {
+            if (!requirement.isMet(player)) {
                 return false;
             }
         }
@@ -61,7 +60,6 @@ public class CustomPapiImpl implements Requirement {
                     String papi = map2.getString("papi");
                     String value = map2.getString("value");
                     if (value == null || papi == null || type == null) return;
-                    allPapi.add(papi);
                     switch (type){
                         case "==" -> papiRequirements.add(new PapiEquals(papi, value));
                         case "!=" -> papiRequirements.add(new PapiNotEquals(papi, value));

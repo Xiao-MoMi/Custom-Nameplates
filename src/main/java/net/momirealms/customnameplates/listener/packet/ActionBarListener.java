@@ -20,11 +20,9 @@ package net.momirealms.customnameplates.listener.packet;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ActionBarManager;
-import net.momirealms.customnameplates.object.nameplate.mode.PacketsHandler;
 
 public class ActionBarListener extends PacketAdapter {
 
@@ -36,6 +34,6 @@ public class ActionBarListener extends PacketAdapter {
     }
 
     public void onPacketSending(PacketEvent event) {
-        actionBarManager.onReceivePacket(event);
+        actionBarManager.onReceiveActionBarPacket(event);
     }
 }
