@@ -15,28 +15,22 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands;
+package net.momirealms.customnameplates.command;
 
-import net.momirealms.customnameplates.commands.subcmd.*;
+import net.momirealms.customnameplates.command.subcmd.*;
 
-public class NameplateCommand extends AbstractMainCommand {
+public class BubblesCommand extends AbstractMainCommand {
 
-
-    public NameplateCommand() {
-        super("nameplates");
+    public BubblesCommand() {
+        super("bubbles");
         regDefaultSubCommands();
     }
 
     private void regDefaultSubCommands() {
-        regSubCommand(ReloadCommand.INSTANCE);
-        regSubCommand(NameplatesEquipCommand.INSTANCE);
-        regSubCommand(NameplatesForceEquipCommand.INSTANCE);
-        regSubCommand(NameplatesUnequipCommand.INSTANCE);
-        regSubCommand(NameplatesForceUnequipCommand.INSTANCE);
-        regSubCommand(PreviewCommand.INSTANCE);
-        regSubCommand(ForcePreviewCommand.INSTANCE);
-        regSubCommand(NameplatesListCommand.INSTANCE);
-        regSubCommand(HelpCommand.INSTANCE);
-        regSubCommand(AboutCommand.INSTANCE);
+        regSubCommand(BubblesEquipCommand.INSTANCE);
+        regSubCommand(BubblesUnequipCommand.INSTANCE);
+        regSubCommand(BubblesForceEquipCommand.INSTANCE);
+        regSubCommand(BubblesForceUnequipCommand.INSTANCE);
+        regSubCommand(BubblesListCommand.INSTANCE);
     }
 }

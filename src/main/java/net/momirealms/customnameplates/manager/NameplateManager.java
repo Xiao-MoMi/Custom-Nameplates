@@ -1,6 +1,7 @@
 package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
@@ -225,7 +226,11 @@ public class NameplateManager extends Function {
         String current = getEquippedNameplate(player);
         if (!nameplate.equals(current)) {
             plugin.getDataManager().equipNameplate(player, nameplate);
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> plugin.getDataManager().equipNameplate(player, current),this.getPreview_time() * 20);
+            CustomNameplatesAPI.getAPI().updateNameplateTeam(player);
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
+                plugin.getDataManager().equipNameplate(player, current);
+                CustomNameplatesAPI.getAPI().updateNameplateTeam(player);
+            },this.getPreview_time() * 20);
         }
         showPlayerArmorStandTags(player);
     }

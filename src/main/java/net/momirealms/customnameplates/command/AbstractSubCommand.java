@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands;
+package net.momirealms.customnameplates.command;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.api.CustomNameplatesAPI;

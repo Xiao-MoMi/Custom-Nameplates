@@ -15,43 +15,43 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands.subcmd;
+package net.momirealms.customnameplates.command.subcmd;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.api.CustomNameplatesAPI;
-import net.momirealms.customnameplates.commands.AbstractSubCommand;
+import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.utils.AdventureUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class BubblesEquipCommand extends AbstractSubCommand {
+public class NameplatesForceEquipCommand extends AbstractSubCommand {
 
-    public static final AbstractSubCommand INSTANCE = new BubblesEquipCommand();
+    public static final AbstractSubCommand INSTANCE = new NameplatesForceEquipCommand();
 
-    public BubblesEquipCommand() {
-        super("equip");
+    public NameplatesForceEquipCommand() {
+        super("forceequip");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-        if (noConsoleExecute(sender) || lackArgs(sender, 1, args.size()) || notExist(sender, "bubble", args.get(0)))
-            return true;
-        if (!sender.hasPermission("bubbles.equip." + args.get(0))) {
-            AdventureUtils.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_notAvailable);
-            return true;
-        }
-        CustomNameplatesAPI.getAPI().equipBubble((Player) sender, args.get(0));
-        AdventureUtils.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_equip.replace("{Bubble}", CustomNameplates.getInstance().getChatBubblesManager().getBubbleConfig(args.get(0)).display_name()));
+        if (lackArgs(sender, 2, args.size()) || playerNotOnline(sender, args.get(0)) || notExist(sender, "nameplate", args.get(1))) return true;
+        Player player = Bukkit.getPlayer(args.get(0));
+        CustomNameplatesAPI.getAPI().equipNameplate(player, args.get(1));
+        AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_equip.replace("{Nameplate}", CustomNameplates.getInstance().getNameplateManager().getNameplateConfig(args.get(1)).display_name()).replace("{Player}", args.get(0)));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, List<String> args) {
-        if (args.size() == 1 && sender instanceof Player player) {
-            return filterStartingWith(CustomNameplates.getInstance().getChatBubblesManager().getAvailableBubbles(player), args.get(0));
+        if (args.size() == 1) {
+            return filterStartingWith(online_players(), args.get(0));
+        }
+        if (args.size() == 2) {
+            return filterStartingWith(allNameplates(), args.get(1));
         }
         return null;
     }

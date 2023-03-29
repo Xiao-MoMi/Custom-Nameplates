@@ -15,11 +15,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands.subcmd;
+package net.momirealms.customnameplates.command.subcmd;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.api.CustomNameplatesAPI;
-import net.momirealms.customnameplates.commands.AbstractSubCommand;
+import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.command.CommandSender;

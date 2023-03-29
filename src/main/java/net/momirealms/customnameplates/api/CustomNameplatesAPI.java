@@ -36,11 +36,7 @@ public class CustomNameplatesAPI {
     }
 
     private void updateAndSave(Player player) {
-        NameplatesTeam nameplatesTeam = plugin.getTeamManager().getNameplateTeam(player.getUniqueId());
-        if (nameplatesTeam != null) {
-            nameplatesTeam.update(true);
-            plugin.getTeamManager().sendUpdateToAll(player, true);
-        }
+        updateNameplateTeam(player);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             plugin.getDataManager().saveData(player);
         });
@@ -63,5 +59,13 @@ public class CustomNameplatesAPI {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             plugin.getDataManager().saveData(player);
         });
+    }
+
+    public void updateNameplateTeam(Player player) {
+        NameplatesTeam nameplatesTeam = plugin.getTeamManager().getNameplateTeam(player.getUniqueId());
+        if (nameplatesTeam != null) {
+            nameplatesTeam.update(true);
+            plugin.getTeamManager().sendUpdateToAll(player, true);
+        }
     }
 }

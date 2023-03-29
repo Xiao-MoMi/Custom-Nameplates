@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.commands.subcmd;
+package net.momirealms.customnameplates.command.subcmd;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.key.Key;
@@ -23,7 +23,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.commands.AbstractSubCommand;
+import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
