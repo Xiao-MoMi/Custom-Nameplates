@@ -299,7 +299,7 @@ public class ResourceManager {
     private void hookCopy(File resourcePack_folder) {
         if (ConfigManager.itemsAdderHook){
             try {
-                FileUtils.copyDirectory(resourcePack_folder, new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "contents/nameplates" + File.separator + "resourcepack") );
+                FileUtils.copyDirectory(resourcePack_folder, new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack") );
             }
             catch (IOException e){
                 e.printStackTrace();
