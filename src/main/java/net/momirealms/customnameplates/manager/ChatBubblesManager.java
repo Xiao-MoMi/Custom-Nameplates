@@ -163,7 +163,7 @@ public class ChatBubblesManager extends EntityTag {
             ConfigManager.start_char = (char) ((tail = (char)((right = (char)((middle = (char)(ConfigManager.start_char + '\u0001')) + '\u0001')) + '\u0001')) + '\u0001');
             String key = bb_config_file.getName().substring(0, bb_config_file.getName().length() - 4);
             YamlConfiguration config = YamlConfiguration.loadConfiguration(bb_config_file);
-            if (!config.contains("display-display_name")) config.set("display-display_name", key);
+            if (!config.contains("display-name")) config.set("display-name", key);
             if (!config.contains("text-format.start")) config.set("text-format.start", "<white>");
             if (!config.contains("text-format.end")) config.set("text-format.end", "");
             if (!config.contains("left.image")) config.set("left.image", key + "_left");
@@ -194,7 +194,7 @@ public class ChatBubblesManager extends EntityTag {
             bubbleConfigMap.put(key,
                     new BubbleConfig(
                             config.getString("text-format.start"), config.getString("text-format.end"),
-                            config.getString("display-display_name"),
+                            config.getString("display-name"),
                             leftChar, middleChar,
                             rightChar, tailChar
                     )

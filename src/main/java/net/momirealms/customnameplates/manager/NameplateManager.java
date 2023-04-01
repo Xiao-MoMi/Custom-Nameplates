@@ -69,7 +69,7 @@ public class NameplateManager extends Function {
 
     private void loadConfig(ConfigurationSection config) {
         this.default_nameplate = config.getString("default-nameplate", "none");
-        this.player_name_papi = config.getString("player-display_name", "%player_name%");
+        this.player_name_papi = config.getString("player-name", "%player_name%");
         this.preview_time = config.getLong("preview-duration", 5);
         this.fakeTeam = config.getBoolean("create-fake-team",true);
         this.player_prefix = config.getString("prefix","");
@@ -113,7 +113,7 @@ public class NameplateManager extends Function {
             SimpleChar middleChar = new SimpleChar(config.getInt("middle.height"), config.getInt("middle.ascent"), config.getInt("middle.width"), middle, config.getString("middle.image") + ".png");
             SimpleChar rightChar = new SimpleChar(config.getInt("right.height"), config.getInt("right.ascent"), config.getInt("right.width"), right, config.getString("right.image") + ".png");
             ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color", "WHITE")).toUpperCase());
-            nameplateConfigMap.put(key, new NameplateConfig(color, config.getString("display-display_name"), leftChar, middleChar, rightChar));
+            nameplateConfigMap.put(key, new NameplateConfig(color, config.getString("display-name"), leftChar, middleChar, rightChar));
         }
         AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + nameplateConfigMap.size() + " <gray>nameplates");
     }
