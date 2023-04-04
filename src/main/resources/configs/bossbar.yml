@@ -3,7 +3,7 @@ basic_info_hud:
   overlay: PROGRESS
   dynamic-text:
     - '%nameplates_background_weather%   %nameplates_background_position%'
-    - '%nameplates_background_time%'
+    - '%nameplates_background_time%   %nameplates_background_hello%'
     #- '%nameplates_conditional_region%'
   switch-interval: 15
   conditions:

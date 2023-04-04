@@ -21,10 +21,6 @@ import org.bukkit.entity.Player;
 
 public record PermissionImpl(String permission) implements Requirement {
 
-    public String getPermission() {
-        return this.permission;
-    }
-
     @Override
     public boolean isConditionMet(Player player) {
         return player.hasPermission(permission);

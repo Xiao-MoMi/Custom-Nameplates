@@ -23,10 +23,6 @@ import java.util.List;
 
 public record WorldImpl(List<String> worlds) implements Requirement {
 
-    public List<String> getWorlds() {
-        return this.worlds;
-    }
-
     @Override
     public boolean isConditionMet(Player player) {
         org.bukkit.World world = player.getWorld();

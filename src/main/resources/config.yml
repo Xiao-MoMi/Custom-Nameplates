@@ -1,5 +1,5 @@
 # Do not change
-config-version: '15'
+config-version: '16'
 
 # bStats
 metrics: true
@@ -60,6 +60,10 @@ resource-pack:
     bubbles: 'font\bubbles\'
     space-split: 'font\base\'
   # The initial character of a font
+  # 字体的初始字符
   initial-char: '뀁'
-  # Thin-font support for ASCII
-  thin-font: false
+
+other-settings:
+  # default width
+  # 默认文字宽度
+  default-character-width: 8

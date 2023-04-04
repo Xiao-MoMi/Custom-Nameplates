@@ -109,6 +109,9 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
             case "actionbar" -> {
                 return getOtherActionBar(player);
             }
+            case "unicode" -> {
+                return getUnicodeDescent(mainParam[1], player);
+            }
         }
         return null;
     }
@@ -216,6 +219,13 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         if (descentText == null) return param + " NOT FOUND";
         String parsed = PlaceholderAPI.setPlaceholders(player, descentText.text());
         return "<font:" + ConfigManager.namespace + ":" + "ascent_" + descentText.ascent() + ">" + parsed + "</font>";
+    }
+
+    private String getUnicodeDescent(String param, Player player) {
+        DescentText descentText = placeholderManager.getDescentUnicode(param);
+        if (descentText == null) return param + " NOT FOUND";
+        String parsed = PlaceholderAPI.setPlaceholders(player, descentText.text());
+        return "<font:" + ConfigManager.namespace + ":" + "unicode_ascent_" + descentText.ascent() + ">" + parsed + "</font>";
     }
 
     private String getVanilla(String param, Player player) {

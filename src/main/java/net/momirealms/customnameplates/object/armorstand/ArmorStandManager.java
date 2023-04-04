@@ -50,9 +50,9 @@ public class ArmorStandManager {
             addArmorStand(UUID.randomUUID(), new FakeArmorStand(
                     this,
                     owner,
-                    new DynamicText(owner, entry.getKey().getText()),
+                    new DynamicText(owner, entry.getKey().text()),
                     entry.getValue(),
-                    entry.getKey().getRequirements()
+                    entry.getKey().requirements()
             ));
         }
     }

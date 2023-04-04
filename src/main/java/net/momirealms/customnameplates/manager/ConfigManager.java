@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) <2022> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.object.Function;
@@ -5,6 +22,8 @@ import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
 
 public class ConfigManager extends Function {
 
@@ -34,6 +53,7 @@ public class ConfigManager extends Function {
     public static boolean enableBubbles;
     public static boolean enableBackground;
     public static boolean enableImages;
+    public static int default_width;
 
     @Override
     public void load(){
@@ -45,6 +65,7 @@ public class ConfigManager extends Function {
         loadModules(config);
         loadIntegrations(config);
         loadResourcePack(config);
+        loadOtherSettings(config);
     }
 
     private void loadIntegrations(ConfigurationSection config) {
@@ -70,7 +91,6 @@ public class ConfigManager extends Function {
             backgrounds_folder_path = section.getString("image-path.backgrounds","font\\backgrounds\\");
             space_split_folder_path = section.getString("image-path.space-split","font\\base\\");
             images_folder_path = section.getString("image-path.images","font\\images\\");
-            thin_font = section.getBoolean("use-thin-font",false);
             extractShader = section.getBoolean("extract-shader",true);
             extractBars = section.getBoolean("extract-bar-image",true);
         }
@@ -85,6 +105,21 @@ public class ConfigManager extends Function {
             enableBubbles = section.getBoolean("bubbles");
             enableBackground = section.getBoolean("backgrounds");
             enableImages = section.getBoolean("images");
+        }
+    }
+
+    private void loadOtherSettings(ConfigurationSection config) {
+        ConfigurationSection section = config.getConfigurationSection("other-settings");
+        if (section != null) {
+            default_width = section.getInt("default-character-width", 8);
+
+        }
+        if (enableNameplates) {
+            YamlConfiguration np_config = ConfigUtils.getConfig("configs" + File.separator + "nameplate.yml");
+            thin_font = np_config.getBoolean("thin-font", false);
+        }
+        else {
+            thin_font = false;
         }
     }
 

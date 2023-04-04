@@ -149,7 +149,6 @@ public final class CustomNameplates extends JavaPlugin {
         fontManager.unload();
         backgroundManager.unload();
         dataManager.unload();
-
         configManager.load();
         messageManager.load();
         dataManager.load();
@@ -159,7 +158,6 @@ public final class CustomNameplates extends JavaPlugin {
         // team manager must before nameplates manager
         teamManager.load();
         nameplateManager.load();
-
         chatBubblesManager.load();
         backgroundManager.load();
         bossBarManager.load();

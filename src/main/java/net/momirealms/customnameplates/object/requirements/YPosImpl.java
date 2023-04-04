@@ -24,10 +24,6 @@ import java.util.List;
 
 public record YPosImpl(List<String> yPos) implements Requirement {
 
-    public List<String> getYPos() {
-        return this.yPos;
-    }
-
     @Override
     public boolean isConditionMet(Player player) {
         int y = (int) player.getLocation().getY();

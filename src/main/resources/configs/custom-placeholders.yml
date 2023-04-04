@@ -90,6 +90,10 @@ background-text:
     background: bedrock_1
     text: '<#FFFEFD>%nameplates_image_weather%</#FFFEFD> %nameplates_descent_weather%'
     remove-shadow: true
+  hello:
+    background: bedrock_1
+    text: '<#FFFEFD>%nameplates_image_bubble%</#FFFEFD> %nameplates_unicode_hello%'
+    remove-shadow: true
   region:
     background: bedrock_1
     text: '<#FFFEFD>%nameplates_image_compass%</#FFFEFD> %nameplates_descent_region%'
@@ -109,8 +113,7 @@ static-text:
     position: middle
     text: '%nameplates_actionbar%'
     value: 180
-# Only ASCII characters are supported here
-# Read the wiki to learn how to make all the unicodes work
+
 # %nameplates_descent_{0}%
 descent-text:
   player:
@@ -134,6 +137,12 @@ descent-text:
   money:
     text: "%vault_eco_balance%"
     descent: 13
+
+# %nameplates_unicode_{0}%
+descent-unicode:
+  hello:
+    text: "Hello 여보세요 你好 こんにちは"
+    descent: 5
 
 # %nameplates_vanilla_{0}%
 vanilla-hud:

@@ -20,6 +20,9 @@ preview-duration: 5
 # "none" represents no default nameplate.
 default-nameplate: 'none'
 
+# Is thin font name
+thin-font: false
+
 # Prefix & Suffix
 # Rejoin the server to apply the changes
 # 前缀和后缀，重新进入服务器以应用更改

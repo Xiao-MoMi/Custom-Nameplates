@@ -24,10 +24,6 @@ import java.util.List;
 
 public record TimeImpl(List<String> times) implements Requirement{
 
-    public List<String> getTimes() {
-        return this.times;
-    }
-
     @Override
     public boolean isConditionMet(Player player) {
         long time = player.getWorld().getTime();

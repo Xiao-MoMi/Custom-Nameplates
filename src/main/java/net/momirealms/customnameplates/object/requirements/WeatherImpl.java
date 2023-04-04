@@ -24,10 +24,6 @@ import java.util.List;
 
 public record WeatherImpl(List<String> weathers) implements Requirement {
 
-    public List<String> getWeathers() {
-        return this.weathers;
-    }
-
     @Override
     public boolean isConditionMet(Player player) {
         World world = player.getWorld();

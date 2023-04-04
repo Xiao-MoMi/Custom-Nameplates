@@ -41,22 +41,26 @@ public class PlaceholderManager extends Function {
     private final NameplatePlaceholders nameplatePlaceholders;
     private final Pattern placeholderPattern = Pattern.compile("%([^%]*)%");
     private final HashSet<Integer> descent_fonts;
+    private final HashSet<Integer> descent_unicode_fonts;
     private final HashMap<String, NameplateText> nameplateTextMap;
     private final HashMap<String, BackGroundText> backGroundTextMap;
     private final HashMap<String, StaticText> stringStaticTextMap;
     private final HashMap<String, DescentText> descentTextMap;
+    private final HashMap<String, DescentText> descentUnicodeMap;
     private final HashMap<String, ConditionalTexts> conditionalTextsMap;
     private final HashMap<String, VanillaHud> vanillaHudMap;
 
     public PlaceholderManager(CustomNameplates plugin) {
         this.nameplatePlaceholders = new NameplatePlaceholders(plugin, this);
         this.descent_fonts = new HashSet<>();
+        this.descent_unicode_fonts = new HashSet<>();
         this.nameplateTextMap = new HashMap<>();
         this.backGroundTextMap = new HashMap<>();
         this.stringStaticTextMap = new HashMap<>();
         this.descentTextMap = new HashMap<>();
         this.conditionalTextsMap = new HashMap<>();
         this.vanillaHudMap = new HashMap<>();
+        this.descentUnicodeMap = new HashMap<>();
     }
 
     @Override
@@ -75,6 +79,8 @@ public class PlaceholderManager extends Function {
         this.descentTextMap.clear();
         this.conditionalTextsMap.clear();
         this.vanillaHudMap.clear();
+        this.descent_unicode_fonts.clear();
+        this.descentUnicodeMap.clear();
     }
 
     private void loadConfig() {
@@ -98,6 +104,11 @@ public class PlaceholderManager extends Function {
         ConfigurationSection descentSection = config.getConfigurationSection("descent-text");
         if (descentSection != null) {
             loadDescentText(descentSection);
+        }
+
+        ConfigurationSection descentUnicodeSection = config.getConfigurationSection("descent-unicode");
+        if (descentUnicodeSection != null) {
+            loadDescentUnicode(descentUnicodeSection);
         }
 
         ConfigurationSection conditionalSection = config.getConfigurationSection("conditional-text");
@@ -144,6 +155,13 @@ public class PlaceholderManager extends Function {
         for (String key : section.getKeys(false)) {
             descent_fonts.add(8 - section.getInt(key + ".descent"));
             descentTextMap.put(key, new DescentText(section.getString(key + ".text"), 8 - section.getInt(key + ".descent")));
+        }
+    }
+
+    private void loadDescentUnicode(ConfigurationSection section) {
+        for (String key : section.getKeys(false)) {
+            descent_unicode_fonts.add(8 - section.getInt(key + ".descent"));
+            descentUnicodeMap.put(key, new DescentText(section.getString(key + ".text"), 8 - section.getInt(key + ".descent")));
         }
     }
 
@@ -203,5 +221,13 @@ public class PlaceholderManager extends Function {
 
     public HashSet<Integer> getDescent_fonts() {
         return descent_fonts;
+    }
+
+    public HashSet<Integer> getDescent_unicode_fonts() {
+        return descent_unicode_fonts;
+    }
+
+    public DescentText getDescentUnicode(String key) {
+        return descentUnicodeMap.get(key);
     }
 }

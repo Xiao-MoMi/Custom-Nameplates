@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.object.font;
 
-public enum UnicodeWidth {
+public enum ThinASCIIWidth {
 
     A('A', 3), a('a', 3), B('B', 3), b('b', 3),
     C('C', 3), c('c', 3), D('D', 3), d('d', 3),
@@ -49,7 +49,7 @@ public enum UnicodeWidth {
     private final char character;
     private final int width;
 
-    UnicodeWidth(char character, int width) {
+    ThinASCIIWidth(char character, int width) {
         this.character = character;
         this.width = width;
     }

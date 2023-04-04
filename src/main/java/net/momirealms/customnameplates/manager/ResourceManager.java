@@ -17,9 +17,8 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
@@ -31,9 +30,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -181,60 +179,47 @@ public class ResourceManager {
 
     private void saveOffsets() {
         for (int ascent : plugin.getPlaceholderManager().getDescent_fonts()) {
-            JsonObject jsonObject_offset = new JsonObject();
-            JsonArray jsonArray_offset = new JsonArray();
-            jsonObject_offset.add("providers", jsonArray_offset);
-            JsonObject jo_providers = new JsonObject();
-
-            jo_providers.add("type", new JsonPrimitive("space"));
-            JsonObject jo_space = new JsonObject();
-            jo_space.add(" ", new JsonPrimitive(4));
-            jo_space.add("\\u200c", new JsonPrimitive(0));
-            jo_providers.add("advances", jo_space);
-            jsonArray_offset.add(jo_providers);
-
-            JsonObject jo_ascii = new JsonObject();
-            jo_ascii.add("type", new JsonPrimitive("bitmap"));
-            jo_ascii.add("file", new JsonPrimitive("minecraft:font/ascii.png"));
-            jo_ascii.add("ascent", new JsonPrimitive(ascent));
-            jo_ascii.add("height", new JsonPrimitive(8));
-            JsonArray ja_ascii = new JsonArray();
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000");
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000");
-            ja_ascii.add("\\u0020\\u0021\\u0022\\u0023\\u0024\\u0025\\u0026\\u0027\\u0028\\u0029\\u002a\\u002b\\u002c\\u002d\\u002e\\u002f");
-            ja_ascii.add("\\u0030\\u0031\\u0032\\u0033\\u0034\\u0035\\u0036\\u0037\\u0038\\u0039\\u003a\\u003b\\u003c\\u003d\\u003e\\u003f");
-            ja_ascii.add("\\u0040\\u0041\\u0042\\u0043\\u0044\\u0045\\u0046\\u0047\\u0048\\u0049\\u004a\\u004b\\u004c\\u004d\\u004e\\u004f");
-            ja_ascii.add("\\u0050\\u0051\\u0052\\u0053\\u0054\\u0055\\u0056\\u0057\\u0058\\u0059\\u005a\\u005b\\u005c\\u005d\\u005e\\u005f");
-            ja_ascii.add("\\u0060\\u0061\\u0062\\u0063\\u0064\\u0065\\u0066\\u0067\\u0068\\u0069\\u006a\\u006b\\u006c\\u006d\\u006e\\u006f");
-            ja_ascii.add("\\u0070\\u0071\\u0072\\u0073\\u0074\\u0075\\u0076\\u0077\\u0078\\u0079\\u007a\\u007b\\u007c\\u007d\\u007e\\u0000");
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000");
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u00a3\\u0000\\u0000\\u0192");
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u00aa\\u00ba\\u0000\\u0000\\u00ac\\u0000\\u0000\\u0000\\u00ab\\u00bb");
-            ja_ascii.add("\\u2591\\u2592\\u2593\\u2502\\u2524\\u2561\\u2562\\u2556\\u2555\\u2563\\u2551\\u2557\\u255d\\u255c\\u255b\\u2510");
-            ja_ascii.add("\\u2514\\u2534\\u252c\\u251c\\u2500\\u253c\\u255e\\u255f\\u255a\\u2554\\u2569\\u2566\\u2560\\u2550\\u256c\\u2567");
-            ja_ascii.add("\\u2568\\u2564\\u2565\\u2559\\u2558\\u2552\\u2553\\u256b\\u256a\\u2518\\u250c\\u2588\\u2584\\u258c\\u2590\\u2580");
-            ja_ascii.add("\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u2205\\u2208\\u0000");
-            ja_ascii.add("\\u2261\\u00b1\\u2265\\u2264\\u2320\\u2321\\u00f7\\u2248\\u00b0\\u2219\\u0000\\u221a\\u207f\\u00b2\\u25a0\\u0000");
-            jo_ascii.add("chars", ja_ascii);
-            jsonArray_offset.add(jo_ascii);
-
-            JsonObject legacy_unicode = new JsonObject();
-            legacy_unicode.add("type", new JsonPrimitive("legacy_unicode"));
-            legacy_unicode.add("sizes", new JsonPrimitive("minecraft:font/glyph_sizes.bin"));
-            legacy_unicode.add("template", new JsonPrimitive("minecraft:font/unicode_page_%s.png"));
-            jsonArray_offset.add(legacy_unicode);
-
-            try (FileWriter fileWriter = new FileWriter(
-                    plugin.getDataFolder() +
-                            File.separator + "ResourcePack" +
-                            File.separator + "assets" +
-                            File.separator + ConfigManager.namespace +
-                            File.separator + "font" +
-                            File.separator + "ascent_" + ascent + ".json")) {
-                fileWriter.write(jsonObject_offset.toString().replace("\\\\", "\\"));
+            String line;
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + "default.json")), StandardCharsets.UTF_8))) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            catch (IOException e) {
-                AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to generate offset font json.</red>");
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
+                            "ResourcePack" +
+                                    File.separator + "assets" +
+                                    File.separator + ConfigManager.namespace +
+                                    File.separator + "font" +
+                                    File.separator + "ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int ascent : plugin.getPlaceholderManager().getDescent_unicode_fonts()) {
+            String line;
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + "unicode.json")), StandardCharsets.UTF_8))) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
+                            "ResourcePack" +
+                                    File.separator + "assets" +
+                                    File.separator + ConfigManager.namespace +
+                                    File.separator + "font" +
+                                    File.separator + "unicode_ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
