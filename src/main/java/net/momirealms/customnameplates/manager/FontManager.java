@@ -110,11 +110,6 @@ public class FontManager extends Function {
         return plugin.getFontManager().getShortestNegChars(totalWidth + totalWidth % 2 + 1);
     }
 
-    // All the characters
-    public int getCharWidth(char c) {
-        return Objects.requireNonNullElse(customImageWidth.get(c), ConfigManager.default_width);
-    }
-
     // Player name
     public int getNameCharWidth(char c) {
         Integer width = asciiWidth.get(c);
@@ -126,7 +121,13 @@ public class FontManager extends Function {
         int length = text.length();
         int n = 0;
         for (int i = 0; i < length; i++) {
-            n += getCharWidth(text.charAt(i));
+            char current = text.charAt(i);
+            if (current != '\\' || i == length - 1 || text.charAt(i + 1) != '<') {
+                n += Objects.requireNonNullElse(customImageWidth.get(current), ConfigManager.default_width);
+            }
+            else {
+                n -= 1;
+            }
         }
         return n + length;
     }

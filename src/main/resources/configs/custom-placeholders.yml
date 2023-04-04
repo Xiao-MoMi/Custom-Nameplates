@@ -102,6 +102,7 @@ background-text:
     background: bedrock_2
     text: '<#FFFEFD>%nameplates_image_bell%</#FFFEFD> %nameplates_descent_update%'
     remove-shadow: true
+
 # %nameplates_static_{0}%
 static-text:
   money_hud:
@@ -115,6 +116,7 @@ static-text:
     value: 180
 
 # %nameplates_descent_{0}%
+# If the character can't show correctly here, use descent-unicode instead
 descent-text:
   player:
     text: "%player_name%"
