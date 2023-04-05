@@ -152,10 +152,10 @@ public final class CustomNameplates extends JavaPlugin {
         configManager.load();
         messageManager.load();
         dataManager.load();
-        // image manager must before font manager
+        // image manager must load before font manager
         imageManager.load();
         fontManager.load();
-        // team manager must before nameplates manager
+        // team manager must load before nameplates manager
         teamManager.load();
         nameplateManager.load();
         chatBubblesManager.load();

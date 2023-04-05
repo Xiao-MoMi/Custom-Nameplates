@@ -17,8 +17,12 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import io.th0rgal.oraxen.config.Settings;
+import io.th0rgal.oraxen.utils.VirtualFile;
+import io.th0rgal.oraxen.utils.ZipUtils;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
@@ -31,10 +35,16 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ResourceManager {
 
@@ -175,6 +185,28 @@ public class ResourceManager {
             String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator;
             plugin.saveResource(path + "bars.png", true);
         }
+        setPackFormat();
+    }
+
+    private void setPackFormat() {
+        plugin.saveResource("ResourcePack" + File.separator + "pack.mcmeta", false);
+        File format_file = new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack.mcmeta");
+        String line;
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(format_file), StandardCharsets.UTF_8))) {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
+                        "ResourcePack" + File.separator + "pack.mcmeta")), StandardCharsets.UTF_8))) {
+            writer.write(sb.toString().replace("%version%", String.valueOf(plugin.getVersionHelper().getPack_format())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveOffsets() {
@@ -284,7 +316,7 @@ public class ResourceManager {
     private void hookCopy(File resourcePack_folder) {
         if (ConfigManager.itemsAdderHook){
             try {
-                FileUtils.copyDirectory(resourcePack_folder, new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack") );
+                FileUtils.copyDirectory(new File(resourcePack_folder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack" + File.separator + "assets") );
             }
             catch (IOException e){
                 e.printStackTrace();

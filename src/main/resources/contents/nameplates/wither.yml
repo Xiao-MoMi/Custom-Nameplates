@@ -4,7 +4,7 @@ left:
   image: wither_left
   height: 16
   ascent: 12
-  width: 16
+  width: 13
 middle:
   image: wither_middle
   height: 16
@@ -14,4 +14,4 @@ right:
   image: wither_right
   height: 16
   ascent: 12
-  width: 16
+  width: 13

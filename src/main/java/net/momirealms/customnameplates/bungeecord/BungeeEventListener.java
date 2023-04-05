@@ -30,9 +30,9 @@ import java.util.Objects;
 
 public class BungeeEventListener implements Listener {
 
-    private final NameplatesBungeeCord plugin;
+    private final CustomNameplates plugin;
 
-    public BungeeEventListener (NameplatesBungeeCord plugin) {
+    public BungeeEventListener (CustomNameplates plugin) {
         this.plugin = plugin;
     }
 

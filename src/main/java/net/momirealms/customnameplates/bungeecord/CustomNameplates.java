@@ -19,9 +19,9 @@ package net.momirealms.customnameplates.bungeecord;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class NameplatesBungeeCord extends Plugin {
+public class CustomNameplates extends Plugin {
 
-    public static NameplatesBungeeCord bungeePlugin;
+    public static CustomNameplates bungeePlugin;
     private BungeeEventListener bungeeEventListener;
     private BungeeConfigManager bungeeConfigManager;
 
@@ -45,7 +45,7 @@ public class NameplatesBungeeCord extends Plugin {
         return bungeeConfigManager;
     }
 
-    public static NameplatesBungeeCord getPlugin() {
+    public static CustomNameplates getPlugin() {
         return bungeePlugin;
     }
 }

@@ -4,7 +4,7 @@ left:
   image: cat_left
   height: 16
   ascent: 12
-  width: 16
+  width: 14
 middle:
   image: cat_middle
   height: 16
@@ -14,4 +14,4 @@ right:
   image: cat_right
   height: 16
   ascent: 12
-  width: 16
+  width: 14

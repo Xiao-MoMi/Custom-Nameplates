@@ -23,6 +23,7 @@ import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -35,10 +36,13 @@ public class VersionHelper {
     private final CustomNameplates plugin;
     private final String pluginVersion;
     private boolean isLatest;
+    private final int pack_format;
 
     public VersionHelper(CustomNameplates plugin) {
         this.plugin = plugin;
         this.pluginVersion = plugin.getDescription().getVersion();
+        this.isVersionNewerThan1_19_R2();
+        this.pack_format = getPack_format(serverVersion);
     }
 
     public boolean isVersionNewerThan1_19_R2() {
@@ -80,10 +84,31 @@ public class VersionHelper {
                     AdventureUtils.consoleMessage("[CustomNameplates] Latest version: <green>" + newest);
                     AdventureUtils.consoleMessage("[CustomNameplates] Update is available: <u>https://polymart.org/resource/customnameplates.2543<!u>");
                 }
-            } catch (Exception exception) {
+            } catch (IOException e) {
+                isLatest = true;
                 Log.warn("Error occurred when checking update");
             }
         });
+    }
+
+    private int getPack_format(String version) {
+        switch (version) {
+            case "v1_19_R3" -> {
+                return 13;
+            }
+            case "v1_19_R2" -> {
+                return 12;
+            }
+            case "v1_19_R1" -> {
+                return 9;
+            }
+            case "v1_18_R1", "v1_18_R2" -> {
+                return 8;
+            }
+            default -> {
+                return 7;
+            }
+        }
     }
 
     private boolean compareVer(String newV, String currentV) {
@@ -140,5 +165,9 @@ public class VersionHelper {
 
     public boolean isLatest() {
         return isLatest || !ConfigManager.checkUpdate;
+    }
+
+    public int getPack_format() {
+        return pack_format;
     }
 }
