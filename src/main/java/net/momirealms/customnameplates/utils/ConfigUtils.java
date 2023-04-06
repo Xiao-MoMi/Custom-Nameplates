@@ -62,7 +62,8 @@ public class ConfigUtils {
     public static YamlConfiguration readData(File file) {
         if (!file.exists()) {
             try {
-                if (!file.getParentFile().mkdirs() || !file.createNewFile()) {
+                file.getParentFile().mkdirs();
+                if (!file.createNewFile()) {
                     AdventureUtils.consoleMessage("<red>[CustomNameplates] Failed to generate data files!</red>");
                 }
             } catch (IOException e) {
