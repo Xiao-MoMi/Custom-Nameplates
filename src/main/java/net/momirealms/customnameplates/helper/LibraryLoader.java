@@ -28,7 +28,7 @@ package net.momirealms.customnameplates.helper;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import net.momirealms.customnameplates.CustomNameplates;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.InputStream;

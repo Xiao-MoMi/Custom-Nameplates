@@ -242,10 +242,10 @@ public class NameplateManager extends Function {
         String current = getEquippedNameplate(player);
         if (!nameplate.equals(current)) {
             plugin.getDataManager().equipNameplate(player, nameplate);
-            CustomNameplatesAPI.getAPI().updateNameplateTeam(player);
+            CustomNameplatesAPI.getInstance().updateNameplateTeam(player);
             Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
                 plugin.getDataManager().equipNameplate(player, current);
-                CustomNameplatesAPI.getAPI().updateNameplateTeam(player);
+                CustomNameplatesAPI.getInstance().updateNameplateTeam(player);
             },this.getPreview_time() * 20);
         }
         showPlayerArmorStandTags(player);

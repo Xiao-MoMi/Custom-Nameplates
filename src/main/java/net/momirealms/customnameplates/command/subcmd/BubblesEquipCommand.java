@@ -43,7 +43,7 @@ public class BubblesEquipCommand extends AbstractSubCommand {
             AdventureUtils.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_notAvailable);
             return true;
         }
-        CustomNameplatesAPI.getAPI().equipBubble((Player) sender, args.get(0));
+        CustomNameplatesAPI.getInstance().equipBubble((Player) sender, args.get(0));
         AdventureUtils.playerMessage((Player) sender, MessageManager.prefix + MessageManager.bb_equip.replace("{Bubble}", CustomNameplates.getInstance().getChatBubblesManager().getBubbleConfig(args.get(0)).display_name()));
         return true;
     }

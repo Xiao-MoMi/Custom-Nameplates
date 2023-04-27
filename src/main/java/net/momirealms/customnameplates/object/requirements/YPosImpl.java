@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.object.requirements;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.List;

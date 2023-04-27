@@ -19,27 +19,6 @@ package net.momirealms.customnameplates.object.actionbar;
 
 import net.momirealms.customnameplates.object.requirements.Requirement;
 
-public class ActionBarConfig {
+public record ActionBarConfig(int interval, String[] texts, Requirement[] conditions) {
 
-    private final int interval;
-    private final String[] texts;
-    private final Requirement[] conditions;
-
-    public ActionBarConfig(int interval, String[] texts, Requirement[] conditions) {
-        this.texts = texts;
-        this.conditions = conditions;
-        this.interval = interval;
-    }
-
-    public String[] getTexts() {
-        return texts;
-    }
-
-    public Requirement[] getConditions() {
-        return conditions;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
 }

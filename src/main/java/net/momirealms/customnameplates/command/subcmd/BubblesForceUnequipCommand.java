@@ -40,7 +40,7 @@ public class BubblesForceUnequipCommand extends AbstractSubCommand {
         if (lackArgs(sender, 1, args.size()) || playerNotOnline(sender, args.get(0)))
             return true;
         Player player = Bukkit.getPlayer(args.get(0));
-        CustomNameplatesAPI.getAPI().unEquipBubble(player);
+        CustomNameplatesAPI.getInstance().unEquipBubble(player);
         AdventureUtils.sendMessage(sender,MessageManager.prefix + MessageManager.bb_force_unEquip.replace("{Player}", args.get(0)));
         return true;
     }

@@ -40,7 +40,7 @@ public class NameplatesForceUnequipCommand extends AbstractSubCommand {
         if (lackArgs(sender, 1, args.size()) || playerNotOnline(sender, args.get(0)))
           return true;
         Player player = Bukkit.getPlayer(args.get(0));
-        CustomNameplatesAPI.getAPI().unEquipNameplate(player);
+        CustomNameplatesAPI.getInstance().unEquipNameplate(player);
         AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_unEquip.replace("{Player}", args.get(0)));
         return true;
     }

@@ -144,14 +144,19 @@ public class ActionBarManager extends Function {
         if ((overlay != null && overlay || position != null && position == 2)) {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
-                Component component = GsonComponentSerializer.gson().deserialize(packet.getStrings().read(0));
-                if (component instanceof ScoreComponent scoreComponent) {
-                    if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
-                        return;
+                String json = packet.getStrings().read(0);
+                if (json != null && !json.equals("")) {
+                    Component component = GsonComponentSerializer.gson().deserialize(json);
+                    if (component instanceof ScoreComponent scoreComponent) {
+                        if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
+                            return;
+                        }
                     }
+                    event.setCancelled(true);
+                    actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
+                } else {
+                    event.setCancelled(true);
                 }
-                event.setCancelled(true);
-                actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
             }
         }
     }

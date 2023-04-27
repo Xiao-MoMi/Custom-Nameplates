@@ -40,7 +40,7 @@ public class NameplatesForceEquipCommand extends AbstractSubCommand {
     public boolean onCommand(CommandSender sender, List<String> args) {
         if (lackArgs(sender, 2, args.size()) || playerNotOnline(sender, args.get(0)) || notExist(sender, "nameplate", args.get(1))) return true;
         Player player = Bukkit.getPlayer(args.get(0));
-        CustomNameplatesAPI.getAPI().equipNameplate(player, args.get(1));
+        CustomNameplatesAPI.getInstance().equipNameplate(player, args.get(1));
         AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_force_equip.replace("{Nameplate}", CustomNameplates.getInstance().getNameplateManager().getNameplateConfig(args.get(1)).display_name()).replace("{Player}", args.get(0)));
         return true;
     }

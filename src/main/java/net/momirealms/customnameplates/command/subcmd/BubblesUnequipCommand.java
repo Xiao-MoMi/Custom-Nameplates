@@ -38,7 +38,7 @@ public class BubblesUnequipCommand extends AbstractSubCommand {
     public boolean onCommand(CommandSender sender, List<String> args) {
         if (noConsoleExecute(sender)) return true;
         Player player = (Player) sender;
-        CustomNameplatesAPI.getAPI().unEquipBubble(player);
+        CustomNameplatesAPI.getInstance().unEquipBubble(player);
         AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.bb_unEquip);
         return true;
     }

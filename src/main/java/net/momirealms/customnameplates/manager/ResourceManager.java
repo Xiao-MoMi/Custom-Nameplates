@@ -20,9 +20,6 @@ package net.momirealms.customnameplates.manager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import io.th0rgal.oraxen.config.Settings;
-import io.th0rgal.oraxen.utils.VirtualFile;
-import io.th0rgal.oraxen.utils.ZipUtils;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
@@ -31,20 +28,14 @@ import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class ResourceManager {
 
@@ -300,6 +291,7 @@ public class ResourceManager {
         return Character.toString(ch);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void saveSplit(String texture_folder_path) {
         try {
             plugin.saveResource("space_split.png", false);

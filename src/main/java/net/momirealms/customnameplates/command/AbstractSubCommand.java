@@ -98,12 +98,12 @@ public abstract class AbstractSubCommand {
 
     protected boolean notExist(CommandSender commandSender, String type, String value) {
         if (type.equals("nameplate")) {
-            if (!CustomNameplatesAPI.getAPI().doesNameplateExist(value)) {
+            if (!CustomNameplatesAPI.getInstance().doesNameplateExist(value)) {
                 AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.np_not_exist);
                 return true;
             }
         } else if (type.equals("bubble")) {
-            if (!CustomNameplatesAPI.getAPI().doesBubbleExist(value)) {
+            if (!CustomNameplatesAPI.getInstance().doesBubbleExist(value)) {
                 AdventureUtils.sendMessage(commandSender, MessageManager.prefix + MessageManager.bb_not_exist);
                 return true;
             }

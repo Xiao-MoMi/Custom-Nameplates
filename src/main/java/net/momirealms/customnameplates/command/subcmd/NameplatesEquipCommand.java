@@ -43,7 +43,7 @@ public class NameplatesEquipCommand extends AbstractSubCommand {
             return true;
         }
         Player player = (Player) sender;
-        CustomNameplatesAPI.getAPI().equipNameplate(player, args.get(0));
+        CustomNameplatesAPI.getInstance().equipNameplate(player, args.get(0));
         AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.np_equip.replace("{Nameplate}", CustomNameplates.getInstance().getNameplateManager().getNameplateConfig(args.get(0)).display_name()));
         return true;
     }

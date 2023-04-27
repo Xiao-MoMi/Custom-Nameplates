@@ -35,6 +35,11 @@ public class CustomNameplatesAPI {
         api = this;
     }
 
+    public static CustomNameplatesAPI getInstance() {
+        return api;
+    }
+
+    @Deprecated
     public static CustomNameplatesAPI getAPI() {
         return api;
     }

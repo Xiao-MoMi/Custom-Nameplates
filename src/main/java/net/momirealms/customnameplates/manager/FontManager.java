@@ -27,7 +27,7 @@ import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.font.ThinASCIIWidth;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

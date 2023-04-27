@@ -41,13 +41,9 @@ public class ArmorStandUtils {
         sendSpawnPacket(player, id);
         sendMetaPacket(player, id, component);
         for (int i = 1; i < duration * 20 - 1; i++){
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
-                sendTeleportPacket(player, id);
-            }, i);
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> sendTeleportPacket(player, id), i);
         }
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()->{
-            sendDestroyPacket(player, id);
-        }, duration * 20L);
+        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> sendDestroyPacket(player, id), duration * 20L);
     }
 
     public static void sendSpawnPacket(Player player, int id) {

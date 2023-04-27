@@ -38,7 +38,7 @@ public class NameplatesUnequipCommand extends AbstractSubCommand {
     public boolean onCommand(CommandSender sender, List<String> args) {
         if (noConsoleExecute(sender)) return true;
         Player player = (Player) sender;
-        CustomNameplatesAPI.getAPI().unEquipNameplate(player);
+        CustomNameplatesAPI.getInstance().unEquipNameplate(player);
         AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.np_unEquip);
         return true;
     }

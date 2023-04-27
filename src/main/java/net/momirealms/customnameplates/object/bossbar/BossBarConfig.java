@@ -20,39 +20,6 @@ package net.momirealms.customnameplates.object.bossbar;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import org.bukkit.boss.BarColor;
 
-public class BossBarConfig {
+public record BossBarConfig(String[] texts, Overlay overlay, BarColor color, int interval, Requirement[] conditions) {
 
-    private final String[] texts;
-    private final int interval;
-    private final Overlay overlay;
-    private final BarColor color;
-    private final Requirement[] conditions;
-
-    public BossBarConfig(String[] texts, Overlay overlay, BarColor color, int interval, Requirement[] conditions) {
-        this.texts = texts;
-        this.overlay = overlay;
-        this.color = color;
-        this.interval = interval;
-        this.conditions = conditions;
-    }
-
-    public String[] getTexts() {
-        return texts;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public Overlay getOverlay() {
-        return overlay;
-    }
-
-    public BarColor getColor() {
-        return color;
-    }
-
-    public Requirement[] getConditions() {
-        return conditions;
-    }
 }

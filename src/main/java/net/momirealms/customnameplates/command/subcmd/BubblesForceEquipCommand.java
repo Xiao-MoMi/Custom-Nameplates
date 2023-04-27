@@ -42,7 +42,7 @@ public class BubblesForceEquipCommand extends AbstractSubCommand {
             return true;
 
         Player player = Bukkit.getPlayer(args.get(0));
-        CustomNameplatesAPI.getAPI().equipBubble(player, args.get(1));
+        CustomNameplatesAPI.getInstance().equipBubble(player, args.get(1));
         AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.bb_force_equip.replace("{Bubble}", CustomNameplates.getInstance().getChatBubblesManager().getBubbleConfig(args.get(1)).display_name()).replace("{Player}", args.get(0)));
         return true;
     }
