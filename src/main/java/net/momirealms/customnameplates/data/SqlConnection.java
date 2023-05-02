@@ -48,8 +48,23 @@ public class SqlConnection {
         HikariConfig hikariConfig = new HikariConfig();
         String sql = "mysql";
         if (storageMode.equalsIgnoreCase("MariaDB")) {
+            try {
+                Class.forName("org.mariadb.jdbc.Driver");
+            } catch (ClassNotFoundException e1) {
+                AdventureUtils.consoleMessage("<red>[CustomNameplates] No sql driver is found.");
+            }
             hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
             sql = "mariadb";
+        } else {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e1) {
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                } catch (ClassNotFoundException e2) {
+                    AdventureUtils.consoleMessage("<red>[CustomNameplates] No sql driver is found.");
+                }
+            }
         }
         table = config.getString(storageMode + ".table");
         hikariConfig.setPoolName("[CustomNameplates]");

@@ -4,10 +4,9 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.2.0.5'
+version = '2.2.0.5.1'
 
 repositories {
-    mavenCentral()
     maven {name = "aliyun-repo"; url = "https://maven.aliyun.com/repository/public/"}
     maven {name = 'papermc-repo'; url = 'https://papermc.io/repo/repository/maven-public/'}
     maven {name = 'sonatype'; url = 'https://oss.sonatype.org/content/groups/public/'}
@@ -16,6 +15,7 @@ repositories {
     maven {name = "jitpack"; url = 'https://jitpack.io'}
     maven {name = "codecrafter47-repo"; url = 'https://nexus.codecrafter47.de/content/repositories/public/'}
     maven {name = "opencollab-snapshot-repo"; url = 'https://repo.opencollab.dev/main/'}
+    mavenCentral()
 }
 
 dependencies {
