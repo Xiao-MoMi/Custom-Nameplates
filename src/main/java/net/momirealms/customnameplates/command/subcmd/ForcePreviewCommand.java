@@ -70,9 +70,10 @@ public class ForcePreviewCommand extends AbstractSubCommand {
                     .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(nameplateConfig.color()))).font(Key.key("minecraft:default"))
                             .append(MiniMessage.miniMessage().deserialize(suffixImage)));
             ArmorStandUtils.preview(holoComponent, player, (int) nameplateManager.getPreview_time());
-        }
-        else {
+        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND) {
             nameplateManager.showPlayerArmorStandTags(player, nameplate);
+        } else {
+            AdventureUtils.sendMessage(sender, MessageManager.prefix + "<white>Nameplate is disabled.");
         }
         return true;
     }

@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;
+import net.momirealms.customnameplates.object.nameplate.mode.DisableNameplate;
 import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
 import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
 import net.momirealms.customnameplates.object.nameplate.mode.armorstand.ArmorStandTag;
@@ -161,6 +162,8 @@ public class NameplateManager extends Function {
                     contentMap.put(new ConditionalText(requirements, text), offset);
                 }
             }
+        } else if (mode == DisplayMode.DISABLE) {
+            this.nameplateTag = new DisableNameplate(plugin);
         }
         plugin.getTeamManager().setTeamPacketInterface();
         if (this.nameplateTag != null) {

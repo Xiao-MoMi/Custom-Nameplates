@@ -1,5 +1,5 @@
-# mode: Team / Armor_Stand
-# 模式 队伍/盔甲架
+# mode: Team / Armor_Stand / Disable
+# 模式 队伍/盔甲架/禁用
 mode: Team
 
 # Disable this when you are running a BungeeCord server

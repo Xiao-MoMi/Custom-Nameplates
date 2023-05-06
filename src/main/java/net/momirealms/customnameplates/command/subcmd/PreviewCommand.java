@@ -57,9 +57,11 @@ public class PreviewCommand extends AbstractSubCommand {
                                 .append(team.getNameplateSuffixComponent()));
                 ArmorStandUtils.preview(full, player, (int) nameplateManager.getPreview_time());
             }
-        }
-        else {
+        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND) {
             nameplateManager.showPlayerArmorStandTags(player);
+        } else {
+            AdventureUtils.playerMessage(player, MessageManager.prefix + "<white>Nameplate is disabled.");
+            return true;
         }
         AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.preview);
         return true;
