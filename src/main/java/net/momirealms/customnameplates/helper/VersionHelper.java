@@ -32,6 +32,7 @@ import java.net.URLConnection;
 public class VersionHelper {
 
     private boolean isNewerThan1_19_R2;
+    private boolean isNewerThan1_19;
     private String serverVersion;
     private final CustomNameplates plugin;
     private final String pluginVersion;
@@ -41,11 +42,11 @@ public class VersionHelper {
     public VersionHelper(CustomNameplates plugin) {
         this.plugin = plugin;
         this.pluginVersion = plugin.getDescription().getVersion();
-        this.isVersionNewerThan1_19_R2();
+        this.initialize();
         this.pack_format = getPack_format(serverVersion);
     }
 
-    public boolean isVersionNewerThan1_19_R2() {
+    public void initialize() {
         if (serverVersion == null) {
             this.serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             String[] split = serverVersion.split("_");
@@ -53,8 +54,16 @@ public class VersionHelper {
             if (main_ver >= 20) isNewerThan1_19_R2 = true;
             else if (main_ver == 19) isNewerThan1_19_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
             else isNewerThan1_19_R2 = false;
+            isNewerThan1_19 = main_ver >= 19;
         }
+    }
+
+    public boolean isVersionNewerThan1_19_R2() {
         return isNewerThan1_19_R2;
+    }
+
+    public boolean isVersionNewerThan1_19() {
+        return isNewerThan1_19;
     }
 
     public void checkUpdate() {
@@ -170,4 +179,5 @@ public class VersionHelper {
     public int getPack_format() {
         return pack_format;
     }
+
 }

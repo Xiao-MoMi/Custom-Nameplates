@@ -17,15 +17,22 @@
 
 package net.momirealms.customnameplates.manager;
 
+import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ScoreComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.listener.packet.ActionBarListener;
+import net.momirealms.customnameplates.listener.packet.ChatMessageListener;
 import net.momirealms.customnameplates.listener.packet.SystemChatListener;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.actionbar.ActionBarConfig;
@@ -49,7 +56,8 @@ public class ActionBarManager extends Function {
     private final LinkedHashMap<String, ActionBarConfig> actionBarConfigMap;
     private final ConcurrentHashMap<UUID, ActionBarTask> actionBarTaskMap;
     private final ActionBarListener actionBarListener;
-    private final SystemChatListener systemChatListener;
+    private SystemChatListener systemChatListener;
+    private ChatMessageListener chatMessageListener;
     private final JoinQuitListener joinQuitListener;
     private final CustomNameplates plugin;
 
@@ -59,7 +67,11 @@ public class ActionBarManager extends Function {
         this.actionBarTaskMap = new ConcurrentHashMap<>();
         this.joinQuitListener = new JoinQuitListener(this);
         this.actionBarListener = new ActionBarListener(this);
-        this.systemChatListener = new SystemChatListener(this);
+        if (plugin.getVersionHelper().isVersionNewerThan1_19()) {
+            this.systemChatListener = new SystemChatListener(this);
+        } else {
+            this.chatMessageListener = new ChatMessageListener(this);
+        }
     }
 
     @Override
@@ -67,8 +79,9 @@ public class ActionBarManager extends Function {
         if (!ConfigManager.enableActionBar) return;
         this.loadConfig();
         Bukkit.getPluginManager().registerEvents(joinQuitListener, plugin);
-        CustomNameplates.getProtocolManager().addPacketListener(actionBarListener);
-        CustomNameplates.getProtocolManager().addPacketListener(systemChatListener);
+        if (actionBarListener != null) CustomNameplates.getProtocolManager().addPacketListener(actionBarListener);
+        if (systemChatListener != null) CustomNameplates.getProtocolManager().addPacketListener(systemChatListener);
+        if (chatMessageListener != null) CustomNameplates.getProtocolManager().addPacketListener(chatMessageListener);
         for (Player player : Bukkit.getOnlinePlayers()) {
             onJoin(player);
         }
@@ -80,8 +93,9 @@ public class ActionBarManager extends Function {
             actionBarTask.stop();
         }
         actionBarConfigMap.clear();
-        CustomNameplates.getProtocolManager().removePacketListener(actionBarListener);
-        CustomNameplates.getProtocolManager().removePacketListener(systemChatListener);
+        if (actionBarListener != null) CustomNameplates.getProtocolManager().removePacketListener(actionBarListener);
+        if (systemChatListener != null) CustomNameplates.getProtocolManager().removePacketListener(systemChatListener);
+        if (chatMessageListener != null) CustomNameplates.getProtocolManager().removePacketListener(chatMessageListener);
         HandlerList.unregisterAll(joinQuitListener);
     }
 
@@ -135,27 +149,42 @@ public class ActionBarManager extends Function {
         }
     }
 
+    // 1.19+
     public void onReceiveSystemChatPacket(PacketEvent event) {
         PacketContainer packet = event.getPacket();
-        // 1.19+
         Boolean overlay = packet.getBooleans().readSafely(0);
-        // lower version
-        Integer position = packet.getIntegers().readSafely(0);
-        if ((overlay != null && overlay || position != null && position == 2)) {
+        if (overlay != null && overlay) {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
-                String json = packet.getStrings().read(0);
+                event.setCancelled(true);
+                String json = packet.getStrings().readSafely(0);
                 if (json != null && !json.equals("")) {
                     Component component = GsonComponentSerializer.gson().deserialize(json);
-                    if (component instanceof ScoreComponent scoreComponent) {
-                        if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
-                            return;
-                        }
+                    if (component instanceof TranslatableComponent) {
+                        return;
                     }
-                    event.setCancelled(true);
                     actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
-                } else {
+                }
+            }
+        }
+    }
+
+    // lower version
+    public void onReceiveChatMessagePacket(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        EnumWrappers.ChatType type = packet.getChatTypes().readSafely(0);
+        if (type == EnumWrappers.ChatType.GAME_INFO) {
+            ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
+            if (actionBarTask != null) {
+                WrappedChatComponent wrappedChatComponent = packet.getChatComponents().read(0);
+                if (wrappedChatComponent != null) {
                     event.setCancelled(true);
+                    String json = wrappedChatComponent.getJson();
+                    Component component = GsonComponentSerializer.gson().deserialize(json);
+                    if (component instanceof TranslatableComponent) {
+                        return;
+                    }
+                    actionBarTask.setOtherText(AdventureUtils.getMiniMessageFormat(component), System.currentTimeMillis());
                 }
             }
         }

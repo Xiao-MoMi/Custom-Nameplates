@@ -28,7 +28,6 @@ package net.momirealms.customnameplates.helper;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import net.momirealms.customnameplates.CustomNameplates;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -96,13 +95,13 @@ public final class LibraryLoader {
         }
 
         if (!saveLocation.exists()) {
-            throw new RuntimeException("Unable to download dependency: " + d.toString());
+            throw new RuntimeException("Unable to download dependency: " + d);
         }
 
         try {
             URL_INJECTOR.get().addURL(saveLocation.toURI().toURL());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load dependency: " + saveLocation.toString(), e);
+            throw new RuntimeException("Unable to load dependency: " + saveLocation, e);
         }
     }
 
@@ -111,7 +110,7 @@ public final class LibraryLoader {
         File serverDir = pluginDataFolder.getParentFile().getParentFile();
 
         File helperDir = new File(serverDir, "libraries");
-        String[] split = StringUtils.split(dependency.getGroupId(), ".");
+        String[] split = dependency.getGroupId().split("\\.");
         File jarDir;
         StringJoiner stringJoiner = new StringJoiner(File.separator);
         for (String str : split) {

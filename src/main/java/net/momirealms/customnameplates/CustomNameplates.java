@@ -69,6 +69,7 @@ public final class CustomNameplates extends JavaPlugin {
         protocolManager = ProtocolLibrary.getProtocolManager();
         AdventureUtils.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
         this.fix();
+        this.versionHelper = new VersionHelper(this);
         this.configManager = new ConfigManager();
         this.messageManager = new MessageManager();
         this.teamManager = new TeamManager(this);
@@ -82,7 +83,6 @@ public final class CustomNameplates extends JavaPlugin {
         this.fontManager = new FontManager(this);
         this.imageManager = new ImageManager(this);
         this.chatBubblesManager = new ChatBubblesManager(this);
-        this.versionHelper = new VersionHelper(this);
         this.customNameplatesAPI = new CustomNameplatesAPI(this);
         this.customNameplatesAPI.init();
         this.registerCommands();
@@ -111,6 +111,7 @@ public final class CustomNameplates extends JavaPlugin {
         TimeZone timeZone = TimeZone.getDefault();
         String libRepo = timeZone.getID().startsWith("Asia") ? "https://maven.aliyun.com/repository/public/" : "https://repo.maven.apache.org/maven2/";
         LibraryLoader.load("commons-io","commons-io","2.11.0", libRepo);
+        LibraryLoader.load("org.apache.commons","commons-lang3","3.12.0", libRepo);
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1", libRepo);
         LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3", libRepo);
         LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.1.2", libRepo);

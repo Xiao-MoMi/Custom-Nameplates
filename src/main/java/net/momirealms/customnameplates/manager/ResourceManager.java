@@ -28,7 +28,6 @@ import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
 import java.io.*;
@@ -90,7 +89,7 @@ public class ResourceManager {
             jo_np.add("file", new JsonPrimitive(ConfigManager.namespace + ":" + ConfigManager.images_folder_path.replaceAll("\\\\", "/") + simpleChar.getFile()));
             addCharToArray(jsonArray, simpleChar, jo_np);
             try {
-                FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "images" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + StringUtils.replace(ConfigManager.images_folder_path, "\\", File.separator) + simpleChar.getFile()));
+                FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "images" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + ConfigManager.images_folder_path.replace("\\", File.separator) + simpleChar.getFile()));
             } catch (IOException e) {
                 AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to copy images to resource pack.</red>");
             }
@@ -106,7 +105,7 @@ public class ResourceManager {
                 jo_np.add("file", new JsonPrimitive(ConfigManager.namespace + ":" + ConfigManager.nameplates_folder_path.replaceAll("\\\\", "/") + simpleChar.getFile()));
                 addCharToArray(jsonArray, simpleChar, jo_np);
                 try {
-                    FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "nameplates" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + StringUtils.replace(ConfigManager.nameplates_folder_path, "\\", File.separator) + simpleChar.getFile()));
+                    FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "nameplates" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + ConfigManager.nameplates_folder_path.replace("\\", File.separator) + simpleChar.getFile()));
                 } catch (IOException e) {
                     AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to copy nameplates to resource pack.</red>");
                 }
@@ -124,7 +123,7 @@ public class ResourceManager {
                 jo_bb.add("file", new JsonPrimitive(ConfigManager.namespace + ":" + ConfigManager.bubbles_folder_path.replaceAll("\\\\","/") + simpleChar.getFile()));
                 addCharToArray(jsonArray, simpleChar, jo_bb);
                 try {
-                    FileUtils.copyFile(new File(plugin.getDataFolder(),"contents" + File.separator + "bubbles" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separator + StringUtils.replace(ConfigManager.bubbles_folder_path, "\\", File.separator) + simpleChar.getFile()));
+                    FileUtils.copyFile(new File(plugin.getDataFolder(),"contents" + File.separator + "bubbles" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separator + ConfigManager.bubbles_folder_path.replace("\\", File.separator) + simpleChar.getFile()));
                 }
                 catch (IOException e){
                     AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to copy bubbles to resource pack.</red>");
@@ -147,7 +146,7 @@ public class ResourceManager {
                 jo_bg.add("file", new JsonPrimitive(ConfigManager.namespace + ":" + ConfigManager.backgrounds_folder_path.replaceAll("\\\\","/") + simpleChar.getFile()));
                 addCharToArray(jsonArray, simpleChar, jo_bg);
                 try {
-                    FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "backgrounds" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + StringUtils.replace(ConfigManager.backgrounds_folder_path, "\\", File.separator) + simpleChar.getFile()));
+                    FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "backgrounds" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + ConfigManager.backgrounds_folder_path.replace("\\", File.separator) + simpleChar.getFile()));
                 }
                 catch (IOException e){
                     AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to copy backgrounds to resource pack.</red>");
@@ -295,7 +294,7 @@ public class ResourceManager {
     private void saveSplit(String texture_folder_path) {
         try {
             plugin.saveResource("space_split.png", false);
-            FileUtils.copyFile(new File(plugin.getDataFolder(),"space_split.png"), new File(texture_folder_path + File.separator + StringUtils.replace(ConfigManager.space_split_folder_path, "\\", File.separator) + "space_split.png"));
+            FileUtils.copyFile(new File(plugin.getDataFolder(),"space_split.png"), new File(texture_folder_path + File.separator + ConfigManager.space_split_folder_path.replace("\\", File.separator) + "space_split.png"));
             File file = new File(plugin.getDataFolder(),"space_split.png");
             if (file.exists()) {
                 file.delete();

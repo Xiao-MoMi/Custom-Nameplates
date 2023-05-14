@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.object.requirements;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public record YPosImpl(List<String> yPos) implements Requirement {
     public boolean isConditionMet(Player player) {
         int y = (int) player.getLocation().getY();
         for (String range : yPos) {
-            String[] yMinMax = StringUtils.split(range, "~");
+            String[] yMinMax = range.split("~");
             if (y > Integer.parseInt(yMinMax[0]) && y < Integer.parseInt(yMinMax[1])) {
                 return true;
             }

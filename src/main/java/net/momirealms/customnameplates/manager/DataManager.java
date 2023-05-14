@@ -21,6 +21,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.data.*;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -82,7 +83,7 @@ public class DataManager extends Function {
         }
         else {
             playerDataMap.put(uuid, playerData);
-            if (!ConfigManager.enableNameplates) return;
+            if (!ConfigManager.enableNameplates || plugin.getNameplateManager().getMode() == DisplayMode.DISABLE) return;
             plugin.getTeamManager().getTeamNameInterface().onJoin(player);
             plugin.getTeamManager().createTeam(uuid);
         }

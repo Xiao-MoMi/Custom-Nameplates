@@ -24,16 +24,16 @@ import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ActionBarManager;
 
-public class ActionBarListener extends PacketAdapter {
+public class ChatMessageListener extends PacketAdapter {
 
     private final ActionBarManager actionBarManager;
 
-    public ActionBarListener(ActionBarManager actionBarManager) {
-        super(CustomNameplates.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.SET_ACTION_BAR_TEXT);
+    public ChatMessageListener(ActionBarManager actionBarManager) {
+        super(CustomNameplates.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.CHAT);
         this.actionBarManager = actionBarManager;
     }
 
     public void onPacketSending(PacketEvent event) {
-        actionBarManager.onReceiveActionBarPacket(event);
+        actionBarManager.onReceiveChatMessagePacket(event);
     }
 }

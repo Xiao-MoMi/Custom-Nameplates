@@ -29,7 +29,7 @@ public class SystemChatListener extends PacketAdapter {
     private final ActionBarManager actionBarManager;
 
     public SystemChatListener(ActionBarManager actionBarManager) {
-        super(CustomNameplates.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.SYSTEM_CHAT);
+        super(CustomNameplates.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT);
         this.actionBarManager = actionBarManager;
     }
 
