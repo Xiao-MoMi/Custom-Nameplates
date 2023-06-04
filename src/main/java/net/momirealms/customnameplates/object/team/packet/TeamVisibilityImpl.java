@@ -72,7 +72,7 @@ public class TeamVisibilityImpl implements TeamPacketInterface {
 
     private void sendPackets(Player player, PacketContainer packet, InternalStructure internalStructure) {
         internalStructure.getStrings().write(0, "never");
-        internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0,ChatColor.WHITE);
+        internalStructure.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat")).write(0, ChatColor.WHITE);
         CustomNameplates.getProtocolManager().sendServerPacket(player, packet);
     }
 }

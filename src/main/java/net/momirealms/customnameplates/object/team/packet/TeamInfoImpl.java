@@ -24,6 +24,7 @@ import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.helper.Log;
 import net.momirealms.customnameplates.manager.TeamManager;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
 import net.momirealms.customnameplates.object.team.TeamPacketInterface;

@@ -50,8 +50,7 @@ public class PlayerNameTeamImpl implements TeamNameInterface {
     public void onJoin(Player player) {
         if (teamManager.isFakeTeam()) {
             createFakeTeamToAll(player);
-        }
-        else {
+        } else {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             Team team = scoreboard.getTeam(player.getName());
             if (team == null) {
@@ -65,8 +64,7 @@ public class PlayerNameTeamImpl implements TeamNameInterface {
     public void onQuit(Player player) {
         if (teamManager.isFakeTeam()) {
             destroyTeamToAll(player);
-        }
-        else {
+        } else {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             Team team = scoreboard.getTeam(player.getName());
             if (team != null) team.unregister();
@@ -76,14 +74,14 @@ public class PlayerNameTeamImpl implements TeamNameInterface {
     @Override
     public void unload() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            destroyTeamToAll(player);
+            onQuit(player);
         }
     }
 
     @Override
     public void load() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            createFakeTeamToAll(player);
+            onJoin(player);
         }
     }
 

@@ -137,7 +137,12 @@ public class ActionBarManager extends Function {
         if (wrappedChatComponent != null) {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
-                Component component = GsonComponentSerializer.gson().deserialize(wrappedChatComponent.getJson());
+                String strJson = wrappedChatComponent.getJson();
+                if (strJson.endsWith("\"objective\":\"actionbar\"}}")) {
+                    return;
+                }
+
+                Component component = GsonComponentSerializer.gson().deserialize(strJson);
                 if (component instanceof ScoreComponent scoreComponent) {
                     if (scoreComponent.name().equals("nameplates") && scoreComponent.objective().equals("actionbar")) {
                         return;
@@ -176,9 +181,9 @@ public class ActionBarManager extends Function {
         if (type == EnumWrappers.ChatType.GAME_INFO) {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
+                event.setCancelled(true);
                 WrappedChatComponent wrappedChatComponent = packet.getChatComponents().read(0);
                 if (wrappedChatComponent != null) {
-                    event.setCancelled(true);
                     String json = wrappedChatComponent.getJson();
                     Component component = GsonComponentSerializer.gson().deserialize(json);
                     if (component instanceof TranslatableComponent) {

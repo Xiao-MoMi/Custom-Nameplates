@@ -2,7 +2,7 @@
 # 模式 队伍/盔甲架/禁用
 mode: Team
 
-# Disable this when you are running a BungeeCord server
+# Disable this if you meet "Team xxx already exists" when you are running a BungeeCord server
 # You can also install BungeeTabListPlus or TAB on BungeeCord side to fix
 # 当你使用BungeeCord服务端的时候请禁用此选项或在bc上安装BungeeTabListPlus或TAB
 create-fake-team: true
