@@ -36,6 +36,7 @@ public class ArmorStandManager {
     private final Vector<Player> nearbyPlayers;
     private Player[] nearbyPlayerArray ;
     private final Player owner;
+    private double hatOffset;
 
     public ArmorStandManager(Player owner) {
         this.owner = owner;
@@ -169,5 +170,14 @@ public class ArmorStandManager {
             fakeArmorStand.setOffset(fakeArmorStand.getOffset() + lineSpace);
             fakeArmorStand.teleport();
         }
+    }
+
+    public double getHatOffset() {
+        return hatOffset;
+    }
+
+    public void setHatOffset(double hatOffset) {
+        this.hatOffset = hatOffset;
+        teleport();
     }
 }

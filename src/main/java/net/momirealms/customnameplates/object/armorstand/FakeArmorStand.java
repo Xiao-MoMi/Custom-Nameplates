@@ -204,6 +204,7 @@ public class FakeArmorStand {
             else y += 1.8;
         }
         else y += 0.2;
+        y += asm.getHatOffset();
         return new Location(null, x, y, z);
     }
 

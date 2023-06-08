@@ -162,6 +162,8 @@ public class NameplateManager extends Function {
                     contentMap.put(new ConditionalText(requirements, text), offset);
                 }
             }
+        } else if (mode == DisplayMode.TEXT_DISPLAY) {
+
         } else if (mode == DisplayMode.DISABLE) {
             this.nameplateTag = new DisableNameplate(plugin);
         }

@@ -205,13 +205,16 @@ public class ChatBubblesManager extends EntityTag {
     @Override
     public void onJoin(Player player) {
         super.onJoin(player);
-        super.createArmorStandManager(player);
     }
 
     @Override
     public void onQuit(Player player) {
         super.onQuit(player);
         coolDownMap.remove(player);
+    }
+
+    public void init(Player player) {
+        createArmorStandManager(player);
     }
 
     private boolean isCoolDown(Player player, int lines) {

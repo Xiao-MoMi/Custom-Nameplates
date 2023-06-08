@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.object.nameplate.mode;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.EntityTagListener;
+import net.momirealms.customnameplates.listener.compatibility.MagicCosmeticsListener;
 import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -34,10 +35,14 @@ public abstract class EntityTag extends AbstractNameplateTag {
 
     protected EntityTagListener entityTagListener;
     protected PacketsHandler handler;
+    protected MagicCosmeticsListener magicCosmeticsListener;
 
     protected EntityTag(CustomNameplates plugin) {
         super(plugin);
         this.entityTagListener = new EntityTagListener(this);
+        if (Bukkit.getPluginManager().getPlugin("MagicCosmetics") != null) {
+            this.magicCosmeticsListener = new MagicCosmeticsListener(this);
+        }
     }
 
     @Override
@@ -45,6 +50,7 @@ public abstract class EntityTag extends AbstractNameplateTag {
         super.load();
         handler.load();
         Bukkit.getPluginManager().registerEvents(entityTagListener, CustomNameplates.getInstance());
+        if (magicCosmeticsListener != null) Bukkit.getPluginManager().registerEvents(magicCosmeticsListener, CustomNameplates.getInstance());
     }
 
     @Override
@@ -56,11 +62,13 @@ public abstract class EntityTag extends AbstractNameplateTag {
         }
         armorStandManagerMap.clear();
         HandlerList.unregisterAll(entityTagListener);
+        if (magicCosmeticsListener != null) HandlerList.unregisterAll(magicCosmeticsListener);
     }
 
     @Override
     public void onJoin(Player player) {
         handler.onJoin(player);
+        init(player);
     }
 
     @Override
@@ -70,6 +78,10 @@ public abstract class EntityTag extends AbstractNameplateTag {
         if (asm != null) {
             asm.destroy();
         }
+    }
+
+    public void init(Player player) {
+
     }
 
     public ArmorStandManager createArmorStandManager(Player player) {

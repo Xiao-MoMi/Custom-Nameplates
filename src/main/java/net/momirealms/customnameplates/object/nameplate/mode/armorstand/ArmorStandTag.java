@@ -56,12 +56,15 @@ public class ArmorStandTag extends EntityTag {
     @Override
     public void onJoin(Player player) {
         super.onJoin(player);
-        ArmorStandManager asm = createArmorStandManager(player);
-        asm.initNameplateArmorStands();
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             spawnArmorStands(viewer, player);
             spawnArmorStands(player, viewer);
         }
+    }
+
+    public void init(Player player) {
+        ArmorStandManager asm = createArmorStandManager(player);
+        asm.initNameplateArmorStands();
     }
 
     @Override
