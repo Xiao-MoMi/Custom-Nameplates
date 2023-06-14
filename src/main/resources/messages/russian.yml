@@ -3,7 +3,7 @@ messages:
   no-perm: '<red>Нет прав!</red>'
   lack-args: '<white>Недостаточно параметров!</white>'
   reload: '<white>Перезагружено! Не забудьте переустановить свой ресурспак.</white>'
-  none-args: '<white>Нет аргументов'
+  none-args: '<white>В команде обязательны аргументы.'
   invalid-args: '<white>Неверные аргументы'
   not-online: '<white>Игрок {Player} не в сети!</white>'
   no-console: '<white>Эта команда может быть использована только игроком!</white>'
