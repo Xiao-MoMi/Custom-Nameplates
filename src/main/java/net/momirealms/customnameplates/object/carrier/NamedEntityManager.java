@@ -15,53 +15,54 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.armorstand;
+package net.momirealms.customnameplates.object.carrier;
 
-import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ArmorStandManager {
+public class NamedEntityManager {
 
-    private final ConcurrentHashMap<UUID, FakeArmorStand> armorStands = new ConcurrentHashMap<>();
-    private FakeArmorStand[] armorStandArray;
+    private final ConcurrentHashMap<UUID, NamedEntity> namedEntities = new ConcurrentHashMap<>();
+    private NamedEntity[] namedEntityArray;
     private final Vector<Player> nearbyPlayers;
     private Player[] nearbyPlayerArray ;
     private final Player owner;
     private double hatOffset;
+    private final NamedEntityCarrier namedEntityCarrier;
+    private double highestTextHeight;
 
-    public ArmorStandManager(Player owner) {
+    public NamedEntityManager(NamedEntityCarrier namedEntityCarrier, Player owner) {
         this.owner = owner;
         this.nearbyPlayers = new Vector<>();
-        this.armorStandArray = new FakeArmorStand[0];
+        this.namedEntityArray = new NamedEntityImpl[0];
         this.nearbyPlayerArray = new Player[0];
+        this.namedEntityCarrier = namedEntityCarrier;
+        this.init();
     }
 
-    public void initNameplateArmorStands() {
-        Set<Map.Entry<ConditionalText, Double>> entries = CustomNameplates.getInstance().getNameplateManager().getContentMap().entrySet();
+    public void init() {
+        Set<Map.Entry<ConditionalText, Double>> entries = namedEntityCarrier.getPersistentText().entrySet();
         for (Map.Entry<ConditionalText, Double> entry : entries) {
-            addArmorStand(UUID.randomUUID(), new FakeArmorStand(
+            addNamedEntity(UUID.randomUUID(), new NamedEntityImpl(
                     this,
                     owner,
                     new DynamicText(owner, entry.getKey().text()),
                     entry.getValue(),
-                    entry.getKey().requirements()
+                    entry.getKey().requirements(),
+                    entry.getKey().textDisplayMeta()
             ));
         }
     }
 
-    public void addArmorStand(UUID uuid, FakeArmorStand fakeArmorStand) {
-        this.armorStands.put(uuid, fakeArmorStand);
-        this.armorStandArray = armorStands.values().toArray(new FakeArmorStand[0]);
-        for (Player p : nearbyPlayerArray) fakeArmorStand.spawn(p);
+    public void addNamedEntity(UUID uuid, NamedEntity namedEntity) {
+        this.namedEntities.put(uuid, namedEntity);
+        this.namedEntityArray = namedEntities.values().toArray(new NamedEntity[0]);
+        for (Player p : nearbyPlayerArray) namedEntity.spawn(p);
     }
 
     public Player[] getNearbyPlayers(){
@@ -75,72 +76,71 @@ public class ArmorStandManager {
     public void spawn(Player viewer) {
         nearbyPlayers.add(viewer);
         nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
-        for (FakeArmorStand fakeArmorStand : armorStandArray)
+        for (NamedEntity fakeArmorStand : namedEntityArray)
             if (fakeArmorStand.canShow())
                 fakeArmorStand.spawn(viewer);
     }
 
     public void refresh(boolean force) {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            fakeArmorStand.refresh();
+        highestTextHeight = -2;
+        for (NamedEntity fakeArmorStand : namedEntityArray) {
             boolean canShow = fakeArmorStand.canShow();
             if (!canShow) {
                 if (fakeArmorStand.isShown()) {
                     fakeArmorStand.destroy();
                 }
-            }
-            else {
+            } else {
                 if (fakeArmorStand.isShown()) {
-                    if (fakeArmorStand.getDynamicText().update() || force)
+                    if (fakeArmorStand.getDynamicText() != null && (fakeArmorStand.getDynamicText().update() || force))
                         fakeArmorStand.refresh();
-                }
-                else {
+                } else {
                     fakeArmorStand.spawn();
                 }
+                highestTextHeight = Math.max(fakeArmorStand.getOffset(), highestTextHeight);
             }
         }
     }
 
     public void destroy() {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            fakeArmorStand.destroy();
+        for (NamedEntity entity : namedEntityArray) {
+            entity.destroy();
         }
         nearbyPlayers.clear();
         nearbyPlayerArray = new Player[0];
     }
 
     public void teleport(Player viewer) {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            if (fakeArmorStand.isShown())
-                fakeArmorStand.teleport(viewer);
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.isShown())
+                entity.teleport(viewer);
         }
     }
 
     public void teleport() {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            if (fakeArmorStand.isShown())
-                fakeArmorStand.teleport();
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.isShown())
+                entity.teleport();
         }
     }
 
     public void setSneak(boolean sneaking, boolean respawn) {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            if (fakeArmorStand.isShown())
-                fakeArmorStand.setSneak(sneaking, respawn);
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.isShown())
+                entity.setSneak(sneaking, respawn);
         }
     }
 
     public void respawn() {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            if (fakeArmorStand.isShown())
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.isShown())
                 for (Player viewer : nearbyPlayerArray)
-                    fakeArmorStand.respawn(viewer);
+                    entity.respawn(viewer);
         }
     }
 
     public void destroy(Player viewer) {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            fakeArmorStand.destroy(viewer);
+        for (NamedEntity entity : namedEntityArray) {
+            entity.destroy(viewer);
         }
         unregisterPlayer(viewer);
     }
@@ -152,23 +152,17 @@ public class ArmorStandManager {
     }
 
     public void removeArmorStand(UUID uuid) {
-        FakeArmorStand fakeArmorStand = armorStands.remove(uuid);
-        if (fakeArmorStand != null) {
-            fakeArmorStand.destroy();
-            armorStandArray = armorStands.values().toArray(new FakeArmorStand[0]);
+        NamedEntity entity = namedEntities.remove(uuid);
+        if (entity != null) {
+            entity.destroy();
+            namedEntityArray = namedEntities.values().toArray(new NamedEntity[0]);
         }
     }
 
-    public void addBubble(UUID uuid, FakeArmorStand fakeArmorStand, int stayTime, double lineSpace) {
-        ascent(lineSpace);
-        addArmorStand(uuid, fakeArmorStand);
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), () -> removeArmorStand(uuid), stayTime * 20L);
-    }
-
     public void ascent(double lineSpace) {
-        for (FakeArmorStand fakeArmorStand : armorStandArray) {
-            fakeArmorStand.setOffset(fakeArmorStand.getOffset() + lineSpace);
-            fakeArmorStand.teleport();
+        for (NamedEntity entity : namedEntityArray) {
+            entity.setOffset(entity.getOffset() + lineSpace);
+            entity.teleport();
         }
     }
 
@@ -179,5 +173,13 @@ public class ArmorStandManager {
     public void setHatOffset(double hatOffset) {
         this.hatOffset = hatOffset;
         teleport();
+    }
+
+    public DisplayMode getDisplayMode() {
+        return namedEntityCarrier.getDisplayMode();
+    }
+
+    public double getHighestTextHeight() {
+        return highestTextHeight;
     }
 }

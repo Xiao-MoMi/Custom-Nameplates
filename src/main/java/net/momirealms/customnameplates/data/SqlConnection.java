@@ -82,7 +82,6 @@ public class SqlConnection {
                 hikariConfig.addDataSourceProperty(property, config.getString(storageMode + ".properties." + property));
             }
         }
-
         try {
             hikariDataSource = new HikariDataSource(hikariConfig);
         } catch (HikariPool.PoolInitializationException e) {

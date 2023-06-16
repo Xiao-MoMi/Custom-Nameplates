@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.emoji;
+package net.momirealms.customnameplates.object.img;
 
 import org.bukkit.entity.Player;
 

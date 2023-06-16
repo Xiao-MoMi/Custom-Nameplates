@@ -15,23 +15,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.listener;
+package net.momirealms.customnameplates.object.placeholders;
 
-import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+public record StaticText(String text, int value, StaticState staticState) {
 
-public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implements Listener {
+    public enum StaticState {
 
-    @EventHandler
-    public void onSneak(PlayerToggleSneakEvent event) {
-        namedEntityCarrier.onSneak(event.getPlayer(), event.isSneaking());
-    }
-
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent event) {
-        namedEntityCarrier.onRespawn(event.getPlayer());
+        LEFT,
+        MIDDLE,
+        RIGHT
     }
 }

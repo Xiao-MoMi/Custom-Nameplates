@@ -34,6 +34,7 @@ import org.bukkit.event.HandlerList;
 
 import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -89,8 +90,8 @@ public class BossBarManager extends Function {
             if (bossBarSection == null) continue;
             bossBars.put(key, new BossBarConfig(
                     bossBarSection.getString("text") == null ? bossBarSection.getStringList("dynamic-text").toArray(new String[0]) : new String[]{bossBarSection.getString("text")},
-                    Overlay.valueOf(bossBarSection.getString("overlay","progress").toUpperCase()),
-                    BarColor.valueOf(bossBarSection.getString("color","white").toUpperCase()),
+                    Overlay.valueOf(bossBarSection.getString("overlay","progress").toUpperCase(Locale.ENGLISH)),
+                    BarColor.valueOf(bossBarSection.getString("color","white").toUpperCase(Locale.ENGLISH)),
                     bossBarSection.getInt("switch-interval", 5) * 20,
                     ConfigUtils.getRequirements(bossBarSection.getConfigurationSection("conditions"))
             ));

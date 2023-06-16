@@ -15,11 +15,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.nameplate.mode;
+package net.momirealms.customnameplates.object.img;
 
-public enum DisplayMode {
-    TEAM,
-    ARMOR_STAND,
-    TEXT_DISPLAY,
-    DISABLE
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import org.bukkit.entity.Player;
+
+public class ItemsAdderImageImpl implements ImageParser{
+
+    @Override
+    public String parse(Player player, String text) {
+        return FontImageWrapper.replaceFontImages(player, text).replace("§f","<white>").replace("§r","</white>");
+    }
 }

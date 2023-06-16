@@ -27,7 +27,7 @@ import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
-import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ArmorStandUtils;
 import org.bukkit.Bukkit;
@@ -70,7 +70,7 @@ public class ForcePreviewCommand extends AbstractSubCommand {
                     .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(nameplateConfig.color()))).font(Key.key("minecraft:default"))
                             .append(MiniMessage.miniMessage().deserialize(suffixImage)));
             ArmorStandUtils.preview(holoComponent, player, (int) nameplateManager.getPreview_time());
-        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND) {
+        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND || nameplateManager.getMode() == DisplayMode.TEXT_DISPLAY) {
             nameplateManager.showPlayerArmorStandTags(player, nameplate);
         } else {
             AdventureUtils.sendMessage(sender, MessageManager.prefix + "<white>Nameplate is disabled.");

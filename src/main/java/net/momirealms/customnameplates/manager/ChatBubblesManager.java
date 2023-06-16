@@ -22,20 +22,19 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.api.events.BubblesEvent;
-import net.momirealms.customnameplates.listener.AbstractChatListener;
-import net.momirealms.customnameplates.listener.AsyncChatListener;
-import net.momirealms.customnameplates.listener.TrChatListener;
-import net.momirealms.customnameplates.listener.VentureChatListener;
+import net.momirealms.customnameplates.listener.*;
+import net.momirealms.customnameplates.object.DisplayMode;
+import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
-import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
-import net.momirealms.customnameplates.object.armorstand.FakeArmorStand;
-import net.momirealms.customnameplates.object.bubble.BBPacketsHandle;
+import net.momirealms.customnameplates.object.carrier.NamedEntityManager;
+import net.momirealms.customnameplates.object.carrier.NamedEntityImpl;
 import net.momirealms.customnameplates.object.bubble.BubbleConfig;
-import net.momirealms.customnameplates.object.emoji.ImageParser;
-import net.momirealms.customnameplates.object.emoji.ItemsAdderImpl;
-import net.momirealms.customnameplates.object.emoji.OraxenImpl;
+import net.momirealms.customnameplates.object.carrier.TextDisplayMeta;
+import net.momirealms.customnameplates.object.img.ImageParser;
+import net.momirealms.customnameplates.object.img.ItemsAdderImageImpl;
+import net.momirealms.customnameplates.object.img.OraxenImageImpl;
 import net.momirealms.customnameplates.object.font.OffsetFont;
-import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
+import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.bukkit.Bukkit;
@@ -51,13 +50,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ChatBubblesManager extends EntityTag {
+public class ChatBubblesManager extends Function {
 
     private AbstractChatListener chatListener;
     private ImageParser imageParser;
+    private final ConcurrentHashMap<Player, Long> coolDownMap;
+    private final HashMap<String, BubbleConfig> bubbleConfigMap;
+    private final CustomNameplates plugin;
+    private NamedEntityCarrier namedEntityCarrier;
+    private final JoinQuitListener joinQuitListener;
     private String defaultBubble;
     private String defaultStartFormat;
     private String defaultEndFormat;
@@ -70,25 +75,13 @@ public class ChatBubblesManager extends EntityTag {
     private int maxCharLength;
     private int lengthPerLine;
     private String[] channels;
-    private final ConcurrentHashMap<Player, Long> coolDownMap;
-    private final HashMap<String, BubbleConfig> bubbleConfigMap;
-    private final CustomNameplates plugin;
+    private TextDisplayMeta textDisplayMeta;
 
     public ChatBubblesManager(CustomNameplates plugin) {
-        super(plugin);
         this.plugin = plugin;
         this.bubbleConfigMap = new HashMap<>();
         this.coolDownMap = new ConcurrentHashMap<>();
-        super.handler = new BBPacketsHandle(this);
-    }
-
-    @Override
-    public void loadToAllPlayers() {
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            createArmorStandManager(all);
-            for (Player player : Bukkit.getOnlinePlayers())
-                spawnArmorStands(player, all);
-        }
+        this.joinQuitListener = new JoinQuitListener(this);
     }
 
     @Override
@@ -99,6 +92,7 @@ public class ChatBubblesManager extends EntityTag {
         this.loadBubbles();
         this.registerListener();
         this.registerImageParser();
+        this.namedEntityCarrier.load();
     }
 
     @Override
@@ -108,31 +102,35 @@ public class ChatBubblesManager extends EntityTag {
         this.bubbleConfigMap.clear();
         this.coolDownMap.clear();
         if (chatListener != null) HandlerList.unregisterAll(chatListener);
+        if (joinQuitListener != null) HandlerList.unregisterAll(joinQuitListener);
+        if (namedEntityCarrier != null) namedEntityCarrier.unload();
     }
 
     private void loadConfig() {
         YamlConfiguration config = ConfigUtils.getConfig("configs"  + File.separator + "bubble.yml");
-        defaultBubble = config.getString("default-bubbles", "none");
+        DisplayMode displayMode = DisplayMode.valueOf(config.getString("mode", "ARMOR_STAND").toUpperCase(Locale.ENGLISH));
+        defaultBubble = config.getString("default-bubbles", "chat");
         prefix = config.getString("text-prefix", "");
         suffix = config.getString("text-suffix", "");
         lineSpace = config.getDouble("line-spacing");
         defaultStartFormat = config.getString("default-format.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
         defaultEndFormat = config.getString("default-format.end", "<!u></gradient>");
-        yOffset = config.getDouble("bottom-line-Y-offset");
+        yOffset = config.getDouble("bottom-line-Y-offset") + (displayMode == DisplayMode.TEXT_DISPLAY ? 1.2 : 0);
         stayTime = config.getInt("stay-time", 5);
         coolDown = (int) (config.getDouble("cool-down", 1) * 1000);
         maxCharLength = config.getInt("max-character-length", 100);
         channels = config.getStringList("blacklist-channels").toArray(new String[0]);
         lengthPerLine = config.getInt("characters-per-line", 30);
+        textDisplayMeta = ConfigUtils.getTextDisplayMeta(config.getConfigurationSection("text-display-options"));
+        namedEntityCarrier = new NamedEntityCarrier(plugin, displayMode, new HashMap<>());
     }
 
     private void registerImageParser() {
         PluginManager pluginManager = Bukkit.getPluginManager();
         if (pluginManager.isPluginEnabled("Oraxen")) {
-            this.imageParser = new OraxenImpl();
-        }
-        else if (pluginManager.isPluginEnabled("ItemsAdder")) {
-            this.imageParser = new ItemsAdderImpl();
+            this.imageParser = new OraxenImageImpl();
+        } else if (pluginManager.isPluginEnabled("ItemsAdder")) {
+            this.imageParser = new ItemsAdderImageImpl();
         }
     }
 
@@ -146,6 +144,7 @@ public class ChatBubblesManager extends EntityTag {
             this.chatListener = new AsyncChatListener(this);
         }
         pluginManager.registerEvents(chatListener, plugin);
+        pluginManager.registerEvents(joinQuitListener, plugin);
     }
 
     private void loadBubbles() {
@@ -203,18 +202,8 @@ public class ChatBubblesManager extends EntityTag {
     }
 
     @Override
-    public void onJoin(Player player) {
-        super.onJoin(player);
-    }
-
-    @Override
     public void onQuit(Player player) {
-        super.onQuit(player);
         coolDownMap.remove(player);
-    }
-
-    public void init(Player player) {
-        createArmorStandManager(player);
     }
 
     private boolean isCoolDown(Player player, int lines) {
@@ -232,14 +221,12 @@ public class ChatBubblesManager extends EntityTag {
         int mid_amount;
         if (totalWidth - 1 <= bubble.tail().getWidth() ) {
             mid_amount = -1;
-        }
-        else {
+        } else {
             mid_amount = (totalWidth - 1 - bubble.tail().getWidth()) / (bubble.middle().getWidth());
         }
         if (mid_amount == -1) {
             stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
-        }
-        else if (mid_amount == 0) {
+        } else if (mid_amount == 0) {
             stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
             stringBuilder.append(
                     plugin.getFontManager().getShortestNegChars(
@@ -247,8 +234,7 @@ public class ChatBubblesManager extends EntityTag {
                     )
             );
             stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
-        }
-        else {
+        } else {
             stringBuilder.append(bubble.middle().getChars()).append(OffsetFont.NEG_1.getCharacter());
             for (int i = 0; i < mid_amount; i++) {
                 if (i == mid_amount / 2) stringBuilder.append(bubble.tail().getChars()).append(OffsetFont.NEG_1.getCharacter());
@@ -295,8 +281,7 @@ public class ChatBubblesManager extends EntityTag {
         if (bubbleConfig == null || key.equals("none")) {
             text = defaultStartFormat + PlaceholderAPI.setPlaceholders(player, prefix) + text + PlaceholderAPI.setPlaceholders(player, suffix) + defaultEndFormat;
             json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(imageParser != null ? imageParser.parse(player, text) : text));
-        }
-        else {
+        } else {
             String parsedPrefix = PlaceholderAPI.setPlaceholders(player, prefix);
             String parsedSuffix = PlaceholderAPI.setPlaceholders(player, suffix);
             String strippedPrefix = AdventureUtils.stripAllTags(parsedPrefix);
@@ -307,10 +292,22 @@ public class ChatBubblesManager extends EntityTag {
             String finalStr = ConfigManager.surroundWithFont(bubbleImage) + bubbleConfig.startFormat() + parsedPrefix + text + parsedSuffix + bubbleConfig.endFormat() + ConfigManager.surroundWithFont(suffixImage);
             json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(finalStr));
         }
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
 
-        ArmorStandManager asm = getArmorStandManager(player);
         if (asm != null) {
-            asm.addBubble(UUID.randomUUID(), new FakeArmorStand(asm, player, json, yOffset), stayTime, lineSpace);
+            double offset = yOffset;
+            DisplayMode nameplateMode = plugin.getNameplateManager().getMode();
+            if (nameplateMode == DisplayMode.ARMOR_STAND || nameplateMode == DisplayMode.TEXT_DISPLAY) {
+                NamedEntityCarrier carrier = (NamedEntityCarrier) plugin.getNameplateManager().getTextCarrier();
+                NamedEntityManager nem = carrier.getNamedEntityManager(player);
+                if (nem != null) {
+                    offset += nem.getHighestTextHeight();
+                }
+            }
+            UUID uuid = UUID.randomUUID();
+            asm.ascent(lineSpace);
+            asm.addNamedEntity(uuid, new NamedEntityImpl(asm, player, json, offset, textDisplayMeta));
+            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), () -> asm.removeArmorStand(uuid), stayTime * 20L);
         }
     }
 
@@ -326,11 +323,6 @@ public class ChatBubblesManager extends EntityTag {
             }
         }
         return result;
-    }
-
-    @Override
-    public void arrangeRefreshTask() {
-
     }
 
     @Nullable

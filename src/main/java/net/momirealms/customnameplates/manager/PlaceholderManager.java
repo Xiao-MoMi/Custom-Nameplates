@@ -21,7 +21,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
-import net.momirealms.customnameplates.object.StaticText;
+import net.momirealms.customnameplates.object.placeholders.StaticText;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.placeholders.*;
 import net.momirealms.customnameplates.utils.ConfigUtils;
@@ -29,10 +29,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,8 +46,10 @@ public class PlaceholderManager extends Function {
     private final HashMap<String, DescentText> descentUnicodeMap;
     private final HashMap<String, ConditionalTexts> conditionalTextsMap;
     private final HashMap<String, VanillaHud> vanillaHudMap;
+    private CustomNameplates plugin;
 
     public PlaceholderManager(CustomNameplates plugin) {
+        this.plugin = plugin;
         this.nameplatePlaceholders = new NameplatePlaceholders(plugin, this);
         this.descent_fonts = new HashSet<>();
         this.descent_unicode_fonts = new HashSet<>();
@@ -106,11 +105,6 @@ public class PlaceholderManager extends Function {
             loadDescentText(descentSection);
         }
 
-        ConfigurationSection descentUnicodeSection = config.getConfigurationSection("descent-unicode");
-        if (descentUnicodeSection != null) {
-            loadDescentUnicode(descentUnicodeSection);
-        }
-
         ConfigurationSection conditionalSection = config.getConfigurationSection("conditional-text");
         if (conditionalSection != null) {
             loadConditionalText(conditionalSection);
@@ -119,6 +113,15 @@ public class PlaceholderManager extends Function {
         ConfigurationSection vanillaHudSection = config.getConfigurationSection("vanilla-hud");
         if (vanillaHudSection != null) {
             loadVanillaHud(vanillaHudSection);
+        }
+
+        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
+            return;
+        }
+
+        ConfigurationSection descentUnicodeSection = config.getConfigurationSection("descent-unicode");
+        if (descentUnicodeSection != null) {
+            loadDescentUnicode(descentUnicodeSection);
         }
     }
 
@@ -129,7 +132,8 @@ public class PlaceholderManager extends Function {
                PlaceholderAPI.setPlaceholders(null, section.getString(key + ".images.half", "")) + ConfigManager.surroundWithFont(String.valueOf(OffsetFont.NEG_2.getCharacter())),
                PlaceholderAPI.setPlaceholders(null, section.getString(key + ".images.full", "")) + ConfigManager.surroundWithFont(String.valueOf(OffsetFont.NEG_2.getCharacter())),
                     section.getString(key + ".placeholder.value"),
-                    section.getString(key + ".placeholder.max-value")
+                    section.getString(key + ".placeholder.max-value"),
+                    section.getBoolean(key + ".reverse", true)
             ));
         }
     }
@@ -142,7 +146,8 @@ public class PlaceholderManager extends Function {
                 for (String priority : innerSection.getKeys(false)) {
                     ConditionalText conditionalText = new ConditionalText(
                             ConfigUtils.getRequirements(innerSection.getConfigurationSection(priority + ".conditions")),
-                            innerSection.getString(priority + ".text")
+                            innerSection.getString(priority + ".text"),
+                            null
                     );
                     conditionalTexts.add(conditionalText);
                 }
@@ -167,7 +172,7 @@ public class PlaceholderManager extends Function {
 
     private void loadStaticText(ConfigurationSection section) {
         for (String key : section.getKeys(false)) {
-            stringStaticTextMap.put(key, new StaticText(section.getString(key + ".text"), section.getInt(key + ".value"), StaticText.StaticState.valueOf(section.getString(key + ".position", "left").toUpperCase())));
+            stringStaticTextMap.put(key, new StaticText(section.getString(key + ".text"), section.getInt(key + ".value"), StaticText.StaticState.valueOf(section.getString(key + ".position", "left").toUpperCase(Locale.ENGLISH))));
         }
     }
 

@@ -17,8 +17,9 @@
 
 package net.momirealms.customnameplates.object;
 
+import net.momirealms.customnameplates.object.carrier.TextDisplayMeta;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 
-public record ConditionalText(Requirement[] requirements, String text) {
+public record ConditionalText(Requirement[] requirements, String text, TextDisplayMeta textDisplayMeta) {
 
 }

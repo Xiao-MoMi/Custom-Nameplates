@@ -15,24 +15,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.nameplate.mode;
+package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.manager.TeamManager;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.Function;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitTask;
 
-public abstract class AbstractNameplateTag extends Function {
+public abstract class AbstractTextCarrier extends Function {
 
     protected BukkitTask refreshTask;
     protected CustomNameplates plugin;
     protected JoinQuitListener joinQuitListener;
+    protected DisplayMode displayMode;
 
-    public AbstractNameplateTag(CustomNameplates plugin) {
+    public AbstractTextCarrier(CustomNameplates plugin, DisplayMode displayMode) {
+        this.displayMode = displayMode;
         this.plugin = plugin;
         this.joinQuitListener = new JoinQuitListener(this);
     }
@@ -50,16 +53,6 @@ public abstract class AbstractNameplateTag extends Function {
         HandlerList.unregisterAll(joinQuitListener);
     }
 
-    @Override
-    public void onJoin(Player player) {
-
-    }
-
-    @Override
-    public void onQuit(Player player) {
-
-    }
-
     public void arrangeRefreshTask() {
         //child
     }
@@ -70,5 +63,9 @@ public abstract class AbstractNameplateTag extends Function {
             teamManager.sendUpdateToAll(player, true);
             teamManager.sendUpdateToOne(player);
         }
+    }
+
+    public DisplayMode getDisplayMode() {
+        return displayMode;
     }
 }

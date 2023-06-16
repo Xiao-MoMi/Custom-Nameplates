@@ -21,7 +21,7 @@ import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
-import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.team.TeamNameInterface;
 import net.momirealms.customnameplates.object.team.TeamPacketInterface;
 import net.momirealms.customnameplates.object.team.name.PlayerNameTeamImpl;
@@ -85,7 +85,7 @@ public class TeamManager extends Function {
     public void setTeamPacketInterface() {
         if (plugin.getNameplateManager().getMode() == DisplayMode.TEAM) {
             teamPacketInterface = new TeamInfoImpl(this);
-        } else if (plugin.getNameplateManager().getMode() == DisplayMode.ARMOR_STAND) {
+        } else if (plugin.getNameplateManager().getMode() == DisplayMode.ARMOR_STAND || plugin.getNameplateManager().getMode() == DisplayMode.TEXT_DISPLAY) {
             teamPacketInterface = new TeamVisibilityImpl(this);
         }
     }

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.armorstand;
+package net.momirealms.customnameplates.object.carrier;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
@@ -23,7 +23,10 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import org.bukkit.Location;
@@ -31,12 +34,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class FakeArmorStand {
+public class NamedEntityImpl implements NamedEntity {
 
-    private final ArmorStandManager asm;
+    private final NamedEntityManager asm;
     private final Player owner;
     private double yOffset;
     private final int entityId;
@@ -46,9 +51,10 @@ public class FakeArmorStand {
     private String textJson;
     private final Requirement[] requirements;
     private boolean isShown;
+    private final TextDisplayMeta textDisplayMeta;
 
-    // nameplate
-    public FakeArmorStand(ArmorStandManager asm, Player owner, DynamicText text, double yOffset, Requirement[] requirements) {
+    //dynamic value
+    public NamedEntityImpl(NamedEntityManager asm, Player owner, DynamicText text, double yOffset, @NotNull Requirement[] requirements, @Nullable TextDisplayMeta textDisplayMeta) {
         this.asm = asm;
         this.entityId = new Random().nextInt(Integer.MAX_VALUE);
         this.owner = owner;
@@ -58,10 +64,11 @@ public class FakeArmorStand {
         this.requirements = requirements;
         this.isShown = false;
         this.textJson = dynamicText.getLatestJson();
+        this.textDisplayMeta = textDisplayMeta;
     }
 
-    // bubble
-    public FakeArmorStand(ArmorStandManager asm, Player owner, String textJson, double yOffset) {
+    //constant value
+    public NamedEntityImpl(NamedEntityManager asm, Player owner, String textJson, double yOffset, @Nullable TextDisplayMeta textDisplayMeta) {
         this.asm = asm;
         this.entityId = new Random().nextInt(Integer.MAX_VALUE);
         this.owner = owner;
@@ -70,8 +77,10 @@ public class FakeArmorStand {
         this.sneaking = owner.isSneaking();
         this.requirements = null;
         this.isShown = true;
+        this.textDisplayMeta = textDisplayMeta;
     }
 
+    @Override
     public boolean canShow() {
         if (requirements == null) return true;
         for (Requirement requirement : requirements) {
@@ -82,16 +91,19 @@ public class FakeArmorStand {
         return true;
     }
 
-    // dynamicText would not be null because bubbles would not be updated
+    @Override
     public void refresh() {
+        if (dynamicText == null) return;
         textJson = dynamicText.getLatestJson();
         updateMetadata();
     }
 
+    @Override
     public double getOffset() {
         return yOffset;
     }
 
+    @Override
     public void setOffset(double offset) {
         if (yOffset == offset) return;
         yOffset = offset;
@@ -100,12 +112,14 @@ public class FakeArmorStand {
         }
     }
 
+    @Override
     public void spawn(Player viewer) {
         for (PacketContainer packet : getSpawnPackets()) {
             CustomNameplates.getProtocolManager().sendServerPacket(viewer, packet);
         }
     }
 
+    @Override
     public void spawn() {
         for (Player all : asm.getNearbyPlayers()) {
             spawn(all);
@@ -113,6 +127,7 @@ public class FakeArmorStand {
         isShown = true;
     }
 
+    @Override
     public void destroy() {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
@@ -122,12 +137,14 @@ public class FakeArmorStand {
         isShown = false;
     }
 
+    @Override
     public void destroy(Player viewer) {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
         CustomNameplates.getProtocolManager().sendServerPacket(viewer, destroyPacket);
     }
 
+    @Override
     public void teleport() {
         PacketContainer packet = getTeleportPacket();
         for (Player all : asm.getNearbyPlayers()) {
@@ -135,6 +152,7 @@ public class FakeArmorStand {
         }
     }
 
+    @Override
     public void teleport(Player viewer) {
         if (!asm.isNearby(viewer) && viewer != owner) {
             asm.spawn(viewer);
@@ -143,6 +161,7 @@ public class FakeArmorStand {
         }
     }
 
+    @Override
     public void setSneak(boolean isSneaking, boolean respawn) {
         this.sneaking = isSneaking;
         if (respawn) {
@@ -155,10 +174,22 @@ public class FakeArmorStand {
         }
     }
 
+    @Override
+    public boolean isShown() {
+        return isShown;
+    }
+
+    @Override
+    public DynamicText getDynamicText() {
+        return dynamicText;
+    }
+
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void respawn(Player viewer) {
         destroy(viewer);
         spawn(viewer);
@@ -167,7 +198,7 @@ public class FakeArmorStand {
     public PacketContainer getTeleportPacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
         packet.getIntegers().write(0, entityId);
-        Location location = getArmorStandLocation();
+        Location location = getEntityLocation();
         packet.getDoubles().write(0, location.getX());
         packet.getDoubles().write(1, location.getY());
         packet.getDoubles().write(2, location.getZ());
@@ -185,17 +216,19 @@ public class FakeArmorStand {
         PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metaPacket.getIntegers().write(0, entityId);
         if (CustomNameplates.getInstance().getVersionHelper().isVersionNewerThan1_19_R2()) {
-            WrappedDataWatcher wrappedDataWatcher = createDataWatcher(textJson);
+            WrappedDataWatcher wrappedDataWatcher =
+                    asm.getDisplayMode() == DisplayMode.ARMOR_STAND ?
+                    createArmorStandDataWatcher(textJson) : createTextDisplayDataWatcher(textJson, textDisplayMeta);
             List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
             wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> wrappedDataValueList.add(new WrappedDataValue(entry.getWatcherObject().getIndex(), entry.getWatcherObject().getSerializer(), entry.getRawValue())));
             metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
         } else {
-            metaPacket.getWatchableCollectionModifier().write(0, createDataWatcher(textJson).getWatchableObjects());
+            metaPacket.getWatchableCollectionModifier().write(0, createArmorStandDataWatcher(textJson).getWatchableObjects());
         }
         return metaPacket;
     }
 
-    public Location getArmorStandLocation() {
+    private Location getEntityLocation() {
         double x = owner.getLocation().getX();
         double y = getY() + yOffset;
         double z = owner.getLocation().getZ();
@@ -208,7 +241,7 @@ public class FakeArmorStand {
         return new Location(null, x, y, z);
     }
 
-    protected double getY() {
+    private double getY() {
         Entity vehicle = owner.getVehicle();
         if (vehicle != null) {
             if (vehicle.getType() == EntityType.HORSE) {
@@ -230,7 +263,7 @@ public class FakeArmorStand {
         return owner.getLocation().getY();
     }
 
-    public WrappedDataWatcher createDataWatcher(String json) {
+    private WrappedDataWatcher createArmorStandDataWatcher(String json) {
         WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
         WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
         WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
@@ -246,24 +279,30 @@ public class FakeArmorStand {
         return wrappedDataWatcher;
     }
 
-    public PacketContainer[] getSpawnPackets() {
+    private WrappedDataWatcher createTextDisplayDataWatcher(String textJson, TextDisplayMeta textDisplayMeta) {
+        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(22, WrappedDataWatcher.Registry.getChatComponentSerializer(false)), WrappedChatComponent.fromJson(textJson));
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(24, WrappedDataWatcher.Registry.get(Integer.class)), textDisplayMeta.backgroundColor());
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(14, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 3);
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(25, WrappedDataWatcher.Registry.get(Byte.class)), textDisplayMeta.opacity());
+        int mask = 0;
+        if (textDisplayMeta.hasShadow()) mask += 1;
+        if (textDisplayMeta.isSeeThrough()) mask += 2;
+        if (textDisplayMeta.useDefaultBackground()) mask += 4;
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(26, WrappedDataWatcher.Registry.get(Byte.class)), (byte) mask);
+        return wrappedDataWatcher;
+    }
+
+    private PacketContainer[] getSpawnPackets() {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
         entityPacket.getModifier().write(1, uuid);
-        entityPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
-        Location location = getArmorStandLocation();
+        entityPacket.getEntityTypeModifier().write(0, asm.getDisplayMode() == DisplayMode.ARMOR_STAND ? EntityType.ARMOR_STAND : EntityType.TEXT_DISPLAY);
+        Location location = getEntityLocation();
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY());
         entityPacket.getDoubles().write(2, location.getZ());
         PacketContainer metaPacket = getMetaPacket();
         return new PacketContainer[] {entityPacket, metaPacket};
-    }
-
-    public boolean isShown() {
-        return isShown;
-    }
-
-    public DynamicText getDynamicText() {
-        return dynamicText;
     }
 }

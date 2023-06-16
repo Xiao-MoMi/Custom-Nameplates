@@ -33,6 +33,7 @@ public class VersionHelper {
 
     private boolean isNewerThan1_19_R2;
     private boolean isNewerThan1_19;
+    private boolean isNewerThan1_20;
     private String serverVersion;
     private final CustomNameplates plugin;
     private final String pluginVersion;
@@ -55,6 +56,7 @@ public class VersionHelper {
             else if (main_ver == 19) isNewerThan1_19_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
             else isNewerThan1_19_R2 = false;
             isNewerThan1_19 = main_ver >= 19;
+            isNewerThan1_20 = main_ver >= 20;
         }
     }
 
@@ -64,6 +66,10 @@ public class VersionHelper {
 
     public boolean isVersionNewerThan1_19() {
         return isNewerThan1_19;
+    }
+
+    public boolean isVersionNewerThan1_20() {
+        return isNewerThan1_20;
     }
 
     public void checkUpdate() {
@@ -102,6 +108,9 @@ public class VersionHelper {
 
     private int getPack_format(String version) {
         switch (version) {
+            case "v1_20_R1" -> {
+                return 15;
+            }
             case "v1_19_R3" -> {
                 return 13;
             }

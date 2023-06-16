@@ -17,9 +17,8 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
@@ -147,8 +146,7 @@ public class ResourceManager {
                 addCharToArray(jsonArray, simpleChar, jo_bg);
                 try {
                     FileUtils.copyFile(new File(plugin.getDataFolder(), "contents" + File.separator + "backgrounds" + File.separator + simpleChar.getFile()), new File(textures_file.getPath() + File.separatorChar + ConfigManager.backgrounds_folder_path.replace("\\", File.separator) + simpleChar.getFile()));
-                }
-                catch (IOException e){
+                } catch (IOException e){
                     AdventureUtils.consoleMessage("<red>[CustomNameplates] Error! Failed to copy backgrounds to resource pack.</red>");
                 }
             }
@@ -210,17 +208,40 @@ public class ResourceManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            File outPut = new File(plugin.getDataFolder(),
+                    "ResourcePack" +
+                            File.separator + "assets" +
+                            File.separator + ConfigManager.namespace +
+                            File.separator + "font" +
+                            File.separator + "ascent_" + ascent + ".json");
             try (BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
-                            "ResourcePack" +
-                                    File.separator + "assets" +
-                                    File.separator + ConfigManager.namespace +
-                                    File.separator + "font" +
-                                    File.separator + "ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
+                    new OutputStreamWriter(new FileOutputStream(outPut), StandardCharsets.UTF_8))) {
                 writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (!plugin.getVersionHelper().isVersionNewerThan1_20()) {
+                try {
+                    JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(outPut)));
+                    if (jsonElement.isJsonObject()) {
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.add("type", new JsonPrimitive("legacy_unicode"));
+                        jsonObject.add("sizes", new JsonPrimitive("minecraft:font/glyph_sizes.bin"));
+                        jsonObject.add("template", new JsonPrimitive("minecraft:font/unicode_page_%s.png"));
+                        jsonElement.getAsJsonObject().getAsJsonArray("providers").add(jsonObject);
+                    }
+                    try (FileWriter fileWriter = new FileWriter(outPut))
+                    {
+                        fileWriter.write(jsonElement.toString().replace("\\\\", "\\"));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
+            AdventureUtils.consoleMessage("<white>[CustomNameplates] For the moment decent unicode is not available on 1.20");
+            return;
         }
         for (int ascent : plugin.getPlaceholderManager().getDescent_unicode_fonts()) {
             String line;

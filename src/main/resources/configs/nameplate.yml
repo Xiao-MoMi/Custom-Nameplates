@@ -1,5 +1,5 @@
-# mode: Team / Armor_Stand / Disable
-# 模式 队伍/盔甲架/禁用
+# mode: Team / Armor_Stand / Text_Display(1.19.4+) / Disable
+# 模式 队伍/盔甲架/文字/禁用
 mode: Team
 
 # Disable this if you meet "Team xxx already exists" when you are running a BungeeCord server
@@ -32,7 +32,25 @@ suffix: ''
 armor_stand:
   text_1:
     text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
-    vertical-offset: -0.99
+    vertical-offset: -1
+  text_2:
+    text: '%vault_prefix%'
+    vertical-offset: -0.7
+    conditions:
+      papi-condition:
+        condition_1:
+          type: '!='
+          papi: '%vault_prefix%'
+          value: ''
+
+# Not recommended to use text display because it's not moving as smoothly as armor stand do
+# This is caused by the way how client handles the packet which cannot be solved from server side
+text_display:
+  text_1:
+    text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
+    vertical-offset: -1
+    options:
+      is-see-through: false
   text_2:
     text: '%vault_prefix%'
     vertical-offset: -0.7

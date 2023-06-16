@@ -25,6 +25,7 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.helper.Log;
+import net.momirealms.customnameplates.object.carrier.TextDisplayMeta;
 import net.momirealms.customnameplates.object.requirements.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -91,5 +92,25 @@ public class ConfigUtils {
             }
         }
         return requirements.toArray(new Requirement[0]);
+    }
+
+    public static TextDisplayMeta getTextDisplayMeta(ConfigurationSection section) {
+        if (section == null) return TextDisplayMeta.defaultValue;
+        return new TextDisplayMeta(
+                section.getBoolean("has-shadow", false),
+                section.getBoolean("is-see-through", false),
+                section.getBoolean("use-default-background-color", false),
+                ConfigUtils.rgbToDecimal(section.getString("background-color", "0,0,0,128")),
+                (byte) section.getInt("text-opacity")
+        );
+    }
+
+    public static int rgbToDecimal(String rgba) {
+        String[] split = rgba.split(",");
+        int r = Integer.parseInt(split[0]);
+        int g = Integer.parseInt(split[1]);
+        int b = Integer.parseInt(split[2]);
+        int a = Integer.parseInt(split[3]);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 }

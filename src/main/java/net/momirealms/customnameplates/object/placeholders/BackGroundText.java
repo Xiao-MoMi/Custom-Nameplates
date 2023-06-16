@@ -18,4 +18,5 @@
 package net.momirealms.customnameplates.object.placeholders;
 
 public record BackGroundText(String text, String background, boolean remove_shadow) {
+
 }

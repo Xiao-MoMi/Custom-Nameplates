@@ -17,12 +17,9 @@
 
 package net.momirealms.customnameplates.object;
 
-public record StaticText(String text, int value, StaticState staticState) {
-
-    public enum StaticState {
-
-        LEFT,
-        MIDDLE,
-        RIGHT
-    }
+public enum DisplayMode {
+    TEAM,
+    ARMOR_STAND,
+    TEXT_DISPLAY,
+    DISABLE
 }

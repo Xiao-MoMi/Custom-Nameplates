@@ -23,13 +23,13 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.object.nameplate.mode.PacketsHandler;
+import net.momirealms.customnameplates.object.carrier.AbstractPacketsHandler;
 
 public class EntityDestroyListener extends PacketAdapter {
 
-    private final PacketsHandler handler;
+    private final AbstractPacketsHandler handler;
 
-    public EntityDestroyListener(PacketsHandler handler) {
+    public EntityDestroyListener(AbstractPacketsHandler handler) {
         super(CustomNameplates.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_DESTROY);
         this.handler = handler;
     }

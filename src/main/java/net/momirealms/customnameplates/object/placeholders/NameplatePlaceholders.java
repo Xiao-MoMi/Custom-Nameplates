@@ -25,11 +25,9 @@ import net.momirealms.customnameplates.manager.FontManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.manager.PlaceholderManager;
 import net.momirealms.customnameplates.object.SimpleChar;
-import net.momirealms.customnameplates.object.StaticText;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
 import net.momirealms.customnameplates.utils.AdventureUtils;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -138,24 +136,18 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     private String getEquipped(String param, Player player) {
         if (param.equals("nameplate")) {
             return plugin.getDataManager().getEquippedNameplate(player);
-        }
-        else if (param.equals("bubble")) {
+        } else if (param.equals("bubble")) {
             return plugin.getDataManager().getEquippedBubble(player);
         }
         return "null";
     }
 
     private String getTime(Player player) {
-        World world = player.getWorld();
-        long time = world.getTime();
-        String ap;
-        if (time >= 6000 && time < 18000) ap = " PM";
-        else ap = " AM";
-        int hours = (int) (time / 1000);
+        long time = player.getWorld().getTime();
+        String ap = time >= 6000 && time < 18000 ? " PM" : " AM";
+        int hours = (int) (time / 1000) + 6;
         int minutes = (int) ((time - hours * 1000 ) * 0.06);
-        hours += 6;
-        if (hours >= 24) hours -= 24;
-        if (hours >= 12) hours -= 12;
+        while (hours >= 12) hours -= 12;
         if (minutes < 10) return hours + ":0" + minutes + ap;
         else return hours + ":" + minutes + ap;
     }
@@ -186,16 +178,15 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         int parsedWidth = fontManager.getTotalWidth(AdventureUtils.stripAllTags(parsed));
         if (staticText.staticState() == StaticText.StaticState.LEFT) {
             return parsed + ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth));
-        }
-        else if (staticText.staticState() == StaticText.StaticState.RIGHT) {
+        } else if (staticText.staticState() == StaticText.StaticState.RIGHT) {
             return ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth)) + parsed;
-        }
-        else {
+        } else if (staticText.staticState() == StaticText.StaticState.MIDDLE) {
             int half = (staticText.value() - parsedWidth) / 2;
             String left = ConfigManager.surroundWithFont(fontManager.getOffset(half));
             String right = ConfigManager.surroundWithFont(fontManager.getOffset(staticText.value() - parsedWidth - half));
             return left + parsed + right;
         }
+        return "";
     }
 
     private String getBackground(String param, Player player) {
@@ -222,6 +213,9 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     }
 
     private String getUnicodeDescent(String param, Player player) {
+        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
+            return "Not Available on 1.20";
+        }
         DescentText descentText = placeholderManager.getDescentUnicode(param);
         if (descentText == null) return param + " NOT FOUND";
         String parsed = PlaceholderAPI.setPlaceholders(player, descentText.text());
@@ -237,6 +231,10 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
         int full_amount = point / 2;
         int half_amount = point % 2;
         int empty_amount = 10 - full_amount - half_amount;
-        return "<#FFFEFD>" + vanillaHud.empty().repeat(empty_amount) + vanillaHud.half().repeat(half_amount) + vanillaHud.full().repeat(full_amount) + "</#FFFEFD>";
+        if (vanillaHud.reverse()) {
+            return "<#FFFEFD>" + vanillaHud.empty().repeat(empty_amount) + vanillaHud.half().repeat(half_amount) + vanillaHud.full().repeat(full_amount) + "</#FFFEFD>";
+        } else {
+            return "<#FFFEFD>" + vanillaHud.full().repeat(full_amount) + vanillaHud.half().repeat(half_amount) + vanillaHud.empty().repeat(empty_amount) + "</#FFFEFD>";
+        }
     }
 }

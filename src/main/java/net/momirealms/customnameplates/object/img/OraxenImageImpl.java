@@ -15,15 +15,30 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.emoji;
+package net.momirealms.customnameplates.object.img;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import io.th0rgal.oraxen.OraxenPlugin;
+import io.th0rgal.oraxen.font.FontManager;
+import io.th0rgal.oraxen.font.Glyph;
 import org.bukkit.entity.Player;
 
-public class ItemsAdderImpl implements ImageParser{
+import java.util.Map;
+
+public class OraxenImageImpl implements ImageParser{
+
+    private final FontManager fontManager;
+
+    public OraxenImageImpl() {
+        this.fontManager = OraxenPlugin.get().getFontManager();
+    }
 
     @Override
     public String parse(Player player, String text) {
-        return FontImageWrapper.replaceFontImages(player, text).replace("§f","<white>").replace("§r","</white>");
+        for (Map.Entry<String, Glyph> entry : this.fontManager.getGlyphByPlaceholderMap().entrySet()) {
+            if (entry.getValue().hasPermission(player)) {
+                text = text.replace(entry.getKey(), "<white>" + entry.getValue().getCharacter() + "</white>");
+            }
+        }
+        return text;
     }
 }

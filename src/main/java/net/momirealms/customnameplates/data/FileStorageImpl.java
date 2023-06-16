@@ -61,8 +61,7 @@ public class FileStorageImpl implements DataStorageInterface {
         data.set("nameplate", playerData.getNameplate());
         try {
             data.save(new File(plugin.getDataFolder(), "player_data" + File.separator + playerData.getUuid() + ".yml"));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

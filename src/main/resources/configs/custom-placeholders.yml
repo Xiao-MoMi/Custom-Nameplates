@@ -149,6 +149,7 @@ descent-unicode:
 # %nameplates_vanilla_{0}%
 vanilla-hud:
   stamina_hud:
+    reverse: true
     images:
       empty: "%nameplates_image_stamina_0%"
       half: "%nameplates_image_stamina_1%"

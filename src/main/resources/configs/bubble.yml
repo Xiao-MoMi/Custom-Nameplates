@@ -1,3 +1,15 @@
+# Armor_Stand / Text_Display (1.19.4+)
+mode: Text_Display
+
+# Text display options
+text-display-options:
+  # RGBA
+  background-color: 0,0,0,0
+  has-shadow: false
+  is-see-through: false
+  use-default-background-color: false
+  text-opacity: -1
+
 # blacklist channels
 # 黑名单聊天频道
 blacklist-channels:
@@ -6,7 +18,7 @@ blacklist-channels:
 
 # Player's default chatting bubbles
 # 玩家默认聊天气泡
-default-bubbles: 'none'
+default-bubbles: 'chat'
 
 # Text startFormat when no bubbles equipped
 # 无气泡时的默认聊天格式
@@ -21,11 +33,11 @@ text-suffix: ''
 
 # Space between two bubbles
 # 两行气泡之间的间距
-line-spacing: 0.5
+line-spacing: 0.4
 
 # This decides where the bottom line is
 # 第一行气泡的起始位置
-bottom-line-Y-offset: -0.35
+bottom-line-Y-offset: 0.4
 
 # Seconds
 # This decides how long will the chat hologram remains

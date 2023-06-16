@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.2.0.8'
+version = '2.2.1.0'
 
 repositories {
     maven {name = "aliyun-repo"; url = "https://maven.aliyun.com/repository/public/"}
@@ -62,7 +62,7 @@ processResources {
 shadowJar {
     relocate ('net.kyori', 'net.momirealms.customnameplates.libs.net.kyori')
     relocate ('org.bstats', 'net.momirealms.customnameplates.libs.org.bstats')
-    relocate ('net.momirealms', 'net.momirealms.customnameplates.libs.net.momirealms')
+    relocate ('net.momirealms.biomeapi', 'net.momirealms.customnameplates.libs.net.momirealms.biomeapi')
 }
 
 tasks.register("delete", Delete).get().delete("build/libs/"+project.name+"-"+project.version+".jar")

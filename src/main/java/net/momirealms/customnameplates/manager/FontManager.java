@@ -94,11 +94,8 @@ public class FontManager extends Function {
                 saveResource("unicodes" + File.separator + "unicode_page_" + String.format("%02x", i) + ".png");
             }
         }
-        File template_file = new File(plugin.getDataFolder(), "templates");
-        if (!template_file.exists()) {
-            plugin.saveResource("templates" + File.separator + "default.json", false);
-            plugin.saveResource("templates" + File.separator + "unicode.json", false);
-        }
+        plugin.saveResource("templates" + File.separator + "default.json", true);
+        plugin.saveResource("templates" + File.separator + "unicode.json", true);
     }
 
     public String getSuffixStringWithFont(String text) {

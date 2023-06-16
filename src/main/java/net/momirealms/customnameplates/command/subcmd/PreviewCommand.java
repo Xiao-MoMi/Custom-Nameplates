@@ -25,7 +25,7 @@ import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
-import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ArmorStandUtils;
 import org.bukkit.command.CommandSender;
@@ -57,7 +57,7 @@ public class PreviewCommand extends AbstractSubCommand {
                                 .append(team.getNameplateSuffixComponent()));
                 ArmorStandUtils.preview(full, player, (int) nameplateManager.getPreview_time());
             }
-        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND) {
+        } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND || nameplateManager.getMode() == DisplayMode.TEXT_DISPLAY) {
             nameplateManager.showPlayerArmorStandTags(player);
         } else {
             AdventureUtils.playerMessage(player, MessageManager.prefix + "<white>Nameplate is disabled.");

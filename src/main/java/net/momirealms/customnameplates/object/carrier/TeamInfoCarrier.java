@@ -15,20 +15,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.nameplate.mode.team;
+package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.TeamManager;
-import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;
+import net.momirealms.customnameplates.object.DisplayMode;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class TeamTag extends AbstractNameplateTag {
+public class TeamInfoCarrier extends AbstractTextCarrier {
 
     private final TeamManager teamManager;
 
-    public TeamTag(CustomNameplates plugin) {
-        super(plugin);
+    public TeamInfoCarrier(CustomNameplates plugin) {
+        super(plugin, DisplayMode.TEAM);
         this.teamManager = plugin.getTeamManager();
     }
 

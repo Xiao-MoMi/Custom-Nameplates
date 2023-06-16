@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.nameplate.mode;
+package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.object.Function;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class PacketsHandler extends Function {
+public abstract class AbstractPacketsHandler extends Function {
 
     protected ConcurrentHashMap<Integer, Player> entityIdMap = new ConcurrentHashMap<>();
 

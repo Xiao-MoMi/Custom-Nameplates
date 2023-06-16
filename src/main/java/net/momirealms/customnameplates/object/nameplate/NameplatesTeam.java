@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.object.nameplate;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.DynamicText;
@@ -60,10 +59,9 @@ public class NameplatesTeam {
                 nameplate_prefix = prefix.getLatestValue();
                 nameplate_suffix = suffix.getLatestValue();
             }
-        }
-        else {
+        } else {
             this.color = nameplateConfig.color();
-            String name = PlaceholderAPI.setPlaceholders(player, nameplateManager.getPlayer_name_papi());
+            String name = PlaceholderAPI.setPlaceholders(player, nameplateManager.getPlayerNamePapi());
             if (updated) {
                 nameplate = newNameplate;
                 String text = AdventureUtils.stripAllTags(prefix.getLatestValue())
@@ -93,10 +91,10 @@ public class NameplatesTeam {
     }
 
     public Component getNameplatePrefixComponent() {
-        return MiniMessage.miniMessage().deserialize(nameplate_prefix);
+        return AdventureUtils.getComponentFromMiniMessage(nameplate_prefix);
     }
 
     public Component getNameplateSuffixComponent() {
-        return MiniMessage.miniMessage().deserialize(nameplate_suffix);
+        return AdventureUtils.getComponentFromMiniMessage(nameplate_suffix);
     }
 }

@@ -22,15 +22,10 @@ import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
-import net.momirealms.customnameplates.object.armorstand.ArmorStandManager;
+import net.momirealms.customnameplates.object.carrier.*;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
-import net.momirealms.customnameplates.object.nameplate.mode.AbstractNameplateTag;
-import net.momirealms.customnameplates.object.nameplate.mode.DisableNameplate;
-import net.momirealms.customnameplates.object.nameplate.mode.DisplayMode;
-import net.momirealms.customnameplates.object.nameplate.mode.EntityTag;
-import net.momirealms.customnameplates.object.nameplate.mode.armorstand.ArmorStandTag;
-import net.momirealms.customnameplates.object.nameplate.mode.team.TeamTag;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
@@ -54,16 +49,14 @@ public class NameplateManager extends Function {
     private long preview_time;
     private DisplayMode mode;
     private boolean fakeTeam;
-    private final HashMap<ConditionalText, Double> contentMap;
     private final HashMap<String, NameplateConfig> nameplateConfigMap;
     private final CustomNameplates plugin;
-    private AbstractNameplateTag nameplateTag;
+    private AbstractTextCarrier textCarrier;
     protected HashMap<UUID, Long> previewCoolDown = new HashMap<>();
 
     public NameplateManager(CustomNameplates plugin) {
         this.plugin = plugin;
         this.nameplateConfigMap = new HashMap<>();
-        this.contentMap = new HashMap<>();
     }
 
     @Override
@@ -77,11 +70,10 @@ public class NameplateManager extends Function {
 
     @Override
     public void unload() {
-        if (this.nameplateTag != null) {
-            this.nameplateTag.unload();
-            this.nameplateTag = null;
+        if (this.textCarrier != null) {
+            this.textCarrier.unload();
+            this.textCarrier = null;
         }
-        this.contentMap.clear();
         this.nameplateConfigMap.clear();
     }
 
@@ -130,7 +122,7 @@ public class NameplateManager extends Function {
             SimpleChar leftChar = new SimpleChar(config.getInt("left.height"), config.getInt("left.ascent"), config.getInt("left.width"), left, config.getString("left.image") + ".png");
             SimpleChar middleChar = new SimpleChar(config.getInt("middle.height"), config.getInt("middle.ascent"), config.getInt("middle.width"), middle, config.getString("middle.image") + ".png");
             SimpleChar rightChar = new SimpleChar(config.getInt("right.height"), config.getInt("right.ascent"), config.getInt("right.width"), right, config.getString("right.image") + ".png");
-            ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color", "WHITE")).toUpperCase());
+            ChatColor color = ChatColor.valueOf(Objects.requireNonNull(config.getString("color", "WHITE")).toUpperCase(Locale.ENGLISH));
             nameplateConfigMap.put(key, new NameplateConfig(color, config.getString("display-name"), leftChar, middleChar, rightChar));
         }
         AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + nameplateConfigMap.size() + " <gray>nameplates");
@@ -147,34 +139,41 @@ public class NameplateManager extends Function {
     }
 
     private void loadMode(ConfigurationSection config) {
-        this.mode = DisplayMode.valueOf(config.getString("mode","Team").toUpperCase());
+        this.mode = DisplayMode.valueOf(config.getString("mode","Team").toUpperCase(Locale.ENGLISH));
         if (mode == DisplayMode.TEAM) {
-            this.nameplateTag = new TeamTag(plugin);
-        }
-        else if (mode == DisplayMode.ARMOR_STAND) {
-            this.nameplateTag = new ArmorStandTag(plugin);
+            this.textCarrier = new TeamInfoCarrier(plugin);
+        } else if (mode == DisplayMode.ARMOR_STAND) {
+            HashMap<ConditionalText, Double> contentMap = new HashMap<>();
             ConfigurationSection armorStandSection = config.getConfigurationSection("armor_stand");
             if (armorStandSection != null) {
-                for (String key :armorStandSection.getKeys(false)) {
+                for (String key : armorStandSection.getKeys(false)) {
                     String text = armorStandSection.getString(key + ".text");
                     double offset = armorStandSection.getDouble(key + ".vertical-offset");
                     Requirement[] requirements = ConfigUtils.getRequirements(armorStandSection.getConfigurationSection(key + ".conditions"));
-                    contentMap.put(new ConditionalText(requirements, text), offset);
+                    contentMap.put(new ConditionalText(requirements, text, null), offset);
                 }
             }
+            this.textCarrier = new NamedEntityCarrier(plugin, mode, contentMap);
         } else if (mode == DisplayMode.TEXT_DISPLAY) {
-
+            HashMap<ConditionalText, Double> contentMap = new HashMap<>();
+            ConfigurationSection textDisplaySection = config.getConfigurationSection("text_display");
+            if (textDisplaySection != null) {
+                for (String key :textDisplaySection.getKeys(false)) {
+                    String text = textDisplaySection.getString(key + ".text");
+                    double offset = textDisplaySection.getDouble(key + ".vertical-offset") + 1.2;
+                    Requirement[] requirements = ConfigUtils.getRequirements(textDisplaySection.getConfigurationSection(key + ".conditions"));
+                    TextDisplayMeta textDisplayMeta = ConfigUtils.getTextDisplayMeta(textDisplaySection.getConfigurationSection("options"));
+                    contentMap.put(new ConditionalText(requirements, text, textDisplayMeta), offset);
+                }
+            }
+            this.textCarrier = new NamedEntityCarrier(plugin, mode, contentMap);
         } else if (mode == DisplayMode.DISABLE) {
-            this.nameplateTag = new DisableNameplate(plugin);
+            this.textCarrier = new DisableNameplate(plugin);
         }
         plugin.getTeamManager().setTeamPacketInterface();
-        if (this.nameplateTag != null) {
-            this.nameplateTag.load();
+        if (this.textCarrier != null) {
+            this.textCarrier.load();
         }
-    }
-
-    public HashMap<ConditionalText, Double> getContentMap() {
-        return contentMap;
     }
 
     public String getNameplatePrefixWithFont(String text, NameplateConfig nameplate) {
@@ -230,8 +229,8 @@ public class NameplateManager extends Function {
     }
 
     public void showPlayerArmorStandTags(Player player) {
-        EntityTag entityTag = (EntityTag) this.getNameplateTag();
-        ArmorStandManager asm = entityTag.getArmorStandManager(player);
+        NamedEntityCarrier namedEntityCarrier = (NamedEntityCarrier) this.getTextCarrier();
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
         asm.spawn(player);
         for (int i = 0; i < this.getPreview_time() * 20; i++) {
             Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
@@ -260,8 +259,8 @@ public class NameplateManager extends Function {
         return nameplateConfigMap.containsKey(nameplate);
     }
 
-    public AbstractNameplateTag getNameplateTag() {
-        return nameplateTag;
+    public AbstractTextCarrier getTextCarrier() {
+        return textCarrier;
     }
 
     public HashMap<String, NameplateConfig> getNameplateConfigMap() {
@@ -296,7 +295,7 @@ public class NameplateManager extends Function {
         return nameplateConfigMap.get(nameplate);
     }
 
-    public String getPlayer_name_papi() {
+    public String getPlayerNamePapi() {
         return player_name_papi;
     }
 

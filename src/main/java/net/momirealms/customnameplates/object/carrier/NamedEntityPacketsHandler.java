@@ -15,28 +15,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.object.bubble;
+package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.packet.*;
-import net.momirealms.customnameplates.manager.ChatBubblesManager;
-import net.momirealms.customnameplates.object.nameplate.mode.PacketsHandler;
+import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
+import net.momirealms.customnameplates.object.carrier.AbstractPacketsHandler;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class BBPacketsHandle extends PacketsHandler {
+public class NamedEntityPacketsHandler extends AbstractPacketsHandler {
 
-    private final ChatBubblesManager chatBubblesManager;
+    private final NamedEntityCarrier namedEntityCarrier;
     private final EntityDestroyListener entityDestroyListener;
     private final EntityMoveListener entityMoveListener;
     private final EntitySpawnListener entitySpawnListener;
     private final EntityTeleportListener entityTeleportListener;
     private final EntityLookListener entityLookListener;
 
-    public BBPacketsHandle(ChatBubblesManager chatBubblesManager) {
+    public NamedEntityPacketsHandler(NamedEntityCarrier namedEntityCarrier) {
         super();
-        this.chatBubblesManager = chatBubblesManager;
+        this.namedEntityCarrier = namedEntityCarrier;
         this.entityDestroyListener = new EntityDestroyListener(this);
         this.entityMoveListener = new EntityMoveListener(this);
         this.entitySpawnListener = new EntitySpawnListener(this);
@@ -66,17 +66,17 @@ public class BBPacketsHandle extends PacketsHandler {
 
     @Override
     public void onEntityMove(Player receiver, int entityId) {
-        Player mover = getPlayerFromMap(entityId);
+        Player mover = super.getPlayerFromMap(entityId);
         if (mover != null) {
-            chatBubblesManager.getArmorStandManager(mover).teleport(receiver);
+            namedEntityCarrier.getNamedEntityManager(mover).teleport(receiver);
         }
     }
 
     @Override
     public void onEntitySpawn(Player receiver, int entityId) {
-        Player spawnedPlayer = getPlayerFromMap(entityId);
+        Player spawnedPlayer = super.getPlayerFromMap(entityId);
         if (spawnedPlayer != null) {
-            chatBubblesManager.getArmorStandManager(spawnedPlayer).spawn(receiver);
+            namedEntityCarrier.getNamedEntityManager(spawnedPlayer).spawn(receiver);
         }
     }
 
@@ -89,9 +89,9 @@ public class BBPacketsHandle extends PacketsHandler {
 
     @Override
     public void onEntityDestroy(Player receiver, int entity) {
-        Player deSpawnedPlayer = getPlayerFromMap(entity);
+        Player deSpawnedPlayer = super.getPlayerFromMap(entity);
         if (deSpawnedPlayer != null) {
-            chatBubblesManager.getArmorStandManager(deSpawnedPlayer).destroy(receiver);
+            namedEntityCarrier.getNamedEntityManager(deSpawnedPlayer).destroy(receiver);
         }
     }
 }
