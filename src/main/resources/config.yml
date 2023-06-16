@@ -8,7 +8,7 @@ metrics: true
 update-checker: true
 
 # Language
-# english/chinese/spanish
+# english/chinese/spanish/russian
 lang: english
 
 # Modules
