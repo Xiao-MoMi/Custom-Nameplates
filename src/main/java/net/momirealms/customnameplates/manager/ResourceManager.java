@@ -201,7 +201,7 @@ public class ResourceManager {
         for (int ascent : plugin.getPlaceholderManager().getDescent_fonts()) {
             String line;
             StringBuilder sb = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + "default.json")), StandardCharsets.UTF_8))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + (plugin.getVersionHelper().isVersionNewerThan1_20() ? "default1_20.json" : "default.json"))), StandardCharsets.UTF_8))) {
                 while ((line = reader.readLine()) != null) {
                     sb.append(line).append(System.lineSeparator());
                 }
@@ -219,24 +219,6 @@ public class ResourceManager {
                 writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            if (!plugin.getVersionHelper().isVersionNewerThan1_20()) {
-                try {
-                    JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(outPut)));
-                    if (jsonElement.isJsonObject()) {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.add("type", new JsonPrimitive("legacy_unicode"));
-                        jsonObject.add("sizes", new JsonPrimitive("minecraft:font/glyph_sizes.bin"));
-                        jsonObject.add("template", new JsonPrimitive("minecraft:font/unicode_page_%s.png"));
-                        jsonElement.getAsJsonObject().getAsJsonArray("providers").add(jsonObject);
-                    }
-                    try (FileWriter fileWriter = new FileWriter(outPut))
-                    {
-                        fileWriter.write(jsonElement.toString().replace("\\\\", "\\"));
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
         if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
