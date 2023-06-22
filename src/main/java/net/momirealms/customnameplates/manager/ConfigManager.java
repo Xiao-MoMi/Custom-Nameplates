@@ -54,6 +54,7 @@ public class ConfigManager extends Function {
     public static boolean enableBackground;
     public static boolean enableImages;
     public static int default_width;
+    public static boolean enable1_20_Unicode;
 
     @Override
     public void load(){
@@ -93,6 +94,7 @@ public class ConfigManager extends Function {
             images_folder_path = section.getString("image-path.images","font\\images\\");
             extractShader = section.getBoolean("extract-shader",true);
             extractBars = section.getBoolean("extract-bar-image",true);
+            enable1_20_Unicode = section.getBoolean("support-1_20-unicodes",false);
         }
     }
 

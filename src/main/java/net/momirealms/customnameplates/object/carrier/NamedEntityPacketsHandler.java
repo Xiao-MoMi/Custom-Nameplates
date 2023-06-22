@@ -19,8 +19,6 @@ package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.packet.*;
-import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
-import net.momirealms.customnameplates.object.carrier.AbstractPacketsHandler;
 import org.bukkit.entity.Player;
 
 import java.util.List;

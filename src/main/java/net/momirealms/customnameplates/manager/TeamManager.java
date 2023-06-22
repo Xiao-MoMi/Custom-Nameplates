@@ -19,9 +19,9 @@ package net.momirealms.customnameplates.manager;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.JoinQuitListener;
+import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
-import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.team.TeamNameInterface;
 import net.momirealms.customnameplates.object.team.TeamPacketInterface;
 import net.momirealms.customnameplates.object.team.name.PlayerNameTeamImpl;

@@ -18,18 +18,24 @@
 package net.momirealms.customnameplates.object.team.name;
 
 import me.neznamy.tab.api.TabPlayer;
+import me.neznamy.tab.api.tablist.SortingManager;
 import me.neznamy.tab.shared.TAB;
 import net.momirealms.customnameplates.object.team.TeamNameInterface;
 import org.bukkit.entity.Player;
 
 public class TABImpl implements TeamNameInterface {
 
+    private final SortingManager sortingManager;
+
+    public TABImpl() {
+        sortingManager = TAB.getInstance().getSortingManager();
+    }
+
     @Override
     public String getTeamName(Player player) {
         TabPlayer tabPlayer = TAB.getInstance().getPlayer(player.getUniqueId());
         if (tabPlayer == null) return player.getName();
-        String teamName = tabPlayer.getTeamName();
-        return teamName == null ? player.getName() : teamName;
+        return sortingManager.getOriginalTeamName(tabPlayer);
     }
 
     @Override

@@ -145,8 +145,9 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     private String getTime(Player player) {
         long time = player.getWorld().getTime();
         String ap = time >= 6000 && time < 18000 ? " PM" : " AM";
-        int hours = (int) (time / 1000) + 6;
+        int hours = (int) (time / 1000) ;
         int minutes = (int) ((time - hours * 1000 ) * 0.06);
+        hours += 6;
         while (hours >= 12) hours -= 12;
         if (minutes < 10) return hours + ":0" + minutes + ap;
         else return hours + ":" + minutes + ap;
@@ -213,7 +214,7 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     }
 
     private String getUnicodeDescent(String param, Player player) {
-        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
+        if (!ConfigManager.enable1_20_Unicode && plugin.getVersionHelper().isVersionNewerThan1_20()) {
             return "Not Available on 1.20";
         }
         DescentText descentText = placeholderManager.getDescentUnicode(param);

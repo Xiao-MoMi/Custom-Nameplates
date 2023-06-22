@@ -17,8 +17,9 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.background.BackGroundConfig;
@@ -221,8 +222,8 @@ public class ResourceManager {
                 e.printStackTrace();
             }
         }
-        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
-            AdventureUtils.consoleMessage("<white>[CustomNameplates] For the moment decent unicode is not available on 1.20");
+        if (!ConfigManager.enable1_20_Unicode && plugin.getVersionHelper().isVersionNewerThan1_20()) {
+            AdventureUtils.consoleMessage("<white>[CustomNameplates] For the moment decent unicode is not available on 1.20. You can enable support-1_20-unicodes in config.yml to ignore the limit.");
             return;
         }
         for (int ascent : plugin.getPlaceholderManager().getDescent_unicode_fonts()) {
@@ -243,6 +244,18 @@ public class ResourceManager {
                                     File.separator + "font" +
                                     File.separator + "unicode_ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
                 writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (ConfigManager.enable1_20_Unicode) {
+            try {
+                FileUtils.copyDirectory(new File(plugin.getDataFolder(), "unicodes"), new File(plugin.getDataFolder(),
+                        "ResourcePack" +
+                                File.separator + "assets" +
+                                File.separator + "minecraft" +
+                                File.separator + "textures" +
+                                File.separator + "font"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

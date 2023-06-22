@@ -59,8 +59,7 @@ public class TABBungeeCordImpl implements TeamNameInterface {
         if (teamName == null) {
             sendRequest(player);
             return player.getName();
-        }
-        else {
+        } else {
             return teamName;
         }
     }

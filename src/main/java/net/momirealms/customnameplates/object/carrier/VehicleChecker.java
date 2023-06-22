@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.Function;
-import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

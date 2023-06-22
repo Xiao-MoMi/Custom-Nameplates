@@ -1,5 +1,5 @@
 # Do not change
-config-version: '16'
+config-version: '17'
 
 # bStats
 metrics: true
@@ -62,6 +62,9 @@ resource-pack:
   # The initial character of a font
   # 字体的初始字符
   initial-char: '뀁'
+  # Unicode Support for 1.20+ clients
+  # This would make your resource pack about 900KB bigger
+  support-1_20-unicodes: false
 
 other-settings:
   # default width

@@ -21,7 +21,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.Function;
-import net.momirealms.customnameplates.object.placeholders.StaticText;
 import net.momirealms.customnameplates.object.font.OffsetFont;
 import net.momirealms.customnameplates.object.placeholders.*;
 import net.momirealms.customnameplates.utils.ConfigUtils;
@@ -115,7 +114,7 @@ public class PlaceholderManager extends Function {
             loadVanillaHud(vanillaHudSection);
         }
 
-        if (plugin.getVersionHelper().isVersionNewerThan1_20()) {
+        if (plugin.getVersionHelper().isVersionNewerThan1_20() && !ConfigManager.enable1_20_Unicode) {
             return;
         }
 

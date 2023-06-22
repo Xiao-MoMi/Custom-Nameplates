@@ -22,7 +22,10 @@ import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NamedEntityManager {

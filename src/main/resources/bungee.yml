@@ -1,5 +1,5 @@
 name: CustomNameplates
 main: net.momirealms.customnameplates.bungeecord.CustomNameplates
-version: '2.2.0.4'
+version: '2.2.1.2'
 author: XiaoMoMi
 softDepends: [TAB, BungeeTabListPlus]
