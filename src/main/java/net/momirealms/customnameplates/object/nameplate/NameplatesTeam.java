@@ -64,11 +64,11 @@ public class NameplatesTeam {
             String name = PlaceholderAPI.setPlaceholders(player, nameplateManager.getPlayerNamePapi());
             if (updated) {
                 nameplate = newNameplate;
-                String text = AdventureUtils.stripAllTags(prefix.getLatestValue())
+                String text = (nameplateManager.isPrefixHidden() ? "" : AdventureUtils.stripAllTags(prefix.getLatestValue()))
                         + name +
-                        AdventureUtils.stripAllTags(suffix.getLatestValue());
-                this.nameplate_prefix = nameplateManager.getNameplatePrefixWithFont(text, nameplateConfig) + prefix.getLatestValue();
-                this.nameplate_suffix = CustomNameplates.getInstance().getFontManager().getSuffixStringWithFont(text) + suffix.getLatestValue();
+                        (nameplateManager.isSuffixHidden() ? "" : AdventureUtils.stripAllTags(suffix.getLatestValue()));
+                this.nameplate_prefix = nameplateManager.getNameplatePrefixWithFont(text, nameplateConfig) + (nameplateManager.isPrefixHidden() ? "" : prefix.getLatestValue());
+                this.nameplate_suffix = CustomNameplates.getInstance().getFontManager().getSuffixStringWithFont(text) + (nameplateManager.isPrefixHidden() ? "" : suffix.getLatestValue());
             }
         }
         return updated;

@@ -109,7 +109,7 @@ public class TeamManager extends Function {
         }
         // wait for bc
         else {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(CustomNameplates.getInstance(), () -> createTeam(uuid),10);
+            plugin.getScheduler().runTaskAsyncLater(() -> createTeam(uuid),10);
         }
     }
 

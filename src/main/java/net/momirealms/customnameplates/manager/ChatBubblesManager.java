@@ -272,7 +272,7 @@ public class ChatBubblesManager extends Function {
         for (int i = 0; i < split.length; i++) {
             int finalI = i;
             String finalBubble = bubble;
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> sendBubble(player, split[finalI], bubbleConfig, finalBubble), (long) i * coolDown / 50);
+            plugin.getScheduler().runTaskAsyncLater(() -> sendBubble(player, split[finalI], bubbleConfig, finalBubble), (long) i * coolDown / 50);
         }
     }
 
@@ -307,7 +307,7 @@ public class ChatBubblesManager extends Function {
             UUID uuid = UUID.randomUUID();
             asm.ascent(lineSpace);
             asm.addNamedEntity(uuid, new NamedEntityImpl(asm, player, json, offset, textDisplayMeta));
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), () -> asm.removeArmorStand(uuid), stayTime * 20L);
+            plugin.getScheduler().runTaskAsyncLater(() -> asm.removeArmorStand(uuid), stayTime * 20L);
         }
     }
 

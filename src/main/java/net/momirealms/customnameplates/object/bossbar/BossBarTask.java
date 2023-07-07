@@ -18,13 +18,12 @@
 package net.momirealms.customnameplates.object.bossbar;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import org.bukkit.Bukkit;
+import net.momirealms.customnameplates.object.scheduler.TimerTask;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 public class BossBarTask {
 
-    private BukkitTask timerTask;
+    private TimerTask timerTask;
     private final BossBarSender[] bossBarSenders;
 
     public BossBarTask(Player player, BossBarConfig[] configs) {
@@ -50,7 +49,7 @@ public class BossBarTask {
     }
 
     public void start() {
-        this.timerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+        this.timerTask = CustomNameplates.getInstance().getScheduler().runTaskAsyncTimer(() -> {
             for (BossBarSender bossBarSender : bossBarSenders) {
                 if (!bossBarSender.canSend()) {
                     if (bossBarSender.isShown()) {

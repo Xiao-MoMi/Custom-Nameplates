@@ -22,14 +22,14 @@ import net.momirealms.customnameplates.listener.JoinQuitListener;
 import net.momirealms.customnameplates.manager.TeamManager;
 import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.scheduler.TimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.scheduler.BukkitTask;
 
 public abstract class AbstractTextCarrier extends Function {
 
-    protected BukkitTask refreshTask;
+    protected TimerTask refreshTask;
     protected CustomNameplates plugin;
     protected JoinQuitListener joinQuitListener;
     protected DisplayMode displayMode;

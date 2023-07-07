@@ -3,6 +3,7 @@ version: '${version}'
 main: net.momirealms.customnameplates.CustomNameplates
 api-version: 1.17
 authors: [ XiaoMoMi ]
+folia-supported: true
 depend:
   - ProtocolLib
   - PlaceholderAPI

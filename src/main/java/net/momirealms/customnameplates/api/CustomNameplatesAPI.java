@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class CustomNameplatesAPI {
@@ -59,14 +58,14 @@ public class CustomNameplatesAPI {
 
     private void updateAndSave(Player player) {
         updateNameplateTeam(player);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             plugin.getDataManager().saveData(player);
         });
     }
 
     public void equipBubble(Player player, String bubble) {
         plugin.getDataManager().equipBubble(player, bubble);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             plugin.getDataManager().saveData(player);
         });
     }
@@ -78,7 +77,7 @@ public class CustomNameplatesAPI {
 
     public void unEquipBubble(Player player) {
         plugin.getDataManager().equipBubble(player, "none");
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             plugin.getDataManager().saveData(player);
         });
     }

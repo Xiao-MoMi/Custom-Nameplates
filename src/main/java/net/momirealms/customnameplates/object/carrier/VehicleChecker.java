@@ -19,10 +19,10 @@ package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.Function;
+import net.momirealms.customnameplates.object.scheduler.TimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,8 +32,8 @@ public class VehicleChecker extends Function {
 
     private final NamedEntityCarrier namedEntityCarrier;
 
-    private BukkitTask updatePosTask;
-    private BukkitTask vehicleCheckTask;
+    private TimerTask updatePosTask;
+    private TimerTask vehicleCheckTask;
 
     public VehicleChecker(NamedEntityCarrier namedEntityCarrier) {
         this.namedEntityCarrier = namedEntityCarrier;
@@ -48,13 +48,13 @@ public class VehicleChecker extends Function {
                 playersOnVehicle.put(all, vehicle);
             }
         }
-        this.updatePosTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+        this.updatePosTask = CustomNameplates.getInstance().getScheduler().runTaskAsyncTimer(() -> {
             for (Player inVehicle : playersOnVehicle.keySet()) {
                 if (!inVehicle.isOnline() || namedEntityCarrier.getNamedEntityManager(inVehicle) == null) continue;
                 namedEntityCarrier.getNamedEntityManager(inVehicle).teleport();
             }
         }, 1, 1);
-        this.vehicleCheckTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+        this.vehicleCheckTask = CustomNameplates.getInstance().getScheduler().runTaskAsyncTimer(() -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 this.refresh(player);
             }

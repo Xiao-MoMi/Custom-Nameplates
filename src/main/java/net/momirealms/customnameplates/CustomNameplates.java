@@ -28,6 +28,8 @@ import net.momirealms.customnameplates.command.NameplateCommand;
 import net.momirealms.customnameplates.helper.LibraryLoader;
 import net.momirealms.customnameplates.helper.VersionHelper;
 import net.momirealms.customnameplates.manager.*;
+import net.momirealms.customnameplates.object.scheduler.Scheduler;
+import net.momirealms.customnameplates.object.scheduler.SchedulerPlatform;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -56,6 +58,7 @@ public final class CustomNameplates extends JavaPlugin {
     private BackgroundManager backgroundManager;
     private ImageManager imageManager;
     private CustomNameplatesAPI customNameplatesAPI;
+    private Scheduler scheduler;
 
     @Override
     public void onLoad(){
@@ -70,6 +73,7 @@ public final class CustomNameplates extends JavaPlugin {
         AdventureUtils.consoleMessage("[CustomNameplates] Running on <white>" + Bukkit.getVersion());
         this.fix();
         this.versionHelper = new VersionHelper(this);
+        this.scheduler = new Scheduler(this);
         this.configManager = new ConfigManager();
         this.messageManager = new MessageManager();
         this.teamManager = new TeamManager(this);
@@ -113,7 +117,7 @@ public final class CustomNameplates extends JavaPlugin {
         LibraryLoader.load("commons-io","commons-io","2.11.0", libRepo);
         LibraryLoader.load("org.apache.commons","commons-lang3","3.12.0", libRepo);
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1", libRepo);
-        LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3", libRepo);
+        LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3.1", libRepo);
         LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.1.2", libRepo);
         LibraryLoader.load("mysql","mysql-connector-java","8.0.30", libRepo);
     }
@@ -231,5 +235,9 @@ public final class CustomNameplates extends JavaPlugin {
 
     public CustomNameplatesAPI getAPI() {
         return customNameplatesAPI;
+    }
+
+    public SchedulerPlatform getScheduler() {
+        return scheduler.getInstance();
     }
 }

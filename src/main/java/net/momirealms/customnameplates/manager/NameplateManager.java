@@ -29,7 +29,6 @@ import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
 import net.momirealms.customnameplates.object.requirements.Requirement;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,6 +52,8 @@ public class NameplateManager extends Function {
     private final CustomNameplates plugin;
     private AbstractTextCarrier textCarrier;
     protected HashMap<UUID, Long> previewCoolDown = new HashMap<>();
+    private boolean hidePrefix;
+    private boolean hideSuffix;
 
     public NameplateManager(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -84,6 +85,8 @@ public class NameplateManager extends Function {
         this.fakeTeam = config.getBoolean("create-fake-team",true);
         this.player_prefix = config.getString("prefix","");
         this.player_suffix = config.getString("suffix","");
+        this.hidePrefix = config.getBoolean("hide-prefix-when-equipping-nameplate", false);
+        this.hideSuffix = config.getBoolean("hide-suffix-when-equipping-nameplate", false);
     }
 
     private void loadNameplates() {
@@ -232,14 +235,12 @@ public class NameplateManager extends Function {
         NamedEntityCarrier namedEntityCarrier = (NamedEntityCarrier) this.getTextCarrier();
         NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
         asm.spawn(player);
-        for (int i = 0; i < this.getPreview_time() * 20; i++) {
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
+        for (int i = 1; i <= this.getPreview_time() * 20; i++) {
+            plugin.getScheduler().runTaskAsyncLater(()-> {
                 asm.teleport(player);
-            },i);
+            }, i);
         }
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
-            asm.destroy(player);
-        },this.getPreview_time() * 20);
+        plugin.getScheduler().runTaskAsyncLater(()-> asm.destroy(player), this.getPreview_time() * 20);
     }
 
     public void showPlayerArmorStandTags(Player player, String nameplate) {
@@ -247,7 +248,7 @@ public class NameplateManager extends Function {
         if (!nameplate.equals(current)) {
             plugin.getDataManager().equipNameplate(player, nameplate);
             CustomNameplatesAPI.getInstance().updateNameplateTeam(player);
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> {
+            plugin.getScheduler().runTaskAsyncLater(()-> {
                 plugin.getDataManager().equipNameplate(player, current);
                 CustomNameplatesAPI.getInstance().updateNameplateTeam(player);
             },this.getPreview_time() * 20);
@@ -301,5 +302,13 @@ public class NameplateManager extends Function {
 
     public long getPreview_time() {
         return preview_time;
+    }
+
+    public boolean isPrefixHidden() {
+        return hidePrefix;
+    }
+
+    public boolean isSuffixHidden() {
+        return hideSuffix;
     }
 }

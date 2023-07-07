@@ -27,7 +27,6 @@ import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.CustomNameplates;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,9 +40,9 @@ public class ArmorStandUtils {
         sendSpawnPacket(player, id);
         sendMetaPacket(player, id, component);
         for (int i = 1; i < duration * 20 - 1; i++){
-            Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> sendTeleportPacket(player, id), i);
+            CustomNameplates.getInstance().getScheduler().runTaskAsyncLater(()-> sendTeleportPacket(player, id), i);
         }
-        Bukkit.getScheduler().runTaskLater(CustomNameplates.getInstance(), ()-> sendDestroyPacket(player, id), duration * 20L);
+        CustomNameplates.getInstance().getScheduler().runTaskAsyncLater(()-> sendDestroyPacket(player, id), duration * 20L);
     }
 
     public static void sendSpawnPacket(Player player, int id) {

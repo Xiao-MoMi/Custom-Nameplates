@@ -20,7 +20,6 @@ package net.momirealms.customnameplates.listener;
 import me.arasple.mc.trchat.api.event.TrChatEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ChatBubblesManager;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 public class TrChatListener extends AbstractChatListener {
@@ -36,6 +35,6 @@ public class TrChatListener extends AbstractChatListener {
         for (String channel : chatBubblesManager.getChannels()) {
             if (channelName.equals(channel)) return;
         }
-        Bukkit.getScheduler().runTask(CustomNameplates.getInstance(), () -> chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage()));
+        CustomNameplates.getInstance().getScheduler().runTask(() -> chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage()), event.getSession().getPlayer().getLocation());
     }
 }

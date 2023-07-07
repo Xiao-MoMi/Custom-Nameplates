@@ -17,17 +17,16 @@
 
 package net.momirealms.customnameplates.command.subcmd;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.command.AbstractSubCommand;
 import net.momirealms.customnameplates.manager.MessageManager;
 import net.momirealms.customnameplates.manager.NameplateManager;
 import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.nameplate.NameplateConfig;
+import net.momirealms.customnameplates.object.nameplate.NameplatesTeam;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ArmorStandUtils;
 import org.bukkit.Bukkit;
@@ -61,15 +60,13 @@ public class ForcePreviewCommand extends AbstractSubCommand {
             return true;
         }
         if (nameplateManager.getMode() == DisplayMode.TEAM) {
-            String playerPrefix = AdventureUtils.replaceLegacy(PlaceholderAPI.setPlaceholders(player, nameplateManager.getPrefix()));
-            String playerSuffix = AdventureUtils.replaceLegacy(PlaceholderAPI.setPlaceholders(player, nameplateManager.getSuffix()));
-            String text = AdventureUtils.stripAllTags(playerPrefix) + player.getName() + AdventureUtils.stripAllTags(playerSuffix);
-            String prefixImage = nameplateManager.getNameplatePrefixWithFont(text, nameplateConfig);
-            String suffixImage = CustomNameplates.getInstance().getFontManager().getSuffixStringWithFont(text);
-            Component holoComponent = MiniMessage.miniMessage().deserialize(prefixImage)
-                    .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(nameplateConfig.color()))).font(Key.key("minecraft:default"))
-                            .append(MiniMessage.miniMessage().deserialize(suffixImage)));
-            ArmorStandUtils.preview(holoComponent, player, (int) nameplateManager.getPreview_time());
+            NameplatesTeam team = CustomNameplates.getInstance().getTeamManager().getNameplateTeam(player.getUniqueId());
+            if (team != null) {
+                Component full = team.getNameplatePrefixComponent()
+                        .append(Component.text(player.getName()).color(TextColor.color(AdventureUtils.colorToDecimal(team.getColor()))).font(Key.key("minecraft:default"))
+                                .append(team.getNameplateSuffixComponent()));
+                ArmorStandUtils.preview(full, player, (int) nameplateManager.getPreview_time());
+            }
         } else if (nameplateManager.getMode() == DisplayMode.ARMOR_STAND || nameplateManager.getMode() == DisplayMode.TEXT_DISPLAY) {
             nameplateManager.showPlayerArmorStandTags(player, nameplate);
         } else {

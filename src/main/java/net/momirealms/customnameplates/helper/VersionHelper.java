@@ -39,12 +39,14 @@ public class VersionHelper {
     private final String pluginVersion;
     private boolean isLatest;
     private final int pack_format;
+    private final boolean isFolia;
 
     public VersionHelper(CustomNameplates plugin) {
         this.plugin = plugin;
         this.pluginVersion = plugin.getDescription().getVersion();
         this.initialize();
         this.pack_format = getPack_format(serverVersion);
+        isFolia = plugin.getServer().getName().equals("DirtyFolia");
     }
 
     public void initialize() {
@@ -73,7 +75,7 @@ public class VersionHelper {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             try {
                 URL url = new URL("https://api.polymart.org/v1/getResourceInfoSimple/?resource_id=2543&key=version");
                 URLConnection conn = url.openConnection();
@@ -189,4 +191,7 @@ public class VersionHelper {
         return pack_format;
     }
 
+    public boolean isFolia() {
+        return isFolia;
+    }
 }

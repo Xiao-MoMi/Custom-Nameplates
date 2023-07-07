@@ -15,22 +15,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.listener;
+package net.momirealms.customnameplates.object.scheduler;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import net.momirealms.customnameplates.manager.ChatBubblesManager;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class AsyncChatListener extends AbstractChatListener {
+public class Scheduler {
 
-    public AsyncChatListener(ChatBubblesManager chatBubblesManager) {
-        super(chatBubblesManager);
+    private final SchedulerPlatform schedulerPlatform;
+
+    public Scheduler(CustomNameplates plugin) {
+        if (plugin.getVersionHelper().isFolia()) {
+            this.schedulerPlatform = new FoliaSchedulerImpl(plugin);
+        } else {
+            this.schedulerPlatform = new BukkitSchedulerImpl(plugin);
+        }
     }
 
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled()) return;
-        CustomNameplates.getInstance().getScheduler().runTask(() -> chatBubblesManager.onChat(event.getPlayer(), event.getMessage()), event.getPlayer().getLocation());
+    public SchedulerPlatform getInstance() {
+        return schedulerPlatform;
     }
 }

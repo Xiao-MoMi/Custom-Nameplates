@@ -20,7 +20,8 @@ preview-duration: 5
 # "none" represents no default nameplate.
 default-nameplate: 'none'
 
-# Is thin font name
+# uniform font name compatibility
+# uniform字体（细字体）宽度兼容
 thin-font: false
 
 # Prefix & Suffix
@@ -28,6 +29,11 @@ thin-font: false
 # 前缀和后缀，重新进入服务器以应用更改
 prefix: ''
 suffix: ''
+
+# Should prefix & suffix be hidden when equipping nameplate
+# 前后缀是否在佩戴铭牌的时候隐藏
+hide-prefix-when-equipping-nameplate: false
+hide-suffix-when-equipping-nameplate: false
 
 armor_stand:
   text_1:
@@ -43,8 +49,8 @@ armor_stand:
           papi: '%vault_prefix%'
           value: ''
 
-# Not recommended to use text display because it's not moving as smoothly as armor stand do
-# This is caused by the way how client handles the packet which cannot be solved from server side
+# Using text display is not recommended because it lacks the smooth movement.
+# This limitation is due to the way the client handles the packet, and it cannot be resolved from the server side.
 text_display:
   text_1:
     text: '%nameplates_prefix%%player_name%%nameplates_suffix%'

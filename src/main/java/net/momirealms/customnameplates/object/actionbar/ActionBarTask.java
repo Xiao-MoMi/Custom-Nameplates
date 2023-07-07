@@ -18,13 +18,12 @@
 package net.momirealms.customnameplates.object.actionbar;
 
 import net.momirealms.customnameplates.CustomNameplates;
-import org.bukkit.Bukkit;
+import net.momirealms.customnameplates.object.scheduler.TimerTask;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 public class ActionBarTask {
 
-    private BukkitTask timerTask;
+    private TimerTask timerTask;
     private final ActionBarSender[] actionBarSenders;
     private String otherText;
     private long expireTime;
@@ -48,7 +47,7 @@ public class ActionBarTask {
     }
 
     public void start() {
-        this.timerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+        this.timerTask = CustomNameplates.getInstance().getScheduler().runTaskAsyncTimer(() -> {
             if (System.currentTimeMillis() > getExpireTime()) {
                 this.otherText = "";
             }

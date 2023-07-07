@@ -71,7 +71,7 @@ public class DataManager extends Function {
 
     @Override
     public void onJoin(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> readData(player.getUniqueId()));
+        plugin.getScheduler().runTaskAsync(() -> readData(player.getUniqueId()));
     }
 
     public void readData(UUID uuid) {
@@ -79,9 +79,8 @@ public class DataManager extends Function {
         if (player == null || !player.isOnline() || !checkTriedTimes(uuid)) return;
         PlayerData playerData = this.dataStorageInterface.loadData(uuid);
         if (playerData == null) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> readData(uuid), 20);
-        }
-        else {
+            plugin.getScheduler().runTaskAsyncLater(() -> readData(uuid), 20);
+        } else {
             playerDataMap.put(uuid, playerData);
             if (!ConfigManager.enableNameplates || plugin.getNameplateManager().getMode() == DisplayMode.DISABLE) return;
             plugin.getTeamManager().getTeamNameInterface().onJoin(player);
@@ -93,7 +92,7 @@ public class DataManager extends Function {
     public void onQuit(Player player) {
         PlayerData playerData = playerDataMap.remove(player.getUniqueId());
         if (playerData != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> this.dataStorageInterface.saveData(playerData));
+            plugin.getScheduler().runTaskAsync(() -> this.dataStorageInterface.saveData(playerData));
         }
         plugin.getTeamManager().onQuit(player);
         triedTimes.remove(player.getUniqueId());
@@ -102,7 +101,7 @@ public class DataManager extends Function {
     public void saveData(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         if (playerData != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> this.dataStorageInterface.saveData(playerData));
+            plugin.getScheduler().runTaskAsync(() -> this.dataStorageInterface.saveData(playerData));
         }
     }
 

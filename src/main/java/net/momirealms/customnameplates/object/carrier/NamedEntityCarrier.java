@@ -119,7 +119,7 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
 
     @Override
     public void arrangeRefreshTask() {
-        refreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(CustomNameplates.getInstance(), () -> {
+        refreshTask = plugin.getScheduler().runTaskAsyncTimer(() -> {
             for (NamedEntityManager asm : namedEntityManagerMap.values()) {
                 asm.refresh(false);
             }
