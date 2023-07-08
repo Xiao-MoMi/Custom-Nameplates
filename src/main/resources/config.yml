@@ -1,5 +1,5 @@
 # Do not change
-config-version: '17'
+config-version: '18'
 
 # bStats
 metrics: true
@@ -65,6 +65,10 @@ resource-pack:
   # Unicode Support for 1.20+ clients
   # This would make your resource pack about 900KB bigger
   support-1_20-unicodes: true
+  # Hide scoreboard numbers
+  hide-scoreboard-number: true
+  # Added ItemsAdder text effect shader support
+  ItemsAdder-text-effect-support: true
 
 other-settings:
   # default width

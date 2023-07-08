@@ -55,6 +55,8 @@ public class ConfigManager extends Function {
     public static boolean enableImages;
     public static int default_width;
     public static boolean enable1_20_Unicode;
+    public static boolean hideScoreboardNumber;
+    public static boolean iaShaderSupport;
 
     @Override
     public void load(){
@@ -95,6 +97,8 @@ public class ConfigManager extends Function {
             extractShader = section.getBoolean("extract-shader",true);
             extractBars = section.getBoolean("extract-bar-image",true);
             enable1_20_Unicode = section.getBoolean("support-1_20-unicodes",false);
+            hideScoreboardNumber = section.getBoolean("hide-scoreboard-number",true);
+            iaShaderSupport = section.getBoolean("ItemsAdder-text-effect-support",true);
         }
     }
 

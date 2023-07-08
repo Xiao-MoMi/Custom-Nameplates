@@ -169,6 +169,75 @@ public class ResourceManager {
             plugin.saveResource(path + "rendertype_text.fsh", true);
             plugin.saveResource(path + "rendertype_text.json", true);
             plugin.saveResource(path + "rendertype_text.vsh", true);
+            String line;
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(
+                                    new File(plugin.getDataFolder(), path + "rendertype_text.vsh")
+                            ), StandardCharsets.UTF_8
+                    )
+            )) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            File outPut = new File(plugin.getDataFolder(), path + "rendertype_text.vsh");
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(outPut), StandardCharsets.UTF_8))) {
+                writer.write(sb.toString()
+                        .replace("{hide}", !ConfigManager.hideScoreboardNumber ? "" : "if (Position.z == 0.0\n" +
+                        "      && gl_Position.x >= 0.94\n" +
+                        "      && gl_Position.y >= -0.35\n" +
+                        "      && vertexColor.g == 84.0/255.0\n" +
+                        "      && vertexColor.g == 84.0/255.0\n" +
+                        "      && vertexColor.r == 252.0/255.0\n" +
+                        "      && gl_VertexID <= 7\n" +
+                        "    ) {\n" +
+                        "        gl_Position = ProjMat * ModelViewMat * vec4(ScreenSize + 100.0, 0.0, ScreenSize + 100.0);\n" +
+                        "    }"
+                        )
+                        .replace("{IA}", !ConfigManager.iaShaderSupport ? "" : "if (Color.xyz == vec3(255., 255., 254.) / 255.) {\n" +
+                                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                                "    } else if(Color.xyz == vec3(255., 255., 253.) / 255.) {\n" +
+                                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                                "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                                "        gl_Position.y = gl_Position.y + sin(GameTime * 12000. + (gl_Position.x * 6)) / 150.;\n" +
+                                "    } else if (Color.xyz == vec3(255., 255., 252.) / 255.) {\n" +
+                                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                                "        gl_Position.y = gl_Position.y + sin(GameTime*12000. + (gl_Position.x*6)) / 150.;\n" +
+                                "    } else if (Color.xyz == vec3(255., 255., 251.) / 255.) {\n" +
+                                "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                                "        float vertexId = mod(gl_VertexID, 4.0);\n" +
+                                "        if (vertex.z <= 0.) {\n" +
+                                "            if (vertexId == 3. || vertexId == 0.) vertex.y += cos(GameTime * 12000. / 4) * 0.1;\n" +
+                                "            vertex.y += max(cos(GameTime*12000. / 4) * 0.1, 0.);\n" +
+                                "        } else {\n" +
+                                "            if (vertexId == 3. || vertexId == 0.) vertex.y -= cos(GameTime * 12000. / 4) * 3;\n" +
+                                "            vertex.y -= max(cos(GameTime*12000. / 4) * 4, 0.);\n" +
+                                "        }\n" +
+                                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                                "    } else if (Color.xyz == vec3(255., 254., 254.) / 255.) {\n" +
+                                "        float vertexId = mod(gl_VertexID, 4.0);\n" +
+                                "        if (vertex.z <= 0.) {\n" +
+                                "            if (vertexId == 3. || vertexId == 0.) vertex.y += cos(GameTime * 12000. / 4) * 0.1;\n" +
+                                "            vertex.y += max(cos(GameTime*12000. / 4) * 0.1, 0.);\n" +
+                                "        } else {\n" +
+                                "            if (vertexId == 3. || vertexId == 0.) vertex.y -= cos(GameTime * 12000. / 4) * 3;\n" +
+                                "            vertex.y -= max(cos(GameTime*12000. / 4) * 4, 0.);\n" +
+                                "        }\n" +
+                                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                                "    }")
+
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (ConfigManager.extractBars) {
             String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator;
