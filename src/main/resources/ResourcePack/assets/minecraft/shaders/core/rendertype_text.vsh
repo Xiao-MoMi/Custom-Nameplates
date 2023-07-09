@@ -22,8 +22,7 @@ void main(){
     vec4 vertex = vec4(Position, 1.0);
     vertexDistance = fog_distance(ModelViewMat, IViewRotMat * Position, FogShape);
     texCoord0 = UV0;
-    {IA}
-    if (Color.xyz == vec3(255., 254., 253.) / 255.) {
+    {IA}if (Color.xyz == vec3(255., 254., 253.) / 255.) {
         vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);
         vertex.y+= 1;
         vertex.x+= 1;

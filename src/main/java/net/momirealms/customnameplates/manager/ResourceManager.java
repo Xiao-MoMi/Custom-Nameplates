@@ -232,7 +232,7 @@ public class ResourceManager {
                                 "        }\n" +
                                 "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
-                                "    }")
+                                "    } else ")
 
                 );
             } catch (IOException e) {
