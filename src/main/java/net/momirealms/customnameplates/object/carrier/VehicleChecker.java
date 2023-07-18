@@ -58,7 +58,7 @@ public class VehicleChecker extends Function {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 this.refresh(player);
             }
-        },20,20);
+        },4,4);
     }
 
     @Override

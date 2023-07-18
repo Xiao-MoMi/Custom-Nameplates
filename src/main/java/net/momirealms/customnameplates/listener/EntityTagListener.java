@@ -18,10 +18,13 @@
 package net.momirealms.customnameplates.listener;
 
 import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implements Listener {
 
@@ -33,5 +36,12 @@ public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implement
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         namedEntityCarrier.onRespawn(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onExistVehicle(VehicleExitEvent event) {
+        if (event.getExited() instanceof Player player) {
+            namedEntityCarrier.onSneak(player, false);
+        }
     }
 }

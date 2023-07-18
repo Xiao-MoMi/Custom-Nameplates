@@ -166,8 +166,7 @@ public class NamedEntityImpl implements NamedEntity {
             for (Player viewer : asm.getNearbyPlayers()) {
                 respawn(viewer);
             }
-        }
-        else {
+        } else {
             refresh();
         }
     }
@@ -242,21 +241,26 @@ public class NamedEntityImpl implements NamedEntity {
     private double getY() {
         Entity vehicle = owner.getVehicle();
         if (vehicle != null) {
-            if (vehicle.getType() == EntityType.HORSE) {
-                return vehicle.getLocation().getY() + 0.85;
-            }
-            if (vehicle.getType() == EntityType.DONKEY) {
-                return vehicle.getLocation().getY() + 0.525;
-            }
-            if (vehicle.getType() == EntityType.PIG) {
-                return vehicle.getLocation().getY() + 0.325;
-            }
-            if (vehicle.getType() == EntityType.STRIDER) {
-                return vehicle.getLocation().getY() + 1.15;
+            switch (vehicle.getType()) {
+                case BOAT, CHEST_BOAT -> {
+                    return vehicle.getLocation().getY() - 0.325;
+                }
+                case HORSE -> {
+                    return vehicle.getLocation().getY() + 0.85;
+                }
+                case DONKEY -> {
+                    return vehicle.getLocation().getY() + 0.525;
+                }
+                case PIG -> {
+                    return vehicle.getLocation().getY() + 0.325;
+                }
+                case STRIDER -> {
+                    return vehicle.getLocation().getY() + 1.15;
+                }
             }
         }
         if (owner.getPose() == Pose.SWIMMING || owner.isGliding()) {
-            return owner.getLocation().getY() - 1.22;
+            return owner.getLocation().getY() - 1.25;
         }
         return owner.getLocation().getY();
     }

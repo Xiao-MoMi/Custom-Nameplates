@@ -1,5 +1,5 @@
 # Armor_Stand / Text_Display (1.19.4+)
-mode: Text_Display
+mode: Armor_Stand
 
 # Text display options
 text-display-options:
@@ -40,7 +40,7 @@ line-spacing: 0.4
 bottom-line-Y-offset: 0.4
 
 # Seconds
-# This decides how long will the chat hologram remains
+# This decides how long will the chat bubble remain
 # 气泡的停留时间
 stay-time: 8
 
@@ -52,6 +52,6 @@ characters-per-line: 30
 # 单次最大文字长度
 max-character-length: 100
 
-# Cool Down
+# Cool down (seconds)
 # 发送冷却
 cool-down: 1
