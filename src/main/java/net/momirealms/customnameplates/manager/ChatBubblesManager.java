@@ -272,7 +272,7 @@ public class ChatBubblesManager extends Function {
         for (int i = 0; i < split.length; i++) {
             int finalI = i;
             String finalBubble = bubble;
-            plugin.getScheduler().runTaskAsyncLater(() -> sendBubble(player, split[finalI], bubbleConfig, finalBubble), (long) i * coolDown / 50);
+            plugin.getScheduler().runTaskAsyncLater(() -> sendBubble(player, split[finalI], bubbleConfig, finalBubble), (long) i * (coolDown / 50) + 1);
         }
     }
 

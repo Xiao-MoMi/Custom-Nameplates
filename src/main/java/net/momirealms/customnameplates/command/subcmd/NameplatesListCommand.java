@@ -46,8 +46,7 @@ public class NameplatesListCommand extends AbstractSubCommand {
                 stringJoiner.add(availableNameplate);
             }
             AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.np_available.replace("{Nameplates}", stringJoiner.toString()));
-        }
-        else {
+        } else {
             AdventureUtils.playerMessage(player, MessageManager.prefix + MessageManager.np_haveNone);
         }
         return true;

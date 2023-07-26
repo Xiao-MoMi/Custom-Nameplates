@@ -50,8 +50,7 @@ public abstract class AbstractMainCommand implements TabExecutor {
                 return true;
             }
             return subCommand.onCommand(sender, argList.subList(1, argList.size()));
-        }
-        else {
+        } else {
             AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.unavailableArgs);
             return true;
         }

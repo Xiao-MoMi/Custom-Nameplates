@@ -226,8 +226,15 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
     private String getVanilla(String param, Player player) {
         VanillaHud vanillaHud = placeholderManager.getVanillaHud(param);
         if (vanillaHud == null) return param + " NOT FOUND";
-        double current = Double.parseDouble(PlaceholderAPI.setPlaceholders(player, vanillaHud.papi()));
-        double max = Double.parseDouble(PlaceholderAPI.setPlaceholders(player, vanillaHud.max()));
+        double current;
+        double max;
+        try {
+            current= Double.parseDouble(PlaceholderAPI.setPlaceholders(player, vanillaHud.papi()));
+            max = Double.parseDouble(PlaceholderAPI.setPlaceholders(player, vanillaHud.max()));
+        } catch (NumberFormatException e) {
+            current = 1;
+            max = 1;
+        }
         int point = (int) ((current / max) * 20);
         int full_amount = point / 2;
         int half_amount = point % 2;

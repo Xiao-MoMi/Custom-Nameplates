@@ -20,7 +20,7 @@ messages:
   not-exist-nameplates: '<white>This nameplate does not exist!</white>'
   not-available-nameplates: '<white>This nameplate is currently not available!</white>'
   available-nameplates: '<white>Available nameplates: {Nameplates}.</white>'
-  have-no-nameplates: '<white>You don''t have any nameplates yet'
+  have-no-nameplates: '<white>You don''t have any nameplate yet'
 
   equip-bubbles: '<white>Successfully equipped chatting bubbles {Bubble}</white>'
   force-equip-bubbles: '<white>Successfully equipped chatting bubbles {Bubbles}</white>'
@@ -29,4 +29,4 @@ messages:
   not-exist-bubbles: '<white>This bubble does not exist!</white>'
   not-available-bubbles: '<white>This bubble is currently not available!</white>'
   available-bubbles: '<white>Available bubbles: {Bubbles}</white>'
-  have-no-bubbles: '<white>You don''t have any bubbles yet'
+  have-no-bubbles: '<white>You don''t have any bubble yet'
