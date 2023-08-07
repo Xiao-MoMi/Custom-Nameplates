@@ -27,6 +27,8 @@ import net.momirealms.customnameplates.utils.AdventureUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class BackgroundManager extends Function {
@@ -57,6 +59,7 @@ public class BackgroundManager extends Function {
         }
         File[] bg_config_files = bg_file.listFiles(file -> file.getName().endsWith(".yml"));
         if (bg_config_files == null) return;
+        Arrays.sort(bg_config_files, Comparator.comparing(File::getName));
         for (File bg_config_file : bg_config_files) {
             String key = bg_config_file.getName().substring(0, bg_config_file.getName().length() - 4);
             YamlConfiguration config = YamlConfiguration.loadConfiguration(bg_config_file);

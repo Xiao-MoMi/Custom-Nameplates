@@ -110,7 +110,10 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     }
 
     public void onSneak(Player player, boolean isSneaking) {
-        getNamedEntityManager(player).setSneak(isSneaking, true);
+        NamedEntityManager nem = getNamedEntityManager(player);
+        if (nem != null) {
+            nem.setSneak(isSneaking, true);
+        }
     }
 
     public void onRespawn(Player player) {

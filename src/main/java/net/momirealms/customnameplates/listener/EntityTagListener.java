@@ -30,6 +30,7 @@ public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implement
 
     @EventHandler
     public void onSneak(PlayerToggleSneakEvent event) {
+        if (event.isCancelled()) return;
         namedEntityCarrier.onSneak(event.getPlayer(), event.isSneaking());
     }
 
@@ -39,7 +40,8 @@ public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implement
     }
 
     @EventHandler
-    public void onExistVehicle(VehicleExitEvent event) {
+    public void onExitVehicle(VehicleExitEvent event) {
+        if (event.isCancelled()) return;
         if (event.getExited() instanceof Player player) {
             namedEntityCarrier.onSneak(player, false);
         }

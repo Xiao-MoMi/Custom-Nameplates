@@ -48,10 +48,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatBubblesManager extends Function {
@@ -154,6 +151,7 @@ public class ChatBubblesManager extends Function {
         }
         File[] bb_config_files = bb_file.listFiles(file -> file.getName().endsWith(".yml"));
         if (bb_config_files == null) return;
+        Arrays.sort(bb_config_files, Comparator.comparing(File::getName));
         for (File bb_config_file : bb_config_files) {
             char left = ConfigManager.start_char;
             char middle;

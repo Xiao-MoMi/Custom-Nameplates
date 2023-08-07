@@ -96,6 +96,7 @@ public class NameplateManager extends Function {
         }
         File[] np_config_files = np_file.listFiles(file -> file.getName().endsWith(".yml"));
         if (np_config_files == null) return;
+        Arrays.sort(np_config_files, Comparator.comparing(File::getName));
         for (File np_config_file : np_config_files) {
             char left = ConfigManager.start_char;
             char middle;

@@ -1,5 +1,8 @@
 # %nameplates_conditional_{0}%
+# custom conditions for your text, make it easier to display different content according to the requirement you set
 conditional-text:
+  # This is just an example that not actually enabled
+  # It would display the region name with black background if you are in a region. Otherwise it would return nothing
   region:
     priority_1:
       text: '%nameplates_background_region%'
@@ -11,6 +14,19 @@ conditional-text:
             value: ""
     priority_2:
       text: ''
+  # It's actually using the same method as the region example above!
+  prefix:
+    priority_1:
+      text: '%nameplates_background_prefix%'
+      conditions:
+        papi-condition:
+          condition_1:
+            type: '!='
+            papi: '%vault_prefix%'
+            value: ""
+    priority_2:
+      text: ''
+  # A weather example which is using weather conditions
   weather:
     priority_1:
       text: 'Sun'
@@ -32,17 +48,7 @@ conditional-text:
       conditions:
         weather:
           - rainstorm
-  prefix:
-    priority_1:
-      text: '%nameplates_background_prefix%'
-      conditions:
-        papi-condition:
-          condition_1:
-            type: '!='
-            papi: '%vault_prefix%'
-            value: ""
-    priority_2:
-      text: ''
+  # Plugin would hide the stamina bar when players are in water, so the two bars would not overlap
   stamina:
     priority_1:
       text: '%nameplates_offset_98%%nameplates_vanilla_stamina_hud%%nameplates_offset_-179%'
@@ -54,6 +60,7 @@ conditional-text:
             value: "300"
     priority_2:
       text: ''
+  # It would keep the income action message in the middle
   income_actionbar:
     priority_1:
       text: '%nameplates_offset_-180%%nameplates_static_income_actionbar%'
@@ -67,12 +74,14 @@ conditional-text:
       text: ''
 
 # %nameplates_nameplate_{0}%
+# This placeholder would surround the text with a nameplate
 nameplate-text:
   halloween:
     nameplate: halloween
     text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
 
 # %nameplates_background_{0}%
+# This placeholder would surround the text with a background
 background-text:
   prefix:
     background: bedrock_1
@@ -104,6 +113,9 @@ background-text:
     remove-shadow: true
 
 # %nameplates_static_{0}%
+# Plugin would generate offset images to keep the text at a certain position regardless of the length
+# So the text would be fixed at a certain place, so it's called "static-text"
+# We often use this feature to create money hud or receive income actionbar sent by other plugins
 static-text:
   money_hud:
     # left/right/middle
@@ -111,12 +123,18 @@ static-text:
     text: '<#FFFEFD>%nameplates_image_coin%</#FFFEFD> %nameplates_descent_money%'
     value: 180
   income_actionbar:
+    # It might be a good idea if you set the actionbar position from middle to side
     position: middle
-    text: '%nameplates_actionbar%'
+    # remove the font tag if you want to use minecraft:default font
+    text: "<font:nameplates:unicode_ascent_8>%nameplates_actionbar%</font>"
     value: 180
 
 # %nameplates_descent_{0}%
 # If the character can't show correctly here, use descent-unicode instead
+# Never put an image inside this section unless you surround your image with "<font:namespace:font> </font>"
+# For example ItemsAdder, you should use <font:minecraft:default>%img_xxx%</font>
+# Note: If you want to make an image lower, edit the y position/ascent in that plugin instead of
+# using descent text or descent unicode because they are designed for characters
 descent-text:
   player:
     text: "%player_name%"
@@ -134,7 +152,7 @@ descent-text:
     text: "Region: %worldguard_region%"
     descent: 5
   update:
-    text: "A new version of CustomNameplates is available!"
+    text: "A newer version of CustomNameplates is available!"
     descent: 3
   money:
     text: "%vault_eco_balance%"
@@ -142,11 +160,15 @@ descent-text:
 
 # %nameplates_unicode_{0}%
 descent-unicode:
+  normal:
+    text: "Just for registering"
+    descent: 0
   hello:
     text: "Hello 여보세요 你好 こんにちは"
     descent: 5
 
 # %nameplates_vanilla_{0}%
+# This is useful for creating a vanilla like hud
 vanilla-hud:
   stamina_hud:
     reverse: true
