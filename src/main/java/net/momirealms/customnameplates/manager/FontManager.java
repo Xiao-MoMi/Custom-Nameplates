@@ -75,6 +75,10 @@ public class FontManager extends Function {
                 asciiWidth.put(ASCIIWidth.values()[i].getCharacter(), ASCIIWidth.values()[i].getWidth());
     }
 
+    public void loadCustomWidth(char c, int width) {
+        customImageWidth.put(c, width);
+    }
+
     private void loadCustomWidth() {
         for (int i = 0; i < ASCIIWidth.values().length; i++)
             customImageWidth.put(ASCIIWidth.values()[i].getCharacter(), ASCIIWidth.values()[i].getWidth());

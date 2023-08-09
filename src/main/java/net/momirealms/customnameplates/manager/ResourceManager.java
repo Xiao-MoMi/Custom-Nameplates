@@ -235,7 +235,6 @@ public class ResourceManager {
                         "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                         "    } else ")
-
                 );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -288,7 +287,7 @@ public class ResourceManager {
                             File.separator + "ascent_" + ascent + ".json");
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(outPut), StandardCharsets.UTF_8))) {
-                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)).replace("%ASCENT%", String.valueOf(ascent+3)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -314,7 +313,7 @@ public class ResourceManager {
                                     File.separator + ConfigManager.namespace +
                                     File.separator + "font" +
                                     File.separator + "unicode_ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
-                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)));
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)).replace("%ASCENT%", String.valueOf(ascent+3)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

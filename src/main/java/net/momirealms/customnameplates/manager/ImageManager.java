@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.manager;
 
-import com.francobm.magicosmetics.api.MagicAPI;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
