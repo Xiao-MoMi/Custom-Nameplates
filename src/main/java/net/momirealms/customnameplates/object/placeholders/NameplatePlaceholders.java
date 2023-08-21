@@ -235,6 +235,8 @@ public class NameplatePlaceholders extends PlaceholderExpansion {
             current = 1;
             max = 1;
         }
+        if (current >= max) current = max;
+        if (current < 0) current = 0;
         int point = (int) ((current / max) * 20);
         int full_amount = point / 2;
         int half_amount = point % 2;

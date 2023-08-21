@@ -114,11 +114,11 @@ public final class CustomNameplates extends JavaPlugin {
     private void loadLibs() {
         TimeZone timeZone = TimeZone.getDefault();
         String libRepo = timeZone.getID().startsWith("Asia") ? "https://maven.aliyun.com/repository/public/" : "https://repo.maven.apache.org/maven2/";
-        LibraryLoader.load("commons-io","commons-io","2.11.0", libRepo);
-        LibraryLoader.load("org.apache.commons","commons-lang3","3.12.0", libRepo);
+        LibraryLoader.load("commons-io","commons-io","2.13.0", libRepo);
+        LibraryLoader.load("org.apache.commons","commons-lang3","3.13.0", libRepo);
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1", libRepo);
         LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3.1", libRepo);
-        LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.1.2", libRepo);
+        LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.1.4", libRepo);
         LibraryLoader.load("mysql","mysql-connector-java","8.0.30", libRepo);
     }
 

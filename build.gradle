@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.2.3.5'
+version = '2.2.3.6'
 
 repositories {
     maven {name = "aliyun-repo"; url = "https://maven.aliyun.com/repository/public/"}
