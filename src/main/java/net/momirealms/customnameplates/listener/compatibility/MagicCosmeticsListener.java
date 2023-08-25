@@ -3,10 +3,7 @@ package net.momirealms.customnameplates.listener.compatibility;
 import com.francobm.magicosmetics.api.Cosmetic;
 import com.francobm.magicosmetics.api.CosmeticType;
 import com.francobm.magicosmetics.cache.cosmetics.Hat;
-import com.francobm.magicosmetics.events.CosmeticChangeEquipEvent;
-import com.francobm.magicosmetics.events.CosmeticEquipEvent;
-import com.francobm.magicosmetics.events.CosmeticUnEquipEvent;
-import com.francobm.magicosmetics.events.PlayerDataLoadEvent;
+import com.francobm.magicosmetics.events.*;
 import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
 import net.momirealms.customnameplates.object.carrier.NamedEntityManager;
 import org.bukkit.entity.Player;
@@ -65,6 +62,25 @@ public class MagicCosmeticsListener implements Listener {
                     asm.setHatOffset(hat.getOffSetY());
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void zoneEnter(ZoneEnterEvent event) {
+        final Player player = event.getPlayer();
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
+        if (asm != null) {
+            asm.setHide(true);
+            asm.destroy();
+        }
+    }
+
+    @EventHandler
+    public void zoneExit(ZoneExitEvent event) {
+        final Player player = event.getPlayer();
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
+        if (asm != null) {
+            asm.setHide(false);
         }
     }
 }

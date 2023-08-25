@@ -38,6 +38,7 @@ public class NamedEntityManager {
     private double hatOffset;
     private final NamedEntityCarrier namedEntityCarrier;
     private double highestTextHeight;
+    private boolean hide;
 
     public NamedEntityManager(NamedEntityCarrier namedEntityCarrier, Player owner) {
         this.owner = owner;
@@ -77,6 +78,7 @@ public class NamedEntityManager {
     }
 
     public void spawn(Player viewer) {
+        if (hide) return;
         nearbyPlayers.add(viewer);
         nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
         for (NamedEntity fakeArmorStand : namedEntityArray)
@@ -176,6 +178,14 @@ public class NamedEntityManager {
     public void setHatOffset(double hatOffset) {
         this.hatOffset = hatOffset;
         teleport();
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
+    }
+
+    public boolean getHide() {
+        return hide;
     }
 
     public DisplayMode getDisplayMode() {
