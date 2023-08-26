@@ -22,6 +22,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.francobm.magicosmetics.cache.Zone;
 import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.DisplayMode;
@@ -226,9 +227,10 @@ public class NamedEntityImpl implements NamedEntity {
     }
 
     private Location getEntityLocation() {
-        double x = owner.getLocation().getX();
-        double y = getY() + yOffset;
-        double z = owner.getLocation().getZ();
+        Location location = asm.isInWardrobe() ? asm.getWardrobeNPC() : owner.getLocation();
+        double x = location.getX();
+        double y = location.getY() + yOffset;
+        double z = location.getZ();
         if (!owner.isSleeping()) {
             if (sneaking) y += 1.5;
             else y += 1.8;

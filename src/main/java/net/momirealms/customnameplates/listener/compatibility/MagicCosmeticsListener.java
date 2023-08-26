@@ -20,26 +20,12 @@ public class MagicCosmeticsListener implements Listener {
 
     @EventHandler
     public void onChangeCos(CosmeticChangeEquipEvent event) {
-        final Cosmetic cosmetic = event.getNewCosmetic();
-        final Player player = event.getPlayer();
-        if (cosmetic instanceof Hat hat) {
-            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-            if (asm != null) {
-                asm.setHatOffset(hat.getOffSetY());
-            }
-        }
+        setOffset(event.getNewCosmetic(), event.getPlayer());
     }
 
     @EventHandler
     public void onEquip(CosmeticEquipEvent event) {
-        final Cosmetic cosmetic = event.getCosmetic();
-        final Player player = event.getPlayer();
-        if (cosmetic instanceof Hat hat) {
-            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-            if (asm != null) {
-                asm.setHatOffset(hat.getOffSetY());
-            }
-        }
+        setOffset(event.getCosmetic(), event.getPlayer());
     }
 
     @EventHandler
@@ -49,6 +35,9 @@ public class MagicCosmeticsListener implements Listener {
             NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
             if (asm != null) {
                 asm.setHatOffset(0);
+                if (asm.isInWardrobe()) {
+                    asm.teleport(player);
+                }
             }
         }
     }
@@ -56,12 +45,7 @@ public class MagicCosmeticsListener implements Listener {
     @EventHandler
     public void onDataLoaded(PlayerDataLoadEvent event) {
         for (Cosmetic cosmetic : event.getEquippedCosmetics()) {
-            if (cosmetic instanceof Hat hat) {
-                NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(event.getPlayerData().getOfflinePlayer().getPlayer());
-                if (asm != null) {
-                    asm.setHatOffset(hat.getOffSetY());
-                }
-            }
+            setOffset(cosmetic, event.getPlayerData().getOfflinePlayer().getPlayer());
         }
     }
 
@@ -70,8 +54,10 @@ public class MagicCosmeticsListener implements Listener {
         final Player player = event.getPlayer();
         NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
         if (asm != null) {
-            asm.setHide(true);
+            asm.setInWardrobe(true);
             asm.destroy();
+            asm.setWardrobeNPC(event.getZone().getNpc());
+            asm.spawn(player);
         }
     }
 
@@ -80,7 +66,20 @@ public class MagicCosmeticsListener implements Listener {
         final Player player = event.getPlayer();
         NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
         if (asm != null) {
-            asm.setHide(false);
+            asm.setInWardrobe(false);
+            asm.destroy(player);
+        }
+    }
+
+    private void setOffset(Cosmetic cosmetic, Player player) {
+        if (cosmetic instanceof Hat hat) {
+            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
+            if (asm != null) {
+                asm.setHatOffset(hat.getOffSetY());
+                if (asm.isInWardrobe()) {
+                    asm.teleport(player);
+                }
+            }
         }
     }
 }

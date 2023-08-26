@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.object.carrier;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -38,7 +39,8 @@ public class NamedEntityManager {
     private double hatOffset;
     private final NamedEntityCarrier namedEntityCarrier;
     private double highestTextHeight;
-    private boolean hide;
+    private boolean inWardrobe;
+    private Location wardrobeNPC;
 
     public NamedEntityManager(NamedEntityCarrier namedEntityCarrier, Player owner) {
         this.owner = owner;
@@ -78,9 +80,11 @@ public class NamedEntityManager {
     }
 
     public void spawn(Player viewer) {
-        if (hide) return;
-        nearbyPlayers.add(viewer);
-        nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
+        if (viewer != owner) {
+            if (inWardrobe) return;
+            nearbyPlayers.add(viewer);
+            nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
+        }
         for (NamedEntity fakeArmorStand : namedEntityArray)
             if (fakeArmorStand.canShow())
                 fakeArmorStand.spawn(viewer);
@@ -180,12 +184,20 @@ public class NamedEntityManager {
         teleport();
     }
 
-    public void setHide(boolean hide) {
-        this.hide = hide;
+    public boolean isInWardrobe() {
+        return inWardrobe;
     }
 
-    public boolean getHide() {
-        return hide;
+    public void setInWardrobe(boolean inWardrobe) {
+        this.inWardrobe = inWardrobe;
+    }
+
+    public Location getWardrobeNPC() {
+        return wardrobeNPC;
+    }
+
+    public void setWardrobeNPC(Location wardrobeNPC) {
+        this.wardrobeNPC = wardrobeNPC;
     }
 
     public DisplayMode getDisplayMode() {
