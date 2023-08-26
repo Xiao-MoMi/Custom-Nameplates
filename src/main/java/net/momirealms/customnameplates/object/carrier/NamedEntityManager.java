@@ -78,7 +78,6 @@ public class NamedEntityManager {
     }
 
     public void spawn(Player viewer) {
-        if (hideNameplate) return;
         nearbyPlayers.add(viewer);
         nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
         for (NamedEntity fakeArmorStand : namedEntityArray)
@@ -87,7 +86,6 @@ public class NamedEntityManager {
     }
 
     public void refresh(boolean force) {
-        if (hideNameplate) return;
         highestTextHeight = -2;
         for (NamedEntity fakeArmorStand : namedEntityArray) {
             boolean canShow = fakeArmorStand.canShow();
@@ -120,11 +118,7 @@ public class NamedEntityManager {
      */
     public void hide() {
         hideNameplate = true;
-        for (NamedEntity entity : namedEntityArray) {
-            entity.destroy();
-        }
-        nearbyPlayers.clear();
-        nearbyPlayerArray = new Player[0];
+        destroy();
     }
 
     /**

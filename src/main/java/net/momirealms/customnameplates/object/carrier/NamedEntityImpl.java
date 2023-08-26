@@ -152,7 +152,7 @@ public class NamedEntityImpl implements NamedEntity {
 
     @Override
     public void teleport(Player viewer) {
-        if (!asm.isNearby(viewer) && viewer != owner) {
+        if (!asm.isNearby(viewer) && viewer != owner && !asm.isHideNameplate()) { // add isHideNameplate check
             asm.spawn(viewer);
         } else {
             CustomNameplates.getProtocolManager().sendServerPacket(viewer, getTeleportPacket());

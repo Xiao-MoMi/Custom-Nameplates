@@ -73,7 +73,8 @@ public class NamedEntityPacketsHandler extends AbstractPacketsHandler {
     @Override
     public void onEntitySpawn(Player receiver, int entityId) {
         Player spawnedPlayer = super.getPlayerFromMap(entityId);
-        if (spawnedPlayer != null) {
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(spawnedPlayer);
+        if (spawnedPlayer != null && !asm.isHideNameplate()) { // g2213swo add !asm.isHideNameplate()
             namedEntityCarrier.getNamedEntityManager(spawnedPlayer).spawn(receiver);
         }
     }
