@@ -16,6 +16,7 @@ repositories {
     maven {name = "codecrafter47-repo"; url = 'https://nexus.codecrafter47.de/content/repositories/public/'}
     maven {name = "opencollab-snapshot-repo"; url = 'https://repo.opencollab.dev/main/'}
     maven {name = 'papermc-repo'; url = 'https://papermc.io/repo/repository/maven-public/'}
+    maven {name = 'md_5-public'; url = 'https://repo.md-5.net/content/groups/public/'}
     mavenCentral()
 }
 
@@ -30,6 +31,7 @@ dependencies {
     compileOnly ('net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT')
     compileOnly ('com.github.LoneDev6:api-itemsadder:3.4.1-r4')
     compileOnly ('org.apache.commons:commons-lang3:3.12.0')
+    compileOnly ('LibsDisguises:LibsDisguises:10.0.37')
     implementation ('net.kyori:adventure-api:4.14.0')
     implementation ('net.kyori:adventure-platform-bukkit:4.3.0')
     implementation ('net.kyori:adventure-text-minimessage:4.14.0')

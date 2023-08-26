@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.object.carrier;
 
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.EntityTagListener;
+import net.momirealms.customnameplates.listener.InvisibilityPotionListener;
+import net.momirealms.customnameplates.listener.compatibility.CMIVanishListener;
+import net.momirealms.customnameplates.listener.compatibility.LibsDisguisesListener;
 import net.momirealms.customnameplates.listener.compatibility.MagicCosmeticsListener;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.DisplayMode;
@@ -38,6 +41,9 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     protected EntityTagListener entityTagListener;
     protected AbstractPacketsHandler handler;
     protected MagicCosmeticsListener magicCosmeticsListener;
+    protected LibsDisguisesListener libsDisguisesListener;
+    protected CMIVanishListener cmiVanishListener;
+    protected InvisibilityPotionListener invisibilityPotionListener;
     private final VehicleChecker vehicleChecker;
     private final HashMap<ConditionalText, Double> persistentText;
 
@@ -45,24 +51,41 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
         super(plugin, displayMode);
         this.vehicleChecker = new VehicleChecker(this);
         this.entityTagListener = new EntityTagListener(this);
+        this.invisibilityPotionListener = new InvisibilityPotionListener(this);
         this.persistentText = persistentText;
         this.handler = new NamedEntityPacketsHandler(this);
         if (Bukkit.getPluginManager().getPlugin("MagicCosmetics") != null) {
             this.magicCosmeticsListener = new MagicCosmeticsListener(this);
         }
+        // g2213swo start
+        if (Bukkit.getPluginManager().getPlugin("LibsDisguises") != null) {
+            this.libsDisguisesListener = new LibsDisguisesListener(this);
+        }
+        if (Bukkit.getPluginManager().getPlugin("CMI") != null) {
+            this.cmiVanishListener = new CMIVanishListener(this);
+        }
+        // g2213swo end
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         handler.load();
         this.vehicleChecker.load();
         Bukkit.getPluginManager().registerEvents(entityTagListener, CustomNameplates.getInstance());
-        if (magicCosmeticsListener != null) Bukkit.getPluginManager().registerEvents(magicCosmeticsListener, CustomNameplates.getInstance());
+        Bukkit.getPluginManager().registerEvents(invisibilityPotionListener, CustomNameplates.getInstance());
+        if (magicCosmeticsListener != null)
+            Bukkit.getPluginManager().registerEvents(magicCosmeticsListener, CustomNameplates.getInstance());
+        // g2213swo start
+        if (libsDisguisesListener != null)
+            Bukkit.getPluginManager().registerEvents(libsDisguisesListener, CustomNameplates.getInstance());
+        if (cmiVanishListener != null)
+            Bukkit.getPluginManager().registerEvents(cmiVanishListener, CustomNameplates.getInstance());
+        // g2213swo end
     }
 
     @Override
-    public void unload(){
+    public void unload() {
         super.unload();
         handler.unload();
         for (NamedEntityManager asm : namedEntityManagerMap.values()) {
@@ -70,8 +93,11 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
         }
         namedEntityManagerMap.clear();
         HandlerList.unregisterAll(entityTagListener);
+        HandlerList.unregisterAll(invisibilityPotionListener);
         this.vehicleChecker.unload();
         if (magicCosmeticsListener != null) HandlerList.unregisterAll(magicCosmeticsListener);
+        if (libsDisguisesListener != null) HandlerList.unregisterAll(libsDisguisesListener);
+        if (cmiVanishListener != null) HandlerList.unregisterAll(cmiVanishListener);
     }
 
     @Override
@@ -134,7 +160,8 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     }
 
     protected void spawnNamedEntity(Player viewer, Player target) {
-        if (target == viewer || target.getGameMode() == GameMode.SPECTATOR || viewer.getWorld() != target.getWorld()) return;
+        if (target == viewer || target.getGameMode() == GameMode.SPECTATOR || viewer.getWorld() != target.getWorld())
+            return;
         if (getDistance(target, viewer) < 48 && viewer.canSee(target)) {
             NamedEntityManager asm = getNamedEntityManager(target);
             asm.spawn(viewer);
@@ -144,7 +171,7 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     protected double getDistance(Player player1, Player player2) {
         Location loc1 = player1.getLocation();
         Location loc2 = player2.getLocation();
-        return Math.sqrt(Math.pow(loc1.getX()-loc2.getX(), 2) + Math.pow(loc1.getZ()-loc2.getZ(), 2));
+        return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2) + Math.pow(loc1.getZ() - loc2.getZ(), 2));
     }
 
     public HashMap<ConditionalText, Double> getPersistentText() {

@@ -38,6 +38,7 @@ public class NamedEntityManager {
     private double hatOffset;
     private final NamedEntityCarrier namedEntityCarrier;
     private double highestTextHeight;
+    private boolean hideNameplate;
 
     public NamedEntityManager(NamedEntityCarrier namedEntityCarrier, Player owner) {
         this.owner = owner;
@@ -77,6 +78,7 @@ public class NamedEntityManager {
     }
 
     public void spawn(Player viewer) {
+        if (hideNameplate) return;
         nearbyPlayers.add(viewer);
         nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
         for (NamedEntity fakeArmorStand : namedEntityArray)
@@ -85,6 +87,7 @@ public class NamedEntityManager {
     }
 
     public void refresh(boolean force) {
+        if (hideNameplate) return;
         highestTextHeight = -2;
         for (NamedEntity fakeArmorStand : namedEntityArray) {
             boolean canShow = fakeArmorStand.canShow();
@@ -111,6 +114,30 @@ public class NamedEntityManager {
         nearbyPlayers.clear();
         nearbyPlayerArray = new Player[0];
     }
+    // g2213swo start
+    /**
+     * Hides the nameplate from all players
+     */
+    public void hide() {
+        hideNameplate = true;
+        for (NamedEntity entity : namedEntityArray) {
+            entity.destroy();
+        }
+        nearbyPlayers.clear();
+        nearbyPlayerArray = new Player[0];
+    }
+
+    /**
+     * Shows the nameplate to all players
+     */
+    public void show() {
+        hideNameplate = false;
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.canShow())
+                entity.spawn();
+        }
+    }
+    // g2213swo end
 
     public void teleport(Player viewer) {
         for (NamedEntity entity : namedEntityArray) {
@@ -185,4 +212,14 @@ public class NamedEntityManager {
     public double getHighestTextHeight() {
         return highestTextHeight;
     }
+
+    // g2213swo start
+    /**
+     * Returns true if the nameplate is hidden from all players
+     * @return true if the nameplate is hidden from all players otherwise false
+     */
+    public boolean isHideNameplate() {
+        return hideNameplate;
+    }
+    // g2213swo end
 }

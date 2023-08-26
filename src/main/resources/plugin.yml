@@ -13,6 +13,8 @@ softdepend:
   - Oraxen
   - TrChat
   - MagicCosmetics
+  - CMI
+  - LibsDisguises
 commands:
   customnameplates:
     usage: /customnameplates
