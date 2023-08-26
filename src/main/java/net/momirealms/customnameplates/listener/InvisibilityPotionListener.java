@@ -29,14 +29,11 @@ public class InvisibilityPotionListener implements Listener {
             final NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
             final EntityPotionEffectEvent.Action action = event.getAction();
             if (event.getModifiedType().equals(PotionEffectType.INVISIBILITY)) {
-                System.out.println("Invisibility");
                 switch (action) {
                     case ADDED, CHANGED -> {
-                        System.out.println("Hiding");
                         asm.hide();
                     }
                     case REMOVED, CLEARED -> {
-                        System.out.println("Showing");
                         asm.show();
                     }
                 }
