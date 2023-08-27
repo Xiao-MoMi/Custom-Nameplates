@@ -235,16 +235,23 @@ public class NameplateManager extends Function {
     public void showPlayerArmorStandTags(Player player) {
         NamedEntityCarrier namedEntityCarrier = (NamedEntityCarrier) this.getTextCarrier();
         NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
+        if (asm.isInWardrobe()) return;
         asm.spawn(player);
         for (int i = 1; i <= this.getPreview_time() * 20; i++) {
             plugin.getScheduler().runTaskAsyncLater(()-> {
                 asm.teleport(player);
             }, i);
         }
-        plugin.getScheduler().runTaskAsyncLater(()-> asm.destroy(player), this.getPreview_time() * 20);
+        plugin.getScheduler().runTaskAsyncLater(() -> {
+            if (asm.isInWardrobe()) asm.unregisterPlayer(player);
+            else asm.destroy(player);
+        }, this.getPreview_time() * 20);
     }
 
     public void showPlayerArmorStandTags(Player player, String nameplate) {
+        NamedEntityCarrier namedEntityCarrier = (NamedEntityCarrier) this.getTextCarrier();
+        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
+        if (asm.isInWardrobe()) return;
         String current = getEquippedNameplate(player);
         if (!nameplate.equals(current)) {
             plugin.getDataManager().equipNameplate(player, nameplate);

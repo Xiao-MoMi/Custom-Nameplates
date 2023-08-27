@@ -22,7 +22,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.francobm.magicosmetics.cache.Zone;
 import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.DisplayMode;
@@ -162,6 +161,7 @@ public class NamedEntityImpl implements NamedEntity {
 
     @Override
     public void setSneak(boolean isSneaking, boolean respawn) {
+        if (asm.isInWardrobe()) return;
         this.sneaking = isSneaking;
         if (respawn) {
             for (Player viewer : asm.getNearbyPlayers()) {

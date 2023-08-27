@@ -57,7 +57,7 @@ public class MagicCosmeticsListener implements Listener {
             asm.setInWardrobe(true);
             asm.destroy();
             asm.setWardrobeNPC(event.getZone().getNpc());
-            asm.spawn(player);
+            asm.spawnInWardrobe(player);
         }
     }
 

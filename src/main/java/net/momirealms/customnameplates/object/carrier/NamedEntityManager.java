@@ -34,7 +34,7 @@ public class NamedEntityManager {
     private final ConcurrentHashMap<UUID, NamedEntity> namedEntities = new ConcurrentHashMap<>();
     private NamedEntity[] namedEntityArray;
     private final Vector<Player> nearbyPlayers;
-    private Player[] nearbyPlayerArray ;
+    private Player[] nearbyPlayerArray;
     private final Player owner;
     private double hatOffset;
     private final NamedEntityCarrier namedEntityCarrier;
@@ -80,11 +80,15 @@ public class NamedEntityManager {
     }
 
     public void spawn(Player viewer) {
-        if (viewer != owner) {
-            if (inWardrobe) return;
-            nearbyPlayers.add(viewer);
-            nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
-        }
+        if (inWardrobe) return;
+        nearbyPlayers.add(viewer);
+        nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
+        for (NamedEntity fakeArmorStand : namedEntityArray)
+            if (fakeArmorStand.canShow())
+                fakeArmorStand.spawn(viewer);
+    }
+
+    public void spawnInWardrobe(Player viewer) {
         for (NamedEntity fakeArmorStand : namedEntityArray)
             if (fakeArmorStand.canShow())
                 fakeArmorStand.spawn(viewer);
