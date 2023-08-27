@@ -161,7 +161,6 @@ public class NamedEntityImpl implements NamedEntity {
 
     @Override
     public void setSneak(boolean isSneaking, boolean respawn) {
-        if (asm.isInWardrobe()) return;
         this.sneaking = isSneaking;
         if (respawn) {
             for (Player viewer : asm.getNearbyPlayers()) {
