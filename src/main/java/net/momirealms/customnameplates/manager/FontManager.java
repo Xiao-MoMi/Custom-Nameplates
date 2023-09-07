@@ -84,6 +84,8 @@ public class FontManager extends Function {
             customImageWidth.put(ASCIIWidth.values()[i].getCharacter(), ASCIIWidth.values()[i].getWidth());
         for (SimpleChar simpleChar : plugin.getImageManager().getCharacterMap().values())
             customImageWidth.put(simpleChar.getChars(), simpleChar.getWidth());
+        for (OffsetFont offsetFont : OffsetFont.values())
+            customImageWidth.put(offsetFont.getCharacter(), offsetFont.getSpace() - 1);
         YamlConfiguration config = ConfigUtils.getConfig("configs" + File.separator + "image-width.yml");
         for (String image : config.getKeys(false)) {
             String character = AdventureUtils.stripAllTags(PlaceholderAPI.setPlaceholders(null, image));

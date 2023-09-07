@@ -45,7 +45,6 @@ public class ActionBarSender {
     }
 
     public boolean canSend() {
-        if (requirements.length == 0) return true;
         for (Requirement requirement : requirements) {
             if (!requirement.isConditionMet(player)) {
                 return false;

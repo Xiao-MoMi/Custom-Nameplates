@@ -86,8 +86,17 @@ public class BackgroundManager extends Function {
                     offset_8, offset_16,
                     offset_32, offset_64,
                     offset_128, endChar,
-                    config.getInt("left-margin", 1), config.getInt("right-margin", 1)))
-            ;
+                    config.getInt("left-margin", 1), config.getInt("right-margin", 1)));
+            plugin.getFontManager().loadCustomWidth(o1, 1);
+            plugin.getFontManager().loadCustomWidth(o2, 2);
+            plugin.getFontManager().loadCustomWidth(o4, 4);
+            plugin.getFontManager().loadCustomWidth(o8, 8);
+            plugin.getFontManager().loadCustomWidth(o16, 16);
+            plugin.getFontManager().loadCustomWidth(o32, 32);
+            plugin.getFontManager().loadCustomWidth(o64, 64);
+            plugin.getFontManager().loadCustomWidth(o128, 128);
+            plugin.getFontManager().loadCustomWidth(oStart, config.getInt("left.width", 1));
+            plugin.getFontManager().loadCustomWidth(oEnd, config.getInt("right.width", 1));
         }
         AdventureUtils.consoleMessage("[CustomNameplates] Loaded <green>" + backGroundConfigMap.size() + " <gray>backgrounds");
     }

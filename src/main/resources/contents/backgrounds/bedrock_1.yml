@@ -5,11 +5,13 @@ left:
   image: b0
   height: 14
   ascent: 7
+  width: 1
 
 right:
   image: b0
   height: 14
   ascent: 7
+  width: 1
 
 middle:
   height: 14
