@@ -39,18 +39,24 @@ public class VersionHelper {
     private final String pluginVersion;
     private boolean isLatest;
     private final int pack_format;
-    private final boolean isFolia;
+    private boolean isFolia;
 
     public VersionHelper(CustomNameplates plugin) {
         this.plugin = plugin;
         this.pluginVersion = plugin.getDescription().getVersion();
         this.initialize();
         this.pack_format = getPack_format(serverVersion);
-        isFolia = plugin.getServer().getName().equals("DirtyFolia");
+        try {
+            Class.forName("io.papermc.paper.threadedregions.scheduler.AsyncScheduler");
+            this.isFolia = true;
+        } catch (ClassNotFoundException ignored) {
+            this.isFolia = false;
+        }
     }
 
     public void initialize() {
         if (serverVersion == null) {
+            System.out.println(Bukkit.getServer().getBukkitVersion());
             this.serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             String[] split = serverVersion.split("_");
             int main_ver = Integer.parseInt(split[1]);
@@ -110,6 +116,9 @@ public class VersionHelper {
 
     private int getPack_format(String version) {
         switch (version) {
+            case "v1_20_R2" -> {
+                return 18;
+            }
             case "v1_20_R1" -> {
                 return 15;
             }

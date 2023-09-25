@@ -240,9 +240,14 @@ public class ResourceManager {
                 e.printStackTrace();
             }
         }
-        if (ConfigManager.extractBars) {
+        if (ConfigManager.extractLegacyBars) {
             String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator;
             plugin.saveResource(path + "bars.png", true);
+        }
+        if (ConfigManager.extractBars) {
+            String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator + "sprites" + File.separator + "boss_bar" + File.separator;
+            plugin.saveResource(path + "yellow_background.png", true);
+            plugin.saveResource(path + "yellow_progress.png", true);
         }
         setPackFormat();
     }

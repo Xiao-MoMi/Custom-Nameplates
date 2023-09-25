@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public record ExpressionAnd(List<PapiRequirement> requirements) implements PapiRequirement{
+public record ExpressionAnd(List<PapiRequirement> requirements) implements PapiRequirement {
 
     @Override
     public boolean isMet(Player player) {

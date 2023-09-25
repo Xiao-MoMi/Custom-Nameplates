@@ -1,5 +1,5 @@
 # Do not change
-config-version: '18'
+config-version: '19'
 
 # bStats
 metrics: true
@@ -8,7 +8,7 @@ metrics: true
 update-checker: true
 
 # Language
-# english/chinese/spanish/russian
+# english/chinese/spanish/russian/turkish/french
 lang: english
 
 # Modules
@@ -43,10 +43,14 @@ integrations:
   VentureChat: false
 
 resource-pack:
+  # disable resource pack generation on server start
+  disable-generation-on-start: false
   # extract the shader
   extract-shader: true
-  # extract the minecraft bars.png
+  # extract the transparent bossbar for 1.20.2+
   extract-bar-image: true
+  # extract the transparent bars.png for legacy versions
+  extract-bar-image-legacy: true
   # Your namespace
   namespace: "nameplates"
   # Font Name

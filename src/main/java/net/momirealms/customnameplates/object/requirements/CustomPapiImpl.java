@@ -67,6 +67,7 @@ public class CustomPapiImpl implements Requirement {
                         case "<=" -> papiRequirements.add(new PapiNoLarger(papi, value));
                         case "<" -> papiRequirements.add(new PapiSmaller(papi, value));
                         case ">" -> papiRequirements.add(new PapiGreater(papi, value));
+                        case "regex" -> papiRequirements.add(new PapiRegex(papi, value));
                     }
                 }
             }

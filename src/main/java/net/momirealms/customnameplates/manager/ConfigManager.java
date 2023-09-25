@@ -43,6 +43,7 @@ public class ConfigManager extends Function {
     public static boolean trChat_Hook;
     public static boolean ventureChat_Hook;
     public static boolean extractShader;
+    public static boolean extractLegacyBars;
     public static boolean extractBars;
     public static char start_char;
     public static boolean checkUpdate;
@@ -57,6 +58,7 @@ public class ConfigManager extends Function {
     public static boolean enable1_20_Unicode;
     public static boolean hideScoreboardNumber;
     public static boolean iaShaderSupport;
+    public static boolean generatePackOnStart;
 
     @Override
     public void load(){
@@ -86,6 +88,7 @@ public class ConfigManager extends Function {
     private void loadResourcePack(ConfigurationSection config) {
         ConfigurationSection section = config.getConfigurationSection("resource-pack");
         if (section != null) {
+            generatePackOnStart = !section.getBoolean("disable-generation-on-start", false);
             namespace = section.getString("namespace", "nameplates");
             font = section.getString("font", "default");
             start_char = section.getString("config.left-char", "뀁").charAt(0);
@@ -95,6 +98,7 @@ public class ConfigManager extends Function {
             space_split_folder_path = section.getString("image-path.space-split","font\\base\\");
             images_folder_path = section.getString("image-path.images","font\\images\\");
             extractShader = section.getBoolean("extract-shader",true);
+            extractLegacyBars = section.getBoolean("extract-bar-image-legacy",true);
             extractBars = section.getBoolean("extract-bar-image",true);
             enable1_20_Unicode = section.getBoolean("support-1_20-unicodes",false);
             hideScoreboardNumber = section.getBoolean("hide-scoreboard-number",true);

@@ -90,10 +90,11 @@ public final class CustomNameplates extends JavaPlugin {
         this.customNameplatesAPI = new CustomNameplatesAPI(this);
         this.customNameplatesAPI.init();
         this.registerCommands();
-        this.reload();
+        this.reload(false);
         AdventureUtils.consoleMessage("[CustomNameplates] Plugin Enabled!");
         if (ConfigManager.enableBStats) new Metrics(this, 16649);
         if (ConfigManager.checkUpdate) this.versionHelper.checkUpdate();
+        if (ConfigManager.generatePackOnStart) resourceManager.generateResourcePack();
     }
 
     @Override
@@ -142,7 +143,7 @@ public final class CustomNameplates extends JavaPlugin {
         new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
     }
 
-    public void reload() {
+    public void reload(boolean generate) {
         configManager.unload();
         messageManager.unload();
         bossBarManager.unload();
@@ -170,7 +171,7 @@ public final class CustomNameplates extends JavaPlugin {
         actionBarManager.load();
         placeholderManager.load();
 
-        resourceManager.generateResourcePack();
+        if (generate) resourceManager.generateResourcePack();
     }
 
     public static CustomNameplates getInstance() {

@@ -36,7 +36,7 @@ public class ReloadCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
         long time1 = System.currentTimeMillis();
-        CustomNameplates.getInstance().reload();
+        CustomNameplates.getInstance().reload(true);
         AdventureUtils.sendMessage(sender, MessageManager.prefix + MessageManager.reload.replace("{time}", String.valueOf(System.currentTimeMillis() - time1)));
         return true;
     }
