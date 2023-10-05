@@ -42,6 +42,7 @@ public class BossBarSender {
     private final Player player;
     private final int switch_interval;
     private int timer;
+    private int refresh_rate;
     private int current_text_id;
     private final DynamicText[] dynamicTexts;
     private final Requirement[] requirements;
@@ -51,7 +52,7 @@ public class BossBarSender {
     private final Overlay overlay;
     private final BarColor barColor;
 
-    public BossBarSender(int switch_interval, String[] texts, Requirement[] requirements, Overlay overlay, BarColor barColor,Player player) {
+    public BossBarSender(int switch_interval, int refreshRate, String[] texts, Requirement[] requirements, Overlay overlay, BarColor barColor,Player player) {
         this.player = player;
         this.switch_interval = switch_interval;
         this.overlay = overlay;
@@ -63,6 +64,7 @@ public class BossBarSender {
             dynamicTexts[i] = new DynamicText(player, texts[i]);
         }
         this.current_text_id = 0;
+        this.refresh_rate = refreshRate;
     }
 
     public boolean isShown() {
@@ -70,7 +72,7 @@ public class BossBarSender {
     }
 
     public boolean canSend() {
-        if (requirements.length == 0) return true;
+        if (requirements == null) return true;
         for (Requirement requirement : requirements) {
             if (!requirement.isConditionMet(player)) {
                 return false;
@@ -91,15 +93,14 @@ public class BossBarSender {
 
     public void update() {
         timer++;
-        if (timer > switch_interval) {
-            timer = 0;
+        if (timer % switch_interval == 0) {
             current_text_id++;
             if (current_text_id >= dynamicTexts.length) {
                 current_text_id = 0;
             }
             force = true;
         }
-        if (dynamicTexts[current_text_id].update() || force) {
+        if (timer % refresh_rate == 0 && dynamicTexts[current_text_id].update() || force) {
             force = false;
             CustomNameplates.getProtocolManager().sendServerPacket(player, getUpdatePacket());
         }

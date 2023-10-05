@@ -39,6 +39,7 @@ public class ConfigManager extends Function {
     public static boolean thin_font;
     public static boolean tab_hook;
     public static boolean tab_BC_hook;
+    public static boolean velocitab_hook;
     public static boolean oraxenHook;
     public static boolean trChat_Hook;
     public static boolean ventureChat_Hook;
@@ -78,6 +79,7 @@ public class ConfigManager extends Function {
         if (section != null) {
             tab_hook = section.getBoolean("TAB",false) && Bukkit.getPluginManager().isPluginEnabled("TAB");
             tab_BC_hook = section.getBoolean("TAB-BC",false);
+            velocitab_hook = section.getBoolean("Velocitab",false);
             trChat_Hook = section.getBoolean("TrChat",false) && Bukkit.getPluginManager().isPluginEnabled("TrChat");
             itemsAdderHook = section.getBoolean("ItemsAdder",false) && Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
             oraxenHook = section.getBoolean("Oraxen",false) && Bukkit.getPluginManager().isPluginEnabled("Oraxen");

@@ -1,5 +1,5 @@
 # Do not change
-config-version: '19'
+config-version: '20'
 
 # bStats
 metrics: true
@@ -35,6 +35,8 @@ integrations:
   # You need to install CustomNameplates on BungeeCord too, otherwise you might be kicked from the server if you enabled "create-fake-team" in nameplate.yml
   # 启用后，插件会从BungeeCord端接收TAB的队伍信息
   TAB-BC: false
+  # Receive Team info from Velocitab
+  Velocitab: false
   # TrChat channels
   # TrChat频道
   TrChat: false

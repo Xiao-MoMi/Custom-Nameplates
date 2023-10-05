@@ -101,7 +101,6 @@ public class FontManager extends Function {
             }
         }
         plugin.saveResource("templates" + File.separator + "default.json", true);
-        plugin.saveResource("templates" + File.separator + "default1_20.json", true);
         plugin.saveResource("templates" + File.separator + "unicode.json", true);
     }
 

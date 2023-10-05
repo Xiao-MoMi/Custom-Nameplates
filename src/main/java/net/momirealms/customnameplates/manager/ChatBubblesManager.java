@@ -181,8 +181,7 @@ public class ChatBubblesManager extends Function {
             if (!config.contains("tail.ascent")) config.set("tail.ascent", 12);
             try {
                 config.save(bb_config_file);
-            }
-            catch (IOException ignored) {
+            } catch (IOException ignored) {
             }
             SimpleChar leftChar = new SimpleChar(config.getInt("left.height"), config.getInt("left.ascent"), config.getInt("left.width"), left, config.getString("left.image") + ".png");
             SimpleChar middleChar = new SimpleChar(config.getInt("middle.height"), config.getInt("middle.ascent"), config.getInt("middle.width"), middle, config.getString("middle.image") + ".png");

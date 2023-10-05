@@ -32,10 +32,10 @@ import java.util.Objects;
 
 public class BungeeEventListener implements Listener {
 
-    private final CustomNameplates plugin;
+    private final CustomNameplatesBC plugin;
     private final SortingManager sortingManager;
 
-    public BungeeEventListener (CustomNameplates plugin) {
+    public BungeeEventListener (CustomNameplatesBC plugin) {
         this.plugin = plugin;
         this.sortingManager = TAB.getInstance().getSortingManager();
     }

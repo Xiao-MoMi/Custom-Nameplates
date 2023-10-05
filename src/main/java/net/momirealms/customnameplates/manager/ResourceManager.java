@@ -277,7 +277,7 @@ public class ResourceManager {
         for (int ascent : plugin.getPlaceholderManager().getDescent_fonts()) {
             String line;
             StringBuilder sb = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + (plugin.getVersionHelper().isVersionNewerThan1_20() ? "default1_20.json" : "default.json"))), StandardCharsets.UTF_8))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "templates" + File.separator + "default.json")), StandardCharsets.UTF_8))) {
                 while ((line = reader.readLine()) != null) {
                     sb.append(line).append(System.lineSeparator());
                 }

@@ -93,6 +93,7 @@ public class BossBarManager extends Function {
                     Overlay.valueOf(bossBarSection.getString("overlay","progress").toUpperCase(Locale.ENGLISH)),
                     BarColor.valueOf(bossBarSection.getString("color","white").toUpperCase(Locale.ENGLISH)),
                     bossBarSection.getInt("switch-interval", 5) * 20,
+                    Math.max(1, bossBarSection.getInt("refresh-rate", 1)),
                     ConfigUtils.getRequirements(bossBarSection.getConfigurationSection("conditions"))
             ));
         }

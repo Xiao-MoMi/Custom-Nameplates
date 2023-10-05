@@ -27,6 +27,7 @@ import net.momirealms.customnameplates.object.team.TeamPacketInterface;
 import net.momirealms.customnameplates.object.team.name.PlayerNameTeamImpl;
 import net.momirealms.customnameplates.object.team.name.TABBungeeCordImpl;
 import net.momirealms.customnameplates.object.team.name.TABImpl;
+import net.momirealms.customnameplates.object.team.name.VelocitabImpl;
 import net.momirealms.customnameplates.object.team.packet.TeamInfoImpl;
 import net.momirealms.customnameplates.object.team.packet.TeamVisibilityImpl;
 import org.bukkit.Bukkit;
@@ -60,6 +61,8 @@ public class TeamManager extends Function {
             teamNameInterface = new TABBungeeCordImpl();
         } else if (ConfigManager.tab_hook) {
             teamNameInterface = new TABImpl();
+        } else if (ConfigManager.velocitab_hook) {
+            teamNameInterface = new VelocitabImpl();
         } else {
             teamNameInterface = new PlayerNameTeamImpl(this);
         }

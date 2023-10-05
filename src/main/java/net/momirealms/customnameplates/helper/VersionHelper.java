@@ -56,7 +56,6 @@ public class VersionHelper {
 
     public void initialize() {
         if (serverVersion == null) {
-            System.out.println(Bukkit.getServer().getBukkitVersion());
             this.serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             String[] split = serverVersion.split("_");
             int main_ver = Integer.parseInt(split[1]);

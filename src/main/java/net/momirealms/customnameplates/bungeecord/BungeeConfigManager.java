@@ -19,9 +19,9 @@ package net.momirealms.customnameplates.bungeecord;
 
 public class BungeeConfigManager {
 
-    private final CustomNameplates plugin;
+    private final CustomNameplatesBC plugin;
 
-    public BungeeConfigManager(CustomNameplates plugin) {
+    public BungeeConfigManager(CustomNameplatesBC plugin) {
         this.plugin = plugin;
     }
 

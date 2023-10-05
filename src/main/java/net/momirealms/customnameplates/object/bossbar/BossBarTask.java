@@ -32,6 +32,7 @@ public class BossBarTask {
             BossBarConfig bossBarConfig = configs[i];
             this.bossBarSenders[i] = new BossBarSender(
                     bossBarConfig.interval(),
+                    bossBarConfig.refreshRate(),
                     bossBarConfig.texts(),
                     bossBarConfig.conditions(),
                     bossBarConfig.overlay(),

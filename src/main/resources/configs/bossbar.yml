@@ -5,7 +5,10 @@ basic_info_hud:
     - '%nameplates_background_weather%   %nameplates_background_position%'
     - '%nameplates_background_time%   %nameplates_background_hello%'
     #- '%nameplates_conditional_region%'
+  # switch the line of text every 15 seconds
   switch-interval: 15
+  # Refresh the text every 1 tick
+  refresh-rate: 1
   conditions:
     permission: bossbar.show
 
@@ -14,6 +17,7 @@ update_info:
   overlay: PROGRESS
   text: '%nameplates_background_update%'
   switch-interval: 15
+  refresh-rate: 20
   conditions:
     permission: customnameplates.admin
     papi-condition:
