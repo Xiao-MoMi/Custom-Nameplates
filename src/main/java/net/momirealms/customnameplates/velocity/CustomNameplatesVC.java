@@ -74,9 +74,11 @@ public class CustomNameplatesVC {
         if (optPlayer.isEmpty()) return;
         var player = tab.getTabPlayer(optPlayer.get());
 
-        ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
-        byteArrayDataOutput.writeUTF(playerName);
-        byteArrayDataOutput.writeUTF(player.getTeamName(tab));
-        optPlayer.get().getCurrentServer().ifPresent(it -> it.sendPluginMessage(MinecraftChannelIdentifier.from("customnameplates:cnp"), byteArrayDataOutput.toByteArray()));
+        player.getTeamName(tab).thenAccept(team -> {
+            ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
+            byteArrayDataOutput.writeUTF(playerName);
+            byteArrayDataOutput.writeUTF(team);
+            optPlayer.get().getCurrentServer().ifPresent(it -> it.sendPluginMessage(MinecraftChannelIdentifier.from("customnameplates:cnp"), byteArrayDataOutput.toByteArray()));
+        });
     }
 }
