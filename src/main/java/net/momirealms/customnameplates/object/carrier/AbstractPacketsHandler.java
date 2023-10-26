@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.object.carrier;
 
+import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.object.Function;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,16 +51,19 @@ public abstract class AbstractPacketsHandler extends Function {
         entityIdMap.remove(player.getEntityId());
     }
 
-    public void onEntityMove(Player receiver, int entityId) {
+    public void onEntityMove(Player receiver, int entityId, short x, short y, short z, boolean onGround) {
     }
 
-    public void onEntitySpawn(Player receiver, int entityId) {
+    public void onEntitySpawn(Player receiver, int entityId, PacketEvent event) {
     }
 
     public void onEntityDestroy(Player receiver, List<Integer> entities) {
     }
 
     public void onEntityDestroy(Player receiver, int entity) {
+    }
+
+    public void onEntityTeleport(Player player, int entityId) {
     }
 
     public Player getPlayerFromMap(int entityID) {

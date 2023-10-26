@@ -39,7 +39,7 @@ import java.util.*;
 
 public class NamedEntityImpl implements NamedEntity {
 
-    private final NamedEntityManager asm;
+    private final NamedEntityManager nem;
     private final Player owner;
     private double yOffset;
     private final int entityId;
@@ -52,8 +52,8 @@ public class NamedEntityImpl implements NamedEntity {
     private final TextDisplayMeta textDisplayMeta;
 
     //dynamic value
-    public NamedEntityImpl(NamedEntityManager asm, Player owner, DynamicText text, double yOffset, @NotNull Requirement[] requirements, @Nullable TextDisplayMeta textDisplayMeta) {
-        this.asm = asm;
+    public NamedEntityImpl(NamedEntityManager nem, Player owner, DynamicText text, double yOffset, @NotNull Requirement[] requirements, @Nullable TextDisplayMeta textDisplayMeta) {
+        this.nem = nem;
         this.entityId = new Random().nextInt(Integer.MAX_VALUE);
         this.owner = owner;
         this.yOffset = yOffset;
@@ -66,8 +66,8 @@ public class NamedEntityImpl implements NamedEntity {
     }
 
     //constant value
-    public NamedEntityImpl(NamedEntityManager asm, Player owner, String textJson, double yOffset, @Nullable TextDisplayMeta textDisplayMeta) {
-        this.asm = asm;
+    public NamedEntityImpl(NamedEntityManager nem, Player owner, String textJson, double yOffset, @Nullable TextDisplayMeta textDisplayMeta) {
+        this.nem = nem;
         this.entityId = new Random().nextInt(Integer.MAX_VALUE);
         this.owner = owner;
         this.yOffset = yOffset;
@@ -105,7 +105,7 @@ public class NamedEntityImpl implements NamedEntity {
     public void setOffset(double offset) {
         if (yOffset == offset) return;
         yOffset = offset;
-        for (Player all : asm.getNearbyPlayers()) {
+        for (Player all : nem.getNearbyPlayers()) {
             CustomNameplates.getProtocolManager().sendServerPacket(all, getTeleportPacket());
         }
     }
@@ -119,7 +119,7 @@ public class NamedEntityImpl implements NamedEntity {
 
     @Override
     public void spawn() {
-        for (Player all : asm.getNearbyPlayers()) {
+        for (Player all : nem.getNearbyPlayers()) {
             spawn(all);
         }
         isShown = true;
@@ -129,7 +129,7 @@ public class NamedEntityImpl implements NamedEntity {
     public void destroy() {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
-        for (Player all : asm.getNearbyPlayers()) {
+        for (Player all : nem.getNearbyPlayers()) {
             CustomNameplates.getProtocolManager().sendServerPacket(all, destroyPacket);
         }
         isShown = false;
@@ -145,15 +145,15 @@ public class NamedEntityImpl implements NamedEntity {
     @Override
     public void teleport() {
         PacketContainer packet = getTeleportPacket();
-        for (Player all : asm.getNearbyPlayers()) {
+        for (Player all : nem.getNearbyPlayers()) {
             CustomNameplates.getProtocolManager().sendServerPacket(all, packet);
         }
     }
 
     @Override
     public void teleport(Player viewer) {
-        if (!asm.isNearby(viewer) && viewer != owner) {
-            asm.spawn(viewer);
+        if (!nem.isNearby(viewer) && viewer != owner) {
+            nem.spawn(viewer);
         } else {
             CustomNameplates.getProtocolManager().sendServerPacket(viewer, getTeleportPacket());
         }
@@ -163,7 +163,7 @@ public class NamedEntityImpl implements NamedEntity {
     public void setSneak(boolean isSneaking, boolean respawn) {
         this.sneaking = isSneaking;
         if (respawn) {
-            for (Player viewer : asm.getNearbyPlayers()) {
+            for (Player viewer : nem.getNearbyPlayers()) {
                 respawn(viewer);
             }
         } else {
@@ -187,9 +187,27 @@ public class NamedEntityImpl implements NamedEntity {
     }
 
     @Override
+    public void move(Player viewer, short x, short y, short z, boolean onGround) {
+        PacketContainer packet = getMovePacket(x, y, z, onGround);
+        for (Player all : nem.getNearbyPlayers()) {
+            CustomNameplates.getProtocolManager().sendServerPacket(all, packet);
+        }
+    }
+
+    @Override
     public void respawn(Player viewer) {
         destroy(viewer);
         spawn(viewer);
+    }
+
+    public PacketContainer getMovePacket(short x, short y, short z, boolean onGround) {
+        PacketContainer packet = new PacketContainer(PacketType.Play.Server.REL_ENTITY_MOVE);
+        packet.getIntegers().write(0, entityId);
+        packet.getShorts().write(0, x);
+        packet.getShorts().write(1, y);
+        packet.getShorts().write(2, z);
+        packet.getBooleans().write(0, onGround);
+        return packet;
     }
 
     public PacketContainer getTeleportPacket() {
@@ -204,7 +222,7 @@ public class NamedEntityImpl implements NamedEntity {
 
     public void updateMetadata() {
         PacketContainer metaPacket = getMetaPacket();
-        for (Player viewer : asm.getNearbyPlayers()) {
+        for (Player viewer : nem.getNearbyPlayers()) {
             CustomNameplates.getProtocolManager().sendServerPacket(viewer, metaPacket);
         }
     }
@@ -214,7 +232,7 @@ public class NamedEntityImpl implements NamedEntity {
         metaPacket.getIntegers().write(0, entityId);
         if (CustomNameplates.getInstance().getVersionHelper().isVersionNewerThan1_19_R2()) {
             WrappedDataWatcher wrappedDataWatcher =
-                    asm.getDisplayMode() == DisplayMode.ARMOR_STAND ?
+                    nem.getDisplayMode() == DisplayMode.ARMOR_STAND ?
                     createArmorStandDataWatcher(textJson) : createTextDisplayDataWatcher(textJson, textDisplayMeta);
             List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
             wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> wrappedDataValueList.add(new WrappedDataValue(entry.getWatcherObject().getIndex(), entry.getWatcherObject().getSerializer(), entry.getRawValue())));
@@ -234,7 +252,7 @@ public class NamedEntityImpl implements NamedEntity {
             else y += 1.8;
         }
         else y += 0.2;
-        y += asm.getHatOffset();
+        y += nem.getHatOffset();
         return new Location(null, x, y, z);
     }
 
@@ -299,7 +317,7 @@ public class NamedEntityImpl implements NamedEntity {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
         entityPacket.getModifier().write(1, uuid);
-        entityPacket.getEntityTypeModifier().write(0, asm.getDisplayMode() == DisplayMode.ARMOR_STAND ? EntityType.ARMOR_STAND : EntityType.TEXT_DISPLAY);
+        entityPacket.getEntityTypeModifier().write(0, nem.getDisplayMode() == DisplayMode.ARMOR_STAND ? EntityType.ARMOR_STAND : EntityType.TEXT_DISPLAY);
         Location location = getEntityLocation();
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY());

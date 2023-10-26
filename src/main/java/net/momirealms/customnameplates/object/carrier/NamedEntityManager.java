@@ -17,23 +17,24 @@
 
 package net.momirealms.customnameplates.object.carrier;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NamedEntityManager {
 
     private final ConcurrentHashMap<UUID, NamedEntity> namedEntities = new ConcurrentHashMap<>();
     private NamedEntity[] namedEntityArray;
-    private final Vector<Player> nearbyPlayers;
-    private Player[] nearbyPlayerArray ;
+    private final Set<Player> nearbyPlayers;
     private final Player owner;
     private double hatOffset;
     private final NamedEntityCarrier namedEntityCarrier;
@@ -41,9 +42,8 @@ public class NamedEntityManager {
 
     public NamedEntityManager(NamedEntityCarrier namedEntityCarrier, Player owner) {
         this.owner = owner;
-        this.nearbyPlayers = new Vector<>();
+        this.nearbyPlayers = Collections.synchronizedSet(new HashSet<>());
         this.namedEntityArray = new NamedEntityImpl[0];
-        this.nearbyPlayerArray = new Player[0];
         this.namedEntityCarrier = namedEntityCarrier;
         this.init();
     }
@@ -65,11 +65,7 @@ public class NamedEntityManager {
     public void addNamedEntity(UUID uuid, NamedEntity namedEntity) {
         this.namedEntities.put(uuid, namedEntity);
         this.namedEntityArray = namedEntities.values().toArray(new NamedEntity[0]);
-        for (Player p : nearbyPlayerArray) namedEntity.spawn(p);
-    }
-
-    public Player[] getNearbyPlayers(){
-        return nearbyPlayerArray;
+        for (Player p : nearbyPlayers) namedEntity.spawn(p);
     }
 
     public boolean isNearby(Player viewer) {
@@ -78,7 +74,6 @@ public class NamedEntityManager {
 
     public void spawn(Player viewer) {
         nearbyPlayers.add(viewer);
-        nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
         for (NamedEntity fakeArmorStand : namedEntityArray)
             if (fakeArmorStand.canShow())
                 fakeArmorStand.spawn(viewer);
@@ -109,13 +104,19 @@ public class NamedEntityManager {
             entity.destroy();
         }
         nearbyPlayers.clear();
-        nearbyPlayerArray = new Player[0];
     }
 
     public void teleport(Player viewer) {
         for (NamedEntity entity : namedEntityArray) {
             if (entity.isShown())
                 entity.teleport(viewer);
+        }
+    }
+
+    public void move(Player viewer, short x, short y, short z, boolean onGround) {
+        for (NamedEntity entity : namedEntityArray) {
+            if (entity.isShown())
+                entity.move(viewer, x, y, z, onGround);
         }
     }
 
@@ -136,7 +137,7 @@ public class NamedEntityManager {
     public void respawn() {
         for (NamedEntity entity : namedEntityArray) {
             if (entity.isShown())
-                for (Player viewer : nearbyPlayerArray)
+                for (Player viewer : nearbyPlayers)
                     entity.respawn(viewer);
         }
     }
@@ -149,9 +150,7 @@ public class NamedEntityManager {
     }
 
     public void unregisterPlayer(Player viewer) {
-        if (nearbyPlayers.remove(viewer)) {
-            nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
-        }
+        nearbyPlayers.remove(viewer);
     }
 
     public void removeArmorStand(UUID uuid) {
@@ -184,5 +183,9 @@ public class NamedEntityManager {
 
     public double getHighestTextHeight() {
         return highestTextHeight;
+    }
+
+    public Collection<Player> getNearbyPlayers() {
+        return nearbyPlayers;
     }
 }

@@ -26,9 +26,9 @@ public class MagicCosmeticsListener implements Listener {
         final Cosmetic cosmetic = event.getNewCosmetic();
         final Player player = event.getPlayer();
         if (cosmetic instanceof Hat hat) {
-            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-            if (asm != null) {
-                asm.setHatOffset(hat.getOffSetY());
+            NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+            if (nem != null) {
+                nem.setHatOffset(hat.getOffSetY());
             }
         }
     }
@@ -38,9 +38,9 @@ public class MagicCosmeticsListener implements Listener {
         final Cosmetic cosmetic = event.getCosmetic();
         final Player player = event.getPlayer();
         if (cosmetic instanceof Hat hat) {
-            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-            if (asm != null) {
-                asm.setHatOffset(hat.getOffSetY());
+            NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+            if (nem != null) {
+                nem.setHatOffset(hat.getOffSetY());
             }
         }
     }
@@ -49,9 +49,9 @@ public class MagicCosmeticsListener implements Listener {
     public void onUnEquip(CosmeticUnEquipEvent event) {
         final Player player = event.getPlayer();
         if (event.getCosmeticType() == CosmeticType.HAT) {
-            NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-            if (asm != null) {
-                asm.setHatOffset(0);
+            NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+            if (nem != null) {
+                nem.setHatOffset(0);
             }
         }
     }
@@ -60,9 +60,9 @@ public class MagicCosmeticsListener implements Listener {
     public void onDataLoaded(PlayerDataLoadEvent event) {
         for (Cosmetic cosmetic : event.getEquippedCosmetics()) {
             if (cosmetic instanceof Hat hat) {
-                NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(event.getPlayerData().getOfflinePlayer().getPlayer());
-                if (asm != null) {
-                    asm.setHatOffset(hat.getOffSetY());
+                NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(event.getPlayerData().getOfflinePlayer().getPlayer());
+                if (nem != null) {
+                    nem.setHatOffset(hat.getOffSetY());
                 }
             }
         }

@@ -20,9 +20,9 @@ package net.momirealms.customnameplates.bungeecord;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
 import me.neznamy.tab.api.tablist.SortingManager;
-import me.neznamy.tab.shared.TAB;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -37,7 +37,7 @@ public class BungeeEventListener implements Listener {
 
     public BungeeEventListener (CustomNameplatesBC plugin) {
         this.plugin = plugin;
-        this.sortingManager = TAB.getInstance().getSortingManager();
+        this.sortingManager = TabAPI.getInstance().getSortingManager();
     }
 
     @EventHandler
@@ -56,7 +56,7 @@ public class BungeeEventListener implements Listener {
         String playerName = dataInput.readUTF();
         String teamName = playerName;
         if (plugin.getBungeeConfig().isTab()) {
-            TabPlayer tabPlayer = TAB.getInstance().getPlayer(playerName);
+            TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(playerName);
             if (tabPlayer == null) return;
             teamName = sortingManager.getOriginalTeamName(tabPlayer);
         }

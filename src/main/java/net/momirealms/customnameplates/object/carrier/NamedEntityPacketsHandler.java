@@ -17,8 +17,13 @@
 
 package net.momirealms.customnameplates.object.carrier;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.listener.packet.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -63,18 +68,29 @@ public class NamedEntityPacketsHandler extends AbstractPacketsHandler {
     }
 
     @Override
-    public void onEntityMove(Player receiver, int entityId) {
+    public void onEntityMove(Player receiver, int entityId, short x, short y, short z, boolean onGround) {
         Player mover = super.getPlayerFromMap(entityId);
         if (mover != null) {
-            namedEntityCarrier.getNamedEntityManager(mover).teleport(receiver);
+            namedEntityCarrier.getNamedEntityManager(mover).move(receiver, x, y, z, onGround);
         }
     }
 
     @Override
-    public void onEntitySpawn(Player receiver, int entityId) {
+    public void onEntityTeleport(Player receiver, int entityId) {
+        Player teleporter = super.getPlayerFromMap(entityId);
+        if (teleporter != null) {
+            namedEntityCarrier.getNamedEntityManager(teleporter).teleport(receiver);
+        }
+    }
+
+    @Override
+    public void onEntitySpawn(Player receiver, int entityId, PacketEvent event) {
         Player spawnedPlayer = super.getPlayerFromMap(entityId);
         if (spawnedPlayer != null) {
-            namedEntityCarrier.getNamedEntityManager(spawnedPlayer).spawn(receiver);
+            NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(spawnedPlayer);
+            if (nem != null) {
+                nem.spawn(receiver);
+            }
         }
     }
 

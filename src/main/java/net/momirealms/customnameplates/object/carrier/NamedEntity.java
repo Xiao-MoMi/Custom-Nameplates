@@ -34,4 +34,6 @@ public interface NamedEntity {
     DynamicText getDynamicText();
 
     int getEntityId();
+
+    void move(Player viewer, short x, short y, short z, boolean onGround);
 }

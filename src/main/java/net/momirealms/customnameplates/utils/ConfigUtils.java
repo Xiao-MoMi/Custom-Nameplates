@@ -87,6 +87,7 @@ public class ConfigUtils {
                     case "permission" -> requirements.add(new PermissionImpl(section.getString(type)));
                     case "time" -> requirements.add(new TimeImpl(section.getStringList(type)));
                     case "date" -> requirements.add(new DateImpl(new HashSet<>(section.getStringList(type))));
+                    case "geyser" -> requirements.add(new GeyserImpl(section.getBoolean(type)));
                     case "papi-condition" -> requirements.add(new CustomPapiImpl(Objects.requireNonNull(section.getConfigurationSection(type)).getValues(false)));
                 }
             }

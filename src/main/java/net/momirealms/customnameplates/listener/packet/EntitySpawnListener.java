@@ -29,11 +29,11 @@ public class EntitySpawnListener extends PacketAdapter {
     private final AbstractPacketsHandler handler;
 
     public EntitySpawnListener(AbstractPacketsHandler handler) {
-        super(CustomNameplates.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.NAMED_ENTITY_SPAWN);
+        super(CustomNameplates.getInstance(), ListenerPriority.HIGHEST, CustomNameplates.getInstance().getVersionHelper().isVersionNewerThan1_20_R2() ? PacketType.Play.Server.SPAWN_ENTITY : PacketType.Play.Server.NAMED_ENTITY_SPAWN);
         this.handler = handler;
     }
 
     public synchronized void onPacketSending(PacketEvent event) {
-        handler.onEntitySpawn(event.getPlayer(), event.getPacket().getIntegers().read(0));
+        handler.onEntitySpawn(event.getPlayer(), event.getPacket().getIntegers().read(0), event);
     }
 }

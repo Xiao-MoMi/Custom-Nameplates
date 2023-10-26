@@ -36,6 +36,6 @@ public class EntityTeleportListener extends PacketAdapter {
 
     public void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
-        handler.onEntityMove(event.getPlayer(), packet.getIntegers().read(0));
+        handler.onEntityTeleport(event.getPlayer(), packet.getIntegers().read(0));
     }
 }

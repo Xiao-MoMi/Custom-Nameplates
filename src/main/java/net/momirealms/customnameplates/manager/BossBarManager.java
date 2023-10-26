@@ -25,6 +25,7 @@ import net.momirealms.customnameplates.object.bossbar.BossBarTask;
 import net.momirealms.customnameplates.object.bossbar.Overlay;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
+import net.momirealms.customnameplates.utils.GeyserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -72,6 +73,8 @@ public class BossBarManager extends Function {
     }
 
     public void onJoin(Player player) {
+        if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
+            return;
         BossBarTask bossBarTask = new BossBarTask(player, bossBars.values().toArray(new BossBarConfig[0]));
         bossBarTaskMap.put(player.getUniqueId(), bossBarTask);
         bossBarTask.start();

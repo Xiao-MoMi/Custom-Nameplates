@@ -1,5 +1,5 @@
 # Do not change
-config-version: '20'
+config-version: '21'
 
 # bStats
 metrics: true
@@ -80,3 +80,5 @@ other-settings:
   # default width
   # 默认文字宽度
   default-character-width: 8
+  # disable bossbar/actionbar for bedrock players
+  disable-for-bedrock-players: false

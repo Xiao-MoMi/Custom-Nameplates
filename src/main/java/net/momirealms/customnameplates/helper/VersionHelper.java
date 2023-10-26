@@ -32,6 +32,7 @@ import java.net.URLConnection;
 public class VersionHelper {
 
     private boolean isNewerThan1_19_R2;
+    private boolean isNewerThan1_20_R2;
     private boolean isNewerThan1_19;
     private boolean isNewerThan1_20;
     private String serverVersion;
@@ -40,10 +41,12 @@ public class VersionHelper {
     private boolean isLatest;
     private final int pack_format;
     private boolean isFolia;
+    private boolean hasGeyser;
 
     public VersionHelper(CustomNameplates plugin) {
         this.plugin = plugin;
         this.pluginVersion = plugin.getDescription().getVersion();
+        this.hasGeyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
         this.initialize();
         this.pack_format = getPack_format(serverVersion);
         try {
@@ -59,11 +62,18 @@ public class VersionHelper {
             this.serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             String[] split = serverVersion.split("_");
             int main_ver = Integer.parseInt(split[1]);
-            if (main_ver >= 20) isNewerThan1_19_R2 = true;
-            else if (main_ver == 19) isNewerThan1_19_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
-            else isNewerThan1_19_R2 = false;
-            isNewerThan1_19 = main_ver >= 19;
-            isNewerThan1_20 = main_ver >= 20;
+            if (main_ver >= 20) {
+                isNewerThan1_20 = true;
+                isNewerThan1_19_R2 = true;
+                isNewerThan1_19 = true;
+                isNewerThan1_20_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
+            } else if (main_ver == 19) {
+                isNewerThan1_19_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
+                isNewerThan1_19 = true;
+            } else {
+                isNewerThan1_19_R2 = false;
+                isNewerThan1_19 = false;
+            }
         }
     }
 
@@ -79,13 +89,17 @@ public class VersionHelper {
         return isNewerThan1_20;
     }
 
+    public boolean isVersionNewerThan1_20_R2() {
+        return isNewerThan1_20_R2;
+    }
+
     public void checkUpdate() {
         plugin.getScheduler().runTaskAsync(() -> {
             try {
                 URL url = new URL("https://api.polymart.org/v1/getResourceInfoSimple/?resource_id=2543&key=version");
                 URLConnection conn = url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(60000);
+                conn.setConnectTimeout(3000);
+                conn.setReadTimeout(3000);
                 InputStream inputStream = conn.getInputStream();
                 String newest = new BufferedReader(new InputStreamReader(inputStream)).readLine();
                 String current = plugin.getDescription().getVersion();
@@ -201,5 +215,9 @@ public class VersionHelper {
 
     public boolean isFolia() {
         return isFolia;
+    }
+
+    public boolean isGeyser() {
+        return hasGeyser;
     }
 }

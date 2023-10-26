@@ -234,14 +234,14 @@ public class NameplateManager extends Function {
 
     public void showPlayerArmorStandTags(Player player) {
         NamedEntityCarrier namedEntityCarrier = (NamedEntityCarrier) this.getTextCarrier();
-        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
-        asm.spawn(player);
+        NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+        nem.spawn(player);
         for (int i = 1; i <= this.getPreview_time() * 20; i++) {
             plugin.getScheduler().runTaskAsyncLater(()-> {
-                asm.teleport(player);
+                nem.teleport(player);
             }, i);
         }
-        plugin.getScheduler().runTaskAsyncLater(()-> asm.destroy(player), this.getPreview_time() * 20);
+        plugin.getScheduler().runTaskAsyncLater(()-> nem.destroy(player), this.getPreview_time() * 20);
     }
 
     public void showPlayerArmorStandTags(Player player, String nameplate) {

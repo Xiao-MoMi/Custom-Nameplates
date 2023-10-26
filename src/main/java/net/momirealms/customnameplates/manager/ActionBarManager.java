@@ -35,6 +35,7 @@ import net.momirealms.customnameplates.object.actionbar.ActionBarConfig;
 import net.momirealms.customnameplates.object.actionbar.ActionBarTask;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
+import net.momirealms.customnameplates.utils.GeyserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -97,6 +98,8 @@ public class ActionBarManager extends Function {
 
     @Override
     public void onJoin(Player player) {
+        if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
+            return;
         ActionBarTask actionBarTask = new ActionBarTask(player, actionBarConfigMap.values().toArray(new ActionBarConfig[0]));
         actionBarTaskMap.put(player.getUniqueId(), actionBarTask);
         actionBarTask.start();
@@ -134,6 +137,7 @@ public class ActionBarManager extends Function {
             ActionBarTask actionBarTask = getActionBarTask(event.getPlayer().getUniqueId());
             if (actionBarTask != null) {
                 String strJson = wrappedChatComponent.getJson();
+                // for better performance
                 if (strJson.endsWith("\"objective\":\"actionbar\"}}")) {
                     return;
                 }

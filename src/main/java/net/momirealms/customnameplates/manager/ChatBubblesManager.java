@@ -289,22 +289,22 @@ public class ChatBubblesManager extends Function {
             String finalStr = ConfigManager.surroundWithFont(bubbleImage) + bubbleConfig.startFormat() + parsedPrefix + text + parsedSuffix + bubbleConfig.endFormat() + ConfigManager.surroundWithFont(suffixImage);
             json = GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(finalStr));
         }
-        NamedEntityManager asm = namedEntityCarrier.getNamedEntityManager(player);
 
-        if (asm != null) {
+        NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+        if (nem != null) {
             double offset = yOffset;
             DisplayMode nameplateMode = plugin.getNameplateManager().getMode();
             if (nameplateMode == DisplayMode.ARMOR_STAND || nameplateMode == DisplayMode.TEXT_DISPLAY) {
                 NamedEntityCarrier carrier = (NamedEntityCarrier) plugin.getNameplateManager().getTextCarrier();
-                NamedEntityManager nem = carrier.getNamedEntityManager(player);
-                if (nem != null) {
-                    offset += nem.getHighestTextHeight();
+                NamedEntityManager nameplatesNem = carrier.getNamedEntityManager(player);
+                if (nameplatesNem != null) {
+                    offset += nameplatesNem.getHighestTextHeight();
                 }
             }
             UUID uuid = UUID.randomUUID();
-            asm.ascent(lineSpace);
-            asm.addNamedEntity(uuid, new NamedEntityImpl(asm, player, json, offset, textDisplayMeta));
-            plugin.getScheduler().runTaskAsyncLater(() -> asm.removeArmorStand(uuid), stayTime * 20L);
+            nem.ascent(lineSpace);
+            nem.addNamedEntity(uuid, new NamedEntityImpl(nem, player, json, offset, textDisplayMeta));
+            plugin.getScheduler().runTaskAsyncLater(() -> nem.removeArmorStand(uuid), stayTime * 20L);
         }
     }
 

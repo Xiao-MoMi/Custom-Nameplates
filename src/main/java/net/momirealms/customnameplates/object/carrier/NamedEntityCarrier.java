@@ -65,8 +65,8 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     public void unload(){
         super.unload();
         handler.unload();
-        for (NamedEntityManager asm : namedEntityManagerMap.values()) {
-            asm.destroy();
+        for (NamedEntityManager nem : namedEntityManagerMap.values()) {
+            nem.destroy();
         }
         namedEntityManagerMap.clear();
         HandlerList.unregisterAll(entityTagListener);
@@ -87,9 +87,12 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     @Override
     public void onQuit(Player player) {
         handler.onQuit(player);
-        NamedEntityManager asm = namedEntityManagerMap.remove(player);
-        if (asm != null) {
-            asm.destroy();
+        NamedEntityManager nem = namedEntityManagerMap.remove(player);
+        if (nem != null) {
+            nem.destroy();
+        }
+        for (NamedEntityManager all : namedEntityManagerMap.values()) {
+            all.unregisterPlayer(player);
         }
     }
 
@@ -104,12 +107,14 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     }
 
     public NamedEntityManager createNamedEntityManager(Player player) {
-        NamedEntityManager asm = new NamedEntityManager(this, player);
-        namedEntityManagerMap.put(player, asm);
-        return asm;
+        NamedEntityManager nem = new NamedEntityManager(this, player);
+        namedEntityManagerMap.put(player, nem);
+        return nem;
     }
 
     public void onSneak(Player player, boolean isSneaking) {
+        if (player.isFlying())
+            return;
         NamedEntityManager nem = getNamedEntityManager(player);
         if (nem != null) {
             nem.setSneak(isSneaking, true);
@@ -123,8 +128,8 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     @Override
     public void arrangeRefreshTask() {
         refreshTask = plugin.getScheduler().runTaskAsyncTimer(() -> {
-            for (NamedEntityManager asm : namedEntityManagerMap.values()) {
-                asm.refresh(false);
+            for (NamedEntityManager nem : namedEntityManagerMap.values()) {
+                nem.refresh(false);
             }
         }, 1, 1);
     }
@@ -136,8 +141,8 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     protected void spawnNamedEntity(Player viewer, Player target) {
         if (target == viewer || target.getGameMode() == GameMode.SPECTATOR || viewer.getWorld() != target.getWorld()) return;
         if (getDistance(target, viewer) < 48 && viewer.canSee(target)) {
-            NamedEntityManager asm = getNamedEntityManager(target);
-            asm.spawn(viewer);
+            NamedEntityManager nem = getNamedEntityManager(target);
+            nem.spawn(viewer);
         }
     }
 

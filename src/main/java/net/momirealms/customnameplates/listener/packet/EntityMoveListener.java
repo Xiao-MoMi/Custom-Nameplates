@@ -36,6 +36,12 @@ public class EntityMoveListener extends PacketAdapter {
 
     public void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
-        handler.onEntityMove(event.getPlayer(), packet.getIntegers().read(0));
+        handler.onEntityMove(event.getPlayer(),
+                packet.getIntegers().read(0),
+                packet.getShorts().read(0),
+                packet.getShorts().read(1),
+                packet.getShorts().read(2),
+                packet.getBooleans().read(0)
+        );
     }
 }

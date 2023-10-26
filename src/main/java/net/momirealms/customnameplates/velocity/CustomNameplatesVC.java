@@ -15,8 +15,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import net.william278.velocitab.Velocitab;
+import net.william278.velocitab.api.VelocitabAPI;
 import org.slf4j.Logger;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Plugin(id = "customnameplates", name = "CustomNameplates", version = "2.2", authors = {"XiaoMoMi"},
@@ -72,13 +74,14 @@ public class CustomNameplatesVC {
         String playerName = dataInput.readUTF();
         Optional<Player> optPlayer = server.getPlayer(playerName);
         if (optPlayer.isEmpty()) return;
-        var player = tab.getTabPlayer(optPlayer.get());
-
-        player.getTeamName(tab).thenAccept(team -> {
-            ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
-            byteArrayDataOutput.writeUTF(playerName);
-            byteArrayDataOutput.writeUTF(team);
-            optPlayer.get().getCurrentServer().ifPresent(it -> it.sendPluginMessage(MinecraftChannelIdentifier.from("customnameplates:cnp"), byteArrayDataOutput.toByteArray()));
-        });
+        var player = VelocitabAPI.getInstance().getUser(optPlayer.get());
+        player.ifPresent(presentPlayer -> presentPlayer.getTeamName(tab).thenAccept(team -> {
+            server.getScheduler().buildTask(this, () -> {
+                ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
+                byteArrayDataOutput.writeUTF(playerName);
+                byteArrayDataOutput.writeUTF(team);
+                optPlayer.get().getCurrentServer().ifPresent(it -> it.sendPluginMessage(MinecraftChannelIdentifier.from("customnameplates:cnp"), byteArrayDataOutput.toByteArray()));
+            }).delay(Duration.ofSeconds(1)).schedule();
+        }));
     }
 }

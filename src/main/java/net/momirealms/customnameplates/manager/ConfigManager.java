@@ -60,6 +60,7 @@ public class ConfigManager extends Function {
     public static boolean hideScoreboardNumber;
     public static boolean iaShaderSupport;
     public static boolean generatePackOnStart;
+    public static boolean disableForBedrock;
 
     @Override
     public void load(){
@@ -124,7 +125,7 @@ public class ConfigManager extends Function {
         ConfigurationSection section = config.getConfigurationSection("other-settings");
         if (section != null) {
             default_width = section.getInt("default-character-width", 8);
-
+            disableForBedrock = section.getBoolean("disable-for-bedrock-players", false);
         }
         if (enableNameplates) {
             YamlConfiguration np_config = ConfigUtils.getConfig("configs" + File.separator + "nameplate.yml");
