@@ -193,9 +193,7 @@ public class NamedEntityImpl implements NamedEntity {
     @Override
     public void move(Player viewer, short x, short y, short z, boolean onGround) {
         PacketContainer packet = getMovePacket(x, y, z, onGround);
-        for (Player all : nem.getNearbyPlayers()) {
-            CustomNameplates.getProtocolManager().sendServerPacket(all, packet);
-        }
+        CustomNameplates.getProtocolManager().sendServerPacket(viewer, packet);
     }
 
     @Override
