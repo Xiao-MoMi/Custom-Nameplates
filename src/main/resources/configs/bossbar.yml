@@ -11,18 +11,6 @@ basic_info_hud:
   refresh-rate: 1
   conditions:
     permission: bossbar.show
-    geyser: false
-
-another_hud:
-  color: YELLOW
-  overlay: PROGRESS
-  dynamic-text:
-    - 'For bedrock players'
-    - '%nameplates_background_time%   %nameplates_background_hello%'
-  refresh-rate: 1
-  conditions:
-    geyser: true
-
 
 update_info:
   color: YELLOW
