@@ -17,14 +17,9 @@
 
 package net.momirealms.customnameplates.object.carrier;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.object.ConditionalText;
 import net.momirealms.customnameplates.object.DisplayMode;
 import net.momirealms.customnameplates.object.DynamicText;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -77,6 +72,12 @@ public class NamedEntityManager {
         for (NamedEntity fakeArmorStand : namedEntityArray)
             if (fakeArmorStand.canShow())
                 fakeArmorStand.spawn(viewer);
+    }
+
+    public void spawn() {
+        for (Player player : nearbyPlayers) {
+            spawn(player);
+        }
     }
 
     public void refresh(boolean force) {

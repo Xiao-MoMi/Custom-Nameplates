@@ -32,6 +32,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,7 +81,10 @@ public class NamedEntityImpl implements NamedEntity {
 
     @Override
     public boolean canShow() {
-        if (requirements == null) return true;
+        if (owner.hasPotionEffect(PotionEffectType.INVISIBILITY))
+            return false;
+        if (requirements == null)
+            return true;
         for (Requirement requirement : requirements) {
             if (!requirement.isConditionMet(owner)) {
                 return false;

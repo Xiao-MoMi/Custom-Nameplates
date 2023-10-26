@@ -29,6 +29,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class BungeeEventListener implements Listener {
 
@@ -57,8 +58,9 @@ public class BungeeEventListener implements Listener {
         String teamName = playerName;
         if (plugin.getBungeeConfig().isTab()) {
             TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(playerName);
-            if (tabPlayer == null) return;
-            teamName = sortingManager.getOriginalTeamName(tabPlayer);
+            if (tabPlayer != null) {
+                teamName = Optional.ofNullable(sortingManager.getOriginalTeamName(tabPlayer)).orElse(playerName);
+            }
         }
         ProxiedPlayer proxiedPlayer = plugin.getProxy().getPlayer(playerName);
         ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();

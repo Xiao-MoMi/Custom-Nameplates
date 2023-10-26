@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -250,7 +251,10 @@ public class ChatBubblesManager extends Function {
     }
 
     public void onChat(Player player, String text) {
-        if (player.getGameMode() == GameMode.SPECTATOR || !player.hasPermission("bubbles.use")) return;
+        if (player.getGameMode() == GameMode.SPECTATOR
+                || player.hasPotionEffect(PotionEffectType.INVISIBILITY)
+                || !player.hasPermission("bubbles.use")
+        ) return;
 
         String bubble = plugin.getDataManager().getEquippedBubble(player);
         BubblesEvent bubblesEvent = new BubblesEvent(player, bubble, text);
