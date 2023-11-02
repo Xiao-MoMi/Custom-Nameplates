@@ -122,7 +122,11 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     }
 
     public void onRespawn(Player player) {
-        getNamedEntityManager(player).teleport();
+        getNamedEntityManager(player).respawn();
+    }
+
+    public void onDeath(Player player) {
+        getNamedEntityManager(player).destroy();
     }
 
     @Override
@@ -139,7 +143,7 @@ public class NamedEntityCarrier extends AbstractTextCarrier {
     }
 
     protected void spawnNamedEntity(Player viewer, Player target) {
-        if (target == viewer || target.getGameMode() == GameMode.SPECTATOR || viewer.getWorld() != target.getWorld()) return;
+        if (target == viewer || target.getGameMode() == GameMode.SPECTATOR || viewer.getWorld() != target.getWorld() || target.isDead()) return;
         if (getDistance(target, viewer) < 48 && viewer.canSee(target)) {
             NamedEntityManager nem = getNamedEntityManager(target);
             nem.spawn(viewer);

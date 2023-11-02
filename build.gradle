@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'net.momirealms'
-version = '2.2.3.14.1'
+version = '2.2.3.14.2'
 
 repositories {
     maven {name = "aliyun-repo"; url = "https://maven.aliyun.com/repository/public/"}
@@ -35,6 +35,7 @@ dependencies {
     compileOnly ('org.geysermc.geyser:api:2.2.0-SNAPSHOT')
     compileOnly ("net.william278:velocitab:1.5.1")
     compileOnly ('me.neznamy:tab-api:4.0.2')
+    compileOnly ('com.github.FrancoBM12:API-MagicCosmetics:2.2.3')
     annotationProcessor ('com.velocitypowered:velocity-api:3.1.1')
 
     compileOnly ('org.apache.commons:commons-lang3:3.12.0')

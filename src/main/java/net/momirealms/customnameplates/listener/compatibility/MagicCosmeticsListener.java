@@ -2,6 +2,7 @@ package net.momirealms.customnameplates.listener.compatibility;
 
 import com.francobm.magicosmetics.api.Cosmetic;
 import com.francobm.magicosmetics.api.CosmeticType;
+import com.francobm.magicosmetics.api.MagicAPI;
 import com.francobm.magicosmetics.cache.cosmetics.Hat;
 import com.francobm.magicosmetics.events.CosmeticChangeEquipEvent;
 import com.francobm.magicosmetics.events.CosmeticEquipEvent;
@@ -12,6 +13,7 @@ import net.momirealms.customnameplates.object.carrier.NamedEntityManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 public class MagicCosmeticsListener implements Listener {
 
@@ -28,7 +30,7 @@ public class MagicCosmeticsListener implements Listener {
         if (cosmetic instanceof Hat hat) {
             NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
             if (nem != null) {
-                nem.setHatOffset(hat.getOffSetY());
+                nem.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
             }
         }
     }
@@ -40,7 +42,7 @@ public class MagicCosmeticsListener implements Listener {
         if (cosmetic instanceof Hat hat) {
             NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
             if (nem != null) {
-                nem.setHatOffset(hat.getOffSetY());
+                nem.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
             }
         }
     }
@@ -62,7 +64,7 @@ public class MagicCosmeticsListener implements Listener {
             if (cosmetic instanceof Hat hat) {
                 NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(event.getPlayerData().getOfflinePlayer().getPlayer());
                 if (nem != null) {
-                    nem.setHatOffset(hat.getOffSetY());
+                    nem.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
                 }
             }
         }

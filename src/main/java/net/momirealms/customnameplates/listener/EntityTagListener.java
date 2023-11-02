@@ -21,6 +21,7 @@ import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
@@ -37,6 +38,11 @@ public record EntityTagListener(NamedEntityCarrier namedEntityCarrier) implement
     public void onRespawn(PlayerRespawnEvent event) {
         namedEntityCarrier.onRespawn(event.getPlayer());
     }
+
+//    @EventHandler
+//    public void onDeath(PlayerDeathEvent event) {
+//        namedEntityCarrier.onDeath(event.getPlayer());
+//    }
 
     @EventHandler
     public void onExitVehicle(VehicleExitEvent event) {
