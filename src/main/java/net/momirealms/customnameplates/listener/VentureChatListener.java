@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.listener;
 
+import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import net.momirealms.customnameplates.CustomNameplates;
 import net.momirealms.customnameplates.manager.ChatBubblesManager;
@@ -34,6 +35,10 @@ public class VentureChatListener extends AbstractChatListener {
         for (String channel : chatBubblesManager.getChannels()) {
             if (channelName.equals(channel)) return;
         }
-        CustomNameplates.getInstance().getScheduler().runTask(() -> chatBubblesManager.onChat(event.getMineverseChatPlayer().getPlayer(), event.getChat().substring(1)), event.getMineverseChatPlayer().getPlayer().getLocation());
+        final MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
+        if (chatPlayer == null) {
+            return;
+        }
+        CustomNameplates.getInstance().getScheduler().runTask(() -> chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat().substring(1)), chatPlayer.getPlayer().getLocation());
     }
 }
