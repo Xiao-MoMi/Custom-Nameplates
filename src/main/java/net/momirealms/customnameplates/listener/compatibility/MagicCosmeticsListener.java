@@ -3,11 +3,9 @@ package net.momirealms.customnameplates.listener.compatibility;
 import com.francobm.magicosmetics.api.Cosmetic;
 import com.francobm.magicosmetics.api.CosmeticType;
 import com.francobm.magicosmetics.api.MagicAPI;
+import com.francobm.magicosmetics.cache.PlayerData;
 import com.francobm.magicosmetics.cache.cosmetics.Hat;
-import com.francobm.magicosmetics.events.CosmeticChangeEquipEvent;
-import com.francobm.magicosmetics.events.CosmeticEquipEvent;
-import com.francobm.magicosmetics.events.CosmeticUnEquipEvent;
-import com.francobm.magicosmetics.events.PlayerDataLoadEvent;
+import com.francobm.magicosmetics.events.*;
 import net.momirealms.customnameplates.object.carrier.NamedEntityCarrier;
 import net.momirealms.customnameplates.object.carrier.NamedEntityManager;
 import org.bukkit.entity.Player;
@@ -31,6 +29,25 @@ public class MagicCosmeticsListener implements Listener {
             NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
             if (nem != null) {
                 nem.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEnterBlackListWorld(PlayerChangeBlacklistEvent event) {
+        var player = event.getPlayer();
+        NamedEntityManager nem = namedEntityCarrier.getNamedEntityManager(player);
+        if (nem != null) {
+            if (event.isInWorldBlacklist()) {
+                nem.setHatOffset(0);
+            } else {
+                PlayerData playerData = PlayerData.getPlayer(player);
+                if (playerData != null) {
+                    final Cosmetic cosmetic = playerData.getHat();
+                    if (cosmetic instanceof Hat hat) {
+                        nem.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+                    }
+                }
             }
         }
     }
