@@ -33,6 +33,8 @@ import net.momirealms.customnameplates.listener.packet.SystemChatListener;
 import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.actionbar.ActionBarConfig;
 import net.momirealms.customnameplates.object.actionbar.ActionBarTask;
+import net.momirealms.customnameplates.object.bossbar.BossBarConfig;
+import net.momirealms.customnameplates.object.bossbar.BossBarTask;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import net.momirealms.customnameplates.utils.GeyserUtils;
@@ -100,9 +102,21 @@ public class ActionBarManager extends Function {
     public void onJoin(Player player) {
         if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
             return;
-        ActionBarTask actionBarTask = new ActionBarTask(player, actionBarConfigMap.values().toArray(new ActionBarConfig[0]));
-        actionBarTaskMap.put(player.getUniqueId(), actionBarTask);
-        actionBarTask.start();
+        var uuid = player.getUniqueId();
+        if (ConfigManager.sendDelay != 0) {
+            ActionBarTask actionBarTask = new ActionBarTask(player, actionBarConfigMap.values().toArray(new ActionBarConfig[0]));
+            actionBarTaskMap.put(uuid, actionBarTask);
+            actionBarTask.start();
+        } else {
+            plugin.getScheduler().runTaskLater(() -> {
+                var onlinePlayer = Bukkit.getPlayer(uuid);
+                if (onlinePlayer != null) {
+                    ActionBarTask actionBarTask = new ActionBarTask(onlinePlayer, actionBarConfigMap.values().toArray(new ActionBarConfig[0]));
+                    actionBarTaskMap.put(uuid, actionBarTask);
+                    actionBarTask.start();
+                }
+            }, player.getLocation(), ConfigManager.sendDelay);
+        }
     }
 
     @Override

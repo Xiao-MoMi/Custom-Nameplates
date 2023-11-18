@@ -1,10 +1,11 @@
 # Do not change
-config-version: '21'
+config-version: '22'
 
 # bStats
 metrics: true
 
 # check update
+# 检查更新
 update-checker: true
 
 # Language
@@ -12,6 +13,7 @@ update-checker: true
 lang: english
 
 # Modules
+# 模块
 modules:
   nameplates: true
   backgrounds: true
@@ -36,6 +38,7 @@ integrations:
   # 启用后，插件会从BungeeCord端接收TAB的队伍信息
   TAB-BC: false
   # Receive Team info from Velocitab
+  # 启用后，插件会从Velocity端接收Velocitab的队伍信息
   Velocitab: false
   # TrChat channels
   # TrChat频道
@@ -46,19 +49,26 @@ integrations:
 
 resource-pack:
   # disable resource pack generation on server start
+  # 关闭开服时候重新生成资源包
   disable-generation-on-start: false
   # extract the shader
+  # 启用shader
   extract-shader: true
   # extract the transparent bossbar for 1.20.2+
+  # 解压新版本bossbar图片
   extract-bar-image: true
   # extract the transparent bars.png for legacy versions
+  # 解压旧版本bossbar图片
   extract-bar-image-legacy: true
   # Your namespace
+  # 命名空间
   namespace: "nameplates"
   # Font Name
+  # 字体名
   font: "default"
   # Customize the folder where png files should be generated.
   # This is useful for those who want to keep their resource pack structure in order.
+  # 自定义文件路径
   image-path:
     nameplates: 'font\nameplates\'
     backgrounds: 'font\backgrounds\'
@@ -70,10 +80,13 @@ resource-pack:
   initial-char: '뀁'
   # Unicode Support for 1.20+ clients
   # This would make your resource pack about 900KB bigger
+  # 1.20 Unicode 字符支持
   support-1_20-unicodes: true
   # Hide scoreboard numbers
+  # 合并隐藏计分板数字shader
   hide-scoreboard-number: true
   # Added ItemsAdder text effect shader support
+  # 合并IA text effect shader
   ItemsAdder-text-effect-support: true
 
 other-settings:
@@ -81,4 +94,8 @@ other-settings:
   # 默认文字宽度
   default-character-width: 8
   # disable bossbar/actionbar for bedrock players
+  # 为基岩玩家禁用bossbar和actionbar
   disable-for-bedrock-players: false
+  # delay x ticks before actionbar/bossbar is sent to players
+  # 延迟xticks发送bossbar或actionbar
+  send-delay: 0

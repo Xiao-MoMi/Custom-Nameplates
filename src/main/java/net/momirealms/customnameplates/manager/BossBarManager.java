@@ -75,9 +75,21 @@ public class BossBarManager extends Function {
     public void onJoin(Player player) {
         if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
             return;
-        BossBarTask bossBarTask = new BossBarTask(player, bossBars.values().toArray(new BossBarConfig[0]));
-        bossBarTaskMap.put(player.getUniqueId(), bossBarTask);
-        bossBarTask.start();
+        var uuid = player.getUniqueId();
+        if (ConfigManager.sendDelay != 0) {
+            BossBarTask bossBarTask = new BossBarTask(player, bossBars.values().toArray(new BossBarConfig[0]));
+            bossBarTaskMap.put(uuid, bossBarTask);
+            bossBarTask.start();
+        } else {
+            plugin.getScheduler().runTaskLater(() -> {
+                var onlinePlayer = Bukkit.getPlayer(uuid);
+                if (onlinePlayer != null) {
+                    BossBarTask bossBarTask = new BossBarTask(onlinePlayer, bossBars.values().toArray(new BossBarConfig[0]));
+                    bossBarTaskMap.put(uuid, bossBarTask);
+                    bossBarTask.start();
+                }
+            }, player.getLocation(), ConfigManager.sendDelay);
+        }
     }
 
     public void onQuit(Player player) {

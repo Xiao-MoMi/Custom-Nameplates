@@ -61,6 +61,7 @@ public class ConfigManager extends Function {
     public static boolean iaShaderSupport;
     public static boolean generatePackOnStart;
     public static boolean disableForBedrock;
+    public static int sendDelay;
 
     @Override
     public void load(){
@@ -126,6 +127,7 @@ public class ConfigManager extends Function {
         if (section != null) {
             default_width = section.getInt("default-character-width", 8);
             disableForBedrock = section.getBoolean("disable-for-bedrock-players", false);
+            sendDelay = section.getInt("send-delay", 0);
         }
         if (enableNameplates) {
             YamlConfiguration np_config = ConfigUtils.getConfig("configs" + File.separator + "nameplate.yml");
