@@ -103,7 +103,7 @@ public class ActionBarManager extends Function {
         if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
             return;
         var uuid = player.getUniqueId();
-        if (ConfigManager.sendDelay != 0) {
+        if (ConfigManager.sendDelay <= 0) {
             ActionBarTask actionBarTask = new ActionBarTask(player, actionBarConfigMap.values().toArray(new ActionBarConfig[0]));
             actionBarTaskMap.put(uuid, actionBarTask);
             actionBarTask.start();

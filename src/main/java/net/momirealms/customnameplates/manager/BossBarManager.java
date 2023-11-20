@@ -76,7 +76,7 @@ public class BossBarManager extends Function {
         if (ConfigManager.disableForBedrock && plugin.getVersionHelper().isGeyser() && GeyserUtils.isBedrockPlayer(player.getUniqueId()))
             return;
         var uuid = player.getUniqueId();
-        if (ConfigManager.sendDelay != 0) {
+        if (ConfigManager.sendDelay <= 0) {
             BossBarTask bossBarTask = new BossBarTask(player, bossBars.values().toArray(new BossBarConfig[0]));
             bossBarTaskMap.put(uuid, bossBarTask);
             bossBarTask.start();
