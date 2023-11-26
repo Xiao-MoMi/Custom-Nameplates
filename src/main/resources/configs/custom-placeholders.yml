@@ -136,6 +136,9 @@ static-text:
 # Note: If you want to make an image lower, edit the y position/ascent in that plugin instead of
 # using descent text or descent unicode because they are designed for characters
 descent-text:
+  name:
+    text: "%player_name%"
+    descent: 0
   player:
     text: "%player_name%"
     descent: 5

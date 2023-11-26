@@ -36,7 +36,6 @@ public class ConfigManager extends Function {
     public static String bubbles_folder_path;
     public static String images_folder_path;
     public static boolean itemsAdderHook;
-    public static boolean thin_font;
     public static boolean tab_hook;
     public static boolean tab_BC_hook;
     public static boolean velocitab_hook;
@@ -128,13 +127,6 @@ public class ConfigManager extends Function {
             default_width = section.getInt("default-character-width", 8);
             disableForBedrock = section.getBoolean("disable-for-bedrock-players", false);
             sendDelay = section.getInt("send-delay", 0);
-        }
-        if (enableNameplates) {
-            YamlConfiguration np_config = ConfigUtils.getConfig("configs" + File.separator + "nameplate.yml");
-            thin_font = np_config.getBoolean("thin-font", false);
-        }
-        else {
-            thin_font = false;
         }
     }
 

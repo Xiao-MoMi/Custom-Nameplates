@@ -24,7 +24,6 @@ import net.momirealms.customnameplates.object.Function;
 import net.momirealms.customnameplates.object.SimpleChar;
 import net.momirealms.customnameplates.object.font.ASCIIWidth;
 import net.momirealms.customnameplates.object.font.OffsetFont;
-import net.momirealms.customnameplates.object.font.ThinASCIIWidth;
 import net.momirealms.customnameplates.utils.AdventureUtils;
 import net.momirealms.customnameplates.utils.ConfigUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -67,12 +66,8 @@ public class FontManager extends Function {
     }
 
     private void loadASCIIWidth() {
-        if (ConfigManager.thin_font)
-            for (int i = 0; i < ThinASCIIWidth.values().length; i++)
-                asciiWidth.put(ThinASCIIWidth.values()[i].getCharacter(), ThinASCIIWidth.values()[i].getWidth());
-        else
-            for (int i = 0; i < ASCIIWidth.values().length; i++)
-                asciiWidth.put(ASCIIWidth.values()[i].getCharacter(), ASCIIWidth.values()[i].getWidth());
+        for (int i = 0; i < ASCIIWidth.values().length; i++)
+            asciiWidth.put(ASCIIWidth.values()[i].getCharacter(), ASCIIWidth.values()[i].getWidth());
     }
 
     public void loadCustomWidth(char c, int width) {

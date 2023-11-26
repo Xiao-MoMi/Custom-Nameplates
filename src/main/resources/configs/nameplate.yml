@@ -20,10 +20,6 @@ preview-duration: 5
 # "none" represents no default nameplate.
 default-nameplate: 'none'
 
-# uniform font name compatibility
-# uniform字体（细字体）宽度兼容
-thin-font: false
-
 # Prefix & Suffix
 # Rejoin the server to apply the changes
 # 前缀和后缀，重新进入服务器以应用更改
@@ -37,7 +33,7 @@ hide-suffix-when-equipping-nameplate: false
 
 armor_stand:
   text_1:
-    text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
+    text: '%nameplates_prefix%%nameplates_descent_name%%nameplates_suffix%'
     vertical-offset: -1
   text_2:
     text: '%vault_prefix%'
@@ -53,7 +49,7 @@ armor_stand:
 # This limitation is due to the way the client handles the packet, and it cannot be resolved from the server side.
 text_display:
   text_1:
-    text: '%nameplates_prefix%%player_name%%nameplates_suffix%'
+    text: '%nameplates_prefix%%nameplates_descent_name%%nameplates_suffix%'
     vertical-offset: -1
     options:
       is-see-through: false
