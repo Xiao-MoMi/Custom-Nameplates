@@ -39,6 +39,7 @@ public class VentureChatListener extends AbstractChatListener {
         if (chatPlayer == null) {
             return;
         }
+
         CustomNameplates.getInstance().getScheduler().runTask(() -> chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat().substring(1)), chatPlayer.getPlayer().getLocation());
     }
 }

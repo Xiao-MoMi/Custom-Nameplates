@@ -45,7 +45,7 @@ public class PlaceholderManager extends Function {
     private final HashMap<String, DescentText> descentUnicodeMap;
     private final HashMap<String, ConditionalTexts> conditionalTextsMap;
     private final HashMap<String, VanillaHud> vanillaHudMap;
-    private CustomNameplates plugin;
+    private final CustomNameplates plugin;
 
     public PlaceholderManager(CustomNameplates plugin) {
         this.plugin = plugin;

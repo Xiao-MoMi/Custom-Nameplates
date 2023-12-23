@@ -10,6 +10,7 @@ repositories {
     maven {name = "aliyun-repo"; url = "https://maven.aliyun.com/repository/public/"}
     maven {name = "sk89q-repo"; url = "https://maven.enginehub.org/repo/"}
     maven {name = 'sonatype'; url = 'https://oss.sonatype.org/content/groups/public/'}
+    maven {name = 'sonatype-snapshot'; url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'}
     maven {name = "dmulloy2-repo"; url = "https://repo.dmulloy2.net/repository/public/"}
     maven {name = "clip-repo"; url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
     maven {name = "jitpack"; url = 'https://jitpack.io'}
@@ -35,12 +36,12 @@ dependencies {
     compileOnly ('org.geysermc.geyser:api:2.2.0-SNAPSHOT')
     compileOnly ("net.william278:velocitab:1.5.1")
     compileOnly ('me.neznamy:tab-api:4.0.2')
-    compileOnly ('com.github.FrancoBM12:API-MagicCosmetics:2.2.4')
+    compileOnly ('com.github.FrancoBM12:API-MagicCosmetics:2.2.5')
     annotationProcessor ('com.velocitypowered:velocity-api:3.1.1')
 
     compileOnly ('org.apache.commons:commons-lang3:3.12.0')
     implementation ('net.kyori:adventure-api:4.14.0')
-    implementation ('net.kyori:adventure-platform-bukkit:4.3.1')
+    implementation ('net.kyori:adventure-platform-bukkit:4.3.3-SNAPSHOT')
     implementation ('net.kyori:adventure-text-minimessage:4.14.0')
     implementation ('net.kyori:adventure-text-serializer-gson:4.14.0')
     implementation ("org.bstats:bstats-bukkit:3.0.1")
