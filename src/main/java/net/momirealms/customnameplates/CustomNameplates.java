@@ -120,7 +120,7 @@ public final class CustomNameplates extends JavaPlugin {
         LibraryLoader.load("com.zaxxer","HikariCP","5.0.1", libRepo);
         LibraryLoader.load("dev.dejvokep","boosted-yaml","1.3.1", libRepo);
         LibraryLoader.load("org.mariadb.jdbc","mariadb-java-client","3.1.4", libRepo);
-        LibraryLoader.load("mysql","mysql-connector-java","8.0.30", libRepo);
+        LibraryLoader.load("com.mysql","mysql-connector-j","8.2.0", libRepo);
     }
 
     private void registerCommands() {
