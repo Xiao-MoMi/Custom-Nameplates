@@ -1,3 +1,5 @@
+# This project is currently under recoding
+
 ### Custom-Nameplates
 A unique way to customize nametags
 
