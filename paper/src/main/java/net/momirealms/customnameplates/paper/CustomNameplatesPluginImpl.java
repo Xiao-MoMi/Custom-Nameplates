@@ -11,6 +11,7 @@ import net.momirealms.customnameplates.paper.helper.LibraryLoader;
 import net.momirealms.customnameplates.paper.mechanic.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.background.BackGroundManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.bossbar.BossBarManagerImpl;
+import net.momirealms.customnameplates.paper.mechanic.font.WidthManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.image.ImageManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.CoolDownManager;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
@@ -55,6 +56,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         this.resourcePackManager = new ResourcePackManagerImpl(this);
         this.nameplateManager = new NameplateManagerImpl(this);
         this.teamManager = new TeamManagerImpl(this);
+        this.widthManager = new WidthManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.coolDownManager = new CoolDownManager(this);
         this.packetManager = new PacketManager(this);
@@ -78,6 +80,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         ((PlaceholderManagerImpl) this.placeholderManager).unload();
         ((RequirementManagerImpl) this.requirementManager).unload();
         ((ResourcePackManagerImpl) this.resourcePackManager).unload();
+        ((WidthManagerImpl) this.widthManager).unload();
         ((StorageManagerImpl) this.storageManager).disable();
         ((AdventureManagerImpl) this.adventureManager).close();
     }
@@ -87,6 +90,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         CNConfig.load();
         CNLocale.load();
         ((SchedulerImpl) this.scheduler).reload();
+        ((WidthManagerImpl) this.widthManager).reload();
         ((NameplateManagerImpl) this.nameplateManager).reload();
         ((BackGroundManagerImpl) this.backGroundManager).reload();
         ((TeamManagerImpl) this.teamManager).reload();
