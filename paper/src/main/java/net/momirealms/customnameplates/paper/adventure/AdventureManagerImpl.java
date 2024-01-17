@@ -84,11 +84,7 @@ public class AdventureManagerImpl implements AdventureManager {
         if (text == null) {
             return Component.empty();
         }
-        if (CNConfig.legacyColorSupport) {
-            return cacheSystem.getComponentFromCache(legacyToMiniMessage(text));
-        } else {
-            return cacheSystem.getComponentFromCache(text);
-        }
+        return cacheSystem.getComponentFromCache(text);
     }
 
     @Override
@@ -309,7 +305,11 @@ public class AdventureManagerImpl implements AdventureManager {
 
         @NotNull
         private Component fetchComponent(String text) {
-            return getComponentFromMiniMessage(text);
+            if (CNConfig.legacyColorSupport) {
+                return MiniMessage.miniMessage().deserialize(legacyToMiniMessage(text));
+            } else {
+                return MiniMessage.miniMessage().deserialize(text);
+            }
         }
 
         public Object getIChatFromCache(String text) {
