@@ -1,0 +1,103 @@
+# Do not change
+config-version: '22'
+
+# Debug mode
+debug: false
+
+# bStats
+metrics: true
+
+# Check update
+update-checker: true
+
+# Language
+# english/chinese/spanish/russian/turkish/french
+lang: english
+
+# Modules
+modules:
+  nameplates: true
+  backgrounds: true
+  bubbles: true
+  bossbars: true
+  actionbars: true
+  images: true
+
+# Integrations
+integrations:
+  resource-pack:
+    # If enabled, CustomNameplates will automatically place the generated resource pack into ItemsAdder/Oraxen.
+    # To apply this change, run "/nameplates reload" & "/iazip" or "/oraxen reload all"
+    ItemsAdder: false
+    Oraxen: false
+  # Require a restart to apply this
+  team:
+    # When enabled, CustomNameplates will hook into TAB's team management
+    TAB: false
+    # When enabled, CustomNameplates will hook into CMI's team management
+    CMI: false
+  chat:
+    # TrChat channels
+    TrChat: false
+    # VentureChat channels
+    VentureChat: false
+
+resource-pack:
+  # disable resource pack generation on server start
+  disable-generation-on-start: false
+  # Namespace
+  namespace: "nameplates"
+  # Font name
+  font: "default"
+  # The initial character of the custom font
+  # Although Korean is used here, it does not affect the normal use of Korean in chatting, as they are not in the same font
+  initial-char: '뀁'
+  # Customize the folder where png files should be generated.
+  # This is useful for those who want to keep their resource pack structure in order.
+  image-path:
+    nameplates: 'font\nameplates\'
+    backgrounds: 'font\backgrounds\'
+    images: 'font\images\'
+    bubbles: 'font\bubbles\'
+    space-split: 'font\base\'
+
+  shader:
+    enable: true
+    # Hide scoreboard numbers
+    hide-scoreboard-number: false
+    # Add Animated images support
+    animated-image: false
+    # Add ItemsAdder text effect support
+    ItemsAdder-text-effect: false
+
+  transparent-bossbar:
+    # Make a certain bossbar transparent
+    color: YELLOW
+    # Generate the transparent bossbar for 1.20.2+
+    1_20_2+: true
+    # Generate the transparent bossbar for legacy versions
+    1_17-1_20_1: true
+
+  # Unicode Support for 1.20+ clients
+  # This would make your resource pack about 900KB bigger
+  support-1_20-unicodes: true
+
+
+other-settings:
+  # It's recommended to use MiniMessage format. If you insist on using legacy color code "&", enable the support below.
+  legacy-color-code-support: false
+
+  # Thread pool settings
+  thread-pool-settings:
+    # The size of the core Thread pool, that is, the size of the Thread pool when there is no task to execute
+    # Increase the size of corePoolSize when you are running a large server with many players fishing at the same time
+    corePoolSize: 10
+    # The maximum number of threads allowed to be created in the Thread pool. The current number of threads in the Thread pool will not exceed this value
+    maximumPoolSize: 10
+    # If a thread is idle for more than this attribute value, it will exit due to timeout
+    keepAliveTime: 30
+
+  # default width
+  default-character-width: 8
+  # delay x ticks before actionbar/bossbar is sent to players
+  send-delay: 0

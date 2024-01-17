@@ -1,0 +1,46 @@
+# Team / Unlimited / Disable
+mode: TEAM
+
+# If you are using BungeeCord/Velocity, it's advised to install CustomNameplates on proxy too and enable this option.
+proxy: false
+
+# The duration (in seconds) that the nameplate preview will last for.
+preview-duration: 5
+
+# Default nameplate to display if player doesn't equip any
+default-nameplate: 'none'
+
+# This decides what %nameplates_prefix/suffix% would return
+# Check xxx for examples
+nameplate:
+  refresh-frequency: 10
+  prefix: ''
+  player-name: '%player_name%'
+  suffix: ''
+  # Disable this if you are using a custom Tab plugin
+  fix-Tab: true
+
+# Settings for Team mode
+team:
+  # measured in ticks
+  refresh-frequency: 10
+  prefix: '%nameplates_prefix%'
+  suffix: '%nameplates_suffix%'
+
+# Settings for Unlimited mode
+unlimited:
+  tag_1:
+    text: '%nameplates_nametag%'
+    vertical-offset: -1
+    owner-conditions: { }
+    viewer-conditions: { }
+  tag_2:
+    text: "IP: %player_ip%  My IP: %viewer_player_ip%"
+    vertical-offset: -0.7
+    refresh-frequency: 10
+    check-frequency: 20
+    owner-conditions: { }
+    viewer-conditions:
+      condition_1:
+        type: permission
+        value: 'nameplates.admin'

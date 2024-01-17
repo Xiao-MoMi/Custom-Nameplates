@@ -1,0 +1,34 @@
+# You can create as many sections as you want for more bossbars
+bossbar_1:
+  # Color (BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW)
+  color: YELLOW
+  # Overlay (It can be either "progress", "notched_6", "notched_10", "notched_12" or "notched_20")
+  overlay: PROGRESS
+  # The frequency of checking conditions for a bar, measured in ticks
+  check-frequency: 10
+  conditions:
+    permission: "bossbar.show"
+  # Bar's content would be shown as the following order
+  text-display-order:
+    1:
+      # Measured in ticks
+      duration: 200
+      # Text content
+      text: 'Welcome to my server! %player_name%'
+      # The frequency of refreshing the text, the lower the value is, the faster the placeholders are updated
+      # measured in ticks, -1 = disable refreshing
+      refresh-frequency: -1
+    2:
+      duration: 100
+      text: 'Your location: [X: %player_x%, Y: %player_y%, Z: %player_z%]'
+      refresh-frequency: 1
+    3:
+      duration: 100
+      text: 'This is a message only visible to admins'
+      refresh-frequency: -1
+      # Optional
+      # When enabling conditions, make sure that players would see at least one in the order,
+      # otherwise it will fall into a dead cycle
+      conditions:
+        # If your player doesn't meet the conditions, it would be skipped
+        permission: nameplates.admin
