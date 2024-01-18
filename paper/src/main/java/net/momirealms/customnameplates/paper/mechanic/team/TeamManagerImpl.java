@@ -17,7 +17,6 @@ import net.momirealms.customnameplates.paper.mechanic.team.provider.TABProvider;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.TeamProvider;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;

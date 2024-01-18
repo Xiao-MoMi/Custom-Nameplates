@@ -52,11 +52,11 @@ public class AdventureManagerImpl implements AdventureManager {
 
     private final BukkitAudiences adventure;
     private static AdventureManager instance;
-    private final CacheSystem cacheSystem;
+    private CacheSystem cacheSystem;
 
     public AdventureManagerImpl(CustomNameplatesPlugin plugin) {
         this.adventure = BukkitAudiences.create(plugin);
-        this.cacheSystem = new CacheSystem();
+
         instance = this;
     }
 
@@ -67,6 +67,21 @@ public class AdventureManagerImpl implements AdventureManager {
     public void close() {
         if (adventure != null)
             adventure.close();
+    }
+
+    public void reload() {
+        if (this.cacheSystem != null) this.cacheSystem.destroy();
+        this.cacheSystem = new CacheSystem(CNConfig.cacheSize);
+    }
+
+    @Override
+    public net.momirealms.customnameplates.api.common.Key keyToKey(Key key) {
+        return net.momirealms.customnameplates.api.common.Key.of(key.namespace(), key.value());
+    }
+
+    @Override
+    public Key keyToKey(net.momirealms.customnameplates.api.common.Key key) {
+        return Key.key(key.namespace(), key.value());
     }
 
     @Override
@@ -272,9 +287,9 @@ public class AdventureManagerImpl implements AdventureManager {
         private final LoadingCache<String, Object> miniMessageToIChatComponentCache;
         private final LoadingCache<String, Component> miniMessageToComponentCache;
 
-        public CacheSystem() {
+        public CacheSystem(int size) {
             miniMessageToIChatComponentCache = CacheBuilder.newBuilder()
-                    .maximumSize(100)
+                    .maximumSize(size)
                     .expireAfterWrite(10, TimeUnit.MINUTES)
                     .build(
                             new CacheLoader<>() {
@@ -285,7 +300,7 @@ public class AdventureManagerImpl implements AdventureManager {
                                 }
                             });
             miniMessageToComponentCache = CacheBuilder.newBuilder()
-                    .maximumSize(100)
+                    .maximumSize(size)
                     .expireAfterWrite(10, TimeUnit.MINUTES)
                     .build(
                             new CacheLoader<>() {
@@ -295,6 +310,11 @@ public class AdventureManagerImpl implements AdventureManager {
                                     return fetchComponent(text);
                                 }
                             });
+        }
+
+        public void destroy() {
+            miniMessageToComponentCache.cleanUp();
+            miniMessageToIChatComponentCache.cleanUp();
         }
 
         @NotNull

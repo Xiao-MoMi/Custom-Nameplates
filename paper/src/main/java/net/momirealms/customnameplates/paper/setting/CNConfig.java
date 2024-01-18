@@ -20,6 +20,7 @@ import java.util.Objects;
 public class CNConfig {
 
     public static String configVersion = "22";
+    public static int cacheSize;
     public static int corePoolSize;
     public static long keepAliveTime;
     public static int maximumPoolSize;
@@ -124,6 +125,7 @@ public class CNConfig {
         corePoolSize = config.getInt("other-settings.thread-pool-settings.corePoolSize", 10);
         maximumPoolSize = config.getInt("other-settings.thread-pool-settings.maximumPoolSize", 10);
         keepAliveTime = config.getInt("other-settings.thread-pool-settings.keepAliveTime", 30);
+        cacheSize = config.getInt("other-settings.cache-size", 100);
     }
 
     public static boolean isOtherTeamPluginHooked() {

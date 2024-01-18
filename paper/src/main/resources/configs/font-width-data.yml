@@ -1,0 +1,22 @@
+minecraft:default:
+  default: 8
+  template-loading-sequence:
+    - unifont
+    - northern_latin
+    - ascent
+    - ascii
+  # The values here would override the same character in the template
+  values:
+    '%img_xxx%': 15
+    默: 8
+
+minecraft:alt:
+  default: 8
+  template:
+    ascii: false
+    alt: true
+
+minecraft:asciillager:
+  default: 8
+  template:
+    asciillager: true

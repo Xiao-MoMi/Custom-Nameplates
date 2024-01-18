@@ -1,7 +1,5 @@
 package net.momirealms.customnameplates.paper;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.event.CustomNameplatesReloadEvent;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -90,6 +88,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         CNConfig.load();
         CNLocale.load();
         ((SchedulerImpl) this.scheduler).reload();
+        ((AdventureManagerImpl) this.adventureManager).reload();
         ((WidthManagerImpl) this.widthManager).reload();
         ((NameplateManagerImpl) this.nameplateManager).reload();
         ((BackGroundManagerImpl) this.backGroundManager).reload();

@@ -18,8 +18,6 @@
 package net.momirealms.customnameplates.paper.util;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;

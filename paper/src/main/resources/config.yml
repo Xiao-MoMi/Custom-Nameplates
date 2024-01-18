@@ -101,3 +101,9 @@ other-settings:
   default-character-width: 8
   # delay x ticks before actionbar/bossbar is sent to players
   send-delay: 0
+  # Set the size for the cache system. This is useful and would bring huge performance if you keep it to a reasonable value
+  # Many developers don't seem to think that parsing text labels would incur significant performance overhead but actually it does through it's running asynchronously.
+  # With cache system, you can save much CPU resource when the same message is displayed to many players.
+  # The more people on your server, the higher the efficiency of the caching system's operation.
+  # In most cases you don't have to edit this value. You can increase this value appropriately, especially when there are many players on your server.
+  cache-size: 100

@@ -3,7 +3,6 @@ package net.momirealms.customnameplates.paper.mechanic.bossbar;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
