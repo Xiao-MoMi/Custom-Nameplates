@@ -2,8 +2,8 @@ minecraft:default:
   default: 8
   template-loading-sequence:
     - unifont
-    - northern_latin
-    - ascent
+    - nonlatin_european
+    - accented
     - ascii
   # The values here would override the same character in the template
   values:
@@ -13,10 +13,9 @@ minecraft:default:
 minecraft:alt:
   default: 8
   template:
-    ascii: false
-    alt: true
+    - ascii_sga
 
 minecraft:asciillager:
   default: 8
-  template:
-    asciillager: true
+  template-loading-sequence:
+    - asciillager

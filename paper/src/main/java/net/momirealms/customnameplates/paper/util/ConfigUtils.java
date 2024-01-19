@@ -6,7 +6,12 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.mechanic.misc.TimeLimitText;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 public class ConfigUtils {
@@ -94,5 +99,80 @@ public class ConfigUtils {
 
     private static TimeLimitText[] getOrderedTexts(TreeMap<Integer, TimeLimitText> map) {
         return map.values().toArray(new TimeLimitText[0]);
+    }
+
+    public static void saveResource(@NotNull String resourcePath) {
+        if (resourcePath.equals("")) {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
+
+        resourcePath = resourcePath.replace('\\', '/');
+        InputStream in = getResource(resourcePath);
+        if (in == null) {
+            return;
+        }
+
+        File outFile = new File(CustomNameplatesPlugin.get().getDataFolder(), resourcePath);
+        int lastIndex = resourcePath.lastIndexOf('/');
+        File outDir = new File(CustomNameplatesPlugin.get().getDataFolder(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        try {
+            if (!outFile.exists()) {
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            }
+        } catch (IOException ex) {
+            LogUtils.warn("Could not save " + outFile.getName() + " to " + outFile);
+        }
+    }
+
+    @Nullable
+    public static InputStream getResource(@NotNull String filename) {
+        try {
+            URL url = CustomNameplatesPlugin.get().getClass().getClassLoader().getResource(filename);
+            if (url == null) {
+                return null;
+            }
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            return connection.getInputStream();
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    public static String native2ascii(char c) {
+        StringBuilder stringBuilder_1 = new StringBuilder("\\u");
+        StringBuilder stringBuilder_2 = new StringBuilder(Integer.toHexString(c));
+        stringBuilder_2.reverse();
+        for (int n = 4 - stringBuilder_2.length(), i = 0; i < n; i++) stringBuilder_2.append('0');
+        for (int j = 0; j < 4; j++) stringBuilder_1.append(stringBuilder_2.charAt(3 - j));
+        return stringBuilder_1.toString();
+    }
+
+    public static char[] convertUnicodeStringToChars(String unicodeString) {
+        String processedString = unicodeString.replace("\\u", "");
+        int length = processedString.length() / 4;
+        char[] chars = new char[length];
+        for (int i = 0; i < length; i++) {
+            int codePoint = Integer.parseInt(processedString.substring(i * 4, i * 4 + 4), 16);
+            if (Character.isSupplementaryCodePoint(codePoint)) {
+                chars[i] = Character.highSurrogate(codePoint);
+                chars[++i] = Character.lowSurrogate(codePoint);
+            } else {
+                chars[i] = (char) codePoint;
+            }
+        }
+        return chars;
     }
 }

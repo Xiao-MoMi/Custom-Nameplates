@@ -11,6 +11,7 @@ import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -104,19 +105,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         }
     }
 
-    @Override
-    public String native2ascii(char c) {
-        if (c > '\u007f') {
-            StringBuilder stringBuilder_1 = new StringBuilder("\\u");
-            StringBuilder stringBuilder_2 = new StringBuilder(Integer.toHexString(c));
-            stringBuilder_2.reverse();
-            for (int n = 4 - stringBuilder_2.length(), i = 0; i < n; i++) stringBuilder_2.append('0');
-            for (int j = 0; j < 4; j++) stringBuilder_1.append(stringBuilder_2.charAt(3 - j));
-            return stringBuilder_1.toString();
-        }
-        return Character.toString(c);
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void saveSplit(File texturesFolder) {
         try {
@@ -159,7 +147,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
                 jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
                 JsonArray ja = new JsonArray();
-                ja.add(native2ascii(configuredChar.getCharacter()));
+                ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
                 jo.add("chars", ja);
                 list.add(jo);
                 list.add(jo);
@@ -195,7 +183,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
                 jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
                 JsonArray ja = new JsonArray();
-                ja.add(native2ascii(configuredChar.getCharacter()));
+                ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
                 jo.add("chars", ja);
                 list.add(jo);
                 try {
@@ -228,7 +216,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
             jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
             JsonArray ja = new JsonArray();
-            ja.add(native2ascii(configuredChar.getCharacter()));
+            ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
             jo.add("chars", ja);
             list.add(jo);
             list.add(jo);
@@ -255,7 +243,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             jsonObject.add("ascent", new JsonPrimitive(-5000));
             jsonObject.add("height", new JsonPrimitive(offsetFont.getHeight()));
             final JsonArray jsonArray = new JsonArray();
-            jsonArray.add(native2ascii(offsetFont.getCharacter()));
+            jsonArray.add(ConfigUtils.native2ascii(offsetFont.getCharacter()));
             jsonObject.add("chars", jsonArray);
             list.add(jsonObject);
         }

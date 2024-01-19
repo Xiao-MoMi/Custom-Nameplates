@@ -21,6 +21,7 @@ public abstract class CustomNameplatesPlugin extends JavaPlugin {
     protected TeamManager teamManager;
     protected NameplateManager nameplateManager;
     protected ActionBarManager actionBarManager;
+    protected WidthManager widthManager;
 
     protected CustomNameplatesPlugin() {
         instance = this;
@@ -102,6 +103,11 @@ public abstract class CustomNameplatesPlugin extends JavaPlugin {
     /* Get the nameplate manager */
     public NameplateManager getNameplateManager() {
         return nameplateManager;
+    }
+
+    /* Get the width manager */
+    public WidthManager getWidthManager() {
+        return widthManager;
     }
 
     /* debug get config by file name */
