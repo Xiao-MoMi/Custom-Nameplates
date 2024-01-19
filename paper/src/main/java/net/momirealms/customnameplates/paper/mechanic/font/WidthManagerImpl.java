@@ -33,7 +33,6 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class WidthManagerImpl implements WidthManager {
@@ -137,47 +136,6 @@ public class WidthManagerImpl implements WidthManager {
                         if (entry.getName().endsWith(".hex") && !entry.isDirectory()) {
                             try (BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)))) {
                                 YamlConfiguration yml = new YamlConfiguration();
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    String[] parts = line.split(":");
-                                    if (parts.length > 1) {
-                                        String hexData = parts[1];
-                                        int width = hexData.length() / 4;
-                                        int high = 0;
-                                        int low = width - 1;
-                                        int splitInterval = width / 4;
-                                        int partAmount = hexData.length() / splitInterval;
-                                        for (int k = 0; k < partAmount; k++) {
-                                            String sub = hexData.substring(k * splitInterval, k * splitInterval + splitInterval);
-                                            StringBuilder sb = new StringBuilder();
-                                            for (int m = 0; m < sub.length(); m++) {
-                                                String binaryDigit = Integer.toBinaryString(Character.digit(sub.charAt(m), 16));
-                                                sb.append(String.format("%4s", binaryDigit).replace(' ', '0'));
-                                            }
-                                            String binary = sb.toString();
-                                            high = Math.max(high, binary.lastIndexOf("1"));
-                                            int firstIndex = binary.indexOf("1");
-                                            if (firstIndex != -1) {
-                                                low = Math.min(low, firstIndex);
-                                            }
-
-                                            if (high >= low) {
-                                                int charWidth = high - low + 1;
-                                                if (charWidth % 2 == 1) {
-                                                    // if a 16px text's width is odd, the width of text interval would be 1px, otherwise it would be 2px
-                                                    charWidth--;
-                                                }
-                                                int codePoint = Integer.parseInt(parts[0], 16);
-                                                char[] surrogatePair = Character.toChars(codePoint);
-                                                StringBuilder s = new StringBuilder();
-                                                for (char c : surrogatePair) {
-                                                    s.append(ConfigUtils.native2ascii(c));
-                                                }
-                                                yml.set(s.toString(), charWidth/2);
-                                            }
-                                        }
-                                    }
-                                }
                                 for (int i = 0x3001; i <= 0x30FF; i++) {
                                     char c = (char) i;
                                     yml.set(ConfigUtils.native2ascii(c), 8);
@@ -198,6 +156,129 @@ public class WidthManagerImpl implements WidthManager {
                                     char c = (char) i;
                                     yml.set(ConfigUtils.native2ascii(c), 8);
                                 }
+
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    String[] parts = line.split(":");
+                                    if (parts.length > 1) {
+                                        int codePoint = Integer.parseInt(parts[0], 16);
+                                        char[] surrogatePair = Character.toChars(codePoint);
+                                        StringBuilder s = new StringBuilder();
+                                        for (char c : surrogatePair) {
+                                            s.append(ConfigUtils.native2ascii(c));
+                                        }
+                                        String unicode = s.toString();
+                                        if (yml.contains(unicode)) {
+                                            continue;
+                                        }
+
+                                        String hexData = parts[1];
+                                        // 像素宽度
+                                        int width = hexData.length() / 4;
+                                        // 高位
+                                        int high = 4;
+                                        // 低位
+                                        int low = 4;
+                                        // 每一行像素由几个hex组成
+                                        int splitInterval = width / 4;
+
+                                        int x;
+                                        int n;
+                                        outer:
+                                            for (x = 0; x < splitInterval; x++) {
+                                                inner:
+                                                    for (int y = 0; y < 16; y++) {
+                                                        int pos = y * splitInterval + x;
+                                                        char selectedHex = hexData.charAt(pos);
+                                                        int decimal = selectedHex - '0';
+                                                        for (int k = 0; k < low; k++) {
+                                                            if ((decimal & (1 << (3 - k))) != 0) {
+                                                                low = k;
+                                                                if (low == 0) {
+                                                                    break outer;
+                                                                } else {
+                                                                    continue inner;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (low != 4) {
+                                                        break outer;
+                                                    }
+                                            }
+
+                                        if (low == 4) {
+                                            continue;
+                                        }
+
+                                        outer:
+                                            for (n = splitInterval - 1; n >= x; n--) {
+                                                inner:
+                                                for (int y = 0; y < 16; y++) {
+                                                    int pos = y * splitInterval + x;
+                                                    char selectedHex = hexData.charAt(pos);
+                                                    int decimal = selectedHex - '0';
+                                                    for (int k = 0; k < high; k++) {
+                                                        if ((decimal & (1 << k)) != 0) {
+                                                            high = k;
+                                                            if (high == 0) {
+                                                                break outer;
+                                                            } else {
+                                                                continue inner;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (high != 4) {
+                                                    break outer;
+                                                }
+                                            }
+
+                                        int final_low = x * 4 + low;
+                                        int final_high = n * 4 + (3 - high);
+
+                                        if (final_high >= final_low) {
+                                            int charWidth = final_high - final_low + 1;
+                                            if (charWidth % 2 == 1) {
+                                                // if a 16px text's width is odd, the width of text interval would be 1px, otherwise it would be 2px
+                                                charWidth--;
+                                            }
+                                            yml.set(unicode, charWidth/2);
+                                        }
+
+//                                        int partAmount = hexData.length() / splitInterval;
+//                                        for (int k = 0; k < partAmount; k++) {
+//                                            String sub = hexData.substring(k * splitInterval, k * splitInterval + splitInterval);
+//                                            StringBuilder sb = new StringBuilder();
+//                                            for (int m = 0; m < sub.length(); m++) {
+//                                                String binaryDigit = Integer.toBinaryString(Character.digit(sub.charAt(m), 16));
+//                                                sb.append(String.format("%4s", binaryDigit).replace(' ', '0'));
+//                                            }
+//                                            String binary = sb.toString();
+//                                            high = Math.max(high, binary.lastIndexOf("1"));
+//                                            int firstIndex = binary.indexOf("1");
+//                                            if (firstIndex != -1) {
+//                                                low = Math.min(low, firstIndex);
+//                                            }
+//
+//                                            if (high >= low) {
+//                                                int charWidth = high - low + 1;
+//                                                if (charWidth % 2 == 1) {
+//                                                    // if a 16px text's width is odd, the width of text interval would be 1px, otherwise it would be 2px
+//                                                    charWidth--;
+//                                                }
+//                                                int codePoint = Integer.parseInt(parts[0], 16);
+//                                                char[] surrogatePair = Character.toChars(codePoint);
+//                                                StringBuilder s = new StringBuilder();
+//                                                for (char c : surrogatePair) {
+//                                                    s.append(ConfigUtils.native2ascii(c));
+//                                                }
+//                                                yml.set(s.toString(), charWidth/2);
+//                                            }
+//                                        }
+                                    }
+                                }
+
                                 yml.save(unifontCache);
                             }
                         }
