@@ -56,13 +56,4 @@ public class Tuple<L, M, R> {
     public void setRight(R right) {
         this.right = right;
     }
-
-    @Override
-    public String toString() {
-        return "Tuple{" +
-                "left=" + left +
-                ", mid=" + mid +
-                ", right=" + right +
-                '}';
-    }
 }

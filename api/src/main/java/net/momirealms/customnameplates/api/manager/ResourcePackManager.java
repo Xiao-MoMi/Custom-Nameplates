@@ -10,4 +10,6 @@ public interface ResourcePackManager {
     void generateResourcePack();
 
     void deleteDirectory(File file);
+
+    String native2ascii(char c);
 }

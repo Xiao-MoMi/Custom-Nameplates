@@ -1,7 +1,5 @@
 package net.momirealms.customnameplates.api.util;
 
-import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-
 public class FontUtils {
 
     private static String namespace;
@@ -62,7 +60,7 @@ public class FontUtils {
      * @return width
      */
     public static int getTextWidth(String text) {
-        return CustomNameplatesPlugin.get().getWidthManager().getTextWidth(text);
+        return 0;
     }
 
     /**
