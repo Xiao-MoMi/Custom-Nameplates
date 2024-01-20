@@ -411,7 +411,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public String getNameplatePrefix(Player player) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) return "";
-        return cachedNameplate.getTagPrefix();
+        return "<#FEFEFE>" + cachedNameplate.getTagPrefix() + "</#FEFEFE>";
     }
 
     @Override
@@ -428,7 +428,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             return player.getName();
         }
 
-        return    cachedNameplate.getTagPrefix()
+        return    "<#FEFEFE>" + cachedNameplate.getTagPrefix() + "</#FEFEFE>"
                 + cachedNameplate.getNamePrefix()
                 + cachedNameplate.getPlayerName()
                 + cachedNameplate.getNameSuffix()

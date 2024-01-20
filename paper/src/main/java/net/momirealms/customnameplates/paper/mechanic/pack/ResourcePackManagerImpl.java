@@ -68,6 +68,8 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         this.saveBossBar();
         // save unicodes
         this.saveLegacyUnicodes();
+        // generate shaders
+        this.generateShaders();
 
         // add offset characters
         this.getOffsets(texturesFolder).forEach(providers::add);
@@ -85,6 +87,53 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         this.saveFont(fontJson);
         // copy the resource pack to hooked plugins
         this.copyResourcePackToHookedPlugins(resourcePackFolder);
+    }
+
+    private void generateShaders() {
+        String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator;
+        plugin.saveResource(path + "rendertype_text.fsh", true);
+        plugin.saveResource(path + "rendertype_text.json", true);
+        plugin.saveResource(path + "rendertype_text.vsh", true);
+        String line;
+        StringBuilder sb1 = new StringBuilder();
+        File shader1 = new File(plugin.getDataFolder(), path + "rendertype_text.vsh");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(shader1), StandardCharsets.UTF_8))) {
+            while ((line = reader.readLine()) != null) {
+                sb1.append(line).append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(shader1), StandardCharsets.UTF_8))) {
+            writer.write(sb1.toString()
+                    .replace("%SHADER_0%", !CNConfig.animatedImage ? "" : ShaderConstants.Animated_Text_Out)
+                    .replace("%SHADER_1%", !CNConfig.textEffects ? ShaderConstants.Nameplates_Shader : ShaderConstants.ItemsAdder_Text_Effects + ShaderConstants.Nameplates_Shader)
+                    .replace("%SHADER_2%", !CNConfig.animatedImage ? "" : ShaderConstants.Animated_Text_VSH)
+                    .replace("%SHADER_3%", !CNConfig.hideScoreboardNumber ? "" : ShaderConstants.Hide_ScoreBoard_Numbers)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File shader2 = new File(plugin.getDataFolder(), path + "rendertype_text.fsh");
+        StringBuilder sb2 = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(shader2), StandardCharsets.UTF_8))) {
+            while ((line = reader.readLine()) != null) {
+                sb2.append(line).append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(shader2), StandardCharsets.UTF_8))) {
+            writer.write(sb2.toString()
+                    .replace("%SHADER_0%", !CNConfig.animatedImage ? "" : ShaderConstants.Animated_Text_In)
+                    .replace("%SHADER_1%", !CNConfig.animatedImage ? "" : ShaderConstants.Animated_Text_FSH)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveLegacyUnicodes() {
@@ -333,5 +382,111 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static class ShaderConstants {
+
+        public static final String Nameplates_Shader =
+                "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
+                "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        vertex.y+= 1;\n" +
+                "        vertex.x+= 1;\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else if (Color.xyz == vec3(254., 254., 254.) / 255.) {\n" +
+                "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        vertex.z-= 0.01;\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else {\n" +
+                "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    }";
+
+        public static final String ItemsAdder_Text_Effects =
+                "if (Color.xyz == vec3(255., 255., 254.) / 255.) {\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "    } else if (Color.xyz == vec3(255., 255., 253.) / 255.) {\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        gl_Position.y = gl_Position.y + sin(GameTime * 12000. + (gl_Position.x * 6)) / 150.;\n" +
+                "    } else if (Color.xyz == vec3(255., 255., 252.) / 255.) {\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        gl_Position.y = gl_Position.y + sin(GameTime*12000. + (gl_Position.x*6)) / 150.;\n" +
+                "    } else if (Color.xyz == vec3(255., 255., 251.) / 255.) {\n" +
+                "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        float vertexId = mod(gl_VertexID, 4.0);\n" +
+                "        if (vertex.z <= 0.) {\n" +
+                "            if (vertexId == 3. || vertexId == 0.) vertex.y += cos(GameTime * 12000. / 4) * 0.1;\n" +
+                "            vertex.y += max(cos(GameTime*12000. / 4) * 0.1, 0.);\n" +
+                "        } else {\n" +
+                "            if (vertexId == 3. || vertexId == 0.) vertex.y -= cos(GameTime * 12000. / 4) * 3;\n" +
+                "            vertex.y -= max(cos(GameTime*12000. / 4) * 4, 0.);\n" +
+                "        }\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else if (Color.xyz == vec3(255., 254., 254.) / 255.) {\n" +
+                "        float vertexId = mod(gl_VertexID, 4.0);\n" +
+                "        if (vertex.z <= 0.) {\n" +
+                "            if (vertexId == 3. || vertexId == 0.) vertex.y += cos(GameTime * 12000. / 4) * 0.1;\n" +
+                "            vertex.y += max(cos(GameTime*12000. / 4) * 0.1, 0.);\n" +
+                "        } else {\n" +
+                "            if (vertexId == 3. || vertexId == 0.) vertex.y -= cos(GameTime * 12000. / 4) * 3;\n" +
+                "            vertex.y -= max(cos(GameTime*12000. / 4) * 4, 0.);\n" +
+                "        }\n" +
+                "        vertexColor = ((.6 + .6 * cos(6. * (gl_Position.x + GameTime * 1000.) + vec4(0, 23, 21, 1))) + vec4(0., 0., 0., 1.)) * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else ";
+        public static final String Hide_ScoreBoard_Numbers =
+                "\n" +
+                "    if (Position.z == 0.0\n" +
+                "        && gl_Position.x >= 0.94\n" +
+                "        && gl_Position.y >= -0.35\n" +
+                "        && vertexColor.g == 84.0/255.0\n" +
+                "        && vertexColor.g == 84.0/255.0\n" +
+                "        && vertexColor.r == 252.0/255.0\n" +
+                "        && gl_VertexID <= 7\n" +
+                "    ) {\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vec4(ScreenSize + 100.0, 0.0, ScreenSize + 100.0);\n" +
+                "    }";
+
+        public static final String Animated_Text_FSH =
+                "\n" +
+                "vec2 p1 = round(pos1 / (posID == 0 ? 1 - coord.x : 1 - coord.y));\n" +
+                "    vec2 p2 = round(pos2 / (posID == 0 ? coord.y : coord.x));\n" +
+                "    ivec2 resolution = ivec2(abs(p1 - p2));\n" +
+                "    ivec2 corner = ivec2(min(p1, p2));\n" +
+                "    vec4 pixel = texture(Sampler0, corner / 256.0) * 255;\n" +
+                "    if (pixel.a == 1) {\n" +
+                "        ivec2 frames = ivec2(resolution / pixel.gb);\n" +
+                "        vec2 uv = (texCoord0 * 256 - corner) / frames.x;\n" +
+                "        if (uv.x > pixel.y || uv.y > pixel.z)\n" +
+                "            discard;\n" +
+                "        int time = int(GameTime * 1200 * pixel.x) % int(frames.x * frames.y);\n" +
+                "        uv = corner + mod(uv, pixel.yz) + vec2(time % frames.x, time / frames.x % frames.y) * pixel.yz;\n" +
+                "        color = texture(Sampler0, uv / 256.0) * vertexColor * ColorModulator;\n" +
+                "    }";
+
+        public static final String Animated_Text_VSH =
+                "\n" +
+                "    pos1 = pos2 = vec2(0);\n" +
+                "    posID = gl_VertexID % 4;\n" +
+                "    const vec2[4] corners = vec2[4](vec2(0), vec2(0, 1), vec2(1), vec2(1, 0));\n" +
+                "    coord = corners[posID];\n" +
+                "    if (posID == 0) pos1 = UV0 * 256;\n" +
+                "    if (posID == 2) pos2 = UV0 * 256;";
+
+        public static final String Animated_Text_Out =
+                "\n" +
+                "out vec2 pos1;\n" +
+                "out vec2 pos2;\n" +
+                "out vec2 coord;\n" +
+                "flat out int posID;\n";
+
+        public static final String Animated_Text_In =
+                "\n" +
+                "in vec2 pos1;\n" +
+                "in vec2 pos2;\n" +
+                "in vec2 coord;\n" +
+                "flat in int posID;\n";
     }
 }

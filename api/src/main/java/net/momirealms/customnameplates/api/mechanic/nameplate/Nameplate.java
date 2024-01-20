@@ -86,21 +86,21 @@ public class Nameplate {
 
     public String getPrefix(int textWidth) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth % 2 == 0 ? textWidth + left.getWidth() : textWidth + left.getWidth() + 1));
+        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + left.getWidth() + 1));
         stringBuilder.append(left.getCharacter());
         stringBuilder.append(OffsetFont.NEG_1.getCharacter());
-        int mid_amount = (textWidth - 1) / (middle.getWidth());
+        int mid_amount = (textWidth+2) / (middle.getWidth());
         if (mid_amount != 0) {
             for (int i = 0; i < mid_amount; i++) {
                 stringBuilder.append(middle.getCharacter());
                 stringBuilder.append(OffsetFont.NEG_1.getCharacter());
             }
-            stringBuilder.append(OffsetFont.getShortestNegChars(middle.getWidth() - textWidth % middle.getWidth())); // +1
+            stringBuilder.append(OffsetFont.getShortestNegChars(middle.getWidth() - (textWidth+2) % middle.getWidth() + 1)); // +1
         }
         stringBuilder.append(middle.getCharacter());
         stringBuilder.append(OffsetFont.NEG_1.getCharacter());
         stringBuilder.append(right.getCharacter());
-        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + right.getWidth() - 1)); // -1
+        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + right.getWidth() + 1)); // -1
         return stringBuilder.toString();
     }
 

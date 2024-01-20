@@ -62,13 +62,12 @@ resource-pack:
     space-split: 'font\base\'
 
   shader:
-    enable: true
     # Hide scoreboard numbers
     hide-scoreboard-number: false
-    # Add Animated images support
-    animated-image: false
+    # Add Animated text support
+    animated-text: false
     # Add ItemsAdder text effect support
-    ItemsAdder-text-effect: false
+    ItemsAdder-text-effects: false
 
   transparent-bossbar:
     # Make a certain bossbar transparent

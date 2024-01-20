@@ -57,6 +57,9 @@ public class CNConfig {
     public static BarColor barColorToRemove;
     public static boolean legacyBossBarImage;
     public static boolean newBossBarImage;
+    public static boolean hideScoreboardNumber;
+    public static boolean animatedImage;
+    public static boolean textEffects;
 
     public static void load() {
         try {
@@ -128,6 +131,10 @@ public class CNConfig {
             newBossBarImage = packSection.getBoolean("transparent-bossbar.1_20_2+", true);
 
             legacyUnicodes = packSection.getBoolean("legacy-unicodes", true);
+
+            hideScoreboardNumber = packSection.getBoolean("shader.hide-scoreboard-number", false);
+            animatedImage = packSection.getBoolean("shader.animated-text", false);
+            textEffects = packSection.getBoolean("shader.ItemsAdder-text-effects", false);
         }
 
         corePoolSize = config.getInt("other-settings.thread-pool-settings.corePoolSize", 10);
