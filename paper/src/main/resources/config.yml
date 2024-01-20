@@ -78,10 +78,9 @@ resource-pack:
     # Generate the transparent bossbar for legacy versions
     1_17-1_20_1: true
 
-  # Unicode Support for 1.20+ clients
+  # Legacy unicode Support for 1.20+ clients
   # This would make your resource pack about 900KB bigger
-  support-1_20-unicodes: true
-
+  legacy-unicodes: true
 
 other-settings:
   # It's recommended to use MiniMessage format. If you insist on using legacy color code "&", enable the support below.

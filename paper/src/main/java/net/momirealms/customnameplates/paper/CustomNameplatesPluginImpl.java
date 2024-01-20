@@ -89,7 +89,6 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         CNLocale.load();
         ((SchedulerImpl) this.scheduler).reload();
         ((AdventureManagerImpl) this.adventureManager).reload();
-        ((WidthManagerImpl) this.widthManager).reload();
         ((NameplateManagerImpl) this.nameplateManager).reload();
         ((BackGroundManagerImpl) this.backGroundManager).reload();
         ((TeamManagerImpl) this.teamManager).reload();
@@ -99,6 +98,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         ((ActionBarManagerImpl) actionBarManager).reload();
         ((ImageManagerImpl) this.imageManager).reload();
         ((PlaceholderManagerImpl) this.placeholderManager).reload();
+        ((WidthManagerImpl) this.widthManager).reload();
         ((ResourcePackManagerImpl) this.resourcePackManager).reload();
         this.resourcePackManager.generateResourcePack();
         CustomNameplatesReloadEvent event = new CustomNameplatesReloadEvent(this);

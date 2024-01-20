@@ -10,11 +10,13 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.paper.mechanic.bossbar.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 public class CNConfig {
@@ -51,8 +53,10 @@ public class CNConfig {
     public static String folderBubble;
     public static String folderBackground;
     public static String folderSplit;
-    public static boolean add_1_20_Unicodes;
-    public static short defaultCharWidth;
+    public static boolean legacyUnicodes;
+    public static BarColor barColorToRemove;
+    public static boolean legacyBossBarImage;
+    public static boolean newBossBarImage;
 
     public static void load() {
         try {
@@ -119,7 +123,11 @@ public class CNConfig {
             folderImage = packSection.getString("image-path.images","font\\images\\");
             folderSplit = packSection.getString("image-path.space-split","font\\base\\");
 
-            add_1_20_Unicodes = packSection.getBoolean("support-1_20-unicodes", true);
+            barColorToRemove = BarColor.valueOf(packSection.getString("transparent-bossbar.color", "yellow").toUpperCase(Locale.ENGLISH));
+            legacyBossBarImage = packSection.getBoolean("transparent-bossbar.1_17-1_20_1", true);
+            newBossBarImage = packSection.getBoolean("transparent-bossbar.1_20_2+", true);
+
+            legacyUnicodes = packSection.getBoolean("legacy-unicodes", true);
         }
 
         corePoolSize = config.getInt("other-settings.thread-pool-settings.corePoolSize", 10);

@@ -16,7 +16,12 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.common.Key;
 import net.momirealms.customnameplates.api.common.Tuple;
 import net.momirealms.customnameplates.api.manager.WidthManager;
+import net.momirealms.customnameplates.api.mechanic.background.BackGround;
+import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.FontData;
+import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
+import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
+import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
@@ -51,6 +56,9 @@ public class WidthManagerImpl implements WidthManager {
     public WidthManagerImpl(CustomNameplatesPlugin plugin) {
         this.plugin = plugin;
         this.fontDataMap = new HashMap<>();
+        this.saveFontImages();
+        this.cacheImageWidthIfNotCached();
+        this.loadCachedFontData();
     }
 
     public void reload() {
@@ -59,14 +67,54 @@ public class WidthManagerImpl implements WidthManager {
     }
 
     public void load() {
-        this.saveFontImages();
-        this.cacheImageWidthIfNotCached();
+        this.loadInternalConfigs();
+        this.loadUserConfigs();
+        this.cacheSystem = new CacheSystem(CNConfig.cacheSize);
+    }
 
+    public void unload() {
+        if (this.cacheSystem != null)
+            this.cacheSystem.destroy();
+        fontDataMap.clear();
+    }
+
+    private void loadInternalConfigs() {
+        FontData fontData = new FontData(8);
+        ArrayList<ConfiguredChar> chars = new ArrayList<>();
+        chars.addAll(plugin.getImageManager().getImages());
+        for (Nameplate nameplate : plugin.getNameplateManager().getNameplates()) {
+            chars.add(nameplate.getLeft());
+            chars.add(nameplate.getMiddle());
+            chars.add(nameplate.getRight());
+        }
+        for (BackGround backGround : plugin.getBackGroundManager().getBackGrounds()) {
+            chars.add(backGround.getLeft());
+            chars.add(backGround.getOffset_1());
+            chars.add(backGround.getOffset_2());
+            chars.add(backGround.getOffset_4());
+            chars.add(backGround.getOffset_8());
+            chars.add(backGround.getOffset_16());
+            chars.add(backGround.getOffset_32());
+            chars.add(backGround.getOffset_64());
+            chars.add(backGround.getOffset_128());
+            chars.add(backGround.getRight());
+        }
+        for (OffsetFont offsetFont : OffsetFont.values()) {
+            fontData.registerCharWidth(offsetFont.getCharacter(), offsetFont.getSpace() - 1);
+        }
+        for (ConfiguredChar configuredChar : chars) {
+            fontData.registerCharWidth(configuredChar.getCharacter(), configuredChar.getWidth());
+        }
+        registerFontData(
+                Key.of(CNConfig.namespace, CNConfig.font), fontData
+        );
+    }
+
+    private void loadUserConfigs() {
         YamlConfiguration config = plugin.getConfig("configs" + File.separator + "font-width-data.yml");
         for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
             if (entry.getValue() instanceof ConfigurationSection innerSection) {
-                FontData fontData = new FontData(8);
-                int defaultWidth = innerSection.getInt("default", 8);
+                FontData fontData = new FontData(innerSection.getInt("default", 8));
                 for (String template : innerSection.getStringList("template-loading-sequence")) {
                     switch (template) {
                         case "ascii" -> fontData.overrideWith(ASCII_DATA);
@@ -78,7 +126,6 @@ public class WidthManagerImpl implements WidthManager {
                         case "unifont" -> fontData.overrideWith(UNIFONT_DATA);
                     }
                 }
-
                 ConfigurationSection customSection = innerSection.getConfigurationSection("values");
                 if (customSection != null)
                     for (Map.Entry<String, Object> innerEntry : customSection.getValues(false).entrySet()) {
@@ -96,15 +143,12 @@ public class WidthManagerImpl implements WidthManager {
                             LogUtils.warn("Illegal image format: " + key);
                         }
                     }
+                String[] split = entry.getKey().split(":");
+                if (!registerFontData(Key.of(split[0], split[1]), fontData)) {
+                    LogUtils.warn("Found duplicated font data: " + entry.getKey());
+                }
             }
         }
-        this.cacheSystem = new CacheSystem(CNConfig.cacheSize);
-    }
-
-    public void unload() {
-        if (this.cacheSystem != null)
-            this.cacheSystem.destroy();
-        fontDataMap.clear();
     }
 
     private void saveFontImages() {
@@ -120,6 +164,66 @@ public class WidthManagerImpl implements WidthManager {
         }
         if (!new File(plugin.getDataFolder(), "font" + File.separator + "unifont.zip").exists()) {
             ConfigUtils.saveResource("font" + File.separator + "unifont.zip");
+        }
+    }
+
+    private void loadCachedFontData() {
+        File unifontCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "unifont.yml");
+        YamlConfiguration unifontYML = YamlConfiguration.loadConfiguration(unifontCache);
+        UNIFONT_DATA = new FontData(8);
+        for (Map.Entry<String, Object> entry : unifontYML.getValues(false).entrySet()) {
+            char[] chars = ConfigUtils.convertUnicodeStringToChars(entry.getKey());
+            int codePoint = chars.length == 2 ? Character.toCodePoint(chars[0], chars[1]) : chars[0];
+            UNIFONT_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File unicodeCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "unicode.yml");
+        YamlConfiguration unicodeYML = YamlConfiguration.loadConfiguration(unicodeCache);
+        UNICODE_DATA = new FontData(8);
+        for (Map.Entry<String, Object> entry : unicodeYML.getValues(false).entrySet()) {
+            int codePoint = ConfigUtils.convertUnicodeStringToChars(entry.getKey())[0];
+            UNICODE_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File asciiCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "ascii.yml");
+        YamlConfiguration asciiYML = YamlConfiguration.loadConfiguration(asciiCache);
+        ASCII_DATA = new FontData(5);
+        for (Map.Entry<String, Object> entry : asciiYML.getValues(false).entrySet()) {
+            int codePoint = ConfigUtils.convertUnicodeStringToChars(entry.getKey())[0];
+            ASCII_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File asciillagerCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "asciillager.yml");
+        YamlConfiguration asciillagerYML = YamlConfiguration.loadConfiguration(asciillagerCache);
+        LLAGER_ASCII_DATA = new FontData(5);
+        for (Map.Entry<String, Object> entry : asciillagerYML.getValues(false).entrySet()) {
+            int codePoint = ConfigUtils.convertUnicodeStringToChars(entry.getKey())[0];
+            LLAGER_ASCII_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File asciiSgaCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "ascii_sga.yml");
+        YamlConfiguration asciiSgaYML = YamlConfiguration.loadConfiguration(asciiSgaCache);
+        ASCII_SGA_DATA = new FontData(5);
+        for (Map.Entry<String, Object> entry : asciiSgaYML.getValues(false).entrySet()) {
+            int codePoint = ConfigUtils.convertUnicodeStringToChars(entry.getKey())[0];
+            ASCII_SGA_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File accentedCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "ascii_sga.yml");
+        YamlConfiguration accentedYML = YamlConfiguration.loadConfiguration(accentedCache);
+        ACCENTED_DATA = new FontData(5);
+        for (Map.Entry<String, Object> entry : accentedYML.getValues(false).entrySet()) {
+            int codePoint = ConfigUtils.convertUnicodeStringToChars(entry.getKey())[0];
+            ACCENTED_DATA.registerCharWidth(codePoint, (int) entry.getValue());
+        }
+
+        File nonlatinEuropeanCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "nonlatin_european.yml");
+        YamlConfiguration nonlatinEuropeanYML = YamlConfiguration.loadConfiguration(nonlatinEuropeanCache);
+        NONLATIN_EUROPEAN_DATA = new FontData(5);
+        for (Map.Entry<String, Object> entry : nonlatinEuropeanYML.getValues(false).entrySet()) {
+            char[] chars = ConfigUtils.convertUnicodeStringToChars(entry.getKey());
+            int codePoint = chars.length == 2 ? Character.toCodePoint(chars[0], chars[1]) : chars[0];
+            NONLATIN_EUROPEAN_DATA.registerCharWidth(codePoint, (int) entry.getValue());
         }
     }
 
@@ -745,8 +849,13 @@ public class WidthManagerImpl implements WidthManager {
                     LogUtils.warn("Unknown font: " + element.getMid() + " Please register it in font-width-data.yml");
                     continue;
                 }
-                for (char c : element.getLeft().toCharArray()) {
-                    totalLength += data.getWidth(c);
+                char[] chars = element.getLeft().toCharArray();
+                for (int i = 0; i < chars.length; i++) {
+                    if (Character.isHighSurrogate(chars[i])) {
+                        totalLength += data.getWidth(Character.toCodePoint(chars[i], chars[++i]));
+                    } else {
+                        totalLength += data.getWidth(chars[i]);
+                    }
                 }
                 totalLength += element.getRight() ? element.getLeft().length() * 2 : element.getLeft().length();
             }

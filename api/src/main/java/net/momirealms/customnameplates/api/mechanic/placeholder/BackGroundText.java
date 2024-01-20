@@ -29,7 +29,7 @@ public class BackGroundText {
     public String getValue(OfflinePlayer player) {
         String parsed = PlaceholderAPI.setPlaceholders(player, text);
         int parsedWidth = FontUtils.getTextWidth(parsed);
-        return backGround.getBackGroundImage(parsedWidth) + parsed;
+        return FontUtils.surroundNameplateFont(backGround.getBackGroundImage(parsedWidth)) + parsed;
     }
 
     public static Builder builder() {

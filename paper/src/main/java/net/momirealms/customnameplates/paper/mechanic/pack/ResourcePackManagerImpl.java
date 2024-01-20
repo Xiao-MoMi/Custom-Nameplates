@@ -15,10 +15,13 @@ import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.codehaus.plexus.util.FileUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class ResourcePackManagerImpl implements ResourcePackManager {
@@ -61,6 +64,11 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         JsonArray providers = new JsonArray();
         fontJson.add("providers", providers);
 
+        // save BossBars
+        this.saveBossBar();
+        // save unicodes
+        this.saveLegacyUnicodes();
+
         // add offset characters
         this.getOffsets(texturesFolder).forEach(providers::add);
         // add nameplate characters
@@ -77,6 +85,62 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         this.saveFont(fontJson);
         // copy the resource pack to hooked plugins
         this.copyResourcePackToHookedPlugins(resourcePackFolder);
+    }
+
+    private void saveLegacyUnicodes() {
+        if (CNConfig.legacyUnicodes) {
+            for (int i = 0; i < 256; i++) {
+                var path = "font" + File.separator + "unicode_page_" + String.format("%02x", i) + ".png";
+                var destination = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "font" + File.separator + "unicode_page_" + String.format("%02x", i) + ".png";
+                File imageFile = new File(plugin.getDataFolder(), path);
+                File destinationFile = new File(plugin.getDataFolder(), destination);
+                if (imageFile.exists()) {
+                    try {
+                        FileUtils.copyFile(imageFile, destinationFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private void saveBossBar() {
+        if (CNConfig.newBossBarImage) {
+            String color = CNConfig.barColorToRemove.name().toLowerCase(Locale.ENGLISH);
+            String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator + "sprites" + File.separator + "boss_bar" + File.separator;
+            plugin.saveResource(path + color + "_background.png", true);
+            plugin.saveResource(path + color + "_progress.png", true);
+        }
+        if (CNConfig.legacyBossBarImage) {
+            String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "gui" + File.separator + "bars.png";
+            plugin.saveResource(path, true);
+            try {
+                File inputFile = new File(plugin.getDataFolder(), path);
+                BufferedImage image = ImageIO.read(inputFile);
+                int y;
+                switch (CNConfig.barColorToRemove) {
+                    case PINK -> y = 0;
+                    case BLUE -> y = 10;
+                    case RED -> y = 20;
+                    case GREEN -> y = 30;
+                    case PURPLE -> y = 50;
+                    case WHITE -> y = 60;
+                    default -> y = 40;
+                }
+                int width = 182;
+                int height = 10;
+                for (int i = 0; i < width; i++) {
+                    for (int j = y; j < y + height; j++) {
+                        image.setRGB(i, j, 0);
+                    }
+                }
+
+                ImageIO.write(image, "png", inputFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void saveFont(JsonObject fontJson) {
@@ -179,7 +243,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             ) {
                 JsonObject jo = new JsonObject();
                 jo.add("type", new JsonPrimitive("bitmap"));
-                jo.add("file", new JsonPrimitive(CNConfig.namespace + ":" + CNConfig.folderNameplate.replaceAll("\\\\", "/") + configuredChar.getFile()));
+                jo.add("file", new JsonPrimitive(CNConfig.namespace + ":" + CNConfig.folderBackground.replaceAll("\\\\", "/") + configuredChar.getFile()));
                 jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
                 jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
                 JsonArray ja = new JsonArray();
@@ -212,7 +276,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         for (ConfiguredChar configuredChar : plugin.getImageManager().getImages()) {
             JsonObject jo = new JsonObject();
             jo.add("type", new JsonPrimitive("bitmap"));
-            jo.add("file", new JsonPrimitive(CNConfig.namespace + ":" + CNConfig.folderNameplate.replaceAll("\\\\", "/") + configuredChar.getFile()));
+            jo.add("file", new JsonPrimitive(CNConfig.namespace + ":" + CNConfig.folderImage.replaceAll("\\\\", "/") + configuredChar.getFile()));
             jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
             jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
             JsonArray ja = new JsonArray();

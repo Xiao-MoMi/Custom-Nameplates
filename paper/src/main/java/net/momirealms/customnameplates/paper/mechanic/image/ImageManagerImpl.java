@@ -66,8 +66,8 @@ public class ImageManagerImpl implements ImageManager {
                     ConfiguredChar.builder()
                         .character(CharacterArranger.getAndIncrease())
                         .png(config.getString("image", key))
-                        .height(config.getInt("height", 8))
-                        .width(config.getInt("width", 8))
+                        .height(config.getInt("height", 10))
+                        .width(config.getInt("width", 10))
                         .ascent(config.getInt("ascent", 8))
                         .build()
             )) {

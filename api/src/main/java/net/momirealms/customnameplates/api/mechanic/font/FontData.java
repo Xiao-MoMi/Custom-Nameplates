@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class FontData {
 
-    private final HashMap<Character, Integer> widthData;
+    private final HashMap<Integer, Integer> widthData;
     private final int defaultWidth;
 
     public FontData(int defaultWidth) {
@@ -12,15 +12,15 @@ public class FontData {
         this.defaultWidth = defaultWidth;
     }
 
-    public void registerCharWidth(char c, int width) {
-        widthData.put(c, width);
+    public void registerCharWidth(int codePoint, int width) {
+        widthData.put(codePoint, width);
     }
 
-    public int getWidth(char c) {
-        return widthData.getOrDefault(c, defaultWidth);
+    public int getWidth(int codePoint) {
+        return widthData.getOrDefault(codePoint, defaultWidth);
     }
 
-    public HashMap<Character, Integer> getWidthData() {
+    public HashMap<Integer, Integer> getWidthData() {
         return widthData;
     }
 
