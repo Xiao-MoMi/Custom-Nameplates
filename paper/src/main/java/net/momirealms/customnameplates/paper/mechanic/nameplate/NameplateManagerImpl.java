@@ -408,7 +408,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             cachedNameplate.setTagSuffix(parseSuffix + nameplate.getSuffixWithFont(width));
             cachedNameplate.setTagPrefix(nameplate.getPrefixWithFont(width) + parsePrefix);
         } else {
-            cachedNameplate.setTeamColor(TeamColor.NONE);
+            cachedNameplate.setTeamColor(TeamColor.WHITE);
             cachedNameplate.setNamePrefix("");
             cachedNameplate.setNameSuffix("");
             cachedNameplate.setTagPrefix(parsePrefix);
@@ -465,14 +465,33 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean equipNameplate(Player player, String nameplateKey) {
+    public List<String> getAvailableNameplateDisplayNames(Player player) {
+        List<String> nameplates = new ArrayList<>();
+        for (Map.Entry<String, Nameplate> entry : nameplateMap.entrySet()) {
+            if (hasNameplate(player, entry.getKey())) {
+                nameplates.add(entry.getValue().getDisplayName());
+            }
+        }
+        return nameplates;
+    }
+
+    @Override
+    public boolean equipNameplate(Player player, String nameplateKey, boolean temp) {
         Nameplate nameplate = getNameplate(nameplateKey);
-        if (nameplate == null) {
+        if (nameplate == null && !nameplateKey.equals("none")) {
             return false;
         }
         plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
+            if (it.getNameplateKey().equals(nameplateKey)) {
+                return;
+            }
             it.setNameplate(nameplateKey);
-            plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
+            this.updateCachedNameplate(player, nameplate);
+            NameplatePlayer nameplatePlayer = getNameplatePlayer(player.getUniqueId());
+            if (nameplatePlayer != null)
+                nameplatePlayer.updateText();
+            if (!temp)
+                plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
         }, () -> {
             LogUtils.severe("Player " + player.getName() + "'s data is not loaded.");
         });
@@ -480,10 +499,15 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public void unEquipNameplate(Player player) {
+    public void unEquipNameplate(Player player, boolean temp) {
         plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
             it.setNameplate("none");
-            plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
+            this.updateCachedNameplate(player, getNameplate(getDefaultNameplate()));
+            NameplatePlayer nameplatePlayer = getNameplatePlayer(player.getUniqueId());
+            if (nameplatePlayer != null)
+                nameplatePlayer.updateText();
+            if (!temp)
+                plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
         }, () -> {
             LogUtils.severe("Player " + player.getName() + "'s data is not loaded.");
         });
@@ -528,6 +552,11 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     @Override
     public Collection<Nameplate> getNameplates() {
         return nameplateMap.values();
+    }
+
+    @Override
+    public Collection<String> getNameplateKeys() {
+        return nameplateMap.keySet();
     }
 
     @Override

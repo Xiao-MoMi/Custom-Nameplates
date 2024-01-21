@@ -3,10 +3,10 @@ config-version: "23"
 #Turkish language file by WinTone01
 messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
-  reload: '<white>Yeniden Yüklendi! Kaynak paketinizi yeniden yüklemeyi unutmayın.</white>'
+  reload: '<white>Yeniden Yüklendi! </white>'
   cooldown: '<white>Önizleme hala devam ediyor!</white>'
   generate: '<white>Kaynak paketi oluşturuluyor...</white>'
-  generate-done: '<white>Kaynak paketi oluşturuldu!</white>'
+  generate-done: '<white>Kaynak paketi oluşturuldu! Kaynak paketinizi yeniden yüklemeyi unutmayın.</white>'
   no-nameplate: 'İsim Etiketi Yok'
   preview: '<white>Şu anda isim etiketinizi önizliyorsunuz (görüntülemek için üçüncü şahsa geçin)!</white>'
 
@@ -18,6 +18,7 @@ messages:
   not-available-nameplates: '<white>Bu isim etiketi şu anda kullanılabilir değil!</white>'
   available-nameplates: '<white>Mevcut isim etiketleri: {Nameplates}.</white>'
   have-no-nameplates: '<white>Henüz hiç isim etiketiniz yok</white>'
+  force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Sohbet balonlarınız başarıyla eklendi {Bubble}</white>'
   force-equip-bubbles: '<white>{Bubbles} sohbet balonları başarıyla eklendi.</white>'

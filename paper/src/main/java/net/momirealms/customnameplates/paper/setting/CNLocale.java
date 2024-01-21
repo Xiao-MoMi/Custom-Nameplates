@@ -21,17 +21,18 @@ public class CNLocale {
     public static String MSG_PREFIX;
     public static String MSG_PREVIEW_COOLDOWN;
     public static String MSG_PREVIEW_START;
-    public static String generate;
-    public static String noNameplate;
-    public static String MSG_PACK_GENERATION;
+    public static String MSG_GENERATING;
+    public static String MSG_NO_NAMEPLATE;
+    public static String MSG_PACK_GENERATED;
     public static String MSG_EQUIP_NAMEPLATE;
     public static String MSG_UNEQUIP_NAMEPLATE;
     public static String MSG_FORCE_EQUIP_NAMEPLATE;
-    public static String np_force_unEquip;
+    public static String MSG_FORCE_UNEQUIP_NAMEPLATE;
     public static String MSG_NAMEPLATE_NOT_EXISTS;
     public static String MSG_NAMEPLATE_NOT_AVAILABLE;
-    public static String np_available;
-    public static String np_haveNone;
+    public static String MSG_AVAILABLE_NAMEPLATE;
+    public static String MSG_HAVE_NO_NAMEPLATE;
+    public static String MSG_FORCE_PREVIEW;
     public static String bb_equip;
     public static String bb_unEquip;
     public static String bb_force_equip;
@@ -70,17 +71,18 @@ public class CNLocale {
             MSG_PREFIX = section.getString("prefix");
             MSG_PREVIEW_COOLDOWN = config.getString("messages.cooldown");
             MSG_PREVIEW_START = config.getString("messages.preview");
-            generate = config.getString("messages.generate");
-            MSG_PACK_GENERATION = config.getString("messages.generate-done");
-            noNameplate = config.getString("messages.no-nameplate");
+            MSG_GENERATING = config.getString("messages.generate");
+            MSG_PACK_GENERATED = config.getString("messages.generate-done");
+            MSG_NO_NAMEPLATE = config.getString("messages.no-nameplate");
             MSG_EQUIP_NAMEPLATE = config.getString("messages.equip-nameplates");
             MSG_UNEQUIP_NAMEPLATE = config.getString("messages.unequip-nameplates");
             MSG_FORCE_EQUIP_NAMEPLATE = config.getString("messages.force-equip-nameplates");
-            np_force_unEquip = config.getString("messages.force-unequip-nameplates");
+            MSG_FORCE_UNEQUIP_NAMEPLATE = config.getString("messages.force-unequip-nameplates");
             MSG_NAMEPLATE_NOT_EXISTS = config.getString("messages.not-exist-nameplates");
             MSG_NAMEPLATE_NOT_AVAILABLE = config.getString("messages.not-available-nameplates");
-            np_available = config.getString("messages.available-nameplates");
-            np_haveNone = config.getString("messages.have-no-nameplates");
+            MSG_AVAILABLE_NAMEPLATE = config.getString("messages.available-nameplates");
+            MSG_HAVE_NO_NAMEPLATE = config.getString("messages.have-no-nameplates");
+            MSG_FORCE_PREVIEW = config.getString("messages.force-preview");
             bb_equip = config.getString("messages.equip-bubbles");
             bb_unEquip = config.getString("messages.unequip-bubbles");
             bb_force_equip = config.getString("messages.force-equip-bubbles");
@@ -90,6 +92,5 @@ public class CNLocale {
             bb_available = config.getString("messages.available-bubbles");
             bb_haveNone = config.getString("messages.have-no-bubbles");
         }
-
     }
 }

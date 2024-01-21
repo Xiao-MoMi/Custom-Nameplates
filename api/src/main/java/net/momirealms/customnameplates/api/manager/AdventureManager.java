@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.api.manager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -153,6 +154,8 @@ public interface AdventureManager {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isColorCode(char c);
+
+    int colorToDecimal(ChatColor color);
 
     /**
      * Get legacy format text

@@ -5,8 +5,10 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
+import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.util.FontUtils;
+import net.momirealms.customnameplates.paper.setting.CNLocale;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -129,8 +131,12 @@ public class PluginPlaceholders extends PlaceholderExpansion {
                     case "nameplate" -> {
                         return optPlayer.get().getNameplateKey();
                     }
-                    case "bubble" -> {
-                        return optPlayer.get().getBubbleKey();
+                    case "nameplate-name" -> {
+                        Nameplate nameplate = optPlayer.get().getNameplate();
+                        if (nameplate == null) {
+                            return CNLocale.MSG_NO_NAMEPLATE;
+                        }
+                        return nameplate.getDisplayName();
                     }
                 }
             }

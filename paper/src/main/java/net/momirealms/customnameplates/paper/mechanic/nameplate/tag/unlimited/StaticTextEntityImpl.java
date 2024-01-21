@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NearbyRule;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
+import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -55,7 +56,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
             NearbyRule comeRule,
             NearbyRule leaveRule
     ) {
-        this.entityId = new Random().nextInt(Integer.MAX_VALUE);
+        this.entityId = FakeEntityUtils.getAndIncrease();
         this.owner = owner;
         this.yOffset = yOffset;
         this.viewers = new Vector<>();

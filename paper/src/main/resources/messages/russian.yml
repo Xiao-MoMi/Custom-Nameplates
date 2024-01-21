@@ -2,10 +2,10 @@ config-version: "23"
 
 messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
-  reload: '<white>Перезагружено! Не забудьте переустановить свой ресурспак.</white>'
+  reload: '<white>Перезагружено! </white>'
   cooldown: '<white>Предпросмотр до сих пор активен!</white>'
   generate: '<white>Ресурспак генерируется...</white>'
-  generate-done: '<white>Ресурспак сгенерирован!</white>'
+  generate-done: '<white>Ресурспак сгенерирован! Не забудьте переустановить свой ресурспак.</white>'
   no-nameplate: 'Нет Нэймплейта'
   preview: '<white>Сейчас вам отображается ваш Нэймплейт (перейдите в 3-е лицо, чтобы его увидеть)!</white>'
 
@@ -17,6 +17,7 @@ messages:
   not-available-nameplates: '<white>Этот Нэймплейт сейчас недоступен!</white>'
   available-nameplates: '<white>Доступные Нэймплейты: {Nameplates}.</white>'
   have-no-nameplates: '<white>У вас еще нет никаких Нэймплейтов.'
+  force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Успешно установлен стиль чата над головой: {Bubble}</white>'
   force-equip-bubbles: '<white>Успешно установлен стиль чата над головой: {Bubbles}</white>'

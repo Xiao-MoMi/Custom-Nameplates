@@ -126,7 +126,9 @@ public interface NameplateManager {
 
     boolean registerNameplate(String key, Nameplate nameplate);
 
-    void unEquipNameplate(Player player);
+    boolean equipNameplate(Player player, String nameplateKey, boolean temp);
+
+    void unEquipNameplate(Player player, boolean temp);
 
     boolean unregisterNameplate(String key);
 
@@ -140,6 +142,8 @@ public interface NameplateManager {
 
     Collection<Nameplate> getNameplates();
 
+    Collection<String> getNameplateKeys();
+
     boolean containsNameplate(String key);
 
     List<String> getAvailableNameplates(Player player);
@@ -149,10 +153,7 @@ public interface NameplateManager {
      */
     boolean hasNameplate(Player player, String nameplate);
 
-    /**
-     * Return false if nameplate doesn't exist
-     */
-    boolean equipNameplate(Player player, String nameplate);
+    List<String> getAvailableNameplateDisplayNames(Player player);
 
     TeamColor getTeamColor(Player player);
 

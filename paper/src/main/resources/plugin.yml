@@ -6,3 +6,21 @@ authors: [ XiaoMoMi ]
 folia-supported: true
 depend: [ ProtocolLib ,PlaceholderAPI ]
 softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen ]
+permissions:
+  nameplates.*:
+    description: Gives access to all user commands
+    children:
+      nameplates.equip: true
+      nameplates.unequip: true
+      nameplates.preview: true
+      nameplates.list: true
+  nameplates.equip:
+    default: true
+  nameplates.unequip:
+    default: true
+  nameplates.preview:
+    default: true
+  nameplates.list:
+    default: true
+  customnameplates.admin:
+    default: op

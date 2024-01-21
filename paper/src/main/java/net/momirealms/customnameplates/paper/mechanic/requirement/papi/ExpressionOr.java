@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.paper.mechanic.requirement.papi;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

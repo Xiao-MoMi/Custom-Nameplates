@@ -2,10 +2,10 @@ config-version: "23"
 
 messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
-  reload: '<white>插件已重载! 请不要忘记重载你的资源包.</white>'
+  reload: '<white>插件已重载!.</white>'
   cooldown: '<white>上一个预览还没结束!</white>'
   generate: '<white>正在生成资源包...</white>'
-  generate-done: '<white>资源包生成完毕...</white>'
+  generate-done: '<white>资源包生成完毕...请不要忘记重载你的资源包</white>'
   no-nameplate: '无铭牌'
   preview: '<white>你正在预览你的铭牌(切换到第三人称)</white>'
 
@@ -16,7 +16,8 @@ messages:
   not-exist-nameplates: '<white>那个铭牌不存在!</white>'
   not-available-nameplates: '<white>你还未拥有这个铭牌!</white>'
   available-nameplates: '<white>可用铭牌: {Nameplates}</white>'
-  have-no-nameplates: '<white>你还没有拥有任何铭牌.'
+  have-no-nameplates: '<white>你还没有拥有任何铭牌.</white>'
+  force-preview: '<white>正在强制玩家 {Player} 预览铭牌</white>'
 
   equip-bubbles: '<white>你已佩戴聊天气泡 {Bubble}</white>'
   unequip-bubbles: '<white>你已卸下聊天气泡</white>'

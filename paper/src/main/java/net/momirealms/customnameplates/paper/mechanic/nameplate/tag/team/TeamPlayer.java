@@ -18,6 +18,7 @@ public class TeamPlayer implements TeamTagPlayer {
     private ViewerText suffix;
     private final Vector<Player> nearbyPlayers;
     private boolean isPreviewing;
+    private final TeamPreviewSimpleEntity previewEntity;
 
     public TeamPlayer(TeamTagManager manager, Player owner, String prefix, String suffix) {
         this.manager = manager;
@@ -27,6 +28,7 @@ public class TeamPlayer implements TeamTagPlayer {
         this.nearbyPlayers = new Vector<>();
         this.prefix.updateForOwner();
         this.suffix.updateForOwner();
+        this.previewEntity = new TeamPreviewSimpleEntity(this);
     }
 
     @Override
@@ -39,11 +41,24 @@ public class TeamPlayer implements TeamTagPlayer {
         this.suffix = new ViewerText(owner, suffix);
     }
 
+    @Override
+    public ViewerText getPrefix() {
+        return prefix;
+    }
+
+    @Override
+    public ViewerText getSuffix() {
+        return suffix;
+    }
+
     public void updateForNearbyPlayers(boolean force) {
         this.prefix.updateForOwner();
         this.suffix.updateForOwner();
         for (Player viewer : nearbyPlayers) {
             updateForOne(viewer, force);
+        }
+        if (isPreviewing) {
+            previewEntity.update();
         }
     }
 
@@ -109,9 +124,9 @@ public class TeamPlayer implements TeamTagPlayer {
         }
         isPreviewing = preview;
         if (isPreviewing) {
-
+            this.previewEntity.spawn();
         } else {
-
+            this.previewEntity.destroy();
         }
     }
 
@@ -123,5 +138,13 @@ public class TeamPlayer implements TeamTagPlayer {
     @Override
     public Player getPlayer() {
         return owner;
+    }
+
+    @Override
+    public void updateText() {
+        updateForNearbyPlayers(false);
+        if (isPreviewing) {
+            previewEntity.update();
+        }
     }
 }

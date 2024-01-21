@@ -31,6 +31,7 @@ import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
+import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -65,7 +66,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
             Requirement[] ownerRequirements,
             Requirement[] viewerRequirements
     ) {
-        this.entityId = new Random().nextInt(Integer.MAX_VALUE);
+        this.entityId = FakeEntityUtils.getAndIncrease();
         this.owner = unlimitedPlayer;
         this.yOffset = yOffset;
         this.viewerText = text;

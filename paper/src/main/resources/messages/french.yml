@@ -2,10 +2,10 @@ config-version: "23"
 
 messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
-  reload: '<white>Rechargé ! N'oubliez pas de réinstaller votre pack de ressources.</white>'
+  reload: '<white>Rechargé ! </white>'
   cooldown: '<white>La prévisualisation est toujours en cours !</white>'
   generate: '<white>Le pack de ressources est en cours de génération...</white>'
-  generate-done: '<white>Le pack de ressources a été généré !</white>'
+  generate-done: "<white>Le pack de ressources a été généré ! N'oubliez pas de réinstaller votre pack de ressources.</white>"
   no-nameplate: 'Pas de plaque de nom'
   preview: '<white>Prévisualisation en cours de votre plaque de nom (passez en vue à la troisième personne pour la voir) !</white>'
 
@@ -17,6 +17,7 @@ messages:
   not-available-nameplates: '<white>Cette plaque de nom n'est actuellement pas disponible !</white>'
   available-nameplates: '<white>Plaques de nom disponibles : {Nameplates}.</white>'
   have-no-nameplates: '<white>Vous n'avez pas encore de plaque de nom</white>'
+  force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Bulles de discussion {Bubble} équipées avec succès</white>'
   force-equip-bubbles: '<white>Bulles de discussion {Bubbles} équipées avec succès</white>'

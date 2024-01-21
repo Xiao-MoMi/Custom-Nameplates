@@ -9,4 +9,6 @@ public interface NameplatePlayer {
     boolean isPreviewing();
 
     Player getPlayer();
+
+    void updateText();
 }

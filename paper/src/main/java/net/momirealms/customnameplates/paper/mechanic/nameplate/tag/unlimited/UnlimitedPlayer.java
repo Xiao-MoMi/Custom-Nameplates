@@ -85,6 +85,13 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
     }
 
     @Override
+    public void updateText() {
+        for (DynamicTextEntity tag : tags) {
+            tag.updateText();
+        }
+    }
+
+    @Override
     public double getHatOffset() {
         return hatOffset;
     }

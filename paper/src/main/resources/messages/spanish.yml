@@ -2,10 +2,10 @@ config-version: "23"
 
 messages:
   prefix: '<gradient:#2E8B57:#48D1CC>[CustomNameplates] </gradient>'
-  reload: '<white>Recargado! No olvides reinstalar el paquete de recursos.</white>'
+  reload: '<white>Recargado! </white>'
   cooldown: '<white>¡El preestreno sigue en curso!</white>'
-  generate: '<white>El paquete de recursos está generando..</white>'
-  generate-done: '<white>Se ha generado un paquete de recursos.</white>'
+  generate: '<white>El paquete de recursos está generando...</white>'
+  generate-done: '<white>Se ha generado un paquete de recursos. No olvides reinstalar el paquete de recursos.</white>'
   no-nameplate: 'No Nameplate'
   preview: '<white>¡Ahora, la vista previa de su placa de identificación (ir a la tercera persona para ver)!</white>'
 
@@ -17,6 +17,7 @@ messages:
   not-available-nameplates: '<white>Este nameplate no esta actualmente disponible!</white>'
   available-nameplates: '<white>Nameplates Disponibles: {Nameplates}.</white>'
   have-no-nameplates: '<white>No tienes ningun nameplate aun'
+  force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Correctamente equipado chatting bubbles {Bubble}</white>'
   force-equip-bubbles: '<white>Correctamente equipdo chatting bubbles {Bubbles}</white>'

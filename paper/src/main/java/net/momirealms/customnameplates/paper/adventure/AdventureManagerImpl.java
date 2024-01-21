@@ -38,6 +38,7 @@ import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.setting.CNLocale;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -111,7 +112,7 @@ public class AdventureManagerImpl implements AdventureManager {
 
     @Override
     public void sendMessageWithPrefix(CommandSender sender, String s) {
-        if (s == null) return;
+        if (s == null || s.equals("")) return;
         if (sender instanceof Player player) sendPlayerMessage(player, CNLocale.MSG_PREFIX + s);
         else if (sender instanceof ConsoleCommandSender) sendConsoleMessage(CNLocale.MSG_PREFIX + s);
     }
@@ -243,6 +244,28 @@ public class AdventureManagerImpl implements AdventureManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isColorCode(char c) {
         return c == '§' || c == '&';
+    }
+
+    @Override
+    public int colorToDecimal(ChatColor color){
+        switch (String.valueOf(color.getChar())){
+            case "0" -> {return 0;}
+            case "c" -> {return 16733525;}
+            case "6" -> {return 16755200;}
+            case "4" -> {return 11141120;}
+            case "e" -> {return 16777045;}
+            case "2" -> {return 43520;}
+            case "a" -> {return 5635925;}
+            case "b" -> {return 5636095;}
+            case "3" -> {return 43690;}
+            case "1" -> {return 170;}
+            case "9" -> {return 5592575;}
+            case "d" -> {return 16733695;}
+            case "5" -> {return 11141290;}
+            case "8" -> {return 5592405;}
+            case "7" -> {return 11184810;}
+            default -> {return 16777215;}
+        }
     }
 
     @Override
