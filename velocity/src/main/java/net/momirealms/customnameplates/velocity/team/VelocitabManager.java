@@ -1,10 +1,9 @@
-package net.momirealms.customnameplates.velocity;
+package net.momirealms.customnameplates.velocity.team;
 
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.proxy.connection.client.ConnectedPlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import net.william278.velocitab.Velocitab;
@@ -34,7 +33,7 @@ public class VelocitabManager implements VelocityTeamManager {
     }
 
     @Override
-    public void sendTeamUpdatePacket(Player receiver, String team, TeamColor color, TeamTagVisibility visibility, String prefix, String suffix) {
+    public void sendTeamUpdatePacket(Player receiver, String team, TeamColor color, TeamTagVisibility visibility, Component prefix, Component suffix) {
         UpdateTeamsPacket packet = new UpdateTeamsPacket(velocitab)
                 .teamName(team.length() > 16 ? team.substring(0, 16) : team)
                 .mode(UpdateTeamsPacket.UpdateMode.UPDATE_INFO)
@@ -43,8 +42,8 @@ public class VelocitabManager implements VelocityTeamManager {
                 .nametagVisibility(UpdateTeamsPacket.NametagVisibility.valueOf(visibility.name()))
                 .collisionRule(UpdateTeamsPacket.CollisionRule.ALWAYS)
                 .color(UpdateTeamsPacket.TeamColor.valueOf(color.name()).ordinal())
-                .prefix(GsonComponentSerializer.gson().deserialize(prefix))
-                .suffix(GsonComponentSerializer.gson().deserialize(suffix));
+                .prefix(prefix)
+                .suffix(suffix);
 
         ConnectedPlayer connectedPlayer = (ConnectedPlayer) receiver;
         connectedPlayer.getConnection().write(packet);

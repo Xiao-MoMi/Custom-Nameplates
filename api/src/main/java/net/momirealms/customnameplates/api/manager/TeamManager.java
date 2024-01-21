@@ -1,6 +1,5 @@
 package net.momirealms.customnameplates.api.manager;
 
-import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import org.bukkit.entity.Player;
@@ -15,13 +14,6 @@ public interface TeamManager {
     void createTeam(Player player);
 
     /**
-     * Create a team for a player on proxy
-     *
-     * @param player player
-     */
-    void createProxyTeam(Player player);
-
-    /**
      * Remove a team for a player
      *
      * @param player player
@@ -29,13 +21,9 @@ public interface TeamManager {
     void removeTeam(Player player);
 
     /**
-     * Remove a team for a player on proxy
-     *
-     * @param player player
+     * Update a player's team for a viewer
      */
-    void removeProxyTeam(Player player);
-
-    void updateTeam(Player owner, Player viewer, Component prefix, Component suffix, TeamColor color, TeamTagVisibility visibility);
+    void updateTeam(Player owner, Player viewer, String prefix, String suffix, TeamColor color, TeamTagVisibility visibility);
 
     /**
      * Get the team player in

@@ -2,8 +2,8 @@ package net.momirealms.customnameplates.api.mechanic.nameplate;
 
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
-import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.api.util.FontUtils;
+import net.momirealms.customnameplates.common.team.TeamColor;
 
 public class Nameplate {
 
@@ -98,13 +98,13 @@ public class Nameplate {
             }
             stringBuilder.append(OffsetFont.getShortestNegChars(middle.getWidth() - (textWidth+2) % middle.getWidth() + 1)); // +1
         }
+        stringBuilder.append("</#FEFEFE>");
         stringBuilder.append("<#FDFEFE>");
         stringBuilder.append(middle.getCharacter());
-        stringBuilder.append("</#FDFEFE>");
         stringBuilder.append(OffsetFont.NEG_1.getCharacter());
         stringBuilder.append(right.getCharacter());
-        stringBuilder.append("</#FEFEFE>");
         stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + right.getWidth() + 1)); // -1;
+        stringBuilder.append("</#FDFEFE>");
         return stringBuilder.toString();
     }
 

@@ -1,6 +1,5 @@
 package net.momirealms.customnameplates.api.mechanic.tag.team;
 
-import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamTagManager;
 import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
@@ -70,8 +69,8 @@ public class TeamPlayer implements NameplatePlayer {
                 CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                         owner,
                         viewer,
-                        CustomNameplatesPlugin.get().getAdventure().getComponentFromMiniMessage(prefix.getLatestValue(viewer)),
-                        CustomNameplatesPlugin.get().getAdventure().getComponentFromMiniMessage(suffix.getLatestValue(viewer)),
+                        prefix.getLatestValue(viewer),
+                        suffix.getLatestValue(viewer),
                         CustomNameplatesPlugin.get().getNameplateManager().getTeamColor(owner),
                         TeamTagVisibility.ALWAYS
                 );
@@ -85,8 +84,8 @@ public class TeamPlayer implements NameplatePlayer {
         CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                 owner,
                 viewer,
-                Component.text(""),
-                Component.text(""),
+                "",
+                "",
                 TeamColor.WHITE,
                 TeamTagVisibility.ALWAYS
         );

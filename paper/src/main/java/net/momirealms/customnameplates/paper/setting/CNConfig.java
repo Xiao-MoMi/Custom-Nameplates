@@ -60,6 +60,8 @@ public class CNConfig {
     public static boolean hideScoreboardNumber;
     public static boolean animatedImage;
     public static boolean textEffects;
+    public static boolean disableTeamManage;
+    public static boolean velocitab;
 
     public static void load() {
         try {
@@ -108,6 +110,7 @@ public class CNConfig {
             ventureChatChannel = integrationSection.getBoolean("chat.VentureChat", false);
             tabTeam = integrationSection.getBoolean("team.TAB", false);
             cmiTeam = integrationSection.getBoolean("team.CMI", false);
+            velocitab = integrationSection.getBoolean("team.Velocitab", false);
         }
 
         ConfigurationSection packSection = config.getConfigurationSection("resource-pack");
@@ -137,6 +140,7 @@ public class CNConfig {
             textEffects = packSection.getBoolean("shader.ItemsAdder-text-effects", false);
         }
 
+        disableTeamManage = config.getBoolean("other-settings.disable-team-management", false);
         corePoolSize = config.getInt("other-settings.thread-pool-settings.corePoolSize", 10);
         maximumPoolSize = config.getInt("other-settings.thread-pool-settings.maximumPoolSize", 10);
         keepAliveTime = config.getInt("other-settings.thread-pool-settings.keepAliveTime", 30);

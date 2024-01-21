@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.paper.mechanic.misc;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
@@ -29,5 +30,16 @@ public class PacketManager {
         }
         this.plugin.debug("Packet sent: " + packet.getType() + " to " + player.getName());
         this.protocolManager.sendServerPacket(player, packet);
+    }
+
+    public void send(Player player, PacketContainer... packets) {
+        if (plugin.getVersionManager().isVersionNewerThan1_20()) {
+            PacketContainer packet = new PacketContainer(PacketType.Play.Server.BUNDLE);
+
+        } else {
+            for (PacketContainer packet : packets) {
+                send(player, packet);
+            }
+        }
     }
 }

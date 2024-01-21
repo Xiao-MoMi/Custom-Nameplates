@@ -19,12 +19,12 @@ package net.momirealms.customnameplates.paper.mechanic.requirement;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.biomeapi.BiomeAPI;
-import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.manager.RequirementManager;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.requirement.RequirementExpansion;
 import net.momirealms.customnameplates.api.requirement.RequirementFactory;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.util.ClassUtils;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;

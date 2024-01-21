@@ -1,13 +1,13 @@
-package net.momirealms.customnameplates.api.mechanic.team;
+package net.momirealms.customnameplates.paper.mechanic.team.packet;
 
-public class TeamRemovePacket {
+public class TeamRemove {
 
     private String teamName;
 
-    private TeamRemovePacket() {
+    private TeamRemove() {
     }
 
-    public TeamRemovePacket(String teamName) {
+    public TeamRemove(String teamName) {
         this.teamName = teamName;
     }
 
@@ -21,10 +21,10 @@ public class TeamRemovePacket {
 
     public static class Builder {
 
-        private final TeamRemovePacket packet;
+        private final TeamRemove packet;
 
         public Builder() {
-            this.packet = new TeamRemovePacket();
+            this.packet = new TeamRemove();
         }
 
         public Builder teamName(String teamName) {
@@ -32,7 +32,7 @@ public class TeamRemovePacket {
             return this;
         }
 
-        public TeamRemovePacket build() {
+        public TeamRemove build() {
             return packet;
         }
     }

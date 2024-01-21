@@ -1,9 +1,9 @@
 package net.momirealms.customnameplates.paper.mechanic.bossbar;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.manager.BossBarManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.paper.mechanic.misc.DisplayController;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;

@@ -15,10 +15,10 @@ import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedTagSetting;
-import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.*;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team.TeamTagManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited.UnlimitedTagManagerImpl;
@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityPoseChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -270,10 +271,12 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
         this.putEntityIDToMap(player.getEntityId(), player);
-        if (!CNConfig.isOtherTeamPluginHooked())
-            if (!proxyMode) plugin.getTeamManager().createTeam(player);
-            else plugin.getTeamManager().createProxyTeam(player);
-        this.createNameTag(player);
+        if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode())
+            plugin.getTeamManager().createTeam(player);
+        plugin.getScheduler().runTaskAsyncLater(() -> {
+            if (player.isOnline())
+                this.createNameTag(player);
+        }, 200, TimeUnit.MILLISECONDS);
     }
 
     @EventHandler
@@ -285,7 +288,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         this.teamTagManager.handlePlayerQuit(player);
         this.unlimitedTagManager.handlePlayerQuit(player);
 
-        if (!proxyMode && !CNConfig.isOtherTeamPluginHooked()) {
+        if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode()) {
             plugin.getTeamManager().removeTeam(player);
         }
     }
@@ -500,7 +503,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     @Override
     public boolean isProxyMode() {
-        return proxyMode;
+        return CNConfig.velocitab;
     }
 
     @Override
@@ -535,6 +538,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return nameplate == null ? TeamColor.WHITE : nameplate.getTeamColor();
     }
 
+    @NotNull
     @Override
     public String getDefaultNameplate() {
         return defaultNameplate;

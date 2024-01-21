@@ -1,11 +1,11 @@
-package net.momirealms.customnameplates.api.mechanic.team;
+package net.momirealms.customnameplates.paper.mechanic.team.packet;
 
-import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.common.team.TeamCollisionRule;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
+import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 
-public class TeamUpdatePacket {
+public class TeamUpdate {
 
     private String teamName;
 
@@ -13,11 +13,11 @@ public class TeamUpdatePacket {
     Optional<b> k
      */
     // IChatBaseComponent a
-    private Component teamDisplay;
+    private Object teamDisplay;
     // IChatBaseComponent b
-    private Component teamPrefix;
+    private Object teamPrefix;
     // IChatBaseComponent c
-    private Component teamSuffix;
+    private Object teamSuffix;
     // String d
     private TeamTagVisibility tagVisibility;
     // String e
@@ -25,21 +25,14 @@ public class TeamUpdatePacket {
     // Enum f
     private TeamColor teamColor;
 
-    private TeamUpdatePacket() {
-        this.teamName = "";
-        this.teamDisplay = Component.text("");
-        this.teamPrefix = Component.text("");
-        this.teamSuffix = Component.text("");
-        this.tagVisibility = TeamTagVisibility.ALWAYS;
-        this.collisionRule = TeamCollisionRule.ALWAYS;
-        this.teamColor = TeamColor.WHITE;
+    private TeamUpdate() {
     }
 
-    public TeamUpdatePacket(
+    public TeamUpdate(
             String teamName,
-            Component teamDisplay,
-            Component teamPrefix,
-            Component teamSuffix,
+            Object teamDisplay,
+            Object teamPrefix,
+            Object teamSuffix,
             TeamTagVisibility tagVisibility,
             TeamCollisionRule collisionRule,
             TeamColor teamColor
@@ -57,15 +50,15 @@ public class TeamUpdatePacket {
         return teamName;
     }
 
-    public Component getTeamDisplay() {
+    public Object getTeamDisplay() {
         return teamDisplay;
     }
 
-    public Component getTeamPrefix() {
+    public Object getTeamPrefix() {
         return teamPrefix;
     }
 
-    public Component getTeamSuffix() {
+    public Object getTeamSuffix() {
         return teamSuffix;
     }
 
@@ -87,10 +80,10 @@ public class TeamUpdatePacket {
 
     public static class Builder {
 
-        private final TeamUpdatePacket packet;
+        private final TeamUpdate packet;
 
         public Builder() {
-            this.packet = new TeamUpdatePacket();
+            this.packet = new TeamUpdate();
         }
 
         public static Builder of() {
@@ -102,18 +95,18 @@ public class TeamUpdatePacket {
             return this;
         }
 
-        public Builder display(Component display) {
-            packet.teamDisplay = display;
+        public Builder display(String display) {
+            packet.teamDisplay = AdventureManagerImpl.getInstance().getIChatComponentFromMiniMessage(display);
             return this;
         }
 
-        public Builder prefix(Component prefix) {
-            packet.teamPrefix = prefix;
+        public Builder prefix(String prefix) {
+            packet.teamPrefix = AdventureManagerImpl.getInstance().getIChatComponentFromMiniMessage(prefix);
             return this;
         }
 
-        public Builder suffix(Component suffix) {
-            packet.teamSuffix = suffix;
+        public Builder suffix(String suffix) {
+            packet.teamSuffix = AdventureManagerImpl.getInstance().getIChatComponentFromMiniMessage(suffix);;
             return this;
         }
 
@@ -132,7 +125,7 @@ public class TeamUpdatePacket {
             return this;
         }
 
-        public TeamUpdatePacket build() {
+        public TeamUpdate build() {
             return packet;
         }
     }

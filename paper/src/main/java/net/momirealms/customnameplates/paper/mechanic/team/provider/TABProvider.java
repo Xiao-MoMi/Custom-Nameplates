@@ -8,10 +8,12 @@ import org.bukkit.entity.Player;
 
 public class TABProvider implements TeamProvider {
 
+    private final TabAPI api;
     private final SortingManager sortingManager;
 
     public TABProvider() {
-        this.sortingManager = TabAPI.getInstance().getSortingManager();
+        this.api = TabAPI.getInstance();
+        this.sortingManager = api.getSortingManager();
         if (sortingManager == null) {
             LogUtils.warn("Detected that team management is disabled in TAB. Using player name as team name.");
         }
@@ -19,8 +21,14 @@ public class TABProvider implements TeamProvider {
 
     @Override
     public String getTeam(Player player) {
-        TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
-        if (tabPlayer == null || sortingManager == null) return player.getName();
+        TabPlayer tabPlayer = api.getPlayer(player.getUniqueId());
+        if (tabPlayer == null) {
+            return null;
+        }
+        String forced = sortingManager.getForcedTeamName(tabPlayer);
+        if (forced != null) {
+            return forced;
+        }
         return sortingManager.getOriginalTeamName(tabPlayer);
     }
 }

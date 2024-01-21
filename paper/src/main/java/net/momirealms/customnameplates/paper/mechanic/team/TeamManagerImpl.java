@@ -4,17 +4,14 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamManager;
-import net.momirealms.customnameplates.api.mechanic.team.*;
 import net.momirealms.customnameplates.common.message.MessageType;
+import net.momirealms.customnameplates.common.team.TeamCollisionRule;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
-import net.momirealms.customnameplates.paper.mechanic.team.packet.TeamPacketAdaptor;
-import net.momirealms.customnameplates.paper.mechanic.team.packet.TeamPacket_1_17;
+import net.momirealms.customnameplates.paper.mechanic.team.packet.*;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.CMIProvider;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.DefaultProvider;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.TABProvider;
@@ -32,45 +29,42 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
 
     private final CustomNameplatesPlugin plugin;
     private final TeamPacketAdaptor teamPacketAdaptor;
-    private final TeamProvider teamProvider;
+    private TeamProvider teamProvider;
     private static final String CHANNEL = "customnameplates:cnp";
 
     public TeamManagerImpl(CustomNameplatesPlugin plugin) {
         this.plugin = plugin;
         this.teamPacketAdaptor = new TeamPacket_1_17();
-        if (CNConfig.tabTeam) {
-            teamProvider = new TABProvider();
-        } else if (CNConfig.cmiTeam) {
-            teamProvider = new CMIProvider();
-        } else {
-            teamProvider = new DefaultProvider();
-        }
     }
 
     @Override
     public void createTeam(Player player) {
-        if (CNConfig.isOtherTeamPluginHooked()) {
-            return;
-        }
+        if (CNConfig.disableTeamManage) return;
         PacketContainer createOwner = teamPacketAdaptor.getTeamCreatePacket(
-                TeamCreatePacket.builder()
+                TeamCreate.builder()
                         .teamName(teamProvider.getTeam(player))
                         .color(TeamColor.WHITE)
-                        .prefix(Component.text(""))
-                        .suffix(Component.text(""))
+                        .display("")
+                        .prefix("")
+                        .suffix("")
                         .members(Collections.singletonList(player.getName()))
+                        .collisionRule(TeamCollisionRule.ALWAYS)
+                        .tagVisibility(TeamTagVisibility.ALWAYS)
                         .build()
         );
         for (Player online : Bukkit.getOnlinePlayers()) {
             PacketManager.getInstance().send(online, createOwner);
             if (online == player) continue;
             PacketContainer createOther = teamPacketAdaptor.getTeamCreatePacket(
-                    TeamCreatePacket.builder()
+                    TeamCreate.builder()
                             .teamName(teamProvider.getTeam(online))
                             .color(TeamColor.WHITE)
-                            .prefix(Component.text(""))
-                            .suffix(Component.text(""))
+                            .display("")
+                            .prefix("")
+                            .suffix("")
                             .members(Collections.singletonList(online.getName()))
+                            .collisionRule(TeamCollisionRule.ALWAYS)
+                            .tagVisibility(TeamTagVisibility.ALWAYS)
                             .build()
             );
             PacketManager.getInstance().send(player, createOther);
@@ -78,18 +72,10 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     }
 
     @Override
-    public void createProxyTeam(Player player) {
-        sendPluginMessage(
-                MessageType.CREATE,
-                player.getUniqueId().toString()
-        );
-    }
-
-    @Override
     public void removeTeam(Player player) {
-        if (CNConfig.isOtherTeamPluginHooked()) return;
+        if (CNConfig.disableTeamManage) return;
         PacketContainer packet = teamPacketAdaptor.getTeamRemovePacket(
-                TeamRemovePacket.builder()
+                TeamRemove.builder()
                         .teamName(teamProvider.getTeam(player))
                         .build()
         );
@@ -100,15 +86,8 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     }
 
     @Override
-    public void removeProxyTeam(Player player) {
-        this.sendPluginMessage(
-                MessageType.REMOVE,
-                player.getName()
-        );
-    }
-
-    @Override
-    public void updateTeam(Player owner, Player viewer, Component prefix, Component suffix, TeamColor color, TeamTagVisibility visibility) {
+    public void updateTeam(Player owner, Player viewer, String prefix, String suffix, TeamColor color, TeamTagVisibility visibility) {
+        if (CNConfig.disableTeamManage) return;
         if (color == TeamColor.NONE || color == TeamColor.CUSTOM)
             color = TeamColor.WHITE;
         if (plugin.getNameplateManager().isProxyMode()) {
@@ -116,19 +95,21 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
                     MessageType.UPDATE,
                     owner.getName(),
                     viewer.getName(),
-                    GsonComponentSerializer.gson().serialize(prefix),
-                    GsonComponentSerializer.gson().serialize(suffix),
+                    prefix,
+                    suffix,
                     color.name(),
                     visibility.name()
             );
         } else {
             PacketContainer packet = teamPacketAdaptor.getTeamUpdatePacket(
-                    TeamUpdatePacket.builder()
+                    TeamUpdate.builder()
                             .teamName(teamProvider.getTeam(owner))
                             .color(color)
+                            .display("")
                             .prefix(prefix)
                             .suffix(suffix)
                             .tagVisibility(visibility)
+                            .collisionRule(TeamCollisionRule.ALWAYS)
                             .build()
             );
             PacketManager.getInstance().send(viewer, packet);
@@ -146,6 +127,13 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     }
 
     public void load() {
+        if (CNConfig.tabTeam) {
+            teamProvider = new TABProvider();
+        } else if (CNConfig.cmiTeam) {
+            teamProvider = new CMIProvider();
+        } else {
+            teamProvider = new DefaultProvider();
+        }
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(plugin, CHANNEL);
         Bukkit.getServer().getMessenger().registerIncomingPluginChannel(plugin, CHANNEL, this);
     }
@@ -179,7 +167,6 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         ByteArrayDataOutput dataOutput = ByteStreams.newDataOutput();
         dataOutput.writeByte(messages.length);
         for (String message : messages) {
-            plugin.debug(message);
             dataOutput.writeUTF(message);
         }
         Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player -> {

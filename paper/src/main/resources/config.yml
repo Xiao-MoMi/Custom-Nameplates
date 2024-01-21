@@ -26,20 +26,14 @@ modules:
 # Integrations
 integrations:
   resource-pack:
-    # If enabled, CustomNameplates will automatically place the generated resource pack into ItemsAdder/Oraxen.
-    # To apply this change, run "/nameplates reload" & "/iazip" or "/oraxen reload all"
     ItemsAdder: false
     Oraxen: false
-  # Require a restart to apply this
   team:
-    # When enabled, CustomNameplates will hook into TAB's team management
     TAB: false
-    # When enabled, CustomNameplates will hook into CMI's team management
     CMI: false
+    Velocitab: false
   chat:
-    # TrChat channels
     TrChat: false
-    # VentureChat channels
     VentureChat: false
 
 resource-pack:
@@ -82,6 +76,9 @@ resource-pack:
   legacy-unicodes: true
 
 other-settings:
+  # Disable CustomNameplates' team management
+  disable-team-management: false
+
   # It's recommended to use MiniMessage format. If you insist on using legacy color code "&", enable the support below.
   legacy-color-code-support: false
 
@@ -95,8 +92,6 @@ other-settings:
     # If a thread is idle for more than this attribute value, it will exit due to timeout
     keepAliveTime: 30
 
-  # default width
-  default-character-width: 8
   # delay x ticks before actionbar/bossbar is sent to players
   send-delay: 0
   # Set the size for the cache system. This is useful and would bring huge performance if you keep it to a reasonable value

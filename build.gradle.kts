@@ -41,7 +41,8 @@ allprojects {
         maven("https://repo.minebench.de/")
         maven("https://repo.xenondevs.xyz/releases/")
         maven("https://repo.kryptonmc.org/releases")
-        maven("https://repo.oraxen.com/releases")
+        maven("https://repo.oraxen.com/releases/")
+        maven("https://nexus.codecrafter47.de/content/repositories/public/")
     }
 }
 
@@ -51,6 +52,9 @@ subprojects {
         inputs.properties(props)
         filteringCharset = "UTF-8"
         filesMatching("*plugin.yml") {
+            expand(props)
+        }
+        filesMatching("bungee.yml") {
             expand(props)
         }
     }

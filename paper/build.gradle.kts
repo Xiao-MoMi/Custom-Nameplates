@@ -43,7 +43,7 @@ dependencies {
 
     // adventure
     implementation("net.kyori:adventure-api:4.15.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.1")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("net.kyori:adventure-text-minimessage:4.15.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
 	

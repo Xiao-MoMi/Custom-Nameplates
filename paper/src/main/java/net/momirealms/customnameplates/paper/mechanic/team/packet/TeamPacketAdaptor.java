@@ -1,15 +1,12 @@
 package net.momirealms.customnameplates.paper.mechanic.team.packet;
 
 import com.comphenix.protocol.events.PacketContainer;
-import net.momirealms.customnameplates.api.mechanic.team.TeamCreatePacket;
-import net.momirealms.customnameplates.api.mechanic.team.TeamRemovePacket;
-import net.momirealms.customnameplates.api.mechanic.team.TeamUpdatePacket;
 
 public interface TeamPacketAdaptor {
 
-    PacketContainer getTeamCreatePacket(TeamCreatePacket teamCreatePacket);
+    PacketContainer getTeamCreatePacket(TeamCreate teamCreate);
 
-    PacketContainer getTeamUpdatePacket(TeamUpdatePacket teamUpdatePacket);
+    PacketContainer getTeamUpdatePacket(TeamUpdate teamUpdate);
 
-    PacketContainer getTeamRemovePacket(TeamRemovePacket teamRemovePacket);
+    PacketContainer getTeamRemovePacket(TeamRemove teamRemove);
 }

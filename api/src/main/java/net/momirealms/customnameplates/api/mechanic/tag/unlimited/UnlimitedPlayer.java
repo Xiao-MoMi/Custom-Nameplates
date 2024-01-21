@@ -1,6 +1,5 @@
 package net.momirealms.customnameplates.api.mechanic.tag.unlimited;
 
-import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.UnlimitedTagManager;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
@@ -175,8 +174,8 @@ public class UnlimitedPlayer extends UnlimitedObject implements NameplatePlayer 
         CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                 owner,
                 viewer,
-                Component.text(""),
-                Component.text(""),
+                "",
+               "",
                 TeamColor.WHITE,
                 TeamTagVisibility.NEVER
         );
@@ -186,8 +185,8 @@ public class UnlimitedPlayer extends UnlimitedObject implements NameplatePlayer 
         CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                 owner,
                 viewer,
-                Component.text(""),
-                Component.text(""),
+                "",
+               "",
                 TeamColor.WHITE,
                 TeamTagVisibility.ALWAYS
         );

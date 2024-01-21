@@ -4,7 +4,6 @@ import java.util.Locale;
 
 public enum TeamColor {
 
-    NONE,
     BLACK,
     DARK_BLUE,
     DARK_GREEN,
@@ -21,6 +20,7 @@ public enum TeamColor {
     LIGHT_PURPLE,
     YELLOW,
     WHITE,
+    NONE,
     CUSTOM;
 
     public TeamColor getById(String id) throws IllegalArgumentException {

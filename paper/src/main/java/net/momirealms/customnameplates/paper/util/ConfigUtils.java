@@ -1,9 +1,9 @@
 package net.momirealms.customnameplates.paper.util;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.paper.mechanic.misc.TimeLimitText;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

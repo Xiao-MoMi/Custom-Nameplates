@@ -13,9 +13,12 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.common.message.MessageType;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
+import net.momirealms.customnameplates.velocity.team.VelocitabManager;
+import net.momirealms.customnameplates.velocity.team.VelocityTeamManager;
 import org.slf4j.Logger;
 
 import java.time.Duration;
@@ -83,31 +86,32 @@ public class CustomNameplatesVelocity {
                 if (optionalOwner.isEmpty()) return;
                 Player owner = optionalOwner.get();
 
-                String team = teamManager.getTeamName(owner);
-
                 Optional<Player> optionalViewer = server.getPlayer(dataInput.readUTF());
                 if (optionalViewer.isEmpty()) return;
                 Player viewer = optionalViewer.get();
 
-                String prefixJson = dataInput.readUTF();
-                String suffixJson = dataInput.readUTF();
+                String prefix = dataInput.readUTF();
+                String suffix = dataInput.readUTF();
 
                 TeamColor teamColor = TeamColor.valueOf(dataInput.readUTF());
                 TeamTagVisibility visibility = TeamTagVisibility.valueOf(dataInput.readUTF());
 
+                // delay 500ms because Velocitab delays 300ms
                 if (teamManager instanceof VelocitabManager) {
                         server.getScheduler().buildTask(this, () -> {
                                 if (!owner.isActive() || !viewer.isActive()) {
                                         return;
                                 }
                                 String teamNameRetry = teamManager.getTeamName(owner);
-                                if (teamNameRetry != null)
-                                        teamManager.sendTeamUpdatePacket(viewer, teamNameRetry, teamColor, visibility, prefixJson, suffixJson);
+                                if (teamNameRetry != null) {
+                                        teamManager.sendTeamUpdatePacket(viewer, teamNameRetry, teamColor, visibility,
+                                                MiniMessage.miniMessage().deserialize(prefix),
+                                                MiniMessage.miniMessage().deserialize(suffix)
+                                        );
+                                }
                                 else
                                         logger.warn("Failed to get player " + owner.getUsername() + "'s team name.");
                         }).delay(Duration.ofMillis(500)).schedule();
-                } else {
-                        teamManager.sendTeamUpdatePacket(viewer, team, teamColor, visibility, prefixJson, suffixJson);
                 }
         }
 

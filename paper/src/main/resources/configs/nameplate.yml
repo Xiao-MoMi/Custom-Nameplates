@@ -1,11 +1,6 @@
 # Team / Unlimited / Disable
 mode: TEAM
 
-# You should enable this when you are
-# ① using Velocitab by William278 on Velocity
-# ② using TAB by NEZNAMY on BungeeCord
-proxy: false
-
 # The duration (in seconds) that the nameplate preview will last for.
 preview-duration: 5
 
