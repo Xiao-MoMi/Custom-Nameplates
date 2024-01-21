@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.mechanic.team;
+package net.momirealms.customnameplates.common.team;
 
 import org.jetbrains.annotations.NotNull;
 

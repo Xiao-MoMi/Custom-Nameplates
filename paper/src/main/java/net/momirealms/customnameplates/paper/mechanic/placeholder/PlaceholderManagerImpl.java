@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.paper.mechanic.placeholder;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.common.Pair;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
 import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;

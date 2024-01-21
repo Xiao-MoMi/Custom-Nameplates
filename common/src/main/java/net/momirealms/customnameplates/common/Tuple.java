@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.api.common;
+package net.momirealms.customnameplates.common;
 
 public class Tuple<L, M, R> {
 

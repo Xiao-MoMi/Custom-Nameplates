@@ -1,6 +1,9 @@
 package net.momirealms.customnameplates.api.mechanic.team;
 
 import net.kyori.adventure.text.Component;
+import net.momirealms.customnameplates.common.team.TeamCollisionRule;
+import net.momirealms.customnameplates.common.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 
 public class TeamUpdatePacket {
 

@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.api.mechanic.placeholder;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.api.common.Pair;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.manager.RequirementManager;
 import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.requirement.Requirement;

@@ -184,7 +184,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                         image.setRGB(i, j, 0);
                     }
                 }
-
                 ImageIO.write(image, "png", inputFile);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -389,12 +388,16 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         public static final String Nameplates_Shader =
                 "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                "        vertex.y+= 1;\n" +
-                "        vertex.x+= 1;\n" +
+                "        vertex.y += 1;\n" +
+                "        vertex.x += 1;\n" +
                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                 "    } else if (Color.xyz == vec3(254., 254., 254.) / 255.) {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                "        vertex.z-= 0.01;\n" +
+                "        vertex.z -= 0.001;\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else if (Color.xyz == vec3(253., 254., 254.) / 255.) {\n" +
+                "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        vertex.z -= 0.0011;\n" +
                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                 "    } else {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +

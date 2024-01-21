@@ -39,6 +39,7 @@ dependencies {
 
     // api module
     implementation(project(":api"))
+    implementation(project(":common"))
 
     // adventure
     implementation("net.kyori:adventure-api:4.15.0")
@@ -55,7 +56,7 @@ dependencies {
 
 tasks {
     shadowJar {
-//        relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
+        relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate ("org.bstats", "net.momirealms.customnameplates.libraries.bstats")
         relocate ("net.momirealms.biomeapi", "net.momirealms.customnameplates.libraries.biomeapi")
     }

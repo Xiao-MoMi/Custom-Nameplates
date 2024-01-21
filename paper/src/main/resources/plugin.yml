@@ -5,3 +5,4 @@ api-version: 1.17
 authors: [ XiaoMoMi ]
 folia-supported: true
 depend: [ ProtocolLib ,PlaceholderAPI ]
+softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen ]

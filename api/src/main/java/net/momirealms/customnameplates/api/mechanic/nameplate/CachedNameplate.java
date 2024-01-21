@@ -1,6 +1,6 @@
 package net.momirealms.customnameplates.api.mechanic.nameplate;
 
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamColor;
 
 public class CachedNameplate {
 

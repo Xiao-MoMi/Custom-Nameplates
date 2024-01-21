@@ -1,8 +1,8 @@
 package net.momirealms.customnameplates.api.manager;
 
 import net.kyori.adventure.text.Component;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
-import net.momirealms.customnameplates.api.mechanic.team.TeamTagVisibility;
+import net.momirealms.customnameplates.common.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import org.bukkit.entity.Player;
 
 public interface TeamManager {

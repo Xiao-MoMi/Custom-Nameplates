@@ -70,7 +70,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
     public void onDisable() {
         ((SchedulerImpl) this.scheduler).shutdown();
         ((ActionBarManagerImpl) actionBarManager).unload();
-        ((NameplateManagerImpl) this.nameplateManager).unload();
+        ((NameplateManagerImpl) this.nameplateManager).disable();
         ((TeamManagerImpl) this.teamManager).unload();
         ((BossBarManagerImpl) this.bossBarManager).unload();
         ((ImageManagerImpl) this.imageManager).unload();

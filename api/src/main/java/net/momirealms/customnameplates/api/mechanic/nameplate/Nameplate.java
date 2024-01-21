@@ -2,7 +2,7 @@ package net.momirealms.customnameplates.api.mechanic.nameplate;
 
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.api.util.FontUtils;
 
 public class Nameplate {
@@ -86,6 +86,7 @@ public class Nameplate {
 
     public String getPrefix(int textWidth) {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<#FEFEFE>");
         stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + left.getWidth() + 1));
         stringBuilder.append(left.getCharacter());
         stringBuilder.append(OffsetFont.NEG_1.getCharacter());
@@ -97,10 +98,13 @@ public class Nameplate {
             }
             stringBuilder.append(OffsetFont.getShortestNegChars(middle.getWidth() - (textWidth+2) % middle.getWidth() + 1)); // +1
         }
+        stringBuilder.append("<#FDFEFE>");
         stringBuilder.append(middle.getCharacter());
+        stringBuilder.append("</#FDFEFE>");
         stringBuilder.append(OffsetFont.NEG_1.getCharacter());
         stringBuilder.append(right.getCharacter());
-        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + right.getWidth() + 1)); // -1
+        stringBuilder.append("</#FEFEFE>");
+        stringBuilder.append(OffsetFont.getShortestNegChars(textWidth + right.getWidth() + 1)); // -1;
         return stringBuilder.toString();
     }
 

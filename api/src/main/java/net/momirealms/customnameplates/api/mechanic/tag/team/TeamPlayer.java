@@ -6,8 +6,8 @@ import net.momirealms.customnameplates.api.manager.TeamTagManager;
 import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
-import net.momirealms.customnameplates.api.mechanic.team.TeamTagVisibility;
+import net.momirealms.customnameplates.common.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import org.bukkit.entity.Player;
 
 import java.util.Vector;

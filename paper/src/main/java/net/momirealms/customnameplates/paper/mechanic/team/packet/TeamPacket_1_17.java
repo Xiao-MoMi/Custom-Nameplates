@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.api.mechanic.team.TeamCreatePacket;
 import net.momirealms.customnameplates.api.mechanic.team.TeamRemovePacket;
 import net.momirealms.customnameplates.api.mechanic.team.TeamUpdatePacket;

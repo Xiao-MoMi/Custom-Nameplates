@@ -4,7 +4,7 @@ import net.momirealms.customnameplates.api.mechanic.nameplate.CachedNameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

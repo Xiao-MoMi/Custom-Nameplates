@@ -13,15 +13,14 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.common.Key;
-import net.momirealms.customnameplates.api.common.Tuple;
+import net.momirealms.customnameplates.common.Key;
+import net.momirealms.customnameplates.common.Tuple;
 import net.momirealms.customnameplates.api.manager.WidthManager;
 import net.momirealms.customnameplates.api.mechanic.background.BackGround;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.FontData;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
-import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
@@ -80,8 +79,7 @@ public class WidthManagerImpl implements WidthManager {
 
     private void loadInternalConfigs() {
         FontData fontData = new FontData(8);
-        ArrayList<ConfiguredChar> chars = new ArrayList<>();
-        chars.addAll(plugin.getImageManager().getImages());
+        ArrayList<ConfiguredChar> chars = new ArrayList<>(plugin.getImageManager().getImages());
         for (Nameplate nameplate : plugin.getNameplateManager().getNameplates()) {
             chars.add(nameplate.getLeft());
             chars.add(nameplate.getMiddle());
@@ -241,7 +239,6 @@ public class WidthManagerImpl implements WidthManager {
                             try (BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)))) {
                                 YamlConfiguration yml = new YamlConfiguration();
                                 String line;
-                                loop:
                                 while ((line = reader.readLine()) != null) {
                                     String[] parts = line.split(":");
                                     if (parts.length > 1) {
@@ -263,7 +260,8 @@ public class WidthManagerImpl implements WidthManager {
 
                                         int x;
                                         int n;
-                                        outer: {
+                                        outer:
+                                        {
                                             for (x = 0; x < splitInterval; x++) {
                                                 inner:
                                                 for (int y = 0; y < 16; y++) {

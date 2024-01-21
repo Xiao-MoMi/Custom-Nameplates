@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.api.manager;
 
-import net.momirealms.customnameplates.api.common.Key;
 import net.momirealms.customnameplates.api.mechanic.font.FontData;
+import net.momirealms.customnameplates.common.Key;
 import org.jetbrains.annotations.Nullable;
 
 public interface WidthManager {

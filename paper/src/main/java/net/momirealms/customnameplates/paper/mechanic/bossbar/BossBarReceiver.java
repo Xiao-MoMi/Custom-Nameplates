@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.paper.mechanic.bossbar;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.common.Pair;
+import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LogUtils;

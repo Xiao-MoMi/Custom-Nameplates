@@ -75,12 +75,12 @@ public class AdventureManagerImpl implements AdventureManager {
     }
 
     @Override
-    public net.momirealms.customnameplates.api.common.Key keyToKey(Key key) {
-        return net.momirealms.customnameplates.api.common.Key.of(key.namespace(), key.value());
+    public net.momirealms.customnameplates.common.Key keyToKey(Key key) {
+        return net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());
     }
 
     @Override
-    public Key keyToKey(net.momirealms.customnameplates.api.common.Key key) {
+    public Key keyToKey(net.momirealms.customnameplates.common.Key key) {
         return Key.key(key.namespace(), key.value());
     }
 

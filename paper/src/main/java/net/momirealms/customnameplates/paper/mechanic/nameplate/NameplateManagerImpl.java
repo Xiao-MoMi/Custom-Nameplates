@@ -15,7 +15,7 @@ import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedTagSetting;
-import net.momirealms.customnameplates.api.mechanic.team.TeamColor;
+import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -118,6 +118,11 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         ProtocolLibrary.getProtocolManager().removePacketListener(entityLookListener);
         ProtocolLibrary.getProtocolManager().removePacketListener(entityMoveListener);
         ProtocolLibrary.getProtocolManager().removePacketListener(entityTeleportListener);
+    }
+
+    public void disable() {
+        this.proxyMode = false;
+        unload();
     }
 
     public void load() {
@@ -411,7 +416,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public String getNameplatePrefix(Player player) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) return "";
-        return "<#FEFEFE>" + cachedNameplate.getTagPrefix() + "</#FEFEFE>";
+        return cachedNameplate.getTagPrefix();
     }
 
     @Override
@@ -428,7 +433,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             return player.getName();
         }
 
-        return    "<#FEFEFE>" + cachedNameplate.getTagPrefix() + "</#FEFEFE>"
+        return    cachedNameplate.getTagPrefix()
                 + cachedNameplate.getNamePrefix()
                 + cachedNameplate.getPlayerName()
                 + cachedNameplate.getNameSuffix()
