@@ -3,10 +3,9 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.NameplateManager;
 import net.momirealms.customnameplates.api.manager.TeamTagManager;
-import net.momirealms.customnameplates.api.mechanic.tag.team.TeamPlayer;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
+import net.momirealms.customnameplates.api.util.LocationUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.util.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -50,7 +49,7 @@ public class TeamTagManagerImpl implements TeamTagManager {
                 TimeUnit.MILLISECONDS
         );
         if (fixTab) {
-            //TODO
+            // TODO
         }
     }
 

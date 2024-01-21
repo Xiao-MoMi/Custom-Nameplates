@@ -1,17 +1,16 @@
 package net.momirealms.customnameplates.api.manager;
 
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NamedEntity;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedObject;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedPlayer;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedTagSetting;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UnlimitedTagManager {
+
+    @NotNull StaticTextEntity createNamedEntity(EntityTagEntity entity, StaticTextTagSetting setting);
 
     /**
      * Create a named entity (ArmorStand) for a player
@@ -22,7 +21,9 @@ public interface UnlimitedTagManager {
      * @return named entity
      */
     @NotNull
-    NamedEntity createNamedEntity(UnlimitedPlayer player, UnlimitedTagSetting setting);
+    DynamicTextEntity createNamedEntity(EntityTagPlayer player, DynamicTextTagSetting setting);
+
+    EntityTagEntity createTagForEntity(Entity entity);
 
     /**
      * Create unlimited tags for a player
@@ -34,23 +35,5 @@ public interface UnlimitedTagManager {
      * @return unlimited tag
      */
     @Nullable
-    UnlimitedPlayer createTagForPlayer(Player player, List<UnlimitedTagSetting> settings);
-
-    /**
-     * Remove UnlimitedObject from map by uuid
-     *
-     * @param uuid uuid
-     * @return The removed unlimited object
-     */
-    @Nullable
-    UnlimitedObject removeUnlimitedObjectFromMap(UUID uuid);
-
-    /**
-     * Get an UnlimitedObject from map by uuid
-     *
-     * @param uuid uuid
-     * @return The unlimited object
-     */
-    @Nullable
-    UnlimitedObject getUnlimitedObject(UUID uuid);
+    EntityTagPlayer createTagForPlayer(Player player, List<DynamicTextTagSetting> settings);
 }

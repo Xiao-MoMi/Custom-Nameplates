@@ -10,7 +10,11 @@ public interface VersionManager {
 
     CompletionStage<Boolean> checkUpdate();
 
+    boolean isVersionNewerThan1_19();
+
     boolean isVersionNewerThan1_19_R2();
+
+    boolean isVersionNewerThan1_19_R3();
 
     boolean isVersionNewerThan1_20();
 
@@ -20,7 +24,6 @@ public interface VersionManager {
 
     boolean isLatest();
 
-    boolean isVersionNewerThan1_19();
-
     int getPackFormat();
+
 }

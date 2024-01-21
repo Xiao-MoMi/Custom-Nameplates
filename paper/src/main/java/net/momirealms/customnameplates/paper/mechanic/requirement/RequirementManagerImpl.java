@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.api.requirement.RequirementFactory;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
+import net.momirealms.customnameplates.paper.mechanic.requirement.papi.PapiCondition;
 import net.momirealms.customnameplates.paper.util.ClassUtils;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import org.bukkit.World;
@@ -117,6 +118,7 @@ public class RequirementManagerImpl implements RequirementManager {
         this.registerRegexRequirement();
         this.registerEnvironmentRequirement();
         this.registerPotionEffectRequirement();
+        this.registerPapiRequirement();
     }
 
     /**
@@ -602,6 +604,17 @@ public class RequirementManagerImpl implements RequirementManager {
                 };
             } else {
                 LogUtils.warn("Wrong value format found at !equals requirement.");
+                return EmptyRequirement.instance;
+            }
+        });
+    }
+
+    private void registerPapiRequirement() {
+        registerRequirement("papi-condition", (args) -> {
+            if (args instanceof ConfigurationSection section) {
+                return new PapiCondition(section.getValues(false));
+            } else {
+                LogUtils.warn("Wrong value format found at papi-condition requirement.");
                 return EmptyRequirement.instance;
             }
         });

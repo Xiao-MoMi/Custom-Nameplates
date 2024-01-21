@@ -166,6 +166,9 @@ public class WidthManagerImpl implements WidthManager {
         if (!new File(plugin.getDataFolder(), "font" + File.separator + "unifont.zip").exists()) {
             ConfigUtils.saveResource("font" + File.separator + "unifont.zip");
         }
+        for (String font : new String[]{"default", "unicode"}) {
+            ConfigUtils.saveResource("font" + File.separator + font + ".json");
+        }
     }
 
     private void loadCachedFontData() {

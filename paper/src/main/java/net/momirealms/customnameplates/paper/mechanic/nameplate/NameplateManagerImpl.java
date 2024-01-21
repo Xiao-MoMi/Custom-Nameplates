@@ -14,7 +14,7 @@ import net.momirealms.customnameplates.api.mechanic.nameplate.CachedNameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedTagSetting;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextTagSetting;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -71,15 +71,13 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     private String teamPrefix;
     private String teamSuffix;
     private boolean fixTab;
-    /* Is proxy server working */
-    private boolean proxyMode;
     /* TEAM & UNLIMITED */
     private TagMode tagMode;
     private int previewDuration;
     private String defaultNameplate;
     private String playerName, prefix, suffix;
     private long refreshFrequency;
-    private final List<UnlimitedTagSetting> tagSettings;
+    private final List<DynamicTextTagSetting> tagSettings;
 
     public NameplateManagerImpl(CustomNameplatesPlugin plugin) {
         this.plugin = plugin;
@@ -122,7 +120,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     public void disable() {
-        this.proxyMode = false;
+        // to prevent sending channel message on disable
+        CNConfig.velocitab = false;
         unload();
     }
 
@@ -156,7 +155,6 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         YamlConfiguration config = plugin.getConfig("configs" + File.separator + "nameplate.yml");
 
         tagMode = TagMode.valueOf(config.getString("mode", "TEAM").toUpperCase(Locale.ENGLISH));
-        proxyMode = config.getBoolean("proxy", false);
         previewDuration = config.getInt("preview-duration", 5);
         defaultNameplate = config.getString("default-nameplate", "none");
 
@@ -175,7 +173,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             for (Map.Entry<String, Object> entry : unlimitedSection.getValues(false).entrySet()) {
                 if (entry.getValue() instanceof ConfigurationSection innerSection) {
                     tagSettings.add(
-                            UnlimitedTagSetting.builder()
+                            DynamicTextTagSetting.builder()
                                 .rawText(innerSection.getString("text", ""))
                                 .refreshFrequency(innerSection.getInt("refresh-frequency", 20))
                                 .checkFrequency(innerSection.getInt("check-frequency", 20))
@@ -378,7 +376,12 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     @Override
     public void putNameplatePlayerToMap(NameplatePlayer player) {
-        this.nameplatePlayerMap.put(player.getOwner().getUniqueId(), player);
+        this.nameplatePlayerMap.put(player.getPlayer().getUniqueId(), player);
+    }
+
+    @Override
+    public NameplatePlayer getNameplatePlayer(UUID uuid) {
+        return this.nameplatePlayerMap.get(uuid);
     }
 
     @Override
@@ -504,6 +507,11 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     @Override
     public boolean isProxyMode() {
         return CNConfig.velocitab;
+    }
+
+    @Override
+    public int getPreviewDuration() {
+        return previewDuration;
     }
 
     @Override

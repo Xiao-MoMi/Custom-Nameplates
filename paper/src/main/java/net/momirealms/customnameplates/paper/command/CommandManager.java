@@ -23,10 +23,14 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.setting.CNLocale;
 import org.bukkit.entity.Player;
+
+import java.util.concurrent.TimeUnit;
 
 public class CommandManager {
 
@@ -41,18 +45,39 @@ public class CommandManager {
     public void load() {
         new CommandAPICommand("customnameplates")
                 .withAliases("nameplates", "cnameplates")
-                .withPermission("customnameplates.admin")
                 .withSubcommands(
                         getReloadCommand(),
                         getAboutCommand(),
                         getEquipCommand(),
-                        getUnEquipCommand()
+                        getUnEquipCommand(),
+                        getPreviewCommand()
                 )
                 .register();
     }
 
+    private CommandAPICommand getPreviewCommand() {
+        return new CommandAPICommand("preview")
+                .executesPlayer((player, args) -> {
+                    NameplatePlayer nameplatePlayer = plugin.getNameplateManager().getNameplatePlayer(player.getUniqueId());
+                    if (nameplatePlayer == null) {
+                        LogUtils.warn(player.getName() + " failed to preview because no tag is created");
+                        return;
+                    }
+                    if (nameplatePlayer.isPreviewing()) {
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_PREVIEW_COOLDOWN);
+                        return;
+                    }
+                    nameplatePlayer.setPreview(true);
+                    AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_PREVIEW_START);
+                    plugin.getScheduler().runTaskAsyncLater(() -> {
+                        nameplatePlayer.setPreview(false);
+                    }, plugin.getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                });
+    }
+
     private CommandAPICommand getEquipCommand() {
         return new CommandAPICommand("equip")
+                .withPermission("nameplates.equip")
                 .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> plugin.getNameplateManager().getAvailableNameplates((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
                 .executesPlayer((player, args) -> {
                     String nameplate = (String) args.get("nameplate");
@@ -72,6 +97,7 @@ public class CommandManager {
 
     private CommandAPICommand getUnEquipCommand() {
         return new CommandAPICommand("unequip")
+                .withPermission("nameplates.unequip")
                 .executesPlayer((player, args) -> {
                     plugin.getNameplateManager().unEquipNameplate(player);
                     AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_UNEQUIP_NAMEPLATE);
@@ -80,6 +106,7 @@ public class CommandManager {
 
     private CommandAPICommand getReloadCommand() {
         return new CommandAPICommand("reload")
+                .withPermission("nameplates.admin")
                 .executes((sender, args) -> {
                     long time = System.currentTimeMillis();
                     plugin.reload(true);
@@ -88,7 +115,9 @@ public class CommandManager {
     }
 
     private CommandAPICommand getAboutCommand() {
-        return new CommandAPICommand("about").executes((sender, args) -> {
+        return new CommandAPICommand("about")
+                .withPermission("nameplates.about")
+                .executes((sender, args) -> {
             AdventureManagerImpl.getInstance().sendMessage(sender, "<#3CB371>⚓ CustomNameplates <gray>- <#98FB98>" + CustomNameplatesPlugin.getInstance().getVersionManager().getPluginVersion());
             AdventureManagerImpl.getInstance().sendMessage(sender, "<#7FFFAA>A plugin that provides adjustable images for texts");
             AdventureManagerImpl.getInstance().sendMessage(sender, "<#DA70D6>\uD83E\uDDEA Author: <#FFC0CB>XiaoMoMi");

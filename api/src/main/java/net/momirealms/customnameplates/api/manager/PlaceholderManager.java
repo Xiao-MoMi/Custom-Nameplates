@@ -4,6 +4,7 @@ import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface PlaceholderManager {
@@ -26,6 +27,8 @@ public interface PlaceholderManager {
     @Nullable
     StaticText getStaticText(String key);
 
+    Collection<StaticText> getStaticTexts();
+
     /**
      * Get a switch text instance
      *
@@ -34,6 +37,8 @@ public interface PlaceholderManager {
      */
     @Nullable
     SwitchText getSwitchText(String key);
+
+    Collection<SwitchText> getSwitchTexts();
 
     /**
      * Get a descent text instance
@@ -44,6 +49,8 @@ public interface PlaceholderManager {
     @Nullable
     DescentText getDescentText(String key);
 
+    Collection<DescentText> getDescentTexts();
+
     /**
      * Get a conditional text
      *
@@ -52,6 +59,8 @@ public interface PlaceholderManager {
      */
     @Nullable
     ConditionalText getConditionalText(String key);
+
+    Collection<ConditionalText> getConditionalTexts();
 
     /**
      * Get a nameplate text
@@ -62,6 +71,8 @@ public interface PlaceholderManager {
     @Nullable
     NameplateText getNameplateText(String key);
 
+    Collection<NameplateText> getNameplateTexts();
+
     /**
      * Get a background text
      *
@@ -70,4 +81,6 @@ public interface PlaceholderManager {
      */
     @Nullable
     BackGroundText getBackGroundText(String key);
+
+    Collection<BackGroundText> getBackGroundTexts();
 }

@@ -6,7 +6,7 @@ import org.bukkit.entity.Pose;
 
 import java.util.UUID;
 
-public interface NamedEntity {
+public interface DynamicTextEntity {
 
     boolean canSee(Player viewer);
 
@@ -54,7 +54,7 @@ public interface NamedEntity {
 
     void updateText(Player viewer);
 
-    UUID getUuid();
+    UUID getUUID();
 
     void handlePose(Pose previous, Pose pose);
 }

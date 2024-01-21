@@ -1,6 +1,6 @@
 package net.momirealms.customnameplates.api.manager;
 
-import net.momirealms.customnameplates.api.mechanic.tag.team.TeamPlayer;
+import net.momirealms.customnameplates.api.mechanic.tag.team.TeamTagPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public interface TeamTagManager {
      * @return team tag
      */
     @Nullable
-    TeamPlayer createTagForPlayer(Player player, String prefix, String suffix);
+    TeamTagPlayer createTagForPlayer(Player player, String prefix, String suffix);
 
     /**
      * Remove a team tag from map by uuid
@@ -25,5 +25,5 @@ public interface TeamTagManager {
      * @return team tag
      */
     @Nullable
-    TeamPlayer removeTeamPlayerFromMap(UUID uuid);
+    TeamTagPlayer removeTeamPlayerFromMap(UUID uuid);
 }

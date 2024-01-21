@@ -20,13 +20,21 @@ public class DescentText {
 
     }
 
+    public int getAscent() {
+        return ascent;
+    }
+
+    public boolean isUnicode() {
+        return isUnicode;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public String getValue(OfflinePlayer player) {
         var parsed = PlaceholderAPI.setPlaceholders(player, text);
-        return isUnicode ? FontUtils.surroundAscentUnicodeFont(parsed, ascent) : FontUtils.surroundAscentFont(parsed, ascent);
+        return FontUtils.surroundAscentFont(parsed, ascent);
     }
 
     public static class Builder {

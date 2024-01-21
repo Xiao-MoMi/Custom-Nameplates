@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.paper.util;
+package net.momirealms.customnameplates.api.util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

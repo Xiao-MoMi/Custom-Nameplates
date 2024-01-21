@@ -71,6 +71,10 @@ public class ViewerText {
         valueMap.remove(viewer.getUniqueId());
     }
 
+    public void clear() {
+        valueMap.clear();
+    }
+
     public String getProcessedText() {
         return processedText;
     }

@@ -5,7 +5,7 @@ import com.francobm.magicosmetics.api.CosmeticType;
 import com.francobm.magicosmetics.cache.PlayerData;
 import com.francobm.magicosmetics.cache.cosmetics.Hat;
 import com.francobm.magicosmetics.events.*;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedPlayer;
+import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited.UnlimitedPlayer;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited.UnlimitedTagManagerImpl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

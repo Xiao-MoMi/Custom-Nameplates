@@ -114,6 +114,8 @@ public interface NameplateManager {
 
     void putNameplatePlayerToMap(NameplatePlayer player);
 
+    NameplatePlayer getNameplatePlayer(UUID uuid);
+
     NameplatePlayer removeNameplatePlayerFromMap(UUID uuid);
 
     String getNameplatePrefix(Player player);
@@ -129,6 +131,8 @@ public interface NameplateManager {
     boolean unregisterNameplate(String key);
 
     boolean isProxyMode();
+
+    int getPreviewDuration();
 
     TagMode getTagMode();
 

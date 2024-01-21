@@ -1,23 +1,23 @@
-package net.momirealms.customnameplates.api.mechanic.tag.team;
+package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamTagManager;
 import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
-import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
-import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
+import net.momirealms.customnameplates.api.mechanic.tag.team.TeamTagPlayer;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import org.bukkit.entity.Player;
 
 import java.util.Vector;
 
-public class TeamPlayer implements NameplatePlayer {
+public class TeamPlayer implements TeamTagPlayer {
 
     private final TeamTagManager manager;
     private final Player owner;
-    private final ViewerText prefix;
-    private final ViewerText suffix;
+    private ViewerText prefix;
+    private ViewerText suffix;
     private final Vector<Player> nearbyPlayers;
+    private boolean isPreviewing;
 
     public TeamPlayer(TeamTagManager manager, Player owner, String prefix, String suffix) {
         this.manager = manager;
@@ -27,6 +27,16 @@ public class TeamPlayer implements NameplatePlayer {
         this.nearbyPlayers = new Vector<>();
         this.prefix.updateForOwner();
         this.suffix.updateForOwner();
+    }
+
+    @Override
+    public void setPrefix(String prefix) {
+        this.prefix = new ViewerText(owner, prefix);
+    }
+
+    @Override
+    public void setSuffix(String suffix) {
+        this.suffix = new ViewerText(owner, suffix);
     }
 
     public void updateForNearbyPlayers(boolean force) {
@@ -55,6 +65,7 @@ public class TeamPlayer implements NameplatePlayer {
         updateForOne(player, false);
     }
 
+    @Override
     public void destroy() {
         manager.removeTeamPlayerFromMap(owner.getUniqueId());
         for (Player viewer : nearbyPlayers) {
@@ -92,17 +103,25 @@ public class TeamPlayer implements NameplatePlayer {
     }
 
     @Override
-    public void preview() {
+    public void setPreview(boolean preview) {
+        if (isPreviewing == preview) {
+            return;
+        }
+        isPreviewing = preview;
+        if (isPreviewing) {
 
+        } else {
+
+        }
     }
 
     @Override
-    public void preview(Nameplate nameplate) {
-
+    public boolean isPreviewing() {
+        return isPreviewing;
     }
 
     @Override
-    public Player getOwner() {
+    public Player getPlayer() {
         return owner;
     }
 }

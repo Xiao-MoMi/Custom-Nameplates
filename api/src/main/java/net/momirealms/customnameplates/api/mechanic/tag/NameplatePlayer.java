@@ -1,13 +1,12 @@
 package net.momirealms.customnameplates.api.mechanic.tag;
 
-import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import org.bukkit.entity.Player;
 
 public interface NameplatePlayer {
 
-    void preview();
+    void setPreview(boolean preview);
 
-    void preview(Nameplate nameplate);
+    boolean isPreviewing();
 
-    Player getOwner();
+    Player getPlayer();
 }

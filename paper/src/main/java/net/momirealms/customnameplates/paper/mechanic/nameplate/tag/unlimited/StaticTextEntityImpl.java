@@ -24,12 +24,8 @@ import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.manager.RequirementManager;
-import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NamedEntity;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedPlayer;
-import net.momirealms.customnameplates.api.requirement.Condition;
-import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NearbyRule;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import org.bukkit.Location;
@@ -38,52 +34,42 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class NamedEntityImpl implements NamedEntity {
+public class StaticTextEntityImpl implements StaticTextEntity {
 
     private final UUID uuid = UUID.randomUUID();
-    private final UnlimitedPlayer owner;
+    private final UnlimitedEntity owner;
     private double yOffset;
     private final int entityId;
-    private boolean sneaking;
-    private final ViewerText viewerText;
-    private final Requirement[] ownerRequirements;
-    private final Requirement[] viewerRequirements;
     private final Vector<Player> viewers;
-    private final int refreshFrequency;
-    private final int checkFrequency;
-    private int checkTimer;
-    private int refreshTimer;
-    private boolean ownerCanShow;
+    private final ConcurrentHashMap<UUID, String> textCache;
+    private final NearbyRule comeRule;
+    private final NearbyRule leaveRule;
+    private String defaultText;
 
-    public NamedEntityImpl(
-            UnlimitedPlayer unlimitedPlayer,
-            ViewerText text,
-            int refreshFrequency,
-            int checkFrequency,
+    public StaticTextEntityImpl (
+            UnlimitedEntity owner,
             double yOffset,
-            Requirement[] ownerRequirements,
-            Requirement[] viewerRequirements
+            NearbyRule comeRule,
+            NearbyRule leaveRule
     ) {
         this.entityId = new Random().nextInt(Integer.MAX_VALUE);
-        this.owner = unlimitedPlayer;
+        this.owner = owner;
         this.yOffset = yOffset;
-        this.viewerText = text;
-        this.sneaking = unlimitedPlayer.getOwner().isSneaking();
-        this.ownerRequirements = ownerRequirements;
-        this.viewerRequirements = viewerRequirements;
-        this.checkFrequency = checkFrequency;
-        this.refreshFrequency = refreshFrequency;
         this.viewers = new Vector<>();
-        this.ownerCanShow = RequirementManager.isRequirementMet(new Condition(owner.getOwner()), ownerRequirements);
+        this.textCache = new ConcurrentHashMap<>();
+        this.comeRule = comeRule;
+        this.leaveRule = leaveRule;
+        this.defaultText = "";
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NamedEntityImpl that = (NamedEntityImpl) o;
+        StaticTextEntityImpl that = (StaticTextEntityImpl) o;
         return uuid.equals(that.uuid);
     }
 
@@ -93,49 +79,18 @@ public class NamedEntityImpl implements NamedEntity {
     }
 
     @Override
-    public boolean canShow() {
-        return ownerCanShow;
-    }
-
-    @Override
     public boolean isShownTo(Player viewer) {
         return viewers.contains(viewer);
     }
 
     @Override
-    public boolean canSee(Player viewer) {
-        Condition condition = new Condition(viewer);
-        return RequirementManager.isRequirementMet(condition, viewerRequirements);
+    public NearbyRule getComeRule() {
+        return comeRule;
     }
 
     @Override
-    public void timer() {
-        checkTimer++;
-        if (checkTimer >= checkFrequency) {
-            checkTimer = 0;
-            if (!RequirementManager.isRequirementMet(new Condition(owner.getOwner()), ownerRequirements)) {
-                ownerCanShow = false;
-                for (Player all : owner.getNearbyPlayers()) {
-                    removePlayerFromViewers(all);
-                }
-            } else {
-                ownerCanShow = true;
-                for (Player all : owner.getNearbyPlayers()) {
-                    if (canSee(all)) {
-                        addPlayerToViewers(all);
-                    } else {
-                        removePlayerFromViewers(all);
-                    }
-                }
-            }
-        }
-
-        refreshTimer++;
-        if (refreshTimer >= refreshFrequency) {
-            refreshTimer = 0;
-            viewerText.updateForOwner();
-            updateText();
-        }
+    public NearbyRule getLeaveRule() {
+        return leaveRule;
     }
 
     @Override
@@ -145,7 +100,6 @@ public class NamedEntityImpl implements NamedEntity {
         }
         this.viewers.remove(player);
         destroy(player);
-
     }
 
     @Override
@@ -154,7 +108,7 @@ public class NamedEntityImpl implements NamedEntity {
             return;
         }
         this.viewers.add(player);
-        spawn(player, owner.getOwner().getPose());
+        spawn(player, owner.getEntity().getPose());
     }
 
     @Override
@@ -167,27 +121,45 @@ public class NamedEntityImpl implements NamedEntity {
         if (yOffset == offset) return;
         yOffset = offset;
         for (Player all : viewers) {
-            PacketManager.getInstance().send(all, getTeleportPacket(0));
+            PacketManager.getInstance().send(all, getTeleportPacket());
         }
     }
 
     @Override
-    public ViewerText getViewerText() {
-        return viewerText;
+    public void setText(String text) {
+        if (text.equals(defaultText)) return;
+        this.defaultText = text;
+        for (Player viewer : viewers) {
+            PacketManager.getInstance().send(viewer, getMetaPacket(getText(viewer)));
+        }
+    }
+
+    @Override
+    public String getText(Player viewer) {
+        return textCache.getOrDefault(viewer.getUniqueId(), defaultText);
+    }
+
+    @Override
+    public void setText(Player viewer, String text) {
+        String previous = this.textCache.put(viewer.getUniqueId(), text);
+        if (previous != null && previous.equals(text)) {
+            return;
+        }
+        PacketManager.getInstance().send(viewer, getMetaPacket(text));
+    }
+
+    @Override
+    public void removeText(Player viewer) {
+        String previous = this.textCache.remove(viewer.getUniqueId());
+        if (previous != null && previous.equals(defaultText)) {
+            return;
+        }
+        PacketManager.getInstance().send(viewer, getMetaPacket(defaultText));
     }
 
     @Override
     public void spawn(Player viewer, Pose pose) {
-        if (viewerText.updateForViewer(viewer)) {
-            PacketManager.getInstance().send(viewer, getSpawnPackets(viewerText.getLatestValue(viewer), pose));
-        }
-    }
-
-    @Override
-    public void spawn(Pose pose) {
-        for (Player all : viewers) {
-            spawn(all, pose);
-        }
+        PacketManager.getInstance().send(viewer, getSpawnPackets(getText(viewer)));
     }
 
     @Override
@@ -196,8 +168,9 @@ public class NamedEntityImpl implements NamedEntity {
         destroyPacket.getIntLists().write(0, List.of(entityId));
         for (Player all : viewers) {
             PacketManager.getInstance().send(all, destroyPacket);
-            viewerText.removeViewer(all);
         }
+        viewers.clear();
+        textCache.clear();
     }
 
     @Override
@@ -205,7 +178,7 @@ public class NamedEntityImpl implements NamedEntity {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, List.of(entityId));
         PacketManager.getInstance().send(viewer, destroyPacket);
-        viewerText.removeViewer(viewer);
+        textCache.remove(viewer.getUniqueId());
     }
 
     @Override
@@ -220,16 +193,6 @@ public class NamedEntityImpl implements NamedEntity {
     public void teleport(Player viewer, double x, double y, double z, boolean onGround) {
         if (viewers.contains(viewer)) {
             PacketManager.getInstance().send(viewer, getTeleportPacket(x, y, z, onGround));
-        }
-    }
-
-    @Override
-    public void setSneak(boolean isSneaking, boolean onGround) {
-        this.sneaking = isSneaking;
-        if (!onGround) {
-            for (Player viewer : viewers) {
-                PacketManager.getInstance().send(viewer, getMetaPacket(viewerText.getLatestValue(viewer)));
-            }
         }
     }
 
@@ -268,21 +231,7 @@ public class NamedEntityImpl implements NamedEntity {
     }
 
     @Override
-    public void updateText() {
-        for (Player viewer : viewers) {
-            updateText(viewer);
-        }
-    }
-
-    @Override
-    public void updateText(Player viewer) {
-        if (viewerText.updateForViewer(viewer)) {
-            PacketManager.getInstance().send(viewer, getMetaPacket(viewerText.getLatestValue(viewer)));
-        }
-    }
-
-    @Override
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 
@@ -310,16 +259,16 @@ public class NamedEntityImpl implements NamedEntity {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
         packet.getIntegers().write(0, entityId);
         packet.getDoubles().write(0, x);
-        packet.getDoubles().write(1, y + owner.getHatOffset() + getCorrection(owner.getOwner().getPose()) + yOffset);
+        packet.getDoubles().write(1, y + yOffset);
         packet.getDoubles().write(2, z);
         packet.getBooleans().write(0, onGround);
         return packet;
     }
 
-    public PacketContainer getTeleportPacket(double correction) {
+    public PacketContainer getTeleportPacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
         packet.getIntegers().write(0, entityId);
-        Location location = getEntityLocation(correction);
+        Location location = getEntityLocation();
         packet.getDoubles().write(0, location.getX());
         packet.getDoubles().write(1, location.getY());
         packet.getDoubles().write(2, location.getZ());
@@ -341,14 +290,12 @@ public class NamedEntityImpl implements NamedEntity {
         return metaPacket;
     }
 
-    private Location getEntityLocation(double correction) {
-        var player = owner.getOwner();
-        double x = player.getLocation().getX();
-        double y = player.getLocation().getY();
-        double z = player.getLocation().getZ();
+    private Location getEntityLocation() {
+        var entity = owner.getEntity();
+        double x = entity.getLocation().getX();
+        double y = entity.getLocation().getY();
+        double z = entity.getLocation().getZ();
         y += yOffset;
-        y += owner.getHatOffset();
-        y += correction;
         return new Location(null, x, y, z);
     }
 
@@ -359,33 +306,23 @@ public class NamedEntityImpl implements NamedEntity {
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(json).getHandle()));
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
         byte flag = 0x20;
-        if (sneaking) flag += (byte) 0x02;
+        if (owner.getEntity().isSneaking()) flag += (byte) 0x02;
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), flag);
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), (byte) 0x01);
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
         return wrappedDataWatcher;
     }
 
-    private PacketContainer[] getSpawnPackets(String text, Pose pose) {
+    private PacketContainer[] getSpawnPackets(String text) {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
         entityPacket.getModifier().write(1, uuid);
         entityPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
-        Location location = getEntityLocation(getCorrection(pose));
+        Location location = getEntityLocation();
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY());
         entityPacket.getDoubles().write(2, location.getZ());
         PacketContainer metaPacket = getMetaPacket(text);
         return new PacketContainer[] {entityPacket, metaPacket};
-    }
-
-    private double getCorrection(Pose pose) {
-        return switch (pose) {
-            case STANDING -> 1.8;
-            case SNEAKING -> 1.5;
-            case SLEEPING -> 0.2;
-            case SWIMMING, FALL_FLYING, SPIN_ATTACK -> 0.55;
-            default -> 0;
-        };
     }
 }

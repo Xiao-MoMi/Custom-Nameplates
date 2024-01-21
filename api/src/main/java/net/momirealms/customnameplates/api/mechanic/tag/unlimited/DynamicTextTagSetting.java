@@ -2,7 +2,7 @@ package net.momirealms.customnameplates.api.mechanic.tag.unlimited;
 
 import net.momirealms.customnameplates.api.requirement.Requirement;
 
-public class UnlimitedTagSetting {
+public class DynamicTextTagSetting {
 
     private double verticalOffset;
     private String rawText;
@@ -11,7 +11,7 @@ public class UnlimitedTagSetting {
     private Requirement[] viewerRequirements;
     private Requirement[] ownerRequirements;
 
-    private UnlimitedTagSetting() {
+    private DynamicTextTagSetting() {
         verticalOffset = 0;
         rawText = "";
         checkFrequency = 10;
@@ -20,7 +20,7 @@ public class UnlimitedTagSetting {
         ownerRequirements = new Requirement[0];
     }
 
-    public UnlimitedTagSetting(double verticalOffset, String rawText, int checkFrequency, int refreshFrequency, Requirement[] viewerRequirements, Requirement[] ownerRequirements) {
+    public DynamicTextTagSetting(double verticalOffset, String rawText, int checkFrequency, int refreshFrequency, Requirement[] viewerRequirements, Requirement[] ownerRequirements) {
         this.verticalOffset = verticalOffset;
         this.rawText = rawText;
         this.checkFrequency = checkFrequency;
@@ -59,14 +59,14 @@ public class UnlimitedTagSetting {
 
     public static class Builder {
 
-        private final UnlimitedTagSetting setting;
+        private final DynamicTextTagSetting setting;
 
         public static Builder of() {
             return new Builder();
         }
 
         public Builder() {
-            this.setting = new UnlimitedTagSetting();
+            this.setting = new DynamicTextTagSetting();
         }
 
         public Builder checkFrequency(int checkFrequency) {
@@ -99,7 +99,7 @@ public class UnlimitedTagSetting {
             return this;
         }
 
-        public UnlimitedTagSetting build() {
+        public DynamicTextTagSetting build() {
             return setting;
         }
     }

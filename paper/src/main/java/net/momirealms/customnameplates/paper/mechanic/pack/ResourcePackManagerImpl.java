@@ -9,6 +9,7 @@ import net.momirealms.customnameplates.api.mechanic.background.BackGround;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
+import net.momirealms.customnameplates.api.mechanic.placeholder.DescentText;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
@@ -203,6 +204,68 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             fileWriter.write(fontJson.toString().replace("\\\\", "\\"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        ArrayList<Integer> ascentTexts = new ArrayList<>();
+        ArrayList<Integer> ascentUnicodes = new ArrayList<>();
+
+        for (DescentText descentText : plugin.getPlaceholderManager().getDescentTexts()) {
+            if (descentText.isUnicode()) {
+                ascentUnicodes.add(descentText.getAscent());
+            } else {
+                ascentTexts.add(descentText.getAscent());
+            }
+        }
+
+        for (int ascent : ascentTexts) {
+            String line;
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "font" + File.separator + "default.json")), StandardCharsets.UTF_8))) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            File outPut = new File(plugin.getDataFolder(),
+                    "ResourcePack" +
+                            File.separator + "assets" +
+                            File.separator + CNConfig.namespace +
+                            File.separator + "font" +
+                            File.separator + "ascent_" + ascent + ".json");
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(outPut), StandardCharsets.UTF_8))) {
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)).replace("%ASCENT%", String.valueOf(ascent+3)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!CNConfig.legacyUnicodes) {
+            return;
+        }
+
+        for (int ascent : ascentUnicodes) {
+            String line;
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(plugin.getDataFolder(), "font" + File.separator + "unicode.json")), StandardCharsets.UTF_8))) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
+                            "ResourcePack" +
+                                    File.separator + "assets" +
+                                    File.separator + CNConfig.namespace +
+                                    File.separator + "font" +
+                                    File.separator + "ascent_" + ascent + ".json")), StandardCharsets.UTF_8))) {
+                writer.write(sb.toString().replace("\\\\", "\\").replace("%ascent%", String.valueOf(ascent)).replace("%ASCENT%", String.valueOf(ascent+3)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

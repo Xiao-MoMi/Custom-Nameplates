@@ -75,8 +75,18 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     @Override
+    public Collection<StaticText> getStaticTexts() {
+        return staticTextMap.values();
+    }
+
+    @Override
     public SwitchText getSwitchText(String key) {
         return switchTextMap.get(key);
+    }
+
+    @Override
+    public Collection<SwitchText> getSwitchTexts() {
+        return switchTextMap.values();
     }
 
     @Override
@@ -85,8 +95,18 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     @Override
+    public Collection<DescentText> getDescentTexts() {
+        return descentTextMap.values();
+    }
+
+    @Override
     public ConditionalText getConditionalText(String key) {
         return conditionalTextMap.get(key);
+    }
+
+    @Override
+    public Collection<ConditionalText> getConditionalTexts() {
+        return conditionalTextMap.values();
     }
 
     @Override
@@ -95,8 +115,18 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     @Override
+    public Collection<NameplateText> getNameplateTexts() {
+        return nameplateTextMap.values();
+    }
+
+    @Override
     public BackGroundText getBackGroundText(String key) {
         return backGroundTextMap.get(key);
+    }
+
+    @Override
+    public Collection<BackGroundText> getBackGroundTexts() {
+        return backGroundTextMap.values();
     }
 
     public void loadConfigs() {

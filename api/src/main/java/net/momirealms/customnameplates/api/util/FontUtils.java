@@ -19,17 +19,6 @@ public class FontUtils {
     }
 
     /**
-     * Surround the text with ascent unicode
-     *
-     * @param text text
-     * @param ascent ascent
-     * @return ascent font text
-     */
-    public static String surroundAscentUnicodeFont(String text, int ascent) {
-        return getAscentUnicodeFontTag(ascent) + text + getFontTagCloser();
-    }
-
-    /**
      * Surround the text with custom nameplates font
      *
      * @param text text
@@ -41,10 +30,6 @@ public class FontUtils {
 
     private static String getAscentFontTag(int ascent) {
         return "<font:" + namespace + ":ascent_" + ascent + ">";
-    }
-
-    private static String getAscentUnicodeFontTag(int ascent) {
-        return "<font:" + namespace + ":ascent_unicode_" + ascent + ">";
     }
 
     private static String getMiniMessageFontTag() {

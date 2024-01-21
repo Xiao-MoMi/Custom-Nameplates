@@ -7,8 +7,12 @@ minecraft:default:
     - ascii
   # The values here would override the same character in the template
   values:
-    '%img_xxx%': 15
     默: 8
+
+minecraft:uniform:
+  default: 8
+  template-loading-sequence:
+    - unifont
 
 minecraft:alt:
   default: 8

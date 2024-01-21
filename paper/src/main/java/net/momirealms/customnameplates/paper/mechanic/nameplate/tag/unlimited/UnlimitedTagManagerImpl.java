@@ -4,14 +4,10 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.NameplateManager;
 import net.momirealms.customnameplates.api.manager.UnlimitedTagManager;
 import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NamedEntity;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedObject;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedPlayer;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.UnlimitedTagSetting;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.MagicCosmeticsListener;
-import net.momirealms.customnameplates.paper.util.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -82,10 +78,21 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
 
     @NotNull
     @Override
-    public NamedEntity createNamedEntity(UnlimitedPlayer player, UnlimitedTagSetting setting) {
-        return new NamedEntityImpl(
-                player,
-                new ViewerText(player.getOwner(), setting.getRawText()),
+    public StaticTextEntity createNamedEntity(EntityTagEntity entity, StaticTextTagSetting setting) {
+        return new StaticTextEntityImpl(
+                (UnlimitedEntity) entity,
+                setting.getVerticalOffset(),
+                setting.getComeRule(),
+                setting.getLeaveRule()
+        );
+    }
+
+    @NotNull
+    @Override
+    public DynamicTextEntity createNamedEntity(EntityTagPlayer player, DynamicTextTagSetting setting) {
+        return new DynamicTextEntityImpl(
+                (UnlimitedPlayer) player,
+                new ViewerText(player.getPlayer(), setting.getRawText()),
                 setting.getRefreshFrequency(),
                 setting.getCheckFrequency(),
                 setting.getVerticalOffset(),
@@ -95,8 +102,16 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     }
 
     @Override
+    public UnlimitedEntity createTagForEntity(Entity entity) {
+        if (this.unlimitedEntryMap.containsKey(entity.getUniqueId())) {
+            return null;
+        }
+        return new UnlimitedEntity(this, entity);
+    }
+
+    @Override
     @SuppressWarnings("DuplicatedCode")
-    public UnlimitedPlayer createTagForPlayer(Player player, List<UnlimitedTagSetting> settings) {
+    public UnlimitedPlayer createTagForPlayer(Player player, List<DynamicTextTagSetting> settings) {
         if (this.unlimitedEntryMap.containsKey(player.getUniqueId())) {
             return null;
         }
@@ -107,31 +122,21 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
                 unlimitedPlayer
         );
 
-        for (UnlimitedTagSetting setting : settings) {
+        for (DynamicTextTagSetting setting : settings) {
             unlimitedPlayer.addTag(
                     createNamedEntity(unlimitedPlayer, setting)
             );
         }
 
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (       online == player
-                    || !online.canSee(player)
-                    || LocationUtils.getDistance(online, player) > 48
-                    || online.getWorld() != player.getWorld()
-                    || online.isDead()
-            ) continue;
-            unlimitedPlayer.addNearbyPlayer(online);
-        }
+        unlimitedPlayer.addNearByPlayerToMap(48);
         return unlimitedPlayer;
     }
 
-    @Override
     public UnlimitedObject removeUnlimitedObjectFromMap(UUID uuid) {
         return unlimitedEntryMap.remove(uuid);
     }
 
     @Nullable
-    @Override
     public UnlimitedObject getUnlimitedObject(UUID uuid) {
         return unlimitedEntryMap.get(uuid);
     }
@@ -141,7 +146,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         if (spawned == null) return;
         UnlimitedObject unlimitedObject = getUnlimitedObject(spawned.getUniqueId());
         if (unlimitedObject == null) return;
-        unlimitedObject.addNearbyPlayer(receiver);
+        unlimitedObject.addNearbyPlayerNaturally(receiver);
     }
 
     public void handlePlayerPose(Player player, Pose pose) {
@@ -157,7 +162,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
             unlimitedObject.destroy();
         }
         for (UnlimitedObject entry : unlimitedEntryMap.values()) {
-            entry.removeNearbyPlayer(quit);
+            entry.removeNearbyPlayerNaturally(quit);
         }
     }
 
@@ -188,12 +193,12 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         if (deSpawned == null) return;
         UnlimitedObject unlimitedObject = getUnlimitedObject(deSpawned.getUniqueId());
         if (unlimitedObject == null) return;
-        unlimitedObject.removeNearbyPlayer(receiver);
+        unlimitedObject.removeNearbyPlayerNaturally(receiver);
     }
 
     public void handlePlayerSneak(Player sneaker, boolean sneaking, boolean flying) {
         UnlimitedObject unlimitedObject = getUnlimitedObject(sneaker.getUniqueId());
-        if (unlimitedObject == null) return;
-        unlimitedObject.sneak(sneaking, flying);
+        if (!(unlimitedObject instanceof UnlimitedPlayer unlimitedPlayer)) return;
+        unlimitedPlayer.sneak(sneaking, flying);
     }
 }
