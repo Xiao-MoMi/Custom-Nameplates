@@ -179,9 +179,7 @@ public class NamedEntityImpl implements NamedEntity {
     @Override
     public void spawn(Player viewer, Pose pose) {
         if (viewerText.updateForViewer(viewer)) {
-            for (PacketContainer packet : getSpawnPackets(viewerText.getLatestValue(viewer), pose)) {
-                PacketManager.getInstance().send(viewer, packet);
-            }
+            PacketManager.getInstance().send(viewer, getSpawnPackets(viewerText.getLatestValue(viewer), pose));
         }
     }
 

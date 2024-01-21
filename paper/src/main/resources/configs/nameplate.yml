@@ -8,7 +8,6 @@ preview-duration: 5
 default-nameplate: 'none'
 
 # This decides what %nameplates_prefix/suffix% would return
-# Check xxx for examples
 nameplate:
   refresh-frequency: 10
   prefix: ''

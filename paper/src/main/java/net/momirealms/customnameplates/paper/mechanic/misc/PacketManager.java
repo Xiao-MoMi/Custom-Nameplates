@@ -8,6 +8,10 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PacketManager {
 
     private static PacketManager instance;
@@ -33,9 +37,11 @@ public class PacketManager {
     }
 
     public void send(Player player, PacketContainer... packets) {
-        if (plugin.getVersionManager().isVersionNewerThan1_20()) {
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.BUNDLE);
-
+        if (plugin.getVersionManager().isVersionNewerThan1_19_R3()) {
+            List<PacketContainer> bundle = new ArrayList<>(Arrays.asList(packets));
+            PacketContainer bundlePacket = new PacketContainer(PacketType.Play.Server.BUNDLE);
+            bundlePacket.getPacketBundles().write(0, bundle);
+            send(player, bundlePacket);
         } else {
             for (PacketContainer packet : packets) {
                 send(player, packet);

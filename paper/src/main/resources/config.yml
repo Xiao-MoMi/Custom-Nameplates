@@ -24,6 +24,7 @@ modules:
   images: true
 
 # Integrations
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/compatibility
 integrations:
   resource-pack:
     ItemsAdder: false
