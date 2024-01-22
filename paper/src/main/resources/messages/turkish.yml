@@ -21,10 +21,10 @@ messages:
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Sohbet balonlarınız başarıyla eklendi {Bubble}</white>'
-  force-equip-bubbles: '<white>{Bubbles} sohbet balonları başarıyla eklendi.</white>'
+  force-equip-bubbles: '<white>{Bubble} sohbet balonları başarıyla eklendi.</white>'
   unequip-bubbles: '<white>Sohbet balonlarınızı kaldırdınız</white>'
   force-unequip-bubbles: '<white>{Player} oyuncusunun sohbet balonları başarıyla kaldırıldı!</white>'
   not-exist-bubbles: '<white>Bu balon mevcut değil!</white>'
   not-available-bubbles: '<white>Bu balon şu anda kullanılabilir değil!</white>'
-  available-bubbles: '<white>Mevcut sohbet balonları: {Bubbles}.</white>'
+  available-bubbles: '<white>Mevcut sohbet balonları: {Bubble}.</white>'
   have-no-bubbles: '<white>Henüz hiç sohbet balonunuz yok</white>'

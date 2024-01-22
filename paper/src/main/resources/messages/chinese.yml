@@ -21,8 +21,8 @@ messages:
 
   equip-bubbles: '<white>你已佩戴聊天气泡 {Bubble}</white>'
   unequip-bubbles: '<white>你已卸下聊天气泡</white>'
-  available-bubbles: '<white>可用聊天气泡: {Bubbles}</white>'
-  force-equip-bubbles: '<white>成功使用聊天气泡 {Bubbles}</white>'
+  available-bubbles: '<white>可用聊天气泡: {Bubble}</white>'
+  force-equip-bubbles: '<white>成功使用聊天气泡 {Bubble}</white>'
   force-unequip-bubbles: '<white>你移除了 {Player} 的聊天气泡</white>'
   not-exist-bubbles: '<white>那个聊天气泡不存在!</white>'
   not-available-bubbles: '<white>你还未拥有这个气泡!</white>'

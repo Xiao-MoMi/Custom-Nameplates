@@ -3,6 +3,7 @@ package net.momirealms.customnameplates.paper.mechanic.placeholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
+import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
@@ -134,9 +135,19 @@ public class PluginPlaceholders extends PlaceholderExpansion {
                     case "nameplate-name" -> {
                         Nameplate nameplate = optPlayer.get().getNameplate();
                         if (nameplate == null) {
-                            return CNLocale.MSG_NO_NAMEPLATE;
+                            return "";
                         }
                         return nameplate.getDisplayName();
+                    }
+                    case "bubble" -> {
+                        return optPlayer.get().getBubbleKey();
+                    }
+                    case "bubble-name" -> {
+                        Bubble bubble = optPlayer.get().getBubble();
+                        if (bubble == null) {
+                            return "";
+                        }
+                        return bubble.getDisplayName();
                     }
                 }
             }

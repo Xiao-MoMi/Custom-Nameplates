@@ -20,10 +20,10 @@ messages:
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Correctamente equipado chatting bubbles {Bubble}</white>'
-  force-equip-bubbles: '<white>Correctamente equipdo chatting bubbles {Bubbles}</white>'
+  force-equip-bubbles: '<white>Correctamente equipdo chatting bubbles {Bubble}</white>'
   unequip-bubbles: '<white>Se ha removido tu chatting bubbles</white>'
   force-unequip-bubbles: '<white>Se ha removido tu chatting bubbles</white>'
   not-exist-bubbles: '<white>Este bubble no existe</white>'
   not-available-bubbles: '<white>Este bubble no esta actualmente disponible!</white>'
-  available-bubbles: '<white>Bubbles Disponibles: {Bubbles}</white>'
+  available-bubbles: '<white>Bubbles Disponibles: {Bubble}</white>'
   have-no-bubbles: '<white>Todavía no tienes ningun bubble'

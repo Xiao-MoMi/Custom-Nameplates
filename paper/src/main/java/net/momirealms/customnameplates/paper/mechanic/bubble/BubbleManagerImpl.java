@@ -24,6 +24,8 @@ import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
+import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
+import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextTagSetting;
@@ -306,6 +308,11 @@ public class BubbleManagerImpl implements BubbleManager {
         return result;
     }
 
+    @Override
+    public Collection<String> getBubbleKeys() {
+        return bubbleMap.keySet();
+    }
+
     @Nullable
     @Override
     public Bubble getBubble(String bubble) {
@@ -347,6 +354,42 @@ public class BubbleManagerImpl implements BubbleManager {
     @Override
     public Collection<Bubble> getBubbles() {
         return bubbleMap.values();
+    }
+
+    @Override
+    public boolean equipBubble(Player player, String bubbleKey) {
+        Bubble bubble = getBubble(bubbleKey);
+        if (bubble == null && bubbleKey.equals("none")) {
+            return false;
+        }
+        plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
+            if (it.getBubbleKey().equals(bubbleKey)) {
+                return;
+            }
+            it.setBubble(bubbleKey);
+            plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
+        }, () -> {
+            LogUtils.severe("Player " + player.getName() + "'s data is not loaded.");
+        });
+        return true;
+    }
+
+    @Override
+    public void unEquipBubble(Player player) {
+        plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
+            if (it.getBubbleKey().equals("none")) {
+                return;
+            }
+            it.setNameplate("none");
+            plugin.getStorageManager().saveOnlinePlayerData(player.getUniqueId());
+        }, () -> {
+            LogUtils.severe("Player " + player.getName() + "'s data is not loaded.");
+        });
+    }
+
+    @Override
+    public String getDefaultBubble() {
+        return defaultBubble;
     }
 
     private void saveDefaultBubbles() {

@@ -4,7 +4,7 @@ mode: TEAM
 # The duration (in seconds) that the nameplate preview will last for.
 preview-duration: 5
 
-# Default nameplate to display if player doesn't equip any
+# Default nameplate to display if player's nameplate is "none"
 default-nameplate: 'none'
 
 # This decides what %nameplates_prefix/suffix% would return

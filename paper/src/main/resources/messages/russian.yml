@@ -20,10 +20,10 @@ messages:
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Успешно установлен стиль чата над головой: {Bubble}</white>'
-  force-equip-bubbles: '<white>Успешно установлен стиль чата над головой: {Bubbles}</white>'
+  force-equip-bubbles: '<white>Успешно установлен стиль чата над головой: {Bubble}</white>'
   unequip-bubbles: '<white>Вы сняли стиль чата над головой.</white>'
   force-unequip-bubbles: '<white>Успешно снят стиль чата над головой у {Player}!</white>'
   not-exist-bubbles: '<white>Такого стиля чата над головой не существует!</white>'
   not-available-bubbles: '<white>Этот стиль чата над головой сейчас недоступен!</white>'
-  available-bubbles: '<white>Доступные стили чата над головой: {Bubbles}</white>'
+  available-bubbles: '<white>Доступные стили чата над головой: {Bubble}</white>'
   have-no-bubbles: '<white>У вас еще нет никаких стилей чата над головой.'

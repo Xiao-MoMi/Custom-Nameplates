@@ -479,7 +479,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     @Override
     public boolean equipNameplate(Player player, String nameplateKey, boolean temp) {
         Nameplate nameplate = getNameplate(nameplateKey);
-        if (nameplate == null && !nameplateKey.equals("none")) {
+        if (nameplate == null && nameplateKey.equals("none")) {
             return false;
         }
         plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
@@ -502,6 +502,9 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     @Override
     public void unEquipNameplate(Player player, boolean temp) {
         plugin.getStorageManager().getOnlineUser(player.getUniqueId()).ifPresentOrElse(it -> {
+            if (it.getNameplateKey().equals("none")) {
+                return;
+            }
             it.setNameplate("none");
             this.updateCachedNameplate(player, getNameplate(getDefaultNameplate()));
             NameplatePlayer nameplatePlayer = getNameplatePlayer(player.getUniqueId());

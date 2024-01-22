@@ -20,10 +20,10 @@ messages:
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 
   equip-bubbles: '<white>Bulles de discussion {Bubble} équipées avec succès</white>'
-  force-equip-bubbles: '<white>Bulles de discussion {Bubbles} équipées avec succès</white>'
+  force-equip-bubbles: '<white>Bulles de discussion {Bubble} équipées avec succès</white>'
   unequip-bubbles: '<white>Vous avez retiré vos bulles de discussion</white>'
   force-unequip-bubbles: '<white>Les bulles de discussion de {Player} ont été retirées avec succès !</white>'
   not-exist-bubbles: '<white>Cette bulle de discussion n'existe pas !</white>'
   not-available-bubbles: '<white>Cette bulle de discussion n'est actuellement pas disponible !</white>'
-  available-bubbles: '<white>Bulles de discussion disponibles : {Bubbles}.</white>'
+  available-bubbles: '<white>Bulles de discussion disponibles : {Bubble}.</white>'
   have-no-bubbles: '<white>Vous n'avez pas encore de bulles de discussion</white>'

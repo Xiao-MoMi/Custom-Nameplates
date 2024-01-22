@@ -1,8 +1,11 @@
 package net.momirealms.customnameplates.api.data;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -36,6 +39,7 @@ public class OnlineUser {
     /**
      * Get the original nameplate key from data
      */
+    @NotNull
     public String getNameplateKey() {
         return nameplate;
     }
@@ -43,6 +47,7 @@ public class OnlineUser {
     /**
      * Get the original bubble key from data
      */
+    @NotNull
     public String getBubbleKey() {
         return bubble;
     }
@@ -51,12 +56,22 @@ public class OnlineUser {
      * This value might be inconsistent with the key get by "getNameplateKey()"
      * Because if a player doesn't have a nameplate, his nameplate would be the default one
      */
+    @Nullable
     public Nameplate getNameplate() {
         String temp = nameplate;
         if (temp.equals("none")) {
             temp = CustomNameplatesPlugin.get().getNameplateManager().getDefaultNameplate();
         }
         return CustomNameplatesPlugin.get().getNameplateManager().getNameplate(temp);
+    }
+
+    @Nullable
+    public Bubble getBubble() {
+        String temp = nameplate;
+        if (temp.equals("none")) {
+            temp = CustomNameplatesPlugin.get().getBubbleManager().getDefaultBubble();
+        }
+        return CustomNameplatesPlugin.get().getBubbleManager().getBubble(temp);
     }
 
     /**

@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface BubbleManager {
 
-
     boolean registerBubble(String key, Bubble bubble);
 
     boolean unregisterBubble(String key);
@@ -25,4 +24,12 @@ public interface BubbleManager {
     String[] getBlacklistChannels();
 
     Collection<Bubble> getBubbles();
+
+    boolean equipBubble(Player player, String bubble);
+
+    void unEquipBubble(Player player);
+
+    String getDefaultBubble();
+
+    Collection<String> getBubbleKeys();
 }

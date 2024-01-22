@@ -3,7 +3,7 @@ blacklist-channels:
   - Private
   - Staff
 
-# Player's default chatting bubbles
+# Default bubble to display if player's bubble is "none"
 default-bubbles: 'chat'
 
 # Text format when bubble is "none"

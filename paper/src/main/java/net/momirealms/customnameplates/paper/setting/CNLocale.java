@@ -33,14 +33,14 @@ public class CNLocale {
     public static String MSG_AVAILABLE_NAMEPLATE;
     public static String MSG_HAVE_NO_NAMEPLATE;
     public static String MSG_FORCE_PREVIEW;
-    public static String bb_equip;
-    public static String bb_unEquip;
-    public static String bb_force_equip;
-    public static String bb_force_unEquip;
-    public static String bb_not_exist;
-    public static String bb_notAvailable;
-    public static String bb_available;
-    public static String bb_haveNone;
+    public static String MSG_EQUIP_BUBBLE;
+    public static String MSG_UNEQUIP_BUBBLE;
+    public static String MSG_FORCE_EQUIP_BUBBLE;
+    public static String MSG_FORCE_UNEQUIP_BUBBLE;
+    public static String MSG_BUBBLE_NOT_EXIST;
+    public static String MSG_BUBBLE_NOT_AVAILABLE;
+    public static String MSG_AVAILABLE_BUBBLE;
+    public static String MSG_HAVE_NO_BUBBLE;
 
     public static void load() {
         try {
@@ -83,14 +83,14 @@ public class CNLocale {
             MSG_AVAILABLE_NAMEPLATE = config.getString("messages.available-nameplates");
             MSG_HAVE_NO_NAMEPLATE = config.getString("messages.have-no-nameplates");
             MSG_FORCE_PREVIEW = config.getString("messages.force-preview");
-            bb_equip = config.getString("messages.equip-bubbles");
-            bb_unEquip = config.getString("messages.unequip-bubbles");
-            bb_force_equip = config.getString("messages.force-equip-bubbles");
-            bb_force_unEquip = config.getString("messages.force-unequip-bubbles");
-            bb_not_exist = config.getString("messages.not-exist-bubbles");
-            bb_notAvailable = config.getString("messages.not-available-bubbles");
-            bb_available = config.getString("messages.available-bubbles");
-            bb_haveNone = config.getString("messages.have-no-bubbles");
+            MSG_EQUIP_BUBBLE = config.getString("messages.equip-bubbles");
+            MSG_UNEQUIP_BUBBLE = config.getString("messages.unequip-bubbles");
+            MSG_FORCE_EQUIP_BUBBLE = config.getString("messages.force-equip-bubbles");
+            MSG_FORCE_UNEQUIP_BUBBLE = config.getString("messages.force-unequip-bubbles");
+            MSG_BUBBLE_NOT_EXIST = config.getString("messages.not-exist-bubbles");
+            MSG_BUBBLE_NOT_AVAILABLE = config.getString("messages.not-available-bubbles");
+            MSG_AVAILABLE_BUBBLE = config.getString("messages.available-bubbles");
+            MSG_HAVE_NO_BUBBLE = config.getString("messages.have-no-bubbles");
         }
     }
 }

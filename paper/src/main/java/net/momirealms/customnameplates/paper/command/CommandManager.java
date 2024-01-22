@@ -26,11 +26,13 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.OnlineUser;
+import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.setting.CNLocale;
 import org.bukkit.entity.Player;
 
@@ -51,181 +53,284 @@ public class CommandManager {
     }
 
     public void load() {
-        new CommandAPICommand("customnameplates")
+        var command1 = new CommandAPICommand("customnameplates")
                 .withAliases("nameplates", "cnameplates")
                 .withSubcommands(
-                        getReloadCommand(),
-                        getAboutCommand(),
-                        getEquipCommand(),
-                        getUnEquipCommand(),
-                        getPreviewCommand(),
-                        getListCommand(),
-                        getForceEquipCommand(),
-                        getForceUnEquipCommand(),
-                        getForcePreviewCommand()
-                )
-                .register();
+                        NameplatesCommands.getReloadCommand(),
+                        NameplatesCommands.getAboutCommand()
+                );
+        if (CNConfig.nameplateModule) {
+            command1.withSubcommands(
+                    NameplatesCommands.getEquipCommand(),
+                    NameplatesCommands.getUnEquipCommand(),
+                    NameplatesCommands.getPreviewCommand(),
+                    NameplatesCommands.getListCommand(),
+                    NameplatesCommands.getForceEquipCommand(),
+                    NameplatesCommands.getForceUnEquipCommand(),
+                    NameplatesCommands.getForcePreviewCommand()
+            );
+        }
+        command1.register();
+        if (CNConfig.bubbleModule)
+            new CommandAPICommand("bubbles")
+                    .withSubcommands(
+                            BubblesCommands.getListCommand(),
+                            BubblesCommands.getEquipCommand(),
+                            BubblesCommands.getUnEquipCommand(),
+                            BubblesCommands.getForceEquipCommand(),
+                            BubblesCommands.getForceUnEquipCommand()
+                    )
+                    .register();
     }
 
-    private CommandAPICommand getForceEquipCommand() {
-        return new CommandAPICommand("force-equip")
-                .withPermission("customnameplates.admin")
-                .withArguments(new PlayerArgument("player"))
-                .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> plugin.getNameplateManager().getNameplateKeys().toArray(new String[0]))))
-                .executes((sender, args) -> {
+    public static class BubblesCommands {
+
+        public static CommandAPICommand getListCommand() {
+            return new CommandAPICommand("list")
+                    .withPermission("bubbles.list")
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.bubbleModule) return;
+                        List<String> bubbles = CustomNameplatesPlugin.get().getBubbleManager().getAvailableBubblesDisplayNames(player);
+                        if (bubbles.size() != 0) {
+                            StringJoiner stringJoiner = new StringJoiner(", ");
+                            for (String availableBubble : bubbles) {
+                                stringJoiner.add(availableBubble);
+                            }
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_BUBBLE.replace("{Bubble}", stringJoiner.toString()));
+                        } else {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_HAVE_NO_BUBBLE);
+                        }
+                    });
+        }
+
+        public static CommandAPICommand getEquipCommand() {
+            return new CommandAPICommand("equip")
+                    .withPermission("bubbles.equip")
+                    .withArguments(new StringArgument("bubble").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getBubbleManager().getAvailableBubbles((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.bubbleModule) return;
+                        String bubble = (String) args.get("bubble");
+                        if (!CustomNameplatesPlugin.get().getBubbleManager().equipBubble(player, bubble)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_BUBBLE_NOT_EXIST);
+                            return;
+                        }
+                        Bubble bubbleInstance = CustomNameplatesPlugin.get().getBubbleManager().getBubble(bubble);
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_BUBBLE.replace("{Bubble}", bubbleInstance.getDisplayName()));
+                    });
+        }
+
+        public static CommandAPICommand getUnEquipCommand() {
+            return new CommandAPICommand("unequip")
+                    .withPermission("bubbles.unequip")
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.bubbleModule) return;
+                        CustomNameplatesPlugin.get().getBubbleManager().unEquipBubble(player);
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_UNEQUIP_BUBBLE);
+                    });
+        }
+
+        public static CommandAPICommand getForceEquipCommand() {
+            return new CommandAPICommand("force-equip")
+                    .withPermission("customnameplates.admin")
+                    .withArguments(new PlayerArgument("player"))
+                    .withArguments(new StringArgument("bubble").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getBubbleManager().getBubbleKeys().toArray(new String[0]))))
+                    .executes((sender, args) -> {
+                        if (!CNConfig.bubbleModule) return;
+                        Player player = (Player) args.get("player");
+                        String bubble = (String) args.get("bubble");
+                        if (player == null) return;
+                        if (!CustomNameplatesPlugin.get().getBubbleManager().equipBubble(player, bubble)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_BUBBLE_NOT_EXIST);
+                            return;
+                        }
+                        Bubble bubbleInstance = CustomNameplatesPlugin.get().getBubbleManager().getBubble(bubble);
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_EQUIP_BUBBLE.replace("{Bubble}", bubbleInstance.getDisplayName()).replace("{Player}", player.getName()));
+                    });
+        }
+
+        public static CommandAPICommand getForceUnEquipCommand() {
+            return new CommandAPICommand("force-unequip")
+                    .withPermission("customnameplates.admin")
+                    .withArguments(new PlayerArgument("player"))
+                    .executes((sender, args) -> {
+                        if (!CNConfig.bubbleModule) return;
+                        Player player = (Player) args.get("player");
+                        if (player == null) return;
+                        CustomNameplatesPlugin.get().getBubbleManager().unEquipBubble(player);
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_UNEQUIP_BUBBLE.replace("{Player}", player.getName()));
+                    });
+        }
+
+    }
+
+    public static class NameplatesCommands {
+        public static CommandAPICommand getForceEquipCommand() {
+            return new CommandAPICommand("force-equip")
+                    .withPermission("customnameplates.admin")
+                    .withArguments(new PlayerArgument("player"))
+                    .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getNameplateManager().getNameplateKeys().toArray(new String[0]))))
+                    .executes((sender, args) -> {
+                        if (!CNConfig.nameplateModule) return;
                         Player player = (Player) args.get("player");
                         String nameplate = (String) args.get("nameplate");
                         if (player == null) return;
-                        if (!plugin.getNameplateManager().equipNameplate(player, nameplate, false)) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
-                                return;
+                        if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, false)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
+                            return;
                         }
-                        Nameplate nameplateInstance = plugin.getNameplateManager().getNameplate(nameplate);
+                        Nameplate nameplateInstance = CustomNameplatesPlugin.get().getNameplateManager().getNameplate(nameplate);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_EQUIP_NAMEPLATE.replace("{Nameplate}", nameplateInstance.getDisplayName()).replace("{Player}", player.getName()));
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getForceUnEquipCommand() {
-        return new CommandAPICommand("force-unequip")
-                .withPermission("customnameplates.admin")
-                .withArguments(new PlayerArgument("player"))
-                .executes((sender, args) -> {
+        public static CommandAPICommand getForceUnEquipCommand() {
+            return new CommandAPICommand("force-unequip")
+                    .withPermission("customnameplates.admin")
+                    .withArguments(new PlayerArgument("player"))
+                    .executes((sender, args) -> {
+                        if (!CNConfig.nameplateModule) return;
                         Player player = (Player) args.get("player");
                         if (player == null) return;
-                        plugin.getNameplateManager().unEquipNameplate(player, false);
+                        CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, false);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_UNEQUIP_NAMEPLATE.replace("{Player}", player.getName()));
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getPreviewCommand() {
-        return new CommandAPICommand("preview")
-                .withPermission("nameplates.preview")
-                .executesPlayer((player, args) -> {
-                        NameplatePlayer nameplatePlayer = plugin.getNameplateManager().getNameplatePlayer(player.getUniqueId());
+        public static CommandAPICommand getPreviewCommand() {
+            return new CommandAPICommand("preview")
+                    .withPermission("nameplates.preview")
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.nameplateModule) return;
+                        NameplatePlayer nameplatePlayer = CustomNameplatesPlugin.get().getNameplateManager().getNameplatePlayer(player.getUniqueId());
                         if (nameplatePlayer == null) {
-                                LogUtils.warn(player.getName() + " failed to preview because no tag is created");
-                                return;
+                            LogUtils.warn(player.getName() + " failed to preview because no tag is created");
+                            return;
                         }
                         if (nameplatePlayer.isPreviewing()) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_PREVIEW_COOLDOWN);
-                                return;
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_PREVIEW_COOLDOWN);
+                            return;
                         }
                         nameplatePlayer.setPreview(true);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_PREVIEW_START);
-                        plugin.getScheduler().runTaskAsyncLater(() -> {
-                                nameplatePlayer.setPreview(false);
-                        }, plugin.getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
-                });
-    }
+                        CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
+                            nameplatePlayer.setPreview(false);
+                        }, CustomNameplatesPlugin.get().getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                    });
+        }
 
-    private CommandAPICommand getForcePreviewCommand() {
-        return new CommandAPICommand("force-preview")
-                .withPermission("customnameplates.admin")
-                .withArguments(new PlayerArgument("player"))
-                .withOptionalArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> plugin.getNameplateManager().getNameplateKeys().toArray(new String[0]))))
-                .executes((sender, args) -> {
+        public static CommandAPICommand getForcePreviewCommand() {
+            return new CommandAPICommand("force-preview")
+                    .withPermission("customnameplates.admin")
+                    .withArguments(new PlayerArgument("player"))
+                    .withOptionalArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getNameplateManager().getNameplateKeys().toArray(new String[0]))))
+                    .executes((sender, args) -> {
+                        if (!CNConfig.nameplateModule) return;
                         Player player = (Player) args.get("player");
                         String nameplate = (String) args.getOrDefault("nameplate", "");
                         if (player == null) return;
-                        NameplatePlayer nameplatePlayer = plugin.getNameplateManager().getNameplatePlayer(player.getUniqueId());
+                        NameplatePlayer nameplatePlayer = CustomNameplatesPlugin.get().getNameplateManager().getNameplatePlayer(player.getUniqueId());
                         if (nameplatePlayer == null) {
-                                LogUtils.warn(player.getName() + " failed to preview because no tag is created");
-                                return;
+                            LogUtils.warn(player.getName() + " failed to preview because no tag is created");
+                            return;
                         }
                         if (nameplatePlayer.isPreviewing()) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PREVIEW_COOLDOWN);
-                                return;
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PREVIEW_COOLDOWN);
+                            return;
                         }
-                        Optional<OnlineUser> user = plugin.getStorageManager().getOnlineUser(player.getUniqueId());
+                        Optional<OnlineUser> user = CustomNameplatesPlugin.get().getStorageManager().getOnlineUser(player.getUniqueId());
                         if (user.isEmpty()) {
-                                LogUtils.warn(player.getName() + " failed to preview because data not loaded");
-                                return;
+                            LogUtils.warn(player.getName() + " failed to preview because data not loaded");
+                            return;
                         }
                         String previous = user.get().getNameplateKey();
-                        if (!plugin.getNameplateManager().equipNameplate(player, nameplate, true)) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
-                                return;
+                        if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, true)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
+                            return;
                         }
                         nameplatePlayer.setPreview(true);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_PREVIEW.replace("{Player}", player.getName()));
-                        plugin.getScheduler().runTaskAsyncLater(() -> {
-                                nameplatePlayer.setPreview(false);
-                                plugin.getNameplateManager().equipNameplate(player, previous, true);
-                        }, plugin.getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
-                });
-    }
+                        CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
+                            nameplatePlayer.setPreview(false);
+                            if (previous.equals("none")) {
+                                CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, true);
+                            } else {
+                                CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, previous, true);
+                            }
+                        }, CustomNameplatesPlugin.get().getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                    });
+        }
 
-    private CommandAPICommand getEquipCommand() {
-        return new CommandAPICommand("equip")
-                .withPermission("nameplates.equip")
-                .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> plugin.getNameplateManager().getAvailableNameplates((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
-                .executesPlayer((player, args) -> {
+        public static CommandAPICommand getEquipCommand() {
+            return new CommandAPICommand("equip")
+                    .withPermission("nameplates.equip")
+                    .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getNameplateManager().getAvailableNameplates((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.nameplateModule) return;
                         String nameplate = (String) args.get("nameplate");
-                        Nameplate nameplateInstance = plugin.getNameplateManager().getNameplate(nameplate);
-                        if (nameplateInstance == null) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_AVAILABLE);
-                                return;
+                        if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, false)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
+                            return;
                         }
-                        if (!plugin.getNameplateManager().equipNameplate(player, nameplate, false)) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
-                                return;
-                        }
+                        Nameplate nameplateInstance = CustomNameplatesPlugin.get().getNameplateManager().getNameplate(nameplate);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_NAMEPLATE.replace("{Nameplate}", nameplateInstance.getDisplayName()));
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getUnEquipCommand() {
-        return new CommandAPICommand("unequip")
-                .withPermission("nameplates.unequip")
-                .executesPlayer((player, args) -> {
-                        plugin.getNameplateManager().unEquipNameplate(player, false);
+        public static CommandAPICommand getUnEquipCommand() {
+            return new CommandAPICommand("unequip")
+                    .withPermission("nameplates.unequip")
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.nameplateModule) return;
+                        CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, false);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_UNEQUIP_NAMEPLATE);
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getListCommand() {
-        return new CommandAPICommand("list")
-                .withPermission("nameplates.list")
-                .executesPlayer((player, args) -> {
-                        List<String> nameplates = plugin.getNameplateManager().getAvailableNameplateDisplayNames(player);
+        public static CommandAPICommand getListCommand() {
+            return new CommandAPICommand("list")
+                    .withPermission("nameplates.list")
+                    .executesPlayer((player, args) -> {
+                        if (!CNConfig.nameplateModule) return;
+                        List<String> nameplates = CustomNameplatesPlugin.get().getNameplateManager().getAvailableNameplateDisplayNames(player);
                         if (nameplates.size() != 0) {
-                                StringJoiner stringJoiner = new StringJoiner(", ");
-                                for (String availableNameplate : nameplates) {
-                                        stringJoiner.add(availableNameplate);
-                                }
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_NAMEPLATE.replace("{Nameplates}", stringJoiner.toString()));
+                            StringJoiner stringJoiner = new StringJoiner(", ");
+                            for (String availableNameplate : nameplates) {
+                                stringJoiner.add(availableNameplate);
+                            }
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_NAMEPLATE.replace("{Nameplates}", stringJoiner.toString()));
                         } else {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_HAVE_NO_NAMEPLATE);
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_HAVE_NO_NAMEPLATE);
                         }
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getReloadCommand() {
-        return new CommandAPICommand("reload")
-                .withPermission("customnameplates.admin")
-                .withOptionalArguments(new BooleanArgument("generate pack"))
-                .executes((sender, args) -> {
+        public static CommandAPICommand getReloadCommand() {
+            return new CommandAPICommand("reload")
+                    .withPermission("customnameplates.admin")
+                    .withOptionalArguments(new BooleanArgument("generate pack"))
+                    .executes((sender, args) -> {
                         long time = System.currentTimeMillis();
-                        plugin.reload(false);
+                        CustomNameplatesPlugin.get().reload(false);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_RELOAD.replace("{time}", String.valueOf(System.currentTimeMillis()-time)));
                         boolean generate = (boolean) args.getOrDefault("generate pack", true);
                         if (generate) {
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_GENERATING);
-                                plugin.getResourcePackManager().generateResourcePack();
-                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_GENERATING);
+                            CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
                         }
-                });
-    }
+                    });
+        }
 
-    private CommandAPICommand getAboutCommand() {
-        return new CommandAPICommand("about")
-                .withPermission("customnameplates.about")
-                .executes((sender, args) -> {
-                AdventureManagerImpl.getInstance().sendMessage(sender, "<#3CB371>⚓ CustomNameplates <gray>- <#98FB98>" + CustomNameplatesPlugin.getInstance().getVersionManager().getPluginVersion());
-                AdventureManagerImpl.getInstance().sendMessage(sender, "<#7FFFAA>A plugin that provides adjustable images for texts");
-                AdventureManagerImpl.getInstance().sendMessage(sender, "<#DA70D6>\uD83E\uDDEA Author: <#FFC0CB>XiaoMoMi");
-                AdventureManagerImpl.getInstance().sendMessage(sender, "<#FF7F50>\uD83D\uDD25 Contributors: <#FFA07A>TopOrigin<white>");
-                AdventureManagerImpl.getInstance().sendMessage(sender, "<#FFD700>⭐ <click:open_url:https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates>Document</click> <#A9A9A9>| <#FAFAD2>⛏ <click:open_url:https://github.com/Xiao-MoMi/Custom-Nameplates>Github</click> <#A9A9A9>| <#48D1CC>\uD83D\uDD14 <click:open_url:https://polymart.org/resource/customnameplates.2543>Polymart</click>");
-        });
+        public static CommandAPICommand getAboutCommand() {
+            return new CommandAPICommand("about")
+                    .withPermission("customnameplates.about")
+                    .executes((sender, args) -> {
+                        AdventureManagerImpl.getInstance().sendMessage(sender, "<#3CB371>⚓ CustomNameplates <gray>- <#98FB98>" + CustomNameplatesPlugin.getInstance().getVersionManager().getPluginVersion());
+                        AdventureManagerImpl.getInstance().sendMessage(sender, "<#7FFFAA>A plugin that provides adjustable images for texts");
+                        AdventureManagerImpl.getInstance().sendMessage(sender, "<#DA70D6>\uD83E\uDDEA Author: <#FFC0CB>XiaoMoMi");
+                        AdventureManagerImpl.getInstance().sendMessage(sender, "<#FF7F50>\uD83D\uDD25 Contributors: <#FFA07A>TopOrigin<white>");
+                        AdventureManagerImpl.getInstance().sendMessage(sender, "<#FFD700>⭐ <click:open_url:https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates>Document</click> <#A9A9A9>| <#FAFAD2>⛏ <click:open_url:https://github.com/Xiao-MoMi/Custom-Nameplates>Github</click> <#A9A9A9>| <#48D1CC>\uD83D\uDD14 <click:open_url:https://polymart.org/resource/customnameplates.2543>Polymart</click>");
+                    });
+        }
     }
 }

@@ -60,8 +60,8 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.coolDownManager = new CoolDownManager(this);
         this.packetManager = new PacketManager(this);
-        new CommandManager(this).load();
         this.reload(CNConfig.generatePackOnStart);
+        new CommandManager(this).load();
         this.versionManager.checkUpdate().thenAccept(outDated -> {
             if (!outDated) this.getAdventure().sendConsoleMessage("[CustomNameplates] You are using the latest version.");
             else this.getAdventure().sendConsoleMessage("[CustomNameplates] Update is available: <u>https://polymart.org/resource/2543<!u>");
