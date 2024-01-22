@@ -69,7 +69,7 @@ public class TeamPreviewSimpleEntity {
 
     public void update() {
         if (teamPlayer.getPrefix().updateForViewer(teamPlayer.getPlayer()) | teamPlayer.getSuffix().updateForViewer(teamPlayer.getPlayer()))
-            PacketManager.getInstance().send(teamPlayer.getPlayer(), getMetaPacket(getTagString()));
+            PacketManager.getInstance().send(teamPlayer.getPlayer(), FakeEntityUtils.getMetaPacket(entityId, getTagString(), false));
     }
 
     public int getEntityId() {
@@ -90,35 +90,6 @@ public class TeamPreviewSimpleEntity {
         return packet;
     }
 
-    protected PacketContainer getMetaPacket(String text) {
-        PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-        metaPacket.getIntegers().write(0, entityId);
-        String json = AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(text));
-        if (CustomNameplatesPlugin.getInstance().getVersionManager().isVersionNewerThan1_19_R2()) {
-            WrappedDataWatcher wrappedDataWatcher = createArmorStandDataWatcher(json);
-            List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
-            wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> wrappedDataValueList.add(new WrappedDataValue(entry.getWatcherObject().getIndex(), entry.getWatcherObject().getSerializer(), entry.getRawValue())));
-            metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
-        } else {
-            metaPacket.getWatchableCollectionModifier().write(0, createArmorStandDataWatcher(json).getWatchableObjects());
-        }
-        return metaPacket;
-    }
-
-    private WrappedDataWatcher createArmorStandDataWatcher(String json) {
-        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-        WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
-        WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(json).getHandle()));
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        byte flag = 0x20;
-        if (teamPlayer.getPlayer().isSneaking()) flag += (byte) 0x02;
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), flag);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), (byte) 0x01);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        return wrappedDataWatcher;
-    }
-
     private PacketContainer[] getSpawnPackets(String text) {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
@@ -128,7 +99,7 @@ public class TeamPreviewSimpleEntity {
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY() + 0.8);
         entityPacket.getDoubles().write(2, location.getZ());
-        PacketContainer metaPacket = getMetaPacket(text);
+        PacketContainer metaPacket = FakeEntityUtils.getMetaPacket(entityId, text, false);
         return new PacketContainer[] {entityPacket, metaPacket};
     }
 }
