@@ -19,17 +19,12 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.RequirementManager;
 import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextEntity;
 import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.requirement.Requirement;
-import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
@@ -37,7 +32,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class DynamicTextEntityImpl implements DynamicTextEntity {
@@ -46,7 +43,6 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     private final UnlimitedPlayer owner;
     private double yOffset;
     private final int entityId;
-    private boolean sneaking;
     private final ViewerText viewerText;
     private final Requirement[] ownerRequirements;
     private final Requirement[] viewerRequirements;
@@ -56,6 +52,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     private int checkTimer;
     private int refreshTimer;
     private boolean ownerCanShow;
+    private final PacketContainer destroyPacket;
 
     public DynamicTextEntityImpl(
             UnlimitedPlayer unlimitedPlayer,
@@ -70,13 +67,14 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         this.owner = unlimitedPlayer;
         this.yOffset = yOffset;
         this.viewerText = text;
-        this.sneaking = unlimitedPlayer.getPlayer().isSneaking();
         this.ownerRequirements = ownerRequirements;
         this.viewerRequirements = viewerRequirements;
         this.checkFrequency = checkFrequency;
         this.refreshFrequency = refreshFrequency;
         this.viewers = new Vector<>();
         this.ownerCanShow = RequirementManager.isRequirementMet(new Condition(owner.getPlayer()), ownerRequirements);
+        this.destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
+        this.destroyPacket.getIntLists().write(0, List.of(entityId));
     }
 
     @Override
@@ -196,8 +194,6 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
 
     @Override
     public void destroy() {
-        PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntLists().write(0, List.of(entityId));
         for (Player all : viewers) {
             PacketManager.getInstance().send(all, destroyPacket);
         }
@@ -207,8 +203,6 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
 
     @Override
     public void destroy(Player viewer) {
-        PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntLists().write(0, List.of(entityId));
         PacketManager.getInstance().send(viewer, destroyPacket);
         viewerText.removeViewer(viewer);
     }
@@ -222,6 +216,14 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     }
 
     @Override
+    public void teleport() {
+        PacketContainer packet = getTeleportPacket(getCorrection(owner.getPlayer().getPose()));
+        for (Player viewer : viewers) {
+            PacketManager.getInstance().send(viewer, packet);
+        }
+    }
+
+    @Override
     public void teleport(Player viewer, double x, double y, double z, boolean onGround) {
         if (viewers.contains(viewer)) {
             PacketManager.getInstance().send(viewer, getTeleportPacket(x, y, z, onGround));
@@ -230,10 +232,9 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
 
     @Override
     public void setSneak(boolean isSneaking, boolean onGround) {
-        this.sneaking = isSneaking;
         if (!onGround) {
             for (Player viewer : viewers) {
-                PacketManager.getInstance().send(viewer, getMetaPacket(viewerText.getLatestValue(viewer)));
+                PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, viewerText.getLatestValue(viewer), isSneaking));
             }
         }
     }
@@ -282,7 +283,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     @Override
     public void updateText(Player viewer) {
         if (viewerText.updateForViewer(viewer)) {
-            PacketManager.getInstance().send(viewer, getMetaPacket(viewerText.getLatestValue(viewer)));
+            PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, viewerText.getLatestValue(viewer), owner.getPlayer().isSneaking()));
         }
     }
 
@@ -331,21 +332,6 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         return packet;
     }
 
-    protected PacketContainer getMetaPacket(String text) {
-        PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-        metaPacket.getIntegers().write(0, entityId);
-        String json = AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(text));
-        if (CustomNameplatesPlugin.getInstance().getVersionManager().isVersionNewerThan1_19_R2()) {
-            WrappedDataWatcher wrappedDataWatcher = createArmorStandDataWatcher(json);
-            List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
-            wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> wrappedDataValueList.add(new WrappedDataValue(entry.getWatcherObject().getIndex(), entry.getWatcherObject().getSerializer(), entry.getRawValue())));
-            metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
-        } else {
-            metaPacket.getWatchableCollectionModifier().write(0, createArmorStandDataWatcher(json).getWatchableObjects());
-        }
-        return metaPacket;
-    }
-
     private Location getEntityLocation(double correction) {
         var player = owner.getPlayer();
         double x = player.getLocation().getX();
@@ -357,20 +343,6 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         return new Location(null, x, y, z);
     }
 
-    private WrappedDataWatcher createArmorStandDataWatcher(String json) {
-        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-        WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
-        WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(json).getHandle()));
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        byte flag = 0x20;
-        if (sneaking) flag += (byte) 0x02;
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), flag);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), (byte) 0x01);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        return wrappedDataWatcher;
-    }
-
     private PacketContainer[] getSpawnPackets(String text, Pose pose) {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
@@ -380,7 +352,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY());
         entityPacket.getDoubles().write(2, location.getZ());
-        PacketContainer metaPacket = getMetaPacket(text);
+        PacketContainer metaPacket = FakeEntityUtils.getMetaPacket(entityId, text, pose == Pose.SNEAKING);
         return new PacketContainer[] {entityPacket, metaPacket};
     }
 

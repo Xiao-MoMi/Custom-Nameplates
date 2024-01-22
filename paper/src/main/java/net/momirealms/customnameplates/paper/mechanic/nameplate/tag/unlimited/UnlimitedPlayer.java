@@ -1,9 +1,7 @@
 package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextEntity;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextTagSetting;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import org.bukkit.entity.Player;
@@ -11,29 +9,47 @@ import org.bukkit.entity.Pose;
 
 import java.util.Vector;
 
-public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer {
+public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer {
 
     private final Player owner;
-    private final Vector<DynamicTextEntity> tags;
+    private final Vector<DynamicTextEntity> dynamicTags;
     private double hatOffset;
     private boolean isPreviewing;
+    private boolean manageTeams;
 
     public UnlimitedPlayer(UnlimitedTagManagerImpl manager, Player player) {
         super(manager, player);
         this.owner = player;
-        this.tags = new Vector<>();
+        this.dynamicTags = new Vector<>();
+        this.manageTeams = false;
+    }
+
+    @Override
+    public void setManageTeams(boolean manageTeams) {
+        this.manageTeams = manageTeams;
     }
 
     @Override
     public void addTag(DynamicTextEntity tag) {
-        if (tags.contains(tag)) {
+        if (dynamicTags.contains(tag)) {
             return;
         }
-        tags.add(tag);
+        dynamicTags.add(tag);
         for (Player all : nearbyPlayers) {
             if (tag.canShow() && tag.canSee(all)) {
                 tag.addPlayerToViewers(all);
             }
+        }
+    }
+
+    @Override
+    public void addTag(StaticTextEntity tag) {
+        if (staticTags.contains(tag)) {
+            return;
+        }
+        staticTags.add(tag);
+        for (Player all : nearbyPlayers) {
+            tag.addPlayerToViewers(all);
         }
     }
 
@@ -45,15 +61,29 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
     }
 
     @Override
+    public StaticTextEntity addTag(StaticTextTagSetting setting) {
+        var tag = manager.createNamedEntity(this, setting);
+        addTag(tag);
+        return tag;
+    }
+
+    @Override
     public void removeTag(DynamicTextEntity tag) {
-        if (tags.remove(tag)) {
+        if (dynamicTags.remove(tag)) {
             tag.destroy();
         }
     }
 
     @Override
-    public Vector<DynamicTextEntity> getTags() {
-        return tags;
+    public void removeTag(StaticTextEntity tag) {
+        if (staticTags.remove(tag)) {
+            tag.destroy();
+        }
+    }
+
+    @Override
+    public Vector<DynamicTextEntity> getDynamicTags() {
+        return dynamicTags;
     }
 
     @Override
@@ -86,7 +116,7 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
 
     @Override
     public void updateText() {
-        for (DynamicTextEntity tag : tags) {
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.updateText();
         }
     }
@@ -103,7 +133,12 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
         }
         nearbyPlayers.add(player);
         setNameInvisibleFor(player);
-        for (DynamicTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
+            if (tag.getComeRule().isPassed(player, entity)) {
+                tag.addPlayerToViewers(player);
+            }
+        }
+        for (DynamicTextEntity tag : dynamicTags) {
             if (tag.canShow() && tag.canSee(player)) {
                 tag.addPlayerToViewers(player);
             }
@@ -117,52 +152,81 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
         }
         super.nearbyPlayers.remove(player);
         setNameVisibleFor(player);
-        for (DynamicTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
+            if (tag.getLeaveRule().isPassed(player, entity)) {
+                tag.removePlayerFromViewers(player);
+            }
+        }
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.removePlayerFromViewers(player);
         }
     }
 
     @Override
     public void destroy() {
-        manager.removeUnlimitedObjectFromMap(entity.getUniqueId());
+        manager.removeUnlimitedEntityFromMap(entity.getUniqueId());
         for (Player viewer : nearbyPlayers) {
             setNameVisibleFor(viewer);
         }
-        for (DynamicTextEntity tag : tags) {
+        for (DynamicTextEntity tag : dynamicTags) {
+            tag.destroy();
+        }
+        for (StaticTextEntity tag : staticTags) {
             tag.destroy();
         }
         nearbyPlayers.clear();
-        tags.clear();
+        dynamicTags.clear();
+        staticTags.clear();
     }
 
     public void sneak(boolean sneaking, boolean flying) {
-        for (DynamicTextEntity tag : tags) {
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.setSneak(sneaking, !flying);
         }
     }
 
     @Override
+    public void respawn() {
+        super.respawn();
+        for (DynamicTextEntity tag : dynamicTags) {
+            tag.respawn(owner.getPose());
+        }
+    }
+
+    @Override
     public void move(Player receiver, short x, short y, short z, boolean onGround) {
-        for (DynamicTextEntity tag : tags) {
+        super.move(receiver, x, y, z, onGround);
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.move(receiver, x, y, z, onGround);
         }
     }
 
     @Override
     public void teleport(Player receiver, double x, double y, double z, boolean onGround) {
-        for (DynamicTextEntity tag : tags) {
+        super.teleport(receiver, x, y, z, onGround);
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.teleport(receiver, x, y, z, onGround);
         }
     }
 
     @Override
+    public void teleport() {
+        super.teleport();
+        for (DynamicTextEntity tag : dynamicTags) {
+            tag.teleport();
+        }
+    }
+
+    @Override
     public void handlePose(Pose previous, Pose pose) {
-        for (DynamicTextEntity tag : tags) {
+        super.handlePose(previous, pose);
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.handlePose(previous, pose);
         }
     }
 
     private void setNameInvisibleFor(Player viewer) {
+        if (!manageTeams) return;
         CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                 owner,
                 viewer,
@@ -174,6 +238,7 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
     }
 
     private void setNameVisibleFor(Player viewer) {
+        if (!manageTeams) return;
         CustomNameplatesPlugin.get().getTeamManager().updateTeam(
                 owner,
                 viewer,
@@ -185,7 +250,7 @@ public class UnlimitedPlayer extends UnlimitedObject implements EntityTagPlayer 
     }
 
     public void timer() {
-        for (DynamicTextEntity tag : tags) {
+        for (DynamicTextEntity tag : dynamicTags) {
             tag.timer();
         }
     }

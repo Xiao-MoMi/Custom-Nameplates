@@ -22,6 +22,7 @@ public abstract class CustomNameplatesPlugin extends JavaPlugin {
     protected NameplateManager nameplateManager;
     protected ActionBarManager actionBarManager;
     protected WidthManager widthManager;
+    protected BubbleManager bubbleManager;
 
     protected CustomNameplatesPlugin() {
         instance = this;
@@ -108,6 +109,11 @@ public abstract class CustomNameplatesPlugin extends JavaPlugin {
     /* Get the width manager */
     public WidthManager getWidthManager() {
         return widthManager;
+    }
+
+    /* Get the bubble manager */
+    public BubbleManager getBubbleManager() {
+        return bubbleManager;
     }
 
     /* debug get config by file name */

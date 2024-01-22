@@ -878,7 +878,7 @@ public class WidthManagerImpl implements WidthManager {
                         isBold = component.hasDecoration(TextDecoration.BOLD);
                         var key = component.font();
                         if (key != null) {
-                            font = AdventureManagerImpl.getInstance().keyToKey(key);
+                            font = net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());
                         }
                         String text = textComponent.content();
                         if (!text.equals(""))

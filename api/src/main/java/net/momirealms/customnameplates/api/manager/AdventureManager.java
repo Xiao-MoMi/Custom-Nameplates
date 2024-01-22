@@ -26,12 +26,6 @@ import org.bukkit.entity.Player;
 
 public interface AdventureManager {
 
-    net.momirealms.customnameplates.common.Key keyToKey(Key key);
-
-    Key keyToKey(net.momirealms.customnameplates.common.Key key);
-
-    Object getIChatComponentFromMiniMessage(String text);
-
     /**
      * Strip all the tags from text
      *

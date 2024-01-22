@@ -15,6 +15,7 @@ import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextTagSetting;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -126,13 +127,13 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     public void load() {
+        this.unlimitedTagManager.load();
+
         if (!CNConfig.nameplateModule) return;
         this.loadConfig();
         this.loadNameplates();
 
         this.teamTagManager.load(teamRefreshFrequency, fixTab);
-        this.unlimitedTagManager.load();
-
         this.nameplateRefreshTask = plugin.getScheduler().runTaskAsyncTimer(() -> {
             for (OnlineUser user : plugin.getStorageManager().getOnlineUsers()) {
                 updateCachedNameplate(user.getPlayer(), user.getNameplate());
@@ -369,8 +370,15 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public void createNameTag(Player player) {
         if (tagMode == TagMode.TEAM) {
             putNameplatePlayerToMap(this.teamTagManager.createTagForPlayer(player, teamPrefix, teamSuffix));
+            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, false);
         } else if (tagMode == TagMode.UNLIMITED) {
-            putNameplatePlayerToMap(this.unlimitedTagManager.createTagForPlayer(player, tagSettings));
+            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, true);
+            for (DynamicTextTagSetting setting : tagSettings) {
+                tagPlayer.addTag(setting);
+            }
+            putNameplatePlayerToMap(tagPlayer);
+        } else {
+            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, false);
         }
     }
 
@@ -439,18 +447,11 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             return player.getName();
         }
 
-        return    cachedNameplate.getTagPrefix()
-                + cachedNameplate.getNamePrefix()
+        return    cachedNameplate.getNamePrefix()
+                + cachedNameplate.getTagPrefix()
                 + cachedNameplate.getPlayerName()
-                + cachedNameplate.getNameSuffix()
-                + cachedNameplate.getTagSuffix();
-    }
-
-    @Override
-    public boolean registerNameplate(String key, Nameplate nameplate) {
-        if (this.nameplateMap.containsKey(key)) return false;
-        this.nameplateMap.put(key, nameplate);
-        return true;
+                + cachedNameplate.getTagSuffix()
+                + cachedNameplate.getNameSuffix();
     }
 
     @Override
@@ -521,6 +522,13 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
                 plugin.saveResource("contents" + File.separator + "nameplates" + File.separator + name + part, false);
             }
         }
+    }
+
+    @Override
+    public boolean registerNameplate(String key, Nameplate nameplate) {
+        if (this.nameplateMap.containsKey(key)) return false;
+        this.nameplateMap.put(key, nameplate);
+        return true;
     }
 
     @Override

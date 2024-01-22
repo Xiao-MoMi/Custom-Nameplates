@@ -9,6 +9,7 @@ import net.momirealms.customnameplates.paper.helper.LibraryLoader;
 import net.momirealms.customnameplates.paper.mechanic.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.background.BackGroundManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.bossbar.BossBarManagerImpl;
+import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.font.WidthManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.image.ImageManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.CoolDownManager;
@@ -55,6 +56,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         this.nameplateManager = new NameplateManagerImpl(this);
         this.teamManager = new TeamManagerImpl(this);
         this.widthManager = new WidthManagerImpl(this);
+        this.bubbleManager = new BubbleManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.coolDownManager = new CoolDownManager(this);
         this.packetManager = new PacketManager(this);
@@ -76,6 +78,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         ((ImageManagerImpl) this.imageManager).unload();
         ((BackGroundManagerImpl) this.backGroundManager).unload();
         ((PlaceholderManagerImpl) this.placeholderManager).unload();
+        ((BubbleManagerImpl) this.bubbleManager).unload();
         ((RequirementManagerImpl) this.requirementManager).unload();
         ((ResourcePackManagerImpl) this.resourcePackManager).unload();
         ((WidthManagerImpl) this.widthManager).unload();
@@ -90,6 +93,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         ((SchedulerImpl) this.scheduler).reload();
         ((AdventureManagerImpl) this.adventureManager).reload();
         ((NameplateManagerImpl) this.nameplateManager).reload();
+        ((BubbleManagerImpl) this.bubbleManager).reload();
         ((BackGroundManagerImpl) this.backGroundManager).reload();
         ((TeamManagerImpl) this.teamManager).reload();
         ((StorageManagerImpl) this.storageManager).reload();
@@ -119,10 +123,6 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         }
     }
 
-    public CoolDownManager getCoolDownManager() {
-        return coolDownManager;
-    }
-
     private void loadLibraries() {
         String mavenRepo = TimeZone.getDefault().getID().startsWith("Asia") ?
                 "https://maven.aliyun.com/repository/public/" : "https://repo.maven.apache.org/maven2/";
@@ -142,6 +142,10 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
                 "org.xerial:sqlite-jdbc:3.43.2.2", mavenRepo,
                 "dev.jorel:commandapi-bukkit-shade:9.3.0", mavenRepo
         );
+    }
+
+    public CoolDownManager getCoolDownManager() {
+        return coolDownManager;
     }
 
     public PacketManager getPacketManager() {

@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.paper.adventure;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -52,16 +53,15 @@ import java.util.concurrent.TimeUnit;
 public class AdventureManagerImpl implements AdventureManager {
 
     private final BukkitAudiences adventure;
-    private static AdventureManager instance;
+    private static AdventureManagerImpl instance;
     private CacheSystem cacheSystem;
 
     public AdventureManagerImpl(CustomNameplatesPlugin plugin) {
         this.adventure = BukkitAudiences.create(plugin);
-
         instance = this;
     }
 
-    public static AdventureManager getInstance() {
+    public static AdventureManagerImpl getInstance() {
         return instance;
     }
 
@@ -75,17 +75,10 @@ public class AdventureManagerImpl implements AdventureManager {
         this.cacheSystem = new CacheSystem(CNConfig.cacheSize);
     }
 
-    @Override
-    public net.momirealms.customnameplates.common.Key keyToKey(Key key) {
-        return net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());
+    public WrappedChatComponent getWrappedChatComponentFromMiniMessage(String text) {
+        return cacheSystem.getWrappedChatComponentFromCache(text);
     }
 
-    @Override
-    public Key keyToKey(net.momirealms.customnameplates.common.Key key) {
-        return Key.key(key.namespace(), key.value());
-    }
-
-    @Override
     public Object getIChatComponentFromMiniMessage(String text) {
         return cacheSystem.getIChatFromCache(text);
     }
@@ -309,6 +302,7 @@ public class AdventureManagerImpl implements AdventureManager {
 
         private final LoadingCache<String, Object> miniMessageToIChatComponentCache;
         private final LoadingCache<String, Component> miniMessageToComponentCache;
+        private final LoadingCache<String, WrappedChatComponent> miniMessageToWrappedChatComponentCache;
 
         public CacheSystem(int size) {
             miniMessageToIChatComponentCache = CacheBuilder.newBuilder()
@@ -333,6 +327,17 @@ public class AdventureManagerImpl implements AdventureManager {
                                     return fetchComponent(text);
                                 }
                             });
+            miniMessageToWrappedChatComponentCache = CacheBuilder.newBuilder()
+                    .maximumSize(size)
+                    .expireAfterWrite(10, TimeUnit.MINUTES)
+                    .build(
+                            new CacheLoader<>() {
+                                @NotNull
+                                @Override
+                                public WrappedChatComponent load(@NotNull String text) {
+                                    return fetchWrappedChatComponent(text);
+                                }
+                            });
         }
 
         public void destroy() {
@@ -355,6 +360,15 @@ public class AdventureManagerImpl implements AdventureManager {
             }
         }
 
+        @NotNull
+        private WrappedChatComponent fetchWrappedChatComponent(String text) {
+            if (CNConfig.legacyColorSupport) {
+                return WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(legacyToMiniMessage(text))));
+            } else {
+                return WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text)));
+            }
+        }
+
         public Object getIChatFromCache(String text) {
             try {
                 return miniMessageToIChatComponentCache.get(text);
@@ -370,6 +384,15 @@ public class AdventureManagerImpl implements AdventureManager {
             } catch (ExecutionException e) {
                 e.printStackTrace();
                 return Component.empty();
+            }
+        }
+
+        public WrappedChatComponent getWrappedChatComponentFromCache(String text) {
+            try {
+                return miniMessageToWrappedChatComponentCache.get(text);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                return WrappedChatComponent.fromText("");
             }
         }
     }

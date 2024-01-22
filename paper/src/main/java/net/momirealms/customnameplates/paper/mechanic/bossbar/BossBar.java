@@ -54,7 +54,7 @@ public class BossBar {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
         packet.getModifier().write(0, uuid);
         InternalStructure internalStructure = packet.getStructures().read(1);
-        internalStructure.getModifier().write(0, AdventureManagerImpl.getInstance().getIChatComponentFromMiniMessage(latestMiniMessage));
+        internalStructure.getChatComponents().write(0, AdventureManagerImpl.getInstance().getWrappedChatComponentFromMiniMessage(latestMiniMessage));
         internalStructure.getFloat().write(0,1F);
         internalStructure.getEnumModifier(BarColor.class, 2).write(0, barColor);
         internalStructure.getEnumModifier(Overlay.class, 3).write(0, overlay);

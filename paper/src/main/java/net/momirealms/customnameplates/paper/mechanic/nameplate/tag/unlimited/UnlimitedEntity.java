@@ -3,27 +3,77 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextTagSetting;
+import net.momirealms.customnameplates.api.util.LocationUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
 import java.util.Vector;
 
-public class UnlimitedEntity extends UnlimitedObject implements EntityTagEntity {
+public class UnlimitedEntity implements EntityTagEntity {
 
-    private final Vector<StaticTextEntity> tags;
+    protected final UnlimitedTagManagerImpl manager;
+    protected final Entity entity;
+    protected final Vector<Player> nearbyPlayers;
+    protected final Vector<StaticTextEntity> staticTags;
 
     public UnlimitedEntity(UnlimitedTagManagerImpl manager, Entity entity) {
-        super(manager, entity);
-        this.tags = new Vector<>();
+        this.manager = manager;
+        this.entity = entity;
+        this.nearbyPlayers = new Vector<>();
+        this.staticTags = new Vector<>();
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public Vector<Player> getNearbyPlayers() {
+        return nearbyPlayers;
+    }
+
+    public void addNearbyPlayerNaturally(Player player) {
+        if (nearbyPlayers.contains(player)) {
+            return;
+        }
+        nearbyPlayers.add(player);
+        for (StaticTextEntity tag : staticTags) {
+            if (tag.getComeRule().isPassed(player, entity)) {
+                tag.addPlayerToViewers(player);
+            }
+        }
+    }
+
+    public void removeNearbyPlayerNaturally(Player player) {
+        if (!nearbyPlayers.contains(player)) {
+            return;
+        }
+        nearbyPlayers.remove(player);
+        for (StaticTextEntity tag : staticTags) {
+            if (tag.getLeaveRule().isPassed(player, entity)) {
+                tag.removePlayerFromViewers(player);
+            }
+        }
+    }
+
+    public void addNearByPlayerToMap(int range) {
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (       online == entity
+                    || LocationUtils.getDistance(online, entity) > range
+                    || online.getWorld() != entity.getWorld()
+                    || online.isDead()
+            ) continue;
+            addNearbyPlayerNaturally(online);
+        }
     }
 
     @Override
     public void addTag(StaticTextEntity tag) {
-        if (tags.contains(tag)) {
+        if (staticTags.contains(tag)) {
             return;
         }
-        tags.add(tag);
+        staticTags.add(tag);
         for (Player all : nearbyPlayers) {
             tag.addPlayerToViewers(all);
         }
@@ -38,14 +88,14 @@ public class UnlimitedEntity extends UnlimitedObject implements EntityTagEntity 
 
     @Override
     public void removeTag(StaticTextEntity tag) {
-        if (tags.remove(tag)) {
+        if (staticTags.remove(tag)) {
             tag.destroy();
         }
     }
 
     @Override
-    public Vector<StaticTextEntity> getTags() {
-        return tags;
+    public Vector<StaticTextEntity> getStaticTags() {
+        return staticTags;
     }
 
     @Override
@@ -54,7 +104,7 @@ public class UnlimitedEntity extends UnlimitedObject implements EntityTagEntity 
             return;
         }
         nearbyPlayers.add(player);
-        for (StaticTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
             tag.addPlayerToViewers(player);
         }
     }
@@ -64,66 +114,50 @@ public class UnlimitedEntity extends UnlimitedObject implements EntityTagEntity 
         if (!nearbyPlayers.contains(player)) {
             return;
         }
-        super.nearbyPlayers.remove(player);
-        for (StaticTextEntity tag : tags) {
+        nearbyPlayers.remove(player);
+        for (StaticTextEntity tag : staticTags) {
             tag.removePlayerFromViewers(player);
         }
     }
 
-    @Override
-    public void addNearbyPlayerNaturally(Player player) {
-        if (nearbyPlayers.contains(player)) {
-            return;
-        }
-        nearbyPlayers.add(player);
-        for (StaticTextEntity tag : tags) {
-            if (tag.getComeRule().isPassed(player, entity)) {
-                tag.addPlayerToViewers(player);
-            }
-        }
-    }
 
-    @Override
-    public void removeNearbyPlayerNaturally(Player player) {
-        if (!nearbyPlayers.contains(player)) {
-            return;
-        }
-        super.nearbyPlayers.remove(player);
-        for (StaticTextEntity tag : tags) {
-            if (tag.getLeaveRule().isPassed(player, entity)) {
-                tag.removePlayerFromViewers(player);
-            }
-        }
-    }
-
-    @Override
     public void move(Player receiver, short x, short y, short z, boolean onGround) {
-        for (StaticTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
             tag.move(receiver, x, y, z, onGround);
         }
     }
 
-    @Override
     public void teleport(Player receiver, double x, double y, double z, boolean onGround) {
-        for (StaticTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
             tag.teleport(receiver, x, y, z, onGround);
         }
     }
 
-    @Override
+    public void teleport() {
+        for (StaticTextEntity tag : staticTags) {
+            tag.teleport();
+        }
+    }
+
     public void handlePose(Pose previous, Pose pose) {
-        for (StaticTextEntity tag : tags) {
+        for (StaticTextEntity tag : staticTags) {
             tag.handlePose(previous, pose);
         }
     }
 
     @Override
     public void destroy() {
-        manager.removeUnlimitedObjectFromMap(entity.getUniqueId());
-        for (StaticTextEntity tag : tags) {
+        manager.removeUnlimitedEntityFromMap(entity.getUniqueId());
+        for (StaticTextEntity tag : staticTags) {
             tag.destroy();
         }
         nearbyPlayers.clear();
-        tags.clear();
+        staticTags.clear();
+    }
+
+    public void respawn() {
+        for (StaticTextEntity tag : staticTags) {
+            tag.respawn(entity.getPose());
+        }
     }
 }

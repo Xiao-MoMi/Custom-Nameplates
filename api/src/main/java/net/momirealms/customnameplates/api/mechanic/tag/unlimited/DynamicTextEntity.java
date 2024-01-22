@@ -26,6 +26,8 @@ public interface DynamicTextEntity {
 
     void teleport(double x, double y, double z, boolean onGround);
 
+    void teleport();
+
     void teleport(Player viewer, double x, double y, double z, boolean onGround);
 
     void setSneak(boolean sneaking, boolean respawn);

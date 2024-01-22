@@ -100,4 +100,4 @@ other-settings:
   # With cache system, you can save much CPU resource when the same message is displayed to many players.
   # The more people on your server, the higher the efficiency of the caching system's operation.
   # In most cases you don't have to edit this value. You can increase this value appropriately, especially when there are many players on your server.
-  cache-size: 100
+  cache-size: 256

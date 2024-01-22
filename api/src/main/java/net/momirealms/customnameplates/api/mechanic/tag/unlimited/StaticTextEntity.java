@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public interface StaticTextEntity {
 
+    String getPlugin();
+
     boolean isShownTo(Player viewer);
 
     NearbyRule getComeRule();
@@ -26,6 +28,8 @@ public interface StaticTextEntity {
     void teleport(double x, double y, double z, boolean onGround);
 
     void teleport(Player viewer, double x, double y, double z, boolean onGround);
+
+    void teleport();
 
     int getEntityId();
 

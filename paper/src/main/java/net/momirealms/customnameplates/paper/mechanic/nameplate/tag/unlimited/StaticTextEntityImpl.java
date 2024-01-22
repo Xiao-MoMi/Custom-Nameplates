@@ -19,14 +19,9 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NearbyRule;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
-import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
@@ -34,7 +29,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -49,12 +46,16 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     private final NearbyRule comeRule;
     private final NearbyRule leaveRule;
     private String defaultText;
+    private final String plugin;
+    private final PacketContainer destroyPacket;
 
     public StaticTextEntityImpl (
             UnlimitedEntity owner,
             double yOffset,
             NearbyRule comeRule,
-            NearbyRule leaveRule
+            NearbyRule leaveRule,
+            String defaultText,
+            String plugin
     ) {
         this.entityId = FakeEntityUtils.getAndIncrease();
         this.owner = owner;
@@ -63,7 +64,15 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         this.textCache = new ConcurrentHashMap<>();
         this.comeRule = comeRule;
         this.leaveRule = leaveRule;
-        this.defaultText = "";
+        this.defaultText = defaultText;
+        this.plugin = plugin;
+        this.destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
+        this.destroyPacket.getIntLists().write(0, List.of(entityId));
+    }
+
+    @Override
+    public String getPlugin() {
+        return plugin;
     }
 
     @Override
@@ -131,7 +140,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         if (text.equals(defaultText)) return;
         this.defaultText = text;
         for (Player viewer : viewers) {
-            PacketManager.getInstance().send(viewer, getMetaPacket(getText(viewer)));
+            PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, getText(viewer), owner.getEntity().isSneaking()));
         }
     }
 
@@ -146,7 +155,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         if (previous != null && previous.equals(text)) {
             return;
         }
-        PacketManager.getInstance().send(viewer, getMetaPacket(text));
+        PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, text, owner.getEntity().isSneaking()));
     }
 
     @Override
@@ -155,18 +164,16 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         if (previous != null && previous.equals(defaultText)) {
             return;
         }
-        PacketManager.getInstance().send(viewer, getMetaPacket(defaultText));
+        PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, defaultText, owner.getEntity().isSneaking()));
     }
 
     @Override
     public void spawn(Player viewer, Pose pose) {
-        PacketManager.getInstance().send(viewer, getSpawnPackets(getText(viewer)));
+        PacketManager.getInstance().send(viewer, getSpawnPackets(getText(viewer), pose));
     }
 
     @Override
     public void destroy() {
-        PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntLists().write(0, List.of(entityId));
         for (Player all : viewers) {
             PacketManager.getInstance().send(all, destroyPacket);
         }
@@ -176,8 +183,6 @@ public class StaticTextEntityImpl implements StaticTextEntity {
 
     @Override
     public void destroy(Player viewer) {
-        PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntLists().write(0, List.of(entityId));
         PacketManager.getInstance().send(viewer, destroyPacket);
         textCache.remove(viewer.getUniqueId());
     }
@@ -194,6 +199,14 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     public void teleport(Player viewer, double x, double y, double z, boolean onGround) {
         if (viewers.contains(viewer)) {
             PacketManager.getInstance().send(viewer, getTeleportPacket(x, y, z, onGround));
+        }
+    }
+
+    @Override
+    public void teleport() {
+        PacketContainer packet = getTeleportPacket();
+        for (Player viewer : viewers) {
+            PacketManager.getInstance().send(viewer, packet);
         }
     }
 
@@ -276,21 +289,6 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         return packet;
     }
 
-    protected PacketContainer getMetaPacket(String text) {
-        PacketContainer metaPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-        metaPacket.getIntegers().write(0, entityId);
-        String json = AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(text));
-        if (CustomNameplatesPlugin.getInstance().getVersionManager().isVersionNewerThan1_19_R2()) {
-            WrappedDataWatcher wrappedDataWatcher = createArmorStandDataWatcher(json);
-            List<WrappedDataValue> wrappedDataValueList = Lists.newArrayList();
-            wrappedDataWatcher.getWatchableObjects().stream().filter(Objects::nonNull).forEach(entry -> wrappedDataValueList.add(new WrappedDataValue(entry.getWatcherObject().getIndex(), entry.getWatcherObject().getSerializer(), entry.getRawValue())));
-            metaPacket.getDataValueCollectionModifier().write(0, wrappedDataValueList);
-        } else {
-            metaPacket.getWatchableCollectionModifier().write(0, createArmorStandDataWatcher(json).getWatchableObjects());
-        }
-        return metaPacket;
-    }
-
     private Location getEntityLocation() {
         var entity = owner.getEntity();
         double x = entity.getLocation().getX();
@@ -300,30 +298,16 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         return new Location(null, x, y, z);
     }
 
-    private WrappedDataWatcher createArmorStandDataWatcher(String json) {
-        WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-        WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
-        WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(json).getHandle()));
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        byte flag = 0x20;
-        if (owner.getEntity().isSneaking()) flag += (byte) 0x02;
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, serializer2), flag);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, serializer2), (byte) 0x01);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
-        return wrappedDataWatcher;
-    }
-
-    private PacketContainer[] getSpawnPackets(String text) {
+    private PacketContainer[] getSpawnPackets(String text, Pose pose) {
         PacketContainer entityPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         entityPacket.getModifier().write(0, entityId);
         entityPacket.getModifier().write(1, uuid);
         entityPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
         Location location = getEntityLocation();
         entityPacket.getDoubles().write(0, location.getX());
-        entityPacket.getDoubles().write(1, location.getY());
+        entityPacket.getDoubles().write(1, location.getY() + (pose == Pose.SNEAKING ? -0.3 : 0));
         entityPacket.getDoubles().write(2, location.getZ());
-        PacketContainer metaPacket = getMetaPacket(text);
+        PacketContainer metaPacket = FakeEntityUtils.getMetaPacket(entityId, text, pose == Pose.SNEAKING);
         return new PacketContainer[] {entityPacket, metaPacket};
     }
 }

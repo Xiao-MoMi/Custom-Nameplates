@@ -161,7 +161,8 @@ public class CommandManager {
                 .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> plugin.getNameplateManager().getAvailableNameplates((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
                 .executesPlayer((player, args) -> {
                         String nameplate = (String) args.get("nameplate");
-                        if (!plugin.getNameplateManager().hasNameplate(player, nameplate)) {
+                        Nameplate nameplateInstance = plugin.getNameplateManager().getNameplate(nameplate);
+                        if (nameplateInstance == null) {
                                 AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_AVAILABLE);
                                 return;
                         }
@@ -169,7 +170,7 @@ public class CommandManager {
                                 AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
                                 return;
                         }
-                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_NAMEPLATE);
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_NAMEPLATE.replace("{Nameplate}", nameplateInstance.getDisplayName()));
                 });
     }
 

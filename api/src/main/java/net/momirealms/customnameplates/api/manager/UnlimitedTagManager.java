@@ -4,9 +4,6 @@ import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public interface UnlimitedTagManager {
 
@@ -23,17 +20,9 @@ public interface UnlimitedTagManager {
     @NotNull
     DynamicTextEntity createNamedEntity(EntityTagPlayer player, DynamicTextTagSetting setting);
 
-    EntityTagEntity createTagForEntity(Entity entity);
+    EntityTagEntity createOrGetTagForEntity(Entity entity);
 
-    /**
-     * Create unlimited tags for a player
-     * If failed, the return value would be null
-     * This happens when there already exists an UnlimitedObject for a player
-     *
-     * @param player player
-     * @param settings settings
-     * @return unlimited tag
-     */
-    @Nullable
-    EntityTagPlayer createTagForPlayer(Player player, List<DynamicTextTagSetting> settings);
+    EntityTagPlayer createOrGetTagForPlayer(Player player);
+
+    EntityTagPlayer createOrGetTagForPlayer(Player player, boolean manageTeam);
 }

@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.ResourcePackManager;
 import net.momirealms.customnameplates.api.mechanic.background.BackGround;
+import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
@@ -325,7 +326,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
                 jo.add("chars", ja);
                 list.add(jo);
-                list.add(jo);
                 try {
                     FileUtils.copyFile(
                             new File(plugin.getDataFolder(),
@@ -378,6 +378,28 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     private List<JsonObject> getBubbles(File texturesFolder) {
         ArrayList<JsonObject> list = new ArrayList<>();
         if (!CNConfig.bubbleModule) return list;
+        for (Bubble bubble : plugin.getBubbleManager().getBubbles()) {
+            for (ConfiguredChar configuredChar : new ConfiguredChar[]{bubble.getLeft(), bubble.getMiddle(), bubble.getRight(), bubble.getTail()}) {
+                JsonObject jo = new JsonObject();
+                jo.add("type", new JsonPrimitive("bitmap"));
+                jo.add("file", new JsonPrimitive(CNConfig.namespace + ":" + CNConfig.folderBubble.replaceAll("\\\\", "/") + configuredChar.getFile()));
+                jo.add("ascent", new JsonPrimitive(configuredChar.getAscent()));
+                jo.add("height", new JsonPrimitive(configuredChar.getHeight()));
+                JsonArray ja = new JsonArray();
+                ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
+                jo.add("chars", ja);
+                list.add(jo);
+                try {
+                    FileUtils.copyFile(
+                            new File(plugin.getDataFolder(),
+                                    "contents" + File.separator + "bubbles" + File.separator + configuredChar.getFile()),
+                            new File(texturesFolder,
+                                    CNConfig.folderBubble.replace("\\", File.separator) + configuredChar.getFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return list;
     }
 
@@ -393,7 +415,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             JsonArray ja = new JsonArray();
             ja.add(ConfigUtils.native2ascii(configuredChar.getCharacter()));
             jo.add("chars", ja);
-            list.add(jo);
             list.add(jo);
             try {
                 FileUtils.copyFile(

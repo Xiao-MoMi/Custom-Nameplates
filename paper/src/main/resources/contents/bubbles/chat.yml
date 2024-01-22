@@ -1,8 +1,7 @@
 text-format:
-  start: '<black><font:nameplates:unicode_ascent_8>'
-  end: '</font></black>'
-display-name: Chat Bubbles
-
+  start: '<black>'
+  end: '</black>'
+display-name: White Bubbles
 left:
   image: chat_left
   height: 13

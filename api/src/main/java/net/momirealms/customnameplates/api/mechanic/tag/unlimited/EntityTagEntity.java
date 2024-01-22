@@ -13,7 +13,7 @@ public interface EntityTagEntity {
 
     void removeTag(StaticTextEntity tag);
 
-    Vector<StaticTextEntity> getTags();
+    Vector<StaticTextEntity> getStaticTags();
 
     void forceAddNearbyPlayer(Player player);
 

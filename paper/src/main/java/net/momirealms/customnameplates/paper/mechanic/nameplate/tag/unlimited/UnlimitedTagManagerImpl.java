@@ -24,24 +24,27 @@ import java.util.concurrent.TimeUnit;
 public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
 
     private final NameplateManager manager;
-    private final ConcurrentHashMap<UUID, UnlimitedObject> unlimitedEntryMap;
+    private final ConcurrentHashMap<UUID, UnlimitedEntity> unlimitedEntityMap;
     private CancellableTask refreshTask;
     private MagicCosmeticsListener magicCosmeticsListener;
+    private final VehicleChecker vehicleChecker;
 
     public UnlimitedTagManagerImpl(NameplateManager nameplateManager) {
         this.manager = nameplateManager;
-        this.unlimitedEntryMap = new ConcurrentHashMap<>();
+        this.unlimitedEntityMap = new ConcurrentHashMap<>();
+        this.vehicleChecker = new VehicleChecker(this);
         if (Bukkit.getPluginManager().getPlugin("MagicCosmetics") != null) {
             this.magicCosmeticsListener = new MagicCosmeticsListener(this);
         }
     }
     
     public void load() {
+        this.vehicleChecker.load();
         this.refreshTask = CustomNameplatesPlugin.get().getScheduler().runTaskAsyncTimer(
                 () -> {
                     try {
-                        for (UnlimitedObject unlimitedObject : unlimitedEntryMap.values()) {
-                            if (unlimitedObject instanceof UnlimitedPlayer unlimitedPlayer) {
+                        for (UnlimitedEntity unlimitedEntity : unlimitedEntityMap.values()) {
+                            if (unlimitedEntity instanceof UnlimitedPlayer unlimitedPlayer) {
                                 unlimitedPlayer.timer();
                             }
                         }
@@ -65,10 +68,11 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     }
     
     public void unload() {
+        this.vehicleChecker.unload();
         if (this.refreshTask != null && !this.refreshTask.isCancelled()) {
             this.refreshTask.cancel();
         }
-        for (UnlimitedObject entry : unlimitedEntryMap.values()) {
+        for (UnlimitedEntity entry : unlimitedEntityMap.values()) {
             entry.destroy();
         }
         if (this.magicCosmeticsListener != null) {
@@ -83,7 +87,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
                 (UnlimitedEntity) entity,
                 setting.getVerticalOffset(),
                 setting.getComeRule(),
-                setting.getLeaveRule()
+                setting.getLeaveRule(),
+                setting.getDefaultText(),
+                setting.getPlugin()
         );
     }
 
@@ -102,66 +108,94 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     }
 
     @Override
-    public UnlimitedEntity createTagForEntity(Entity entity) {
-        if (this.unlimitedEntryMap.containsKey(entity.getUniqueId())) {
-            return null;
+    public UnlimitedEntity createOrGetTagForEntity(Entity entity) {
+        final UUID uuid = entity.getUniqueId();
+        if (this.unlimitedEntityMap.containsKey(uuid)) {
+            return this.unlimitedEntityMap.get(uuid);
         }
-        return new UnlimitedEntity(this, entity);
+
+        var unlimitedEntity = new UnlimitedEntity(this, entity);
+        this.unlimitedEntityMap.put(
+                uuid,
+                unlimitedEntity
+        );
+
+        unlimitedEntity.addNearByPlayerToMap(48);
+        return unlimitedEntity;
     }
 
     @Override
-    @SuppressWarnings("DuplicatedCode")
-    public UnlimitedPlayer createTagForPlayer(Player player, List<DynamicTextTagSetting> settings) {
-        if (this.unlimitedEntryMap.containsKey(player.getUniqueId())) {
+    public UnlimitedPlayer createOrGetTagForPlayer(Player player) {
+        if (!player.isOnline())
             return null;
+        final UUID uuid = player.getUniqueId();
+        if (this.unlimitedEntityMap.containsKey(uuid)) {
+            return (UnlimitedPlayer) this.unlimitedEntityMap.get(uuid);
         }
 
         var unlimitedPlayer = new UnlimitedPlayer(this, player);
-        this.unlimitedEntryMap.put(
-                player.getUniqueId(),
+        this.unlimitedEntityMap.put(
+                uuid,
                 unlimitedPlayer
         );
-
-        for (DynamicTextTagSetting setting : settings) {
-            unlimitedPlayer.addTag(
-                    createNamedEntity(unlimitedPlayer, setting)
-            );
-        }
 
         unlimitedPlayer.addNearByPlayerToMap(48);
         return unlimitedPlayer;
     }
 
-    public UnlimitedObject removeUnlimitedObjectFromMap(UUID uuid) {
-        return unlimitedEntryMap.remove(uuid);
+    @Override
+    @SuppressWarnings("DuplicatedCode")
+    public UnlimitedPlayer createOrGetTagForPlayer(Player player, boolean manageTeam) {
+        if (!player.isOnline())
+            return null;
+        final UUID uuid = player.getUniqueId();
+        if (this.unlimitedEntityMap.containsKey(uuid)) {
+            UnlimitedPlayer unlimitedPlayer = (UnlimitedPlayer) this.unlimitedEntityMap.get(uuid);
+            unlimitedPlayer.setManageTeams(manageTeam);
+            return unlimitedPlayer;
+        }
+
+        var unlimitedPlayer = new UnlimitedPlayer(this, player);
+        this.unlimitedEntityMap.put(
+                uuid,
+                unlimitedPlayer
+        );
+        unlimitedPlayer.setManageTeams(manageTeam);
+
+        unlimitedPlayer.addNearByPlayerToMap(48);
+        return unlimitedPlayer;
+    }
+
+    public UnlimitedEntity removeUnlimitedEntityFromMap(UUID uuid) {
+        return unlimitedEntityMap.remove(uuid);
     }
 
     @Nullable
-    public UnlimitedObject getUnlimitedObject(UUID uuid) {
-        return unlimitedEntryMap.get(uuid);
+    public UnlimitedEntity getUnlimitedObject(UUID uuid) {
+        return unlimitedEntityMap.get(uuid);
     }
 
     public void handleEntitySpawnPacket(Player receiver, int entityId) {
         Player spawned = manager.getPlayerByEntityID(entityId);
         if (spawned == null) return;
-        UnlimitedObject unlimitedObject = getUnlimitedObject(spawned.getUniqueId());
-        if (unlimitedObject == null) return;
-        unlimitedObject.addNearbyPlayerNaturally(receiver);
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(spawned.getUniqueId());
+        if (unlimitedEntity == null) return;
+        unlimitedEntity.addNearbyPlayerNaturally(receiver);
     }
 
     public void handlePlayerPose(Player player, Pose pose) {
-        UnlimitedObject unlimitedObject = getUnlimitedObject(player.getUniqueId());
-        if (unlimitedObject != null) {
-            unlimitedObject.handlePose(player.getPose(), pose);
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(player.getUniqueId());
+        if (unlimitedEntity != null) {
+            unlimitedEntity.handlePose(player.getPose(), pose);
         }
     }
 
     public void handlePlayerQuit(Player quit) {
-        UnlimitedObject unlimitedObject = getUnlimitedObject(quit.getUniqueId());
-        if (unlimitedObject != null) {
-            unlimitedObject.destroy();
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(quit.getUniqueId());
+        if (unlimitedEntity != null) {
+            unlimitedEntity.destroy();
         }
-        for (UnlimitedObject entry : unlimitedEntryMap.values()) {
+        for (UnlimitedEntity entry : unlimitedEntityMap.values()) {
             entry.removeNearbyPlayerNaturally(quit);
         }
     }
@@ -169,17 +203,17 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     public void handleEntityMovePacket(Player receiver, int entityID, short x, short y, short z, boolean onGround) {
         Entity mover = manager.getEntityByEntityID(entityID);
         if (mover == null) return;
-        UnlimitedObject unlimitedObject = getUnlimitedObject(mover.getUniqueId());
-        if (unlimitedObject == null) return;
-        unlimitedObject.move(receiver, x, y, z, onGround);
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(mover.getUniqueId());
+        if (unlimitedEntity == null) return;
+        unlimitedEntity.move(receiver, x, y, z, onGround);
     }
 
     public void handleEntityTeleportPacket(Player receiver, int entityID, double x, double y, double z, boolean onGround) {
         Entity tp = manager.getEntityByEntityID(entityID);
         if (tp == null) return;
-        UnlimitedObject unlimitedObject = getUnlimitedObject(tp.getUniqueId());
-        if (unlimitedObject == null) return;
-        unlimitedObject.teleport(receiver, x, y, z, onGround);
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(tp.getUniqueId());
+        if (unlimitedEntity == null) return;
+        unlimitedEntity.teleport(receiver, x, y, z, onGround);
     }
 
     public void handleEntityDestroyPacket(Player receiver, List<Integer> list) {
@@ -191,14 +225,14 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     private void handleSingleEntityDestroy(Player receiver, int entityID) {
         Entity deSpawned = manager.getEntityByEntityID(entityID);
         if (deSpawned == null) return;
-        UnlimitedObject unlimitedObject = getUnlimitedObject(deSpawned.getUniqueId());
-        if (unlimitedObject == null) return;
-        unlimitedObject.removeNearbyPlayerNaturally(receiver);
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(deSpawned.getUniqueId());
+        if (unlimitedEntity == null) return;
+        unlimitedEntity.removeNearbyPlayerNaturally(receiver);
     }
 
     public void handlePlayerSneak(Player sneaker, boolean sneaking, boolean flying) {
-        UnlimitedObject unlimitedObject = getUnlimitedObject(sneaker.getUniqueId());
-        if (!(unlimitedObject instanceof UnlimitedPlayer unlimitedPlayer)) return;
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(sneaker.getUniqueId());
+        if (!(unlimitedEntity instanceof UnlimitedPlayer unlimitedPlayer)) return;
         unlimitedPlayer.sneak(sneaking, flying);
     }
 }
