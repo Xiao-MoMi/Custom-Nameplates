@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.paper.mechanic.placeholder;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
+import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -42,6 +43,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     private final HashMap<String, ConditionalText> conditionalTextMap;
     private final HashMap<String, NameplateText> nameplateTextMap;
     private final HashMap<String, BackGroundText> backGroundTextMap;
+    private final HashMap<String, VanillaHud> vanillaHudMap;
     private final CustomNameplatesPlugin plugin;
 
     public PlaceholderManagerImpl(CustomNameplatesPlugin plugin) {
@@ -53,6 +55,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         this.conditionalTextMap = new HashMap<>();
         this.nameplateTextMap = new HashMap<>();
         this.backGroundTextMap = new HashMap<>();
+        this.vanillaHudMap = new HashMap<>();
     }
 
     @NotNull
@@ -84,6 +87,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         this.switchTextMap.clear();
         this.descentTextMap.clear();
         this.conditionalTextMap.clear();
+        this.nameplateTextMap.clear();
+        this.backGroundTextMap.clear();
+        this.vanillaHudMap.clear();
     }
 
     @Override
@@ -146,6 +152,16 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         return backGroundTextMap.values();
     }
 
+    @Override
+    public VanillaHud getVanillaHud(String key) {
+        return vanillaHudMap.get(key);
+    }
+
+    @Override
+    public Collection<VanillaHud> getVanillaHuds() {
+        return vanillaHudMap.values();
+    }
+
     public void loadConfigs() {
         YamlConfiguration config = plugin.getConfig("configs" + File.separator + "custom-placeholders.yml");
         ConfigurationSection staticSection = config.getConfigurationSection("static-text");
@@ -181,6 +197,46 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         ConfigurationSection backgroundSection = config.getConfigurationSection("background-text");
         if (backgroundSection != null) {
             loadBackGroundTexts(backgroundSection);
+        }
+
+        ConfigurationSection vanillaSection = config.getConfigurationSection("vanilla-hud");
+        if (vanillaSection != null) {
+            loadVanillaHuds(vanillaSection);
+        }
+    }
+
+    private void loadVanillaHuds(ConfigurationSection section) {
+        for (Map.Entry<String, Object> entry : section.getValues(false).entrySet()) {
+            if (!(entry.getValue() instanceof ConfigurationSection innerSection))
+                continue;
+
+            ConfiguredChar fullC = plugin.getImageManager().getImage(innerSection.getString("images.full",""));
+            if (fullC == null) {
+                LogUtils.warn("Vanilla hud placeholder wouldn't work because image " + innerSection.getString("full","") + " doesn't exist.");
+                continue;
+            }
+
+            ConfiguredChar emptyC = plugin.getImageManager().getImage(innerSection.getString("images.empty",""));
+            if (emptyC == null) {
+                LogUtils.warn("Vanilla hud placeholder wouldn't work because image " + innerSection.getString("empty","") + " doesn't exist.");
+                continue;
+            }
+
+            ConfiguredChar halfC = plugin.getImageManager().getImage(innerSection.getString("images.half",""));
+            if (halfC == null) {
+                LogUtils.warn("Vanilla hud placeholder wouldn't work because image " + innerSection.getString("half","") + " doesn't exist.");
+                continue;
+            }
+
+            vanillaHudMap.put(entry.getKey(),
+                    VanillaHud.builder()
+                            .half(halfC.getCharacter())
+                            .empty(emptyC.getCharacter())
+                            .full(fullC.getCharacter())
+                            .max(innerSection.getString("placeholder.max-value"))
+                            .current(innerSection.getString("placeholder.value"))
+                            .build()
+            );
         }
     }
 

@@ -91,28 +91,33 @@ public class PluginPlaceholders extends PlaceholderExpansion {
             }
             case "static" -> {
                 StaticText text = placeholderManager.getStaticText(mainArg);
-                if (text == null) return "Static text not exists";
+                if (text == null) return "Static text not exists: " + mainArg;
                 return text.getValue(offlinePlayer);
             }
             case "unicode", "descent" -> {
                 DescentText descentText = placeholderManager.getDescentText(mainArg);
-                if (descentText == null) return "Descent text not exists";
+                if (descentText == null) return "Descent text not exists: " + mainArg;
                 return descentText.getValue(offlinePlayer);
             }
             case "conditional" -> {
                 ConditionalText conditionalText = placeholderManager.getConditionalText(mainArg);
-                if (conditionalText == null) return "Conditional text not exists";
+                if (conditionalText == null) return "Conditional text not exists: " + mainArg;
                 return conditionalText.getValue(offlinePlayer);
             }
             case "nameplate" -> {
                 NameplateText nameplateText = placeholderManager.getNameplateText(mainArg);
-                if (nameplateText == null) return "Nameplate text not exists";
+                if (nameplateText == null) return "Nameplate text not exists: " + mainArg;
                 return nameplateText.getValue(offlinePlayer);
             }
             case "background" -> {
                 BackGroundText backGroundText = placeholderManager.getBackGroundText(mainArg);
-                if (backGroundText == null) return "Background text not exists";
+                if (backGroundText == null) return "Background text not exists: " + mainArg;
                 return backGroundText.getValue(offlinePlayer);
+            }
+            case "vanilla" -> {
+                VanillaHud vanillaHud = placeholderManager.getVanillaHud(mainArg);
+                if (vanillaHud == null) return "Vanilla text not exists: " + mainArg;
+                return vanillaHud.getValue(offlinePlayer);
             }
         }
 
@@ -170,5 +175,4 @@ public class PluginPlaceholders extends PlaceholderExpansion {
         }
         return null;
     }
-
 }

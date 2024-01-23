@@ -26,8 +26,6 @@ import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
-import net.momirealms.customnameplates.api.mechanic.nameplate.CachedNameplate;
-import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextTagSetting;

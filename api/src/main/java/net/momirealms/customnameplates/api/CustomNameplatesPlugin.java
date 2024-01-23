@@ -56,7 +56,7 @@ public abstract class CustomNameplatesPlugin extends JavaPlugin {
     }
 
     /* reload the plugin */
-    public abstract void reload(boolean generatePack);
+    public abstract void reload();
 
     /* Get the scheduler */
     public Scheduler getScheduler() {

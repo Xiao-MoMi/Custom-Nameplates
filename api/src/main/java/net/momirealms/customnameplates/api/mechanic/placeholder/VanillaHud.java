@@ -19,29 +19,38 @@ package net.momirealms.customnameplates.api.mechanic.placeholder;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class VanillaHud {
 
-    private final char empty;
-    private final char half;
-    private final char full;
-    private final String maxPapi;
-    private final String currentPapi;
-    private final boolean reverse;
+    private String empty;
+    private String half;
+    private String full;
+    private String maxPapi;
+    private String currentPapi;
+    private boolean reverse;
 
-    public VanillaHud(String empty, String half, String full, String maxPapi, String currentPapi, boolean reverse) {
-        this.empty = CustomNameplatesPlugin.get().getImageManager().getImage(empty).getCharacter();
-        this.half = CustomNameplatesPlugin.get().getImageManager().getImage(half).getCharacter();
-        this.full = CustomNameplatesPlugin.get().getImageManager().getImage(full).getCharacter();
+    private VanillaHud() {
+    }
+
+    public VanillaHud(char empty, char half, char full, String maxPapi, String currentPapi, boolean reverse) {
+        this.empty = String.valueOf(empty) + OffsetFont.NEG_2.getCharacter();
+        this.half = String.valueOf(half) + OffsetFont.NEG_2.getCharacter();
+        this.full = String.valueOf(full) + OffsetFont.NEG_2.getCharacter();
         this.maxPapi = maxPapi;
         this.currentPapi = currentPapi;
         this.reverse = reverse;
     }
 
-    public String getValue(Player player) {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public String getValue(OfflinePlayer player) {
         double current;
         double max;
         try {
@@ -71,5 +80,52 @@ public class VanillaHud {
                     .append(String.valueOf(empty).repeat(empty_amount));
         }
         return FontUtils.surroundNameplateFont(builder.toString());
+    }
+
+    public static class Builder{
+
+        private final VanillaHud hud;
+
+        public Builder() {
+            hud = new VanillaHud();
+        }
+
+        public static Builder of() {
+            return new Builder();
+        }
+
+        public Builder full(char full) {
+            hud.full = String.valueOf(full) + OffsetFont.NEG_2.getCharacter();
+            return this;
+        }
+
+        public Builder half(char half) {
+            hud.half = String.valueOf(half) + OffsetFont.NEG_2.getCharacter();
+            return this;
+        }
+
+        public Builder empty(char empty) {
+            hud.empty = String.valueOf(empty) + OffsetFont.NEG_2.getCharacter();
+            return this;
+        }
+
+        public Builder reverse(boolean reverse) {
+            hud.reverse = reverse;
+            return this;
+        }
+
+        public Builder max(String max) {
+            hud.maxPapi = max;
+            return this;
+        }
+
+        public Builder current(String current) {
+            hud.currentPapi = current;
+            return this;
+        }
+
+        public VanillaHud build() {
+            return hud;
+        }
     }
 }

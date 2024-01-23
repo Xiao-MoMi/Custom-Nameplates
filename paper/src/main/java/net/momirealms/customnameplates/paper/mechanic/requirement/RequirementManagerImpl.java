@@ -119,6 +119,8 @@ public class RequirementManagerImpl implements RequirementManager {
         this.registerEnvironmentRequirement();
         this.registerPotionEffectRequirement();
         this.registerPapiRequirement();
+        this.registerInListRequirement();
+        this.registerGameModeRequirement();
     }
 
     /**
@@ -637,6 +639,24 @@ public class RequirementManagerImpl implements RequirementManager {
         });
     }
 
+    private void registerGameModeRequirement() {
+        registerRequirement("gamemode", (args) -> {
+            List<String> modes = ConfigUtils.stringListArgs(args);
+            return condition -> {
+                var name = condition.getOfflinePlayer().getPlayer().getGameMode().name().toLowerCase(Locale.ENGLISH);
+                return modes.contains(name);
+            };
+        });
+        registerRequirement("!gamemode", (args) -> {
+            List<String> modes = ConfigUtils.stringListArgs(args);
+            return condition -> {
+                var name = condition.getOfflinePlayer().getPlayer().getGameMode().name().toLowerCase(Locale.ENGLISH);
+                return !modes.contains(name);
+            };
+        });
+    }
+
+
     private void registerPotionEffectRequirement() {
         registerRequirement("potion-effect", (args) -> {
             String potions = (String) args;
@@ -677,6 +697,35 @@ public class RequirementManagerImpl implements RequirementManager {
                 }
                 return result;
             };
+        });
+    }
+
+    private void registerInListRequirement() {
+        registerRequirement("in-list", (args) -> {
+            if (args instanceof ConfigurationSection section) {
+                String papi = section.getString("papi", "");
+                List<String> values = ConfigUtils.stringListArgs(section.get("values"));
+                return condition -> {
+                    String p1 = PlaceholderAPI.setPlaceholders(condition.getOfflinePlayer(), papi);
+                    return values.contains(p1);
+                };
+            } else {
+                LogUtils.warn("Wrong value format found at in-list requirement.");
+                return EmptyRequirement.instance;
+            }
+        });
+        registerRequirement("!in-list", (args) -> {
+            if (args instanceof ConfigurationSection section) {
+                String papi = section.getString("papi", "");
+                List<String> values = ConfigUtils.stringListArgs(section.get("values"));
+                return condition -> {
+                    String p1 = PlaceholderAPI.setPlaceholders(condition.getOfflinePlayer(), papi);
+                    return !values.contains(p1);
+                };
+            } else {
+                LogUtils.warn("Wrong value format found at in-list requirement.");
+                return EmptyRequirement.instance;
+            }
         });
     }
 

@@ -100,4 +100,8 @@ public interface PlaceholderManager {
     BackGroundText getBackGroundText(String key);
 
     Collection<BackGroundText> getBackGroundTexts();
+
+    VanillaHud getVanillaHud(String key);
+
+    Collection<VanillaHud> getVanillaHuds();
 }

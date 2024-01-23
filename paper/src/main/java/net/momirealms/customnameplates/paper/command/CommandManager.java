@@ -262,21 +262,29 @@ public class CommandManager {
                             LogUtils.warn(player.getName() + " failed to preview because data not loaded");
                             return;
                         }
-                        String previous = user.get().getNameplateKey();
-                        if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, true)) {
-                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
-                            return;
-                        }
-                        nameplatePlayer.setPreview(true);
-                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_PREVIEW.replace("{Player}", player.getName()));
-                        CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
-                            nameplatePlayer.setPreview(false);
-                            if (previous.equals("none")) {
-                                CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, true);
-                            } else {
-                                CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, previous, true);
+                        if (!nameplate.equals("")) {
+                            String previous = user.get().getNameplateKey();
+                            if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, true)) {
+                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
+                                return;
                             }
-                        }, CustomNameplatesPlugin.get().getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_PREVIEW.replace("{Player}", player.getName()));
+                            nameplatePlayer.setPreview(true);
+                            CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
+                                nameplatePlayer.setPreview(false);
+                                if (previous.equals("none")) {
+                                    CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, true);
+                                } else {
+                                    CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, previous, true);
+                                }
+                            }, CustomNameplatesPlugin.get().getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                        } else {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_FORCE_PREVIEW.replace("{Player}", player.getName()));
+                            nameplatePlayer.setPreview(true);
+                            CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
+                                nameplatePlayer.setPreview(false);
+                            }, CustomNameplatesPlugin.get().getNameplateManager().getPreviewDuration(), TimeUnit.SECONDS);
+                        }
                     });
         }
 
@@ -327,18 +335,50 @@ public class CommandManager {
         public static CommandAPICommand getReloadCommand() {
             return new CommandAPICommand("reload")
                     .withPermission("customnameplates.admin")
-                    .withOptionalArguments(new BooleanArgument("generate pack"))
                     .executes((sender, args) -> {
-                        long time = System.currentTimeMillis();
-                        CustomNameplatesPlugin.get().reload(false);
-                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_RELOAD.replace("{time}", String.valueOf(System.currentTimeMillis()-time)));
-                        boolean generate = (boolean) args.getOrDefault("generate pack", true);
-                        if (generate) {
-                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_GENERATING);
-                            CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
-                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
-                        }
-                    });
+                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "<red>Usage: /nameplates reload all/pack/config");
+                    })
+                    .withSubcommands(
+                            new CommandAPICommand("all")
+                                    .withOptionalArguments(new BooleanArgument("async-pack-generation"))
+                                    .executes((sender, args) -> {
+                                        boolean async = (boolean) args.getOrDefault("async-pack-generation", false);
+                                        long time = System.currentTimeMillis();
+                                        CustomNameplatesPlugin.get().reload();
+                                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_RELOAD.replace("{time}", String.valueOf(System.currentTimeMillis()-time)));
+                                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_GENERATING);
+                                        if (async) {
+                                            CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
+                                                CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
+                                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
+                                            });
+                                        } else {
+                                            CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
+                                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
+                                        }
+                                    }),
+                            new CommandAPICommand("pack")
+                                    .withOptionalArguments(new BooleanArgument("async-pack-generation"))
+                                    .executes((sender, args) -> {
+                                        boolean async = (boolean) args.getOrDefault("async-pack-generation", false);
+                                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_GENERATING);
+                                        if (async) {
+                                            CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
+                                                CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
+                                                AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
+                                            });
+                                        } else {
+                                            CustomNameplatesPlugin.get().getResourcePackManager().generateResourcePack();
+                                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_PACK_GENERATED);
+                                        }
+                                    }),
+                            new CommandAPICommand("config")
+                                    .executes((sender, args) -> {
+                                        long time = System.currentTimeMillis();
+                                        CustomNameplatesPlugin.get().reload();
+                                        AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, CNLocale.MSG_RELOAD.replace("{time}", String.valueOf(System.currentTimeMillis()-time)));
+                                    })
+                    );
         }
 
         public static CommandAPICommand getAboutCommand() {

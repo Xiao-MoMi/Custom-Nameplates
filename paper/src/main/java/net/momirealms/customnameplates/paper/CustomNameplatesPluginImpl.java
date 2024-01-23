@@ -86,7 +86,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.coolDownManager = new CoolDownManager(this);
         this.packetManager = new PacketManager(this);
-        this.reload(CNConfig.generatePackOnStart);
+        this.reload();
         new CommandManager(this).load();
         this.versionManager.checkUpdate().thenAccept(outDated -> {
             if (!outDated) this.getAdventure().sendConsoleMessage("[CustomNameplates] You are using the latest version.");
@@ -115,7 +115,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
     }
 
     @Override
-    public void reload(boolean generatePack) {
+    public void reload() {
         CNConfig.load();
         CNLocale.load();
         ((SchedulerImpl) this.scheduler).reload();
@@ -132,7 +132,6 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
         ((PlaceholderManagerImpl) this.placeholderManager).reload();
         ((WidthManagerImpl) this.widthManager).reload();
         ((ResourcePackManagerImpl) this.resourcePackManager).reload();
-        this.resourcePackManager.generateResourcePack();
         CustomNameplatesReloadEvent event = new CustomNameplatesReloadEvent(this);
         this.getServer().getPluginManager().callEvent(event);
     }

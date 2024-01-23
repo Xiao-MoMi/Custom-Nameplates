@@ -1,5 +1,9 @@
 conditional-text:
   actionbar:
+    priority_0:
+      text: '%nameplates_background_other_actionbar%'
+      conditions:
+        '!gamemode': survival
     priority_1:
       text: '%nameplates_background_other_actionbar%'
       conditions:

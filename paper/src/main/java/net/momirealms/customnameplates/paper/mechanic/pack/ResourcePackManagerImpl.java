@@ -31,10 +31,10 @@ import net.momirealms.customnameplates.api.mechanic.placeholder.DescentText;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.codehaus.plexus.util.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -43,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ResourcePackManagerImpl implements ResourcePackManager {
 
@@ -338,14 +339,15 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                     }
                 }
             }
-
-//        if (CNConfig.copyPackOraxen) {
-//            try {
-//                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Oraxen")).getDataFolder() + File.separator + "pack" + File.separator + "assets"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (CNConfig.copyPackOraxen){
+            try {
+                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Oraxen")).getDataFolder() + File.separator + "pack" + File.separator + "assets"));
+            }
+            catch (IOException e){
+                e.printStackTrace();
+                LogUtils.warn("Failed to copy files to Oraxen...");
+            }
+        }
     }
 
     private List<JsonObject> getNameplates(File texturesFolder) {

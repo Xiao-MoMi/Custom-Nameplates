@@ -105,15 +105,22 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
 
     private void loadConfigs() {
         YamlConfiguration config = plugin.getConfig("configs" + File.separator + "actionbar.yml");
+        boolean temp = false;
         for (Map.Entry<String, Object> barEntry : config.getValues(false).entrySet()) {
             if (!(barEntry.getValue() instanceof ConfigurationSection section))
                 return;
+
+            if (temp) {
+                LogUtils.warn("You can create at most 1 actionbar in actionbar.yml. Actionbar " + barEntry.getKey() + " would not work.");
+                continue;
+            }
 
             this.config = ActionBarConfig.builder()
                     .checkFrequency(section.getInt("check-frequency", 10))
                     .requirement(plugin.getRequirementManager().getRequirements(section.getConfigurationSection("conditions")))
                     .displayOrder(ConfigUtils.getTimeLimitTexts(section.getConfigurationSection("text-display-order")))
                     .build();
+            temp = true;
         }
     }
 
