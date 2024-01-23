@@ -40,7 +40,8 @@ public class BackGround {
             ConfiguredChar offset_128,
             ConfiguredChar right,
             int leftMargin,
-            int rightMargin
+            int rightMargin,
+            boolean removeShadow
     ) {
         this.left = left;
         this.offset_1 = offset_1;

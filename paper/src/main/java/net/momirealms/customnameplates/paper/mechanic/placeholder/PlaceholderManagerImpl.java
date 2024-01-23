@@ -193,6 +193,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     BackGroundText.builder()
                             .background(Objects.requireNonNull(plugin.getBackGroundManager().getBackGround(innerSection.getString("background"))))
                             .text(innerSection.getString("text", ""))
+                            .removeShadow(innerSection.getBoolean("remove-shadow"))
                             .build()
             );
         }
@@ -228,7 +229,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     DescentText.builder()
                             .descent(innerSection.getInt("descent", 0))
                             .text(innerSection.getString("text", ""))
-                            .unicode(unicode)
+                            .unicode(unicode || innerSection.getBoolean("is-unicode"))
                             .build()
             );
         }

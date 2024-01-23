@@ -79,6 +79,7 @@ public class CNConfig {
     public static boolean textEffects;
     public static boolean disableTeamManage;
     public static boolean velocitab;
+    public static boolean unknownTeam;
 
     public static void load() {
         try {
@@ -128,6 +129,7 @@ public class CNConfig {
             tabTeam = integrationSection.getBoolean("team.TAB", false);
             cmiTeam = integrationSection.getBoolean("team.CMI", false);
             velocitab = integrationSection.getBoolean("team.Velocitab", false);
+            unknownTeam = integrationSection.getBoolean("team.unknown", false);
         }
 
         ConfigurationSection packSection = config.getConfigurationSection("resource-pack");

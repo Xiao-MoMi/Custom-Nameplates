@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.paper;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.event.CustomNameplatesReloadEvent;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -43,11 +44,16 @@ import net.momirealms.customnameplates.paper.setting.CNLocale;
 import net.momirealms.customnameplates.paper.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
 import java.util.TimeZone;
 
-public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
+public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implements Listener {
 
     private CoolDownManager coolDownManager;
     private PacketManager packetManager;
@@ -83,6 +89,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
             if (!outDated) this.getAdventure().sendConsoleMessage("[CustomNameplates] You are using the latest version.");
             else this.getAdventure().sendConsoleMessage("[CustomNameplates] Update is available: <u>https://polymart.org/resource/2543<!u>");
         });
+        this.getServer().getPluginManager().registerEvents((VersionManagerImpl) versionManager, this);
     }
 
     @Override
@@ -101,6 +108,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin {
         ((WidthManagerImpl) this.widthManager).unload();
         ((StorageManagerImpl) this.storageManager).disable();
         ((AdventureManagerImpl) this.adventureManager).close();
+        HandlerList.unregisterAll((VersionManagerImpl) versionManager);
     }
 
     @Override

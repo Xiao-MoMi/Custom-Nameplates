@@ -32,6 +32,9 @@ import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.codehaus.plexus.util.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -235,6 +238,8 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
             }
         }
 
+        ascentTexts.removeAll(ascentUnicodes);
+
         for (int ascent : ascentTexts) {
             String line;
             StringBuilder sb = new StringBuilder();
@@ -313,20 +318,41 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     }
 
     private void copyResourcePackToHookedPlugins(File resourcePackFolder) {
-        if (CNConfig.copyPackIA) {
-            try {
-                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack" + File.separator + "assets") );
-            } catch (IOException e) {
-                e.printStackTrace();
+            Plugin ia = Bukkit.getPluginManager().getPlugin("ItemsAdder");
+            if (ia != null) {
+                File file = new File(ia.getDataFolder(), "config.yml");
+                YamlConfiguration iaConfig = YamlConfiguration.loadConfiguration(file);
+                List<String> folders = iaConfig.getStringList("resource-pack.zip.merge_other_plugins_resourcepacks_folders");
+                boolean changed = false;
+                if (CNConfig.copyPackIA) {
+                    if (!folders.contains("CustomNameplates/ResourcePack")) {
+                        folders.add("CustomNameplates/ResourcePack");
+                        iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
+                        changed = true;
+                    }
+                } else {
+                    if (folders.contains("CustomNameplates/ResourcePack")) {
+                        folders.remove("CustomNameplates/ResourcePack");
+                        iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
+                        changed = true;
+                    }
+                }
+                if (changed) {
+                    try {
+                        iaConfig.save(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
-        if (CNConfig.copyPackOraxen) {
-            try {
-                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Oraxen")).getDataFolder() + File.separator + "pack" + File.separator + "assets"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
+//        if (CNConfig.copyPackOraxen) {
+//            try {
+//                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Oraxen")).getDataFolder() + File.separator + "pack" + File.separator + "assets"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private List<JsonObject> getNameplates(File texturesFolder) {

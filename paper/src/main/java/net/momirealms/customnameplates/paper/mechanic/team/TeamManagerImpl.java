@@ -23,16 +23,14 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamManager;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.message.MessageType;
 import net.momirealms.customnameplates.common.team.TeamCollisionRule;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.mechanic.team.packet.*;
-import net.momirealms.customnameplates.paper.mechanic.team.provider.CMIProvider;
-import net.momirealms.customnameplates.paper.mechanic.team.provider.DefaultProvider;
-import net.momirealms.customnameplates.paper.mechanic.team.provider.TABProvider;
-import net.momirealms.customnameplates.paper.mechanic.team.provider.TeamProvider;
+import net.momirealms.customnameplates.paper.mechanic.team.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -57,9 +55,14 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     @Override
     public void createTeam(Player player) {
         if (CNConfig.disableTeamManage) return;
+        String team = teamProvider.getTeam(player);
+        if (team == null) {
+            LogUtils.warn("Failed to get player " + player.getName() + "'s team.");
+            return;
+        }
         PacketContainer createOwner = teamPacketAdaptor.getTeamCreatePacket(
                 TeamCreate.builder()
-                        .teamName(teamProvider.getTeam(player))
+                        .teamName(team)
                         .color(TeamColor.WHITE)
                         .display("")
                         .prefix("")
@@ -72,9 +75,10 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         for (Player online : Bukkit.getOnlinePlayers()) {
             PacketManager.getInstance().send(online, createOwner);
             if (online == player) continue;
+            String onlineTeam = teamProvider.getTeam(online);
             PacketContainer createOther = teamPacketAdaptor.getTeamCreatePacket(
                     TeamCreate.builder()
-                            .teamName(teamProvider.getTeam(online))
+                            .teamName(onlineTeam)
                             .color(TeamColor.WHITE)
                             .display("")
                             .prefix("")
@@ -91,9 +95,10 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     @Override
     public void removeTeam(Player player) {
         if (CNConfig.disableTeamManage) return;
+        String team = teamProvider.getTeam(player);
         PacketContainer packet = teamPacketAdaptor.getTeamRemovePacket(
                 TeamRemove.builder()
-                        .teamName(teamProvider.getTeam(player))
+                        .teamName(team)
                         .build()
         );
         for (Player online : Bukkit.getOnlinePlayers()) {
@@ -105,6 +110,7 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     @Override
     public void updateTeam(Player owner, Player viewer, String prefix, String suffix, TeamColor color, TeamTagVisibility visibility) {
         if (CNConfig.disableTeamManage) return;
+        String team = teamProvider.getTeam(owner);
         if (color == TeamColor.NONE || color == TeamColor.CUSTOM)
             color = TeamColor.WHITE;
         if (plugin.getNameplateManager().isProxyMode()) {
@@ -120,7 +126,7 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         } else {
             PacketContainer packet = teamPacketAdaptor.getTeamUpdatePacket(
                     TeamUpdate.builder()
-                            .teamName(teamProvider.getTeam(owner))
+                            .teamName(team)
                             .color(color)
                             .display("")
                             .prefix(prefix)
@@ -148,6 +154,8 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
             teamProvider = new TABProvider();
         } else if (CNConfig.cmiTeam) {
             teamProvider = new CMIProvider();
+        } else if (CNConfig.unknownTeam) {
+            teamProvider = new UnknownProvider();
         } else {
             teamProvider = new DefaultProvider();
         }

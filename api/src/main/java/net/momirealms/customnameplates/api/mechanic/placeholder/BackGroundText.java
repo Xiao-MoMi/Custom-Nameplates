@@ -26,13 +26,15 @@ public class BackGroundText {
 
     private String text;
     private BackGround backGround;
+    private boolean removeShadow;
 
     private BackGroundText() {
     }
 
-    public BackGroundText(String text, BackGround backGround) {
+    public BackGroundText(String text, BackGround backGround, boolean removeShadow) {
         this.text = text;
         this.backGround = backGround;
+        this.removeShadow = removeShadow;
     }
 
     public String getText() {
@@ -46,7 +48,8 @@ public class BackGroundText {
     public String getValue(OfflinePlayer player) {
         String parsed = PlaceholderAPI.setPlaceholders(player, text);
         int parsedWidth = FontUtils.getTextWidth(parsed);
-        return FontUtils.surroundNameplateFont(backGround.getBackGroundImage(parsedWidth)) + parsed;
+        String bg = FontUtils.surroundNameplateFont(backGround.getBackGroundImage(parsedWidth));
+        return (removeShadow ? "<#FFFEFD>" + bg + "</#FFFEFD>" : bg)+ parsed;
     }
 
     public static Builder builder() {
@@ -72,6 +75,11 @@ public class BackGroundText {
 
         public Builder background(BackGround backGround) {
             text.backGround = backGround;
+            return this;
+        }
+
+        public Builder removeShadow(boolean remove) {
+            text.removeShadow = remove;
             return this;
         }
 

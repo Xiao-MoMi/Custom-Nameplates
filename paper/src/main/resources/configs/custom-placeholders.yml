@@ -136,36 +136,30 @@ static-text:
 # Note: If you want to make an image lower, edit the y position/ascent in that plugin instead of
 # using descent text or descent unicode because they are designed for characters
 descent-text:
-  name:
-    text: "%player_name%"
-    descent: 0
-  player:
-    text: "%player_name%"
+  location:
+    text: "Your Location: [X: %player_x%, Y: %player_y%, Z: %player_z%]"
     descent: 5
-  position:
-    text: "Your Position: %player_x%, %player_y%, %player_z%"
-    descent: 5
+    is-unicode: false
   time:
     text: "Time: %nameplates_time%"
     descent: 5
+    is-unicode: false
   weather:
     text: "Weather: %nameplates_conditional_weather%"
     descent: 5
-  region:
-    text: "Region: %worldguard_region%"
-    descent: 5
+    is-unicode: false
   update:
     text: "A newer version of CustomNameplates is available!"
     descent: 3
+    is-unicode: false
   money:
     text: "%vault_eco_balance%"
     descent: 13
-
-# %nameplates_unicode_{0}%
-descent-unicode:
+    is-unicode: false
   hello:
-    text: "Hello 여보세요 你好 こんにちは"
+    text: "Hello 여보세요 你好 こんにちは, Thanks for using CustomNameplates"
     descent: 5
+    is-unicode: true
 
 # %nameplates_switch_{0}%
 switch-text:

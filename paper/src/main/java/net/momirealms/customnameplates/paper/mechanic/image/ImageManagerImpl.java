@@ -23,6 +23,7 @@ import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.ImageUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,6 +91,11 @@ public class ImageManagerImpl implements ImageManager {
             )) {
                 LogUtils.warn("Found duplicated image: " + key);
             }
+        }
+
+        File[] pgFiles = imgFolder.listFiles(file -> file.getName().endsWith(".png"));
+        for (File pg : pgFiles) {
+            ImageUtils.removeImageShadow(pg);
         }
     }
 

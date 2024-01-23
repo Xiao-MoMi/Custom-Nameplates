@@ -17,16 +17,20 @@
 
 package net.momirealms.customnameplates.paper.mechanic.team.provider;
 
-import com.Zrips.CMI.CMI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-public class CMIProvider implements TeamProvider {
+public class UnknownProvider implements TeamProvider {
 
     @Override
     public String getTeam(Player player) {
-        Team team = CMI.getInstance().getSB().getPlayerTeam(player);
-        if (team == null) return null;
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team team = scoreboard.getPlayerTeam(player);
+        if (team == null) {
+            return null;
+        }
         return team.getName();
     }
 }

@@ -36,6 +36,7 @@ import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.font.FontData;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
+import net.momirealms.customnameplates.api.mechanic.placeholder.DescentText;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.Key;
 import net.momirealms.customnameplates.common.Tuple;
@@ -126,6 +127,37 @@ public class WidthManagerImpl implements WidthManager {
         registerFontData(
                 Key.of(CNConfig.namespace, CNConfig.font), fontData
         );
+
+        ArrayList<Integer> ascentTexts = new ArrayList<>();
+        ArrayList<Integer> ascentUnicodes = new ArrayList<>();
+        for (DescentText descentText : plugin.getPlaceholderManager().getDescentTexts()) {
+            if (descentText.isUnicode()) {
+                ascentUnicodes.add(descentText.getAscent());
+            } else {
+                ascentTexts.add(descentText.getAscent());
+            }
+        }
+        ascentTexts.removeAll(ascentUnicodes);
+
+        for (int ascent : ascentTexts) {
+            FontData descentFont = new FontData(8);
+            descentFont.overrideWith(NONLATIN_EUROPEAN_DATA);
+            descentFont.overrideWith(ACCENTED_DATA);
+            descentFont.overrideWith(ASCII_DATA);
+            registerFontData(
+                    Key.of(CNConfig.namespace, "ascent_" + ascent), descentFont
+            );
+        }
+        for (int ascent : ascentUnicodes) {
+            FontData descentFont = new FontData(8);
+            descentFont.overrideWith(UNICODE_DATA);
+            descentFont.overrideWith(NONLATIN_EUROPEAN_DATA);
+            descentFont.overrideWith(ACCENTED_DATA);
+            descentFont.overrideWith(ASCII_DATA);
+            registerFontData(
+                    Key.of(CNConfig.namespace, "ascent_" + ascent), descentFont
+            );
+        }
     }
 
     private void loadUserConfigs() {

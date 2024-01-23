@@ -17,9 +17,15 @@
 
 package net.momirealms.customnameplates.paper.mechanic.misc;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.manager.VersionManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
+import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -31,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * This class implements the VersionManager interface and is responsible for managing version-related information.
  */
-public class VersionManagerImpl implements VersionManager {
+public class VersionManagerImpl implements VersionManager, Listener {
 
     private final boolean isNewerThan1_19;
     private final boolean isNewerThan1_19_R2;
@@ -223,5 +229,15 @@ public class VersionManagerImpl implements VersionManager {
             }
         }
         return newVS.length > currentVS.length;
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        if (player.isOp()) {
+            if (!PlaceholderAPI.isRegistered("player")) {
+                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, "You haven't installed Player Expansion yet. Click <b><gold><click:run_command:/papi ecloud download Player>HERE</click></gold><b> to download.");
+            }
+        }
     }
 }

@@ -23,13 +23,14 @@ modules:
   actionbars: true
   images: true
 
-# Integrations
+# Integrations (Please read the wiki)
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/compatibility
 integrations:
   resource-pack:
     ItemsAdder: false
     Oraxen: false
   team:
+    unknown: false
     TAB: false
     CMI: false
     Velocitab: false
