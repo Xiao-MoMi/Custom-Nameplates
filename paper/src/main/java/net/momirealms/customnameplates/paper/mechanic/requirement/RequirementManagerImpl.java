@@ -423,7 +423,7 @@ public class RequirementManagerImpl implements RequirementManager {
     }
 
     private void registerNumberEqualRequirement() {
-        registerRequirement("==", (args) -> {
+        registerRequirement("=", (args) -> {
             if (args instanceof ConfigurationSection section) {
                 String v1 = section.getString("value1", "");
                 String v2 = section.getString("value2", "");

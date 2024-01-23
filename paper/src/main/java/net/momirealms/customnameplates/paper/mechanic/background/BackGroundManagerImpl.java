@@ -203,7 +203,7 @@ public class BackGroundManagerImpl implements BackGroundManager {
         for (String bg : bg_list) {
             plugin.saveResource("contents" + File.separator + "backgrounds" + File.separator + bg + ".png", false);
         }
-        String[] config_list = new String[]{"bedrock_1", "bedrock_2", "bedrock_3"};
+        String[] config_list = new String[]{"bedrock_1", "bedrock_2"};
         for (String config : config_list) {
             plugin.saveResource("contents" + File.separator + "backgrounds" + File.separator + config + ".yml", false);
         }

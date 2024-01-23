@@ -4,18 +4,18 @@ right-margin: 1
 left:
   image: b0
   height: 14
-  ascent: 9
+  ascent: 12
   width: 1
 
 right:
   image: b0
   height: 14
-  ascent: 9
+  ascent: 12
   width: 1
 
 middle:
   height: 14
-  ascent: 9
+  ascent: 12
   1: b1
   2: b2
   4: b4

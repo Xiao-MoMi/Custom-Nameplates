@@ -262,7 +262,7 @@ public class WidthManagerImpl implements WidthManager {
             ASCII_SGA_DATA.registerCharWidth(codePoint, (int) entry.getValue());
         }
 
-        File accentedCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "ascii_sga.yml");
+        File accentedCache = new File(plugin.getDataFolder(), "font" + File.separator + "cache" + File.separator + "accented.yml");
         YamlConfiguration accentedYML = YamlConfiguration.loadConfiguration(accentedCache);
         ACCENTED_DATA = new FontData(5);
         for (Map.Entry<String, Object> entry : accentedYML.getValues(false).entrySet()) {
@@ -895,6 +895,7 @@ public class WidthManagerImpl implements WidthManager {
             ElementNode node = (ElementNode) MiniMessage.miniMessage().deserializeToTree(text);
             ArrayList<Tuple<String, Key, Boolean>> list = new ArrayList<>();
             nodeToStringInfo(node, list, Key.of("minecraft", "default"), false);
+
             int totalLength = 0;
             for (Tuple<String, Key, Boolean> element : list) {
                 FontData data = getFontData(element.getMid());
@@ -923,12 +924,12 @@ public class WidthManagerImpl implements WidthManager {
             } else if (node instanceof TagNode tagNode) {
                 if (tagNode.tag() instanceof Inserting inserting) {
                     Component component = inserting.value();
+                    isBold = component.hasDecoration(TextDecoration.BOLD);
+                    var key = component.font();
+                    if (key != null) {
+                        font = net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());
+                    }
                     if (component instanceof TextComponent textComponent) {
-                        isBold = component.hasDecoration(TextDecoration.BOLD);
-                        var key = component.font();
-                        if (key != null) {
-                            font = net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());
-                        }
                         String text = textComponent.content();
                         if (!text.equals(""))
                             list.add(Tuple.of(text, font, isBold));

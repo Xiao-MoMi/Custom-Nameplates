@@ -1,40 +1,27 @@
-# %nameplates_conditional_{0}%
-# custom conditions for your text, make it easier to display different content according to the requirement you set
 conditional-text:
-  # This is just an example that not actually enabled
-  # It would display the region name with black background if you are in a region. Otherwise it would return nothing
-  region:
+  actionbar:
     priority_1:
-      text: '%nameplates_background_region%'
+      text: '%nameplates_background_actionbar%'
       conditions:
-        papi-condition:
-          condition_1:
-            type: '!='
-            papi: '%worldguard_region%'
-            value: ""
+        '!=':
+          value1: '%player_remaining_air%'
+          value2: "300"
     priority_2:
-      text: ''
-  # It's actually using the same method as the region example above!
-  prefix:
-    priority_1:
-      text: '%nameplates_background_prefix%'
+      text: '%nameplates_static_money_hud%%nameplates_offset_-180%%nameplates_static_other_actionbar%'
       conditions:
-        papi-condition:
-          condition_1:
-            type: '!='
-            papi: '%vault_prefix%'
-            value: ""
-    priority_2:
-      text: ''
-  # A weather example which is using weather conditions
+        '!equals':
+          value1: '%nameplates_actionbar%'
+          value2: ""
+    priority_3:
+      text: '%nameplates_static_money_hud%'
   weather:
     priority_1:
-      text: 'Sun'
+      text: 'Sunny'
       conditions:
         weather:
           - clear
     priority_2:
-      text: 'Rain'
+      text: 'Rainy'
       conditions:
         weather:
           - rain
@@ -48,96 +35,51 @@ conditional-text:
       conditions:
         weather:
           - rainstorm
-  # Plugin would hide the stamina bar when players are in water, so the two bars would not overlap
-  stamina:
-    priority_1:
-      text: '%nameplates_offset_98%%nameplates_vanilla_stamina_hud%%nameplates_offset_-179%'
-      conditions:
-        papi-condition:
-          condition_1:
-            type: '=='
-            papi: '%player_remaining_air%'
-            value: "300"
-    priority_2:
-      text: ''
-  # It would keep the income action message in the middle
-  income_actionbar:
-    priority_1:
-      text: '%nameplates_offset_-180%%nameplates_static_income_actionbar%'
-      conditions:
-        papi-condition:
-          condition_1:
-            type: '!='
-            papi: '%nameplates_actionbar%'
-            value: ""
-    priority_2:
-      text: ''
 
-# %nameplates_nameplate_{0}%
-# This placeholder would surround the text with a nameplate
 nameplate-text:
   halloween:
     nameplate: halloween
     text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
 
-# %nameplates_background_{0}%
-# This placeholder would surround the text with a background
 background-text:
-  prefix:
+  location:
     background: bedrock_1
-    text: '%vault_prefix% %nameplates_descent_player%'
-    remove-shadow: true
-  position:
-    background: bedrock_1
-    text: '<#FFFEFD>%nameplates_image_compass%</#FFFEFD> %nameplates_descent_position%'
+    text: '%nameplates_image_compass% %nameplates_descent_location%'
     remove-shadow: true
   time:
     background: bedrock_1
-    text: '<#FFFEFD>%nameplates_image_clock%</#FFFEFD> %nameplates_descent_time%'
+    text: '%nameplates_image_clock% %nameplates_descent_time%'
     remove-shadow: true
   weather:
     background: bedrock_1
-    text: '<#FFFEFD>%nameplates_image_weather%</#FFFEFD> %nameplates_descent_weather%'
+    text: '%nameplates_image_weather% %nameplates_descent_weather%'
     remove-shadow: true
   hello:
     background: bedrock_1
-    text: '<#FFFEFD>%nameplates_image_bubble%</#FFFEFD> %nameplates_unicode_hello%'
-    remove-shadow: true
-  region:
-    background: bedrock_1
-    text: '<#FFFEFD>%nameplates_image_compass%</#FFFEFD> %nameplates_descent_region%'
+    text: '%nameplates_image_bubble% %nameplates_unicode_hello%'
     remove-shadow: true
   update:
+    background: bedrock_1
+    text: '%nameplates_image_bell% %nameplates_descent_update%'
+    remove-shadow: true
+  other_actionbar:
     background: bedrock_2
-    text: '<#FFFEFD>%nameplates_image_bell%</#FFFEFD> %nameplates_descent_update%'
+    text: '%nameplates_actionbar%'
     remove-shadow: true
 
-# %nameplates_static_{0}%
-# Plugin would generate offset images to keep the text at a certain position regardless of the length
-# So the text would be fixed at a certain place, so it's called "static-text"
-# We often use this feature to create money hud or receive income actionbar sent by other plugins
 static-text:
   money_hud:
-    # left/right/middle
     position: right
-    text: '<#FFFEFD>%nameplates_image_coin%</#FFFEFD> %nameplates_descent_money%'
+    text: '%nameplates_image_coin% %nameplates_descent_money%'
     value: 180
-  income_actionbar:
-    # It might be a good idea if you set the actionbar position from middle to side
+  other_actionbar:
     position: middle
-    # remove the font tag if you want to use minecraft:default font
-    text: "<font:nameplates:unicode_ascent_8>%nameplates_actionbar%</font>"
+    text: "%nameplates_background_other_actionbar%"
     value: 180
 
-# %nameplates_descent_{0}%
-# If the character can't show correctly here, use descent-unicode instead
-# Never put an image inside this section unless you surround your image with "<font:namespace:font> </font>"
-# For example ItemsAdder, you should use <font:minecraft:default>%img_xxx%</font>
-# Note: If you want to make an image lower, edit the y position/ascent in that plugin instead of
-# using descent text or descent unicode because they are designed for characters
 descent-text:
   location:
-    text: "Your Location: [X: %player_x%, Y: %player_y%, Z: %player_z%]"
+    text: "Your Location: %player_x%, %player_y%, %player_z%"
     descent: 5
     is-unicode: false
   time:
@@ -150,18 +92,17 @@ descent-text:
     is-unicode: false
   update:
     text: "A newer version of CustomNameplates is available!"
-    descent: 3
+    descent: 5
     is-unicode: false
   money:
     text: "%vault_eco_balance%"
-    descent: 13
+    descent: 20
     is-unicode: false
   hello:
     text: "Hello 여보세요 你好 こんにちは, Thanks for using CustomNameplates"
     descent: 5
     is-unicode: true
 
-# %nameplates_switch_{0}%
 switch-text:
   season:
     switch: '%customcrops_season%'
@@ -172,8 +113,6 @@ switch-text:
       'Winter': '<blue>Winter</blue>'
     default: 'Invalid season'
 
-# %nameplates_vanilla_{0}%
-# This is useful for creating a vanilla like hud
 vanilla-hud:
   stamina_hud:
     reverse: true
@@ -182,14 +121,10 @@ vanilla-hud:
       half: stamina_1
       full: stamina_2
     placeholder:
-      # value/max-value can be placeholders
       value: '1.1'
       max-value: '2'
 
-# %nameplates_cached_{0}%
 cached-text:
   cached:
-    # The text to cache
     text: '%super_complex_javascript%'
-    # How often is the value refreshed, measured in ms
     refresh-interval: 10000

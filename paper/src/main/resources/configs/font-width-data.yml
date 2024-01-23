@@ -16,7 +16,7 @@ minecraft:uniform:
 
 minecraft:alt:
   default: 8
-  template:
+  template-loading-sequence:
     - ascii_sga
 
 minecraft:asciillager:

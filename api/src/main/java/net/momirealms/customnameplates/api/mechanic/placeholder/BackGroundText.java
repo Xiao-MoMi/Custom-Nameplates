@@ -47,6 +47,7 @@ public class BackGroundText {
 
     public String getValue(OfflinePlayer player) {
         String parsed = PlaceholderAPI.setPlaceholders(player, text);
+        if (parsed.equals("")) return "";
         int parsedWidth = FontUtils.getTextWidth(parsed);
         String bg = FontUtils.surroundNameplateFont(backGround.getBackGroundImage(parsedWidth));
         return (removeShadow ? "<#FFFEFD>" + bg + "</#FFFEFD>" : bg)+ parsed;

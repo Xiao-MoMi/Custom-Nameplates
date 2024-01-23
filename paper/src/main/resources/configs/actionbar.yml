@@ -1,14 +1,14 @@
 # You can only create "actionbar" section in this config file
 actionbar:
-  check-frequency: 10
+  check-frequency: 1
   conditions:
     permission: "actionbar.show"
   text-display-order:
     1:
       # Measured in ticks
-      duration: 200
+      duration: 1000
       # Text content
-      text: 'Welcome to my server! %player_name%'
+      text: '%nameplates_conditional_actionbar%'
       # The frequency of refreshing the text, the lower the value is, the faster the placeholders are updated
       # measured in ticks, -1 = disable refreshing
       refresh-frequency: 1

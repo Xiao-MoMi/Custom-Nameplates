@@ -45,4 +45,12 @@ public class FontData {
         if (fontData == null) return;
         widthData.putAll(fontData.getWidthData());
     }
+
+    @Override
+    public String toString() {
+        return "FontData{" +
+                "widthData=" + widthData +
+                ", defaultWidth=" + defaultWidth +
+                '}';
+    }
 }
