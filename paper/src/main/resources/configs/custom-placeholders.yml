@@ -100,7 +100,7 @@ descent-text:
     is-unicode: false
   money:
     text: "%vault_eco_balance%"
-    descent: 20
+    descent: 23
     is-unicode: false
   hello:
     text: "Hello 여보세요 你好 こんにちは, Thanks for using CustomNameplates"

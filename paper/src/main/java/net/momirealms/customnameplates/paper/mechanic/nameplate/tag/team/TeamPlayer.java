@@ -104,6 +104,7 @@ public class TeamPlayer implements TeamTagPlayer {
             removeForOne(viewer);
         }
         nearbyPlayers.clear();
+        previewEntity.destroy();
     }
 
     private void updateForOne(Player viewer, boolean force) {
