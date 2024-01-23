@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.paper.mechanic.image;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.ImageManager;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
@@ -91,11 +93,6 @@ public class ImageManagerImpl implements ImageManager {
             )) {
                 LogUtils.warn("Found duplicated image: " + key);
             }
-        }
-
-        File[] pgFiles = imgFolder.listFiles(file -> file.getName().endsWith(".png"));
-        for (File pg : pgFiles) {
-            ImageUtils.removeImageShadow(pg);
         }
     }
 

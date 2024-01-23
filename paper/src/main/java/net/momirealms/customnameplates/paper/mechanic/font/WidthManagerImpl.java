@@ -915,7 +915,7 @@ public class WidthManagerImpl implements WidthManager {
             return totalLength;
         }
 
-        public Component nodeToStringInfo(ElementNode node, List<Tuple<String, Key, Boolean>> list, Key font, boolean isBold) {
+        public void nodeToStringInfo(ElementNode node, List<Tuple<String, Key, Boolean>> list, Key font, boolean isBold) {
             if (node instanceof ValueNode valueNode) {
                 String text = valueNode.value();
                 if (!text.equals(""))
@@ -940,7 +940,6 @@ public class WidthManagerImpl implements WidthManager {
                     this.nodeToStringInfo(child, list, font, isBold);
                 }
             }
-            return null;
         }
 
         public int getWidthFromCache(String text) {
