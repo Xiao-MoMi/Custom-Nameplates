@@ -32,7 +32,6 @@ import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.codehaus.plexus.util.FileUtils;
@@ -44,7 +43,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ResourcePackManagerImpl implements ResourcePackManager {
 
@@ -263,11 +261,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 e.printStackTrace();
             }
         }
-
-        if (!CNConfig.legacyUnicodes) {
-            return;
-        }
-
         for (int ascent : ascentUnicodes) {
             String line;
             StringBuilder sb = new StringBuilder();
@@ -581,7 +574,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
 
         public static final String Animated_Text_FSH =
                 "\n" +
-                "vec2 p1 = round(pos1 / (posID == 0 ? 1 - coord.x : 1 - coord.y));\n" +
+                "    vec2 p1 = round(pos1 / (posID == 0 ? 1 - coord.x : 1 - coord.y));\n" +
                 "    vec2 p2 = round(pos2 / (posID == 0 ? coord.y : coord.x));\n" +
                 "    ivec2 resolution = ivec2(abs(p1 - p2));\n" +
                 "    ivec2 corner = ivec2(min(p1, p2));\n" +

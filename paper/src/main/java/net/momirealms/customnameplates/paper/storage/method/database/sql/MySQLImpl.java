@@ -18,7 +18,7 @@
 package net.momirealms.customnameplates.paper.storage.method.database.sql;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.paper.storage.StorageType;
+import net.momirealms.customnameplates.api.data.StorageType;
 
 public class MySQLImpl extends AbstractHikariDatabase {
 

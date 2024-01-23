@@ -38,7 +38,7 @@ import java.util.Objects;
 
 public class CNConfig {
 
-    public static String configVersion = "22";
+    public static String configVersion = "23";
     public static int cacheSize;
     public static int corePoolSize;
     public static long keepAliveTime;

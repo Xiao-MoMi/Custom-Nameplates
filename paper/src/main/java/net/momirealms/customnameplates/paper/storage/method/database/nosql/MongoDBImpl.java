@@ -18,18 +18,16 @@
 package net.momirealms.customnameplates.paper.storage.method.database.nosql;
 
 import com.mongodb.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import net.momirealms.customnameplates.paper.storage.method.AbstractStorage;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -39,9 +37,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -143,6 +139,30 @@ public class MongoDBImpl extends AbstractStorage {
         }
         });
         return future;
+    }
+
+    /**
+     * Get a set of unique player UUIDs from the MongoDB database.
+     *
+     * @param legacy Flag indicating whether to retrieve legacy data.
+     * @return A set of unique player UUIDs.
+     */
+    @Override
+    public Set<UUID> getUniqueUsers(boolean legacy) {
+        // no legacy files
+        Set<UUID> uuids = new HashSet<>();
+        MongoCollection<Document> collection = database.getCollection(getCollectionName("data"));
+        try {
+            Bson projectionFields = Projections.fields(Projections.include("uuid"));
+            try (MongoCursor<Document> cursor = collection.find().projection(projectionFields).iterator()) {
+                while (cursor.hasNext()) {
+                    uuids.add(cursor.next().get("uuid", UUID.class));
+                }
+            }
+        } catch (MongoException e) {
+            LogUtils.warn("Failed to get unique data.", e);
+        }
+        return uuids;
     }
 
     /**

@@ -17,15 +17,12 @@
 
 package net.momirealms.customnameplates.paper.mechanic.image;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.ImageManager;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
-import net.momirealms.customnameplates.paper.util.ImageUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 

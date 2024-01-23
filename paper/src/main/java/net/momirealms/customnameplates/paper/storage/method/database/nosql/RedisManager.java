@@ -18,9 +18,9 @@
 package net.momirealms.customnameplates.paper.storage.method.database.nosql;
 
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import net.momirealms.customnameplates.paper.storage.method.AbstractStorage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,7 +32,9 @@ import redis.clients.jedis.exceptions.JedisException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,6 +73,11 @@ public class RedisManager extends AbstractStorage {
         return jedisPool.getResource();
     }
 
+    @Override
+    public Set<UUID> getUniqueUsers(boolean legacy) {
+        return new HashSet<>();
+    }
+
     /**
      * Initialize the Redis connection and configuration based on the plugin's YAML configuration.
      */
@@ -87,7 +94,7 @@ public class RedisManager extends AbstractStorage {
         jedisPoolConfig.setTestWhileIdle(true);
         jedisPoolConfig.setTimeBetweenEvictionRuns(Duration.ofMillis(30000));
         jedisPoolConfig.setNumTestsPerEvictionRun(-1);
-        jedisPoolConfig.setMinEvictableIdleTime(Duration.ofMillis(section.getInt("MinEvictableIdleTimeMillis",1800000)));
+        jedisPoolConfig.setMinEvictableIdleDuration(Duration.ofMillis(section.getInt("MinEvictableIdleTimeMillis", 1800000)));
         jedisPoolConfig.setMaxTotal(section.getInt("MaxTotal",8));
         jedisPoolConfig.setMaxIdle(section.getInt("MaxIdle",8));
         jedisPoolConfig.setMinIdle(section.getInt("MinIdle",1));
@@ -168,7 +175,7 @@ public class RedisManager extends AbstractStorage {
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.setex(
                     getRedisKey("cn_data", uuid),
-                    300,
+                    600,
                     plugin.getStorageManager().toBytes(playerData)
             );
             future.complete(true);

@@ -17,6 +17,10 @@
 
 package net.momirealms.customnameplates.paper.command;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -25,21 +29,36 @@ import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.data.DataStorageInterface;
+import net.momirealms.customnameplates.api.data.LegacyDataStorageInterface;
 import net.momirealms.customnameplates.api.data.OnlineUser;
+import net.momirealms.customnameplates.api.data.PlayerData;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
+import net.momirealms.customnameplates.api.util.CompletableFutures;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.setting.CNLocale;
+import net.momirealms.customnameplates.paper.storage.method.database.sql.MariaDBImpl;
+import net.momirealms.customnameplates.paper.storage.method.database.sql.MySQLImpl;
+import net.momirealms.customnameplates.paper.storage.method.file.YAMLImpl;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 @SuppressWarnings("DuplicatedCode")
 public class CommandManager {
@@ -57,7 +76,8 @@ public class CommandManager {
                 .withAliases("nameplates", "cnameplates")
                 .withSubcommands(
                         NameplatesCommands.getReloadCommand(),
-                        NameplatesCommands.getAboutCommand()
+                        NameplatesCommands.getAboutCommand(),
+                        NameplatesCommands.getDataCommand()
                 );
         if (CNConfig.nameplateModule) {
             command1.withSubcommands(
@@ -331,6 +351,192 @@ public class CommandManager {
                         AdventureManagerImpl.getInstance().sendMessage(sender, "<#FF7F50>\uD83D\uDD25 Contributors: <#FFA07A>TopOrigin<white>");
                         AdventureManagerImpl.getInstance().sendMessage(sender, "<#FFD700>⭐ <click:open_url:https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates>Document</click> <#A9A9A9>| <#FAFAD2>⛏ <click:open_url:https://github.com/Xiao-MoMi/Custom-Nameplates>Github</click> <#A9A9A9>| <#48D1CC>\uD83D\uDD14 <click:open_url:https://polymart.org/resource/customnameplates.2543>Polymart</click>");
                     });
+        }
+
+        public static CommandAPICommand getDataCommand() {
+            return new CommandAPICommand("data")
+                    .withPermission("customnameplates.admin")
+                    .withSubcommands(
+                          new CommandAPICommand("export")
+                                  .executes((sender, args) -> {
+                                      CustomNameplatesPlugin plugin = CustomNameplatesPlugin.get();
+                                      plugin.getScheduler().runTaskAsync(() -> {
+
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Starting <aqua>export</aqua>.");
+                                          DataStorageInterface dataStorageInterface = plugin.getStorageManager().getDataSource();
+
+                                          Set<UUID> uuids = dataStorageInterface.getUniqueUsers(false);
+                                          Set<CompletableFuture<Void>> futures = new HashSet<>();
+                                          AtomicInteger userCount = new AtomicInteger(0);
+                                          Map<UUID, String> out = Collections.synchronizedMap(new TreeMap<>());
+
+                                          int amount = uuids.size();
+                                          for (UUID uuid : uuids) {
+                                              futures.add(dataStorageInterface.getPlayerData(uuid).thenAccept(it -> {
+                                                  if (it.isPresent()) {
+                                                      out.put(uuid, plugin.getStorageManager().toJson(it.get()));
+                                                      userCount.incrementAndGet();
+                                                  }
+                                              }));
+                                          }
+
+                                          CompletableFuture<Void> overallFuture = CompletableFutures.allOf(futures);
+
+                                          while (true) {
+                                              try {
+                                                  overallFuture.get(3, TimeUnit.SECONDS);
+                                              } catch (InterruptedException | ExecutionException e) {
+                                                  e.printStackTrace();
+                                                  break;
+                                              } catch (TimeoutException e) {
+                                                  LogUtils.info("Progress: " + userCount.get() + "/" + amount);
+                                                  continue;
+                                              }
+                                              break;
+                                          }
+
+                                          JsonObject outJson = new JsonObject();
+                                          for (Map.Entry<UUID, String> entry : out.entrySet()) {
+                                              outJson.addProperty(entry.getKey().toString(), entry.getValue());
+                                          }
+                                          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+                                          String formattedDate = formatter.format(new Date());
+                                          File outFile = new File(plugin.getDataFolder(), "exported-" + formattedDate + ".json.gz");
+                                          try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(Files.newOutputStream(outFile.toPath())), StandardCharsets.UTF_8))) {
+                                              new GsonBuilder().disableHtmlEscaping().create().toJson(outJson, writer);
+                                          } catch (IOException e) {
+                                              e.printStackTrace();
+                                          }
+
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Completed.");
+                                      });
+                          }),
+                          new CommandAPICommand("export-legacy")
+                                  .withArguments(new StringArgument("method")
+                                          .replaceSuggestions(ArgumentSuggestions.strings("MySQL", "MariaDB", "YAML")))
+                                  .executes((sender, args) -> {
+                                      String arg = (String) args.get("method");
+                                      if (arg == null) return;
+                                      CustomNameplatesPlugin plugin = CustomNameplatesPlugin.get();
+                                      plugin.getScheduler().runTaskAsync(() -> {
+
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Starting <aqua>export</aqua>.");
+
+                                          LegacyDataStorageInterface dataStorageInterface;
+                                          switch (arg) {
+                                              case "MySQL" -> dataStorageInterface = new MySQLImpl(plugin);
+                                              case "MariaDB" -> dataStorageInterface = new MariaDBImpl(plugin);
+                                              case "YAML" -> dataStorageInterface = new YAMLImpl(plugin);
+                                              default -> {
+                                                  AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "No such legacy storage method.");
+                                                  return;
+                                              }
+                                          }
+
+                                          dataStorageInterface.initialize();
+                                          Set<UUID> uuids = dataStorageInterface.getUniqueUsers(true);
+                                          Set<CompletableFuture<Void>> futures = new HashSet<>();
+                                          AtomicInteger userCount = new AtomicInteger(0);
+                                          Map<UUID, String> out = Collections.synchronizedMap(new TreeMap<>());
+
+                                          for (UUID uuid : uuids) {
+                                              futures.add(dataStorageInterface.getLegacyPlayerData(uuid).thenAccept(it -> {
+                                                  if (it.isPresent()) {
+                                                      out.put(uuid, plugin.getStorageManager().toJson(it.get()));
+                                                      userCount.incrementAndGet();
+                                                  }
+                                              }));
+                                          }
+
+                                          CompletableFuture<Void> overallFuture = CompletableFutures.allOf(futures);
+
+                                          while (true) {
+                                              try {
+                                                  overallFuture.get(3, TimeUnit.SECONDS);
+                                              } catch (InterruptedException | ExecutionException e) {
+                                                  e.printStackTrace();
+                                                  break;
+                                              } catch (TimeoutException e) {
+                                                  LogUtils.info("Progress: " + userCount.get() + "/" + uuids.size());
+                                                  continue;
+                                              }
+                                              break;
+                                          }
+
+                                          JsonObject outJson = new JsonObject();
+                                          for (Map.Entry<UUID, String> entry : out.entrySet()) {
+                                              outJson.addProperty(entry.getKey().toString(), entry.getValue());
+                                          }
+                                          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+                                          String formattedDate = formatter.format(new Date());
+                                          File outFile = new File(plugin.getDataFolder(), "exported-" + formattedDate + ".json.gz");
+                                          try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(Files.newOutputStream(outFile.toPath())), StandardCharsets.UTF_8))) {
+                                              new GsonBuilder().disableHtmlEscaping().create().toJson(outJson, writer);
+                                          } catch (IOException e) {
+                                              e.printStackTrace();
+                                          }
+
+                                          dataStorageInterface.disable();
+
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Completed.");
+                                      });
+                                  })
+                            ,
+                          new CommandAPICommand("import")
+                                  .withArguments(new StringArgument("file"))
+                                  .executes((sender, args) -> {
+                                      String fileName = (String) args.get("file");
+                                      if (fileName == null) return;
+                                      CustomNameplatesPlugin plugin = CustomNameplatesPlugin.get();
+                                      File file = new File(plugin.getDataFolder(), fileName);
+                                      if (!file.exists()) {
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "File not exists.");
+                                          return;
+                                      }
+                                      if (!file.getName().endsWith(".json.gz")) {
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Invalid file.");
+                                          return;
+                                      }
+                                      plugin.getScheduler().runTaskAsync(() -> {
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Starting <aqua>import</aqua>.");
+                                          JsonObject data;
+                                          try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(Files.newInputStream(file.toPath())), StandardCharsets.UTF_8))) {
+                                              data = new GsonBuilder().disableHtmlEscaping().create().fromJson(reader, JsonObject.class);
+                                          } catch (IOException e) {
+                                              AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Error occurred when reading the backup file.");
+                                              e.printStackTrace();
+                                              return;
+                                          }
+                                          DataStorageInterface dataStorageInterface = plugin.getStorageManager().getDataSource();
+                                          var entrySet = data.entrySet();
+                                          int amount = entrySet.size();
+                                          AtomicInteger userCount = new AtomicInteger(0);
+                                          Set<CompletableFuture<Void>> futures = new HashSet<>();
+
+                                          for (Map.Entry<String, JsonElement> entry : entrySet) {
+                                              UUID uuid = UUID.fromString(entry.getKey());
+                                              if (entry.getValue() instanceof JsonPrimitive primitive) {
+                                                  PlayerData playerData = plugin.getStorageManager().fromJson(primitive.getAsString());
+                                                  futures.add(dataStorageInterface.updateOrInsertPlayerData(uuid, playerData).thenAccept(it -> userCount.incrementAndGet()));
+                                              }
+                                          }
+                                          CompletableFuture<Void> overallFuture = CompletableFutures.allOf(futures);
+                                          while (true) {
+                                              try {
+                                                  overallFuture.get(3, TimeUnit.SECONDS);
+                                              } catch (InterruptedException | ExecutionException e) {
+                                                  e.printStackTrace();
+                                                  break;
+                                              } catch (TimeoutException e) {
+                                                  LogUtils.info("Progress: " + userCount.get() + "/" + amount);
+                                                  continue;
+                                              }
+                                              break;
+                                          }
+                                          AdventureManagerImpl.getInstance().sendMessageWithPrefix(sender, "Completed.");
+                                      });
+                                  })
+                          );
         }
     }
 }

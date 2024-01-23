@@ -32,6 +32,8 @@ dependencies {
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0c-r5")
     compileOnly("io.th0rgal:oraxen:1.165.0")
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.5")
+    compileOnly("commons-io:commons-io:2.15.1")
+
 
     // chat channels
     compileOnly(files("libs/VentureChat-3.7.1.jar"))

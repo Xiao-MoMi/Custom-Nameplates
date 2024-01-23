@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.api.manager;
 
+import net.momirealms.customnameplates.api.data.DataStorageInterface;
 import net.momirealms.customnameplates.api.data.OnlineUser;
 import net.momirealms.customnameplates.api.data.PlayerData;
 import org.jetbrains.annotations.NotNull;
@@ -102,4 +103,6 @@ public interface StorageManager {
      */
     @NotNull
     String toJson(@NotNull PlayerData playerData);
+
+    DataStorageInterface getDataSource();
 }

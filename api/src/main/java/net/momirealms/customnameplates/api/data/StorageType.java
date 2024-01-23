@@ -15,19 +15,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.storage.method.database.sql;
+package net.momirealms.customnameplates.api.data;
 
-import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.data.StorageType;
+public enum StorageType {
 
-public class MariaDBImpl extends AbstractHikariDatabase {
-
-    public MariaDBImpl(CustomNameplatesPlugin plugin) {
-        super(plugin);
-    }
-
-    @Override
-    public StorageType getStorageType() {
-        return StorageType.MariaDB;
-    }
+    JSON,
+    YAML,
+    H2,
+    SQLite,
+    MySQL,
+    MariaDB,
+    MongoDB,
+    Redis
 }

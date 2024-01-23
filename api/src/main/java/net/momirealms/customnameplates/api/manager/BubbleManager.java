@@ -42,6 +42,8 @@ public interface BubbleManager {
 
     Collection<Bubble> getBubbles();
 
+    boolean containsBubble(String key);
+
     boolean equipBubble(Player player, String bubble);
 
     void unEquipBubble(Player player);

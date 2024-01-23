@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.paper;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.event.CustomNameplatesReloadEvent;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -42,13 +41,12 @@ import net.momirealms.customnameplates.paper.scheduler.SchedulerImpl;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.setting.CNLocale;
 import net.momirealms.customnameplates.paper.storage.StorageManagerImpl;
+import net.momirealms.customnameplates.paper.util.Migration;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
 import java.util.TimeZone;
@@ -66,6 +64,11 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
 
     @Override
     public void onEnable() {
+        if (Migration.check()) {
+            LogUtils.warn("Please read /CustomNameplates/README.txt to finish the migration.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         this.adventureManager = new AdventureManagerImpl(this);
         this.versionManager = new VersionManagerImpl(this);
         this.scheduler = new SchedulerImpl(this);
@@ -94,21 +97,21 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
 
     @Override
     public void onDisable() {
-        ((SchedulerImpl) this.scheduler).shutdown();
-        ((ActionBarManagerImpl) actionBarManager).unload();
-        ((NameplateManagerImpl) this.nameplateManager).disable();
-        ((TeamManagerImpl) this.teamManager).unload();
-        ((BossBarManagerImpl) this.bossBarManager).unload();
-        ((ImageManagerImpl) this.imageManager).unload();
-        ((BackGroundManagerImpl) this.backGroundManager).unload();
-        ((PlaceholderManagerImpl) this.placeholderManager).unload();
-        ((BubbleManagerImpl) this.bubbleManager).unload();
-        ((RequirementManagerImpl) this.requirementManager).unload();
-        ((ResourcePackManagerImpl) this.resourcePackManager).unload();
-        ((WidthManagerImpl) this.widthManager).unload();
-        ((StorageManagerImpl) this.storageManager).disable();
-        ((AdventureManagerImpl) this.adventureManager).close();
-        HandlerList.unregisterAll((VersionManagerImpl) versionManager);
+        if (scheduler != null) ((SchedulerImpl) this.scheduler).shutdown();
+        if (actionBarManager != null) ((ActionBarManagerImpl) actionBarManager).unload();
+        if (nameplateManager != null) ((NameplateManagerImpl) this.nameplateManager).disable();
+        if (teamManager != null) ((TeamManagerImpl) this.teamManager).unload();
+        if (bossBarManager != null)  ((BossBarManagerImpl) this.bossBarManager).unload();
+        if (imageManager != null) ((ImageManagerImpl) this.imageManager).unload();
+        if (backGroundManager != null) ((BackGroundManagerImpl) this.backGroundManager).unload();
+        if (placeholderManager != null) ((PlaceholderManagerImpl) this.placeholderManager).unload();
+        if (bubbleManager != null) ((BubbleManagerImpl) this.bubbleManager).unload();
+        if (requirementManager != null) ((RequirementManagerImpl) this.requirementManager).unload();
+        if (resourcePackManager != null) ((ResourcePackManagerImpl) this.resourcePackManager).unload();
+        if (widthManager != null) ((WidthManagerImpl) this.widthManager).unload();
+        if (storageManager != null) ((StorageManagerImpl) this.storageManager).disable();
+        if (adventureManager != null) ((AdventureManagerImpl) this.adventureManager).close();
+        if (versionManager != null) HandlerList.unregisterAll((VersionManagerImpl) versionManager);
     }
 
     @Override
@@ -158,7 +161,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
                 "com.zaxxer:HikariCP:5.0.1", mavenRepo,
                 "org.mariadb.jdbc:mariadb-java-client:3.3.0", mavenRepo,
                 "com.mysql:mysql-connector-j:8.2.0", mavenRepo,
-                "commons-io:commons-io:2.14.0", mavenRepo,
+                "commons-io:commons-io:2.15.1", mavenRepo,
                 "com.google.code.gson:gson:2.10.1", mavenRepo,
                 "com.h2database:h2:2.2.224", mavenRepo,
                 "org.mongodb:mongodb-driver-sync:4.11.1", mavenRepo,

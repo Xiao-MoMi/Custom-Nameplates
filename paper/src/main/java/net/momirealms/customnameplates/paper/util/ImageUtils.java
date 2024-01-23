@@ -33,4 +33,21 @@ public class ImageUtils {
             e.printStackTrace();
         }
     }
+
+    public static void setAnimatedImage(File file, int frames) {
+        try {
+            BufferedImage inputImage = ImageIO.read(file);
+            int width = inputImage.getWidth();
+            int height = inputImage.getHeight();
+            int frameHeight = height / frames;
+            BufferedImage outputImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            int newPixel = (1 << 24) | (10 << 16) | (width << 8) | frameHeight;
+            for (int i = 0; i < frames; i++) {
+                outputImage.setRGB(0, frameHeight * i, newPixel);
+            }
+            ImageIO.write(outputImage, "png", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

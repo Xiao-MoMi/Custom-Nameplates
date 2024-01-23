@@ -1,5 +1,5 @@
 # Do not change
-config-version: '22'
+config-version: '23'
 
 # Debug mode
 debug: false

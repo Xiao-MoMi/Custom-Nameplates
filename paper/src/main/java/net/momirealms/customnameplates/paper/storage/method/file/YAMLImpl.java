@@ -17,27 +17,30 @@
 
 package net.momirealms.customnameplates.paper.storage.method.file;
 
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.data.LegacyDataStorageInterface;
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import net.momirealms.customnameplates.paper.storage.method.AbstractStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
  * A data storage implementation that uses YAML files to store player data, with support for legacy data.
  */
-public class YAMLImpl extends AbstractStorage {
+public class YAMLImpl extends AbstractStorage implements LegacyDataStorageInterface {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public YAMLImpl(CustomNameplatesPluginImpl plugin) {
+    public YAMLImpl(CustomNameplatesPlugin plugin) {
         super(plugin);
         File folder = new File(plugin.getDataFolder(), "data");
         if (!folder.exists()) folder.mkdirs();
@@ -101,5 +104,36 @@ public class YAMLImpl extends AbstractStorage {
             LogUtils.warn("Failed to save player data", e);
         }
         return CompletableFuture.completedFuture(true);
+    }
+
+    @Override
+    public Set<UUID> getUniqueUsers(boolean legacy) {
+        File folder;
+        if (legacy) {
+            folder = new File(plugin.getDataFolder(), "player_data");
+        } else {
+            folder = new File(plugin.getDataFolder(), "data");
+        }
+        Set<UUID> uuids = new HashSet<>();
+        if (folder.exists()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    uuids.add(UUID.fromString(file.getName().substring(0, file.getName().length() - 4)));
+                }
+            }
+        }
+        return uuids;
+    }
+
+    @Override
+    public CompletableFuture<Optional<PlayerData>> getLegacyPlayerData(UUID uuid) {
+        File dataFile = new File(plugin.getDataFolder(), "player_data" + File.separator + uuid + ".yml");
+        YamlConfiguration data = readData(dataFile);
+        PlayerData playerData = new PlayerData.Builder()
+                .setBubble(data.getString("bubbles", ""))
+                .setNameplate(data.getString("nameplate", ""))
+                .build();
+        return CompletableFuture.completedFuture(Optional.of(playerData));
     }
 }

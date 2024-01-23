@@ -109,7 +109,7 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
             if (!(barEntry.getValue() instanceof ConfigurationSection section))
                 return;
 
-            this.config = ActionBarConfig.Builder.of()
+            this.config = ActionBarConfig.builder()
                     .checkFrequency(section.getInt("check-frequency", 10))
                     .requirement(plugin.getRequirementManager().getRequirements(section.getConfigurationSection("conditions")))
                     .displayOrder(ConfigUtils.getTimeLimitTexts(section.getConfigurationSection("text-display-order")))

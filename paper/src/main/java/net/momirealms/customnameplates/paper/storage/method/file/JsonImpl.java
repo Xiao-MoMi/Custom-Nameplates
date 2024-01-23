@@ -19,8 +19,8 @@ package net.momirealms.customnameplates.paper.storage.method.file;
 
 import com.google.gson.Gson;
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import net.momirealms.customnameplates.paper.storage.method.AbstractStorage;
 import org.bukkit.Bukkit;
 
@@ -29,7 +29,9 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -124,5 +126,22 @@ public class JsonImpl extends AbstractStorage {
     public CompletableFuture<Boolean> updatePlayerData(UUID uuid, PlayerData playerData) {
         this.saveToJsonFile(playerData, getPlayerDataFile(uuid));
         return CompletableFuture.completedFuture(true);
+    }
+
+    // Retrieve a set of unique user UUIDs based on JSON data files in the 'data' folder.
+    @Override
+    public Set<UUID> getUniqueUsers(boolean legacy) {
+        // No legacy files
+        File folder = new File(plugin.getDataFolder(), "data");
+        Set<UUID> uuids = new HashSet<>();
+        if (folder.exists()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    uuids.add(UUID.fromString(file.getName().substring(file.getName().length() - 5)));
+                }
+            }
+        }
+        return uuids;
     }
 }

@@ -28,10 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -71,6 +68,36 @@ public abstract class AbstractSQLDatabase extends AbstractStorage {
         } catch (IOException e) {
             LogUtils.warn("Failed to get schema resource");
         }
+    }
+
+    /**
+     * Update or insert a player's data into the SQL database.
+     *
+     * @param uuid      The UUID of the player.
+     * @param playerData The player data to update or insert.
+     * @return A CompletableFuture indicating the success of the operation.
+     */
+    @Override
+    public CompletableFuture<Boolean> updateOrInsertPlayerData(UUID uuid, PlayerData playerData) {
+        var future = new CompletableFuture<Boolean>();
+        plugin.getScheduler().runTaskAsync(() -> {
+            try (
+                    Connection connection = getConnection();
+                    PreparedStatement statement = connection.prepareStatement(String.format(SqlConstants.SQL_SELECT_BY_UUID, getTableName("data")))
+            ) {
+                statement.setString(1, uuid.toString());
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    updatePlayerData(uuid, playerData).thenRun(() -> future.complete(true));
+                } else {
+                    insertPlayerData(uuid, playerData);
+                    future.complete(true);
+                }
+            } catch (SQLException e) {
+                LogUtils.warn("Failed to update " + uuid + "'s data.", e);
+            }
+        });
+        return future;
     }
 
     /**
@@ -175,6 +202,29 @@ public abstract class AbstractSQLDatabase extends AbstractStorage {
         } catch (SQLException e) {
             LogUtils.warn("Failed to insert " + uuid + "'s data.", e);
         }
+    }
+
+    /**
+     * Get a set of unique user UUIDs from the SQL database.
+     *
+     * @param legacy Whether to include legacy data in the retrieval.
+     * @return A set of unique user UUIDs.
+     */
+    @Override
+    public Set<UUID> getUniqueUsers(boolean legacy) {
+        Set<UUID> uuids = new HashSet<>();
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(String.format(SqlConstants.SQL_SELECT_ALL_UUID, legacy ? getTableName("fishingbag") : getTableName("data")))) {
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    UUID uuid = UUID.fromString(rs.getString("uuid"));
+                    uuids.add(uuid);
+                }
+            }
+        } catch (SQLException e) {
+            LogUtils.warn("Failed to get unique data.", e);
+        }
+        return uuids;
     }
 
     /**

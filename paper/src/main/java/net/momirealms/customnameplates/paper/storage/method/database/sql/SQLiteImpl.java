@@ -19,8 +19,8 @@ package net.momirealms.customnameplates.paper.storage.method.database.sql;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.sqlite.SQLiteConfig;

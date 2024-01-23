@@ -18,7 +18,11 @@
 package net.momirealms.customnameplates.paper.storage.method;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.paper.storage.DataStorageInterface;
+import net.momirealms.customnameplates.api.data.DataStorageInterface;
+import net.momirealms.customnameplates.api.data.PlayerData;
+
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An abstract class that implements the DataStorageInterface and provides common functionality for data storage.
@@ -39,5 +43,11 @@ public abstract class AbstractStorage implements DataStorageInterface {
     @Override
     public void disable() {
         // This method can be overridden in subclasses to perform cleanup or shutdown tasks specific to the storage type.
+    }
+
+    @Override
+    public CompletableFuture<Boolean> updateOrInsertPlayerData(UUID uuid, PlayerData playerData) {
+        // By default, delegate to the updatePlayerData method to update or insert player data.
+        return updatePlayerData(uuid, playerData);
     }
 }

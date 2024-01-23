@@ -26,7 +26,6 @@ import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.util.FontUtils;
-import net.momirealms.customnameplates.paper.setting.CNLocale;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

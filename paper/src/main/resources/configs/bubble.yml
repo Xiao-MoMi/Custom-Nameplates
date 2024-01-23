@@ -4,7 +4,7 @@ blacklist-channels:
   - Staff
 
 # Default bubble to display if player's bubble is "none"
-default-bubbles: 'chat'
+default-bubble: 'chat'
 
 # Text format when bubble is "none"
 default-format:

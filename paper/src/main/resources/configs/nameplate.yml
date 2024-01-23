@@ -28,14 +28,16 @@ unlimited:
   tag_1:
     text: '%nameplates_nametag%'
     vertical-offset: -1
-    owner-conditions: { }
+    owner-conditions:
+      potion-effect: "INVISIBILITY=0"
     viewer-conditions: { }
   tag_2:
     text: "IP: %player_ip%  My IP: %viewer_player_ip%"
     vertical-offset: -0.7
     refresh-frequency: 10
     check-frequency: 20
-    owner-conditions: { }
+    owner-conditions:
+      potion-effect: "INVISIBILITY=0"
     viewer-conditions:
       condition_1:
         type: permission

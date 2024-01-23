@@ -1,6 +1,6 @@
-# You can only create "actionbar" section in this config file
+# Player can only receive at most 1 actionbar at the same time
 actionbar:
-  check-frequency: 1
+  check-frequency: 10
   conditions:
     permission: "actionbar.show"
   text-display-order:

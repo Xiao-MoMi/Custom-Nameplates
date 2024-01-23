@@ -20,21 +20,24 @@ package net.momirealms.customnameplates.paper.storage.method.database.sql;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.data.LegacyDataStorageInterface;
+import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.storage.StorageType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An abstract base class for SQL databases using the HikariCP connection pool, which handles player data storage.
  */
-public abstract class AbstractHikariDatabase extends AbstractSQLDatabase {
+public abstract class AbstractHikariDatabase extends AbstractSQLDatabase implements LegacyDataStorageInterface {
 
     private HikariDataSource dataSource;
     private final String driverClass;
@@ -115,6 +118,30 @@ public abstract class AbstractHikariDatabase extends AbstractSQLDatabase {
         hikariConfig.setDataSourceProperties(properties);
         dataSource = new HikariDataSource(hikariConfig);
         super.createTableIfNotExist();
+    }
+
+    @Override
+    public CompletableFuture<Optional<PlayerData>> getLegacyPlayerData(UUID uuid) {
+        var future = new CompletableFuture<Optional<PlayerData>>();
+        String sql = String.format(SqlConstants.SQL_SELECT_BY_UUID, getTableName("data"));
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, uuid.toString());
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                String nameplate = rs.getString(2);
+                String bubbles = rs.getString(3);
+                future.complete(Optional.of(PlayerData.builder()
+                        .setBubble(bubbles)
+                        .setNameplate(nameplate)
+                        .build()));
+            } else {
+                future.complete(Optional.empty());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return future;
     }
 
     /**

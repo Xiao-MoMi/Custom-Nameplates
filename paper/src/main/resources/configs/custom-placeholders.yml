@@ -1,7 +1,7 @@
 conditional-text:
   actionbar:
     priority_1:
-      text: '%nameplates_background_actionbar%'
+      text: '%nameplates_background_other_actionbar%'
       conditions:
         '!=':
           value1: '%player_remaining_air%'
@@ -123,8 +123,3 @@ vanilla-hud:
     placeholder:
       value: '1.1'
       max-value: '2'
-
-cached-text:
-  cached:
-    text: '%super_complex_javascript%'
-    refresh-interval: 10000

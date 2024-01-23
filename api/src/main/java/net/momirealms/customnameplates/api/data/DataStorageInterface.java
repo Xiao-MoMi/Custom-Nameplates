@@ -15,11 +15,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.storage;
-
-import net.momirealms.customnameplates.api.data.PlayerData;
+package net.momirealms.customnameplates.api.data;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,4 +44,8 @@ public interface DataStorageInterface {
     CompletableFuture<Optional<PlayerData>> getPlayerData(UUID uuid);
 
     CompletableFuture<Boolean> updatePlayerData(UUID uuid, PlayerData playerData);
+
+    CompletableFuture<Boolean> updateOrInsertPlayerData(UUID uuid, PlayerData playerData);
+
+    Set<UUID> getUniqueUsers(boolean legacy);
 }

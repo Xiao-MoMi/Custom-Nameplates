@@ -19,22 +19,15 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.google.common.collect.Lists;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.common.team.TeamColor;
-import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 

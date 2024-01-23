@@ -19,13 +19,15 @@ package net.momirealms.customnameplates.paper.mechanic.bubble;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.momirealms.customnameplates.api.data.OnlineUser;
 import net.momirealms.customnameplates.api.event.BubblesSpawnEvent;
+import net.momirealms.customnameplates.api.event.NameplateDataLoadEvent;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
+import net.momirealms.customnameplates.api.mechanic.nameplate.CachedNameplate;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
-import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextTagSetting;
@@ -45,6 +47,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
@@ -308,6 +312,22 @@ public class BubbleManagerImpl implements BubbleManager {
         return result;
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onDataLoaded(NameplateDataLoadEvent event) {
+        OnlineUser data = event.getOnlineUser();
+        String bubble = data.getBubbleKey();
+        if (!bubble.equals("none") && !containsBubble(bubble)) {
+            if (bubble.equals(defaultBubble)) {
+                LogUtils.severe("Default nameplate doesn't exist");
+                return;
+            }
+
+            LogUtils.severe("Bubble " + bubble + " doesn't exist. To prevent bugs, player " + event.getUUID() + " 's bubble data is reset");
+            data.setBubble("none");
+            plugin.getStorageManager().saveOnlinePlayerData(event.getUUID());
+        }
+    }
+
     @Override
     public Collection<String> getBubbleKeys() {
         return bubbleMap.keySet();
@@ -354,6 +374,11 @@ public class BubbleManagerImpl implements BubbleManager {
     @Override
     public Collection<Bubble> getBubbles() {
         return bubbleMap.values();
+    }
+
+    @Override
+    public boolean containsBubble(String key) {
+        return bubbleMap.containsKey(key);
     }
 
     @Override

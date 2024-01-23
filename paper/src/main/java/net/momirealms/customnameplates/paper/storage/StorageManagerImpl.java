@@ -20,10 +20,13 @@ package net.momirealms.customnameplates.paper.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import net.momirealms.customnameplates.api.data.DataStorageInterface;
 import net.momirealms.customnameplates.api.data.OnlineUser;
 import net.momirealms.customnameplates.api.data.PlayerData;
+import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.event.NameplateDataLoadEvent;
 import net.momirealms.customnameplates.api.manager.StorageManager;
+import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.storage.method.database.nosql.MongoDBImpl;
@@ -36,6 +39,7 @@ import net.momirealms.customnameplates.paper.storage.method.file.JsonImpl;
 import net.momirealms.customnameplates.paper.storage.method.file.YAMLImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -50,6 +54,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class implements the StorageManager interface and is responsible for managing player data storage.
@@ -112,7 +117,19 @@ public class StorageManagerImpl implements Listener, StorageManager {
         if (onlineUser != null) {
             return CompletableFuture.completedFuture(Optional.of(onlineUser.toPlayerData()));
         }
-        return dataSource.getPlayerData(uuid);
+        if (hasRedis) {
+            return redisManager.getPlayerData(uuid).thenCompose(
+                    result -> {
+                        if (result.isEmpty()) {
+                            return dataSource.getPlayerData(uuid);
+                        } else {
+                            return CompletableFuture.completedFuture(result);
+                        }
+                    }
+            );
+        } else {
+            return dataSource.getPlayerData(uuid);
+        }
     }
 
     @Override
@@ -121,12 +138,23 @@ public class StorageManagerImpl implements Listener, StorageManager {
         if (onlineUser == null) {
             return CompletableFuture.completedFuture(false);
         }
-        return dataSource.updatePlayerData(uuid, onlineUser.toPlayerData());
+        return savePlayerData(uuid, onlineUser.toPlayerData());
     }
 
     @Override
     public CompletableFuture<Boolean> savePlayerData(UUID uuid, PlayerData playerData) {
-        return dataSource.updatePlayerData(uuid, playerData);
+        if (hasRedis) {
+            return redisManager.updatePlayerData(uuid, playerData).thenCompose(
+                        result -> {
+                            if (!result) {
+                                return CompletableFuture.completedFuture(false);
+                            }
+                            return dataSource.updatePlayerData(uuid, playerData);
+                        }
+                    );
+        } else {
+            return dataSource.updatePlayerData(uuid, playerData);
+        }
     }
 
     @Override
@@ -226,6 +254,11 @@ public class StorageManagerImpl implements Listener, StorageManager {
     @NotNull
     public String toJson(@NotNull PlayerData playerData) {
         return gson.toJson(playerData);
+    }
+
+    @Override
+    public DataStorageInterface getDataSource() {
+        return dataSource;
     }
 
     /**
