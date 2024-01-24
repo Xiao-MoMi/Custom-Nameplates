@@ -19,7 +19,7 @@ text-suffix: ''
 line-spacing: 0.4
 
 # This decides where the bottom line is
-bottom-line-Y-offset: 0.4
+bottom-line-Y-offset: 0.8
 
 # This decides how long will the chat bubble remain (in seconds)
 stay-time: 8

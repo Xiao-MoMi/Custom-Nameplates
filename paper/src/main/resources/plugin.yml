@@ -24,7 +24,6 @@ permissions:
     default: true
   customnameplates.admin:
     default: op
-
   bubbles.*:
     description: Gives access to bubble all user commands
     children:
@@ -37,3 +36,5 @@ permissions:
     default: true
   bubbles.list:
     default: true
+  bubbles.use:
+    default: false
