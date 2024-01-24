@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 
 import me.arasple.mc.trchat.api.event.TrChatEvent;
 import me.arasple.mc.trchat.module.display.channel.Channel;
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
 import org.bukkit.event.EventHandler;
 
@@ -35,6 +36,8 @@ public class TrChatListener extends AbstractChatListener {
         for (String channel : chatBubblesManager.getBlacklistChannels()) {
             if (channelName.equals(channel)) return;
         }
-        chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage());
+        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
+            chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage());
+        });
     }
 }

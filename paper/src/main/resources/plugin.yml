@@ -8,7 +8,7 @@ depend: [ ProtocolLib ,PlaceholderAPI ]
 softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen ]
 permissions:
   nameplates.*:
-    description: Gives access to all user commands
+    description: Gives access to all nameplate user commands
     children:
       nameplates.equip: true
       nameplates.unequip: true
@@ -24,3 +24,16 @@ permissions:
     default: true
   customnameplates.admin:
     default: op
+
+  bubbles.*:
+    description: Gives access to bubble all user commands
+    children:
+      bubbles.equip: true
+      bubbles.unequip: true
+      bubbles.list: true
+  bubbles.equip:
+    default: true
+  bubbles.unequip:
+    default: true
+  bubbles.list:
+    default: true

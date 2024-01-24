@@ -1,3 +1,4 @@
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/conditional-text
 conditional-text:
   actionbar:
     priority_0:
@@ -40,11 +41,13 @@ conditional-text:
         weather:
           - rainstorm
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/nameplate-text
 nameplate-text:
   halloween:
     nameplate: halloween
     text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-text
 background-text:
   location:
     background: bedrock_1
@@ -71,6 +74,7 @@ background-text:
     text: '%nameplates_actionbar%'
     remove-shadow: true
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
 static-text:
   money_hud:
     position: right
@@ -81,6 +85,7 @@ static-text:
     text: "%nameplates_background_other_actionbar%"
     value: 180
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
 descent-text:
   location:
     text: "Your Location: %player_x%, %player_y%, %player_z%"
@@ -107,6 +112,7 @@ descent-text:
     descent: 5
     is-unicode: true
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/switch-text
 switch-text:
   season:
     switch: '%customcrops_season%'
@@ -117,6 +123,7 @@ switch-text:
       'Winter': '<blue>Winter</blue>'
     default: 'Invalid season'
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/vanilla-hud
 vanilla-hud:
   stamina_hud:
     reverse: true

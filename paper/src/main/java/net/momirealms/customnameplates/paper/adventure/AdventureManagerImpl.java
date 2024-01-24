@@ -272,18 +272,6 @@ public class AdventureManagerImpl implements AdventureManager {
     }
 
     @Override
-    public Object shadedToOriginal(Component component) {
-        Object cp;
-        try {
-            cp = ReflectionUtils.gsonDeserializeMethod.invoke(ReflectionUtils.gsonInstance, GsonComponentSerializer.gson().serialize(component));
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return cp;
-    }
-
-    @Override
     public String getMiniMessageFormat(Component component) {
         return MiniMessage.miniMessage().serialize(component);
     }
@@ -291,10 +279,10 @@ public class AdventureManagerImpl implements AdventureManager {
     @Override
     public Object getIChatComponent(String json) {
         try {
-            return ReflectionUtils.iChatComponentMethod.invoke(null, json);
+            return ReflectionUtils.getiChatComponentMethod().invoke(null, json);
         } catch (InvocationTargetException | IllegalAccessException exception) {
             exception.printStackTrace();
-            return ReflectionUtils.emptyComponent;
+            return ReflectionUtils.getEmptyComponent();
         }
     }
 
@@ -374,7 +362,7 @@ public class AdventureManagerImpl implements AdventureManager {
                 return miniMessageToIChatComponentCache.get(text);
             } catch (ExecutionException e) {
                 e.printStackTrace();
-                return ReflectionUtils.emptyComponent;
+                return ReflectionUtils.getEmptyComponent();
             }
         }
 

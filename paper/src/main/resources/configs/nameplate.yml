@@ -13,8 +13,6 @@ nameplate:
   prefix: ''
   player-name: '%player_name%'
   suffix: ''
-  # Disable this if you are using a custom Tab plugin
-  fix-Tab: true
 
 # Settings for Team mode
 team:
@@ -22,20 +20,26 @@ team:
   refresh-frequency: 10
   prefix: '%nameplates_prefix%'
   suffix: '%nameplates_suffix%'
+  # Don't enable this if you are using a custom Tab plugin
+  fix-Tab: false
 
 # Settings for Unlimited mode
 unlimited:
   tag_1:
+    # The texts to display
     text: '%nameplates_nametag%'
+    # Verticle offset of the fake entity
     vertical-offset: -1
+    # Conditions (Owner side)
     owner-conditions:
       potion-effect: "INVISIBILITY<0"
+    # Conditions (Viewer side)
     viewer-conditions: { }
   tag_2:
-    text: "IP: %player_ip%  My IP: %viewer_player_ip%"
+    text: "IP: %player_ip%  My IP: %viewer_player_ip%"  # If a placeholder starts with "%viewer_", it would display the viewer's.
     vertical-offset: -0.7
-    refresh-frequency: 10
-    check-frequency: 20
+    refresh-frequency: 10  # Decides the frequency of the text refreshing
+    check-frequency: 20    # Decides the frequency of the condition check
     owner-conditions:
       potion-effect: "INVISIBILITY<0"
     viewer-conditions:

@@ -86,7 +86,7 @@ public class BossBar {
         packet.getModifier().write(0, uuid);
         try {
             Object chatComponent = AdventureManagerImpl.getInstance().getIChatComponentFromMiniMessage(latestMiniMessage);
-            Object updatePacket = ReflectionUtils.updateConstructor.newInstance(chatComponent);
+            Object updatePacket = ReflectionUtils.getUpdateConstructor().newInstance(chatComponent);
             packet.getModifier().write(1, updatePacket);
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
@@ -97,7 +97,7 @@ public class BossBar {
     private PacketContainer getRemovePacket() {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.BOSS);
         packet.getModifier().write(0, uuid);
-        packet.getModifier().write(1, ReflectionUtils.removeBossBarPacket);
+        packet.getModifier().write(1, ReflectionUtils.getRemoveBossBarPacket());
         return packet;
     }
 }

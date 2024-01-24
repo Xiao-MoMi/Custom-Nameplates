@@ -17,25 +17,27 @@
 
 package net.momirealms.customnameplates.paper.util;
 
+import com.comphenix.protocol.utility.MinecraftFields;
+import com.comphenix.protocol.utility.MinecraftMethods;
 import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 public class ReflectionUtils {
 
     private ReflectionUtils() {}
 
-    public static Object removeBossBarPacket;
-    public static Constructor<?> progressConstructor;
-    public static Constructor<?> updateConstructor;
-    public static Method iChatComponentMethod;
-    public static Method gsonDeserializeMethod;
-    public static Object gsonInstance;
-    public static Object emptyComponent;
+    private static Object removeBossBarPacket;
+    private static Constructor<?> progressConstructor;
+    private static Constructor<?> updateConstructor;
+    private static Method iChatComponentMethod;
+    private static Object emptyComponent;
 
     public static void load() {
         try {
@@ -56,5 +58,25 @@ public class ReflectionUtils {
             LogUtils.severe("Error occurred when loading reflections", exception);
             exception.printStackTrace();
         }
+    }
+
+    public static Object getRemoveBossBarPacket() {
+        return removeBossBarPacket;
+    }
+
+    public static Constructor<?> getProgressConstructor() {
+        return progressConstructor;
+    }
+
+    public static Constructor<?> getUpdateConstructor() {
+        return updateConstructor;
+    }
+
+    public static Method getiChatComponentMethod() {
+        return iChatComponentMethod;
+    }
+
+    public static Object getEmptyComponent() {
+        return emptyComponent;
     }
 }

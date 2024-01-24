@@ -184,7 +184,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         teamPrefix = config.getString("team.prefix", "");
         teamSuffix = config.getString("team.suffix", "");
         teamRefreshFrequency = config.getInt("team.refresh-frequency", 10);
-        fixTab = config.getBoolean("team.fix-Tab", true);
+        fixTab = config.getBoolean("team.fix-Tab", false);
 
         ConfigurationSection unlimitedSection = config.getConfigurationSection("unlimited");
         if (unlimitedSection != null) {

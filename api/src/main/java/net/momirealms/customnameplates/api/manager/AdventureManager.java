@@ -168,14 +168,6 @@ public interface AdventureManager {
     String componentToJson(Component component);
 
     /**
-     * Get the component in original package
-     *
-     * @param component shaded component
-     * @return paper component
-     */
-    Object shadedToOriginal(Component component);
-
-    /**
      * Get MiniMessage format text from component
      *
      * @param component component

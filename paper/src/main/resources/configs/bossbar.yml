@@ -29,8 +29,9 @@ bossbar_1:
       # Optional
       # When enabling conditions, make sure that players would see at least one in the order,
       # otherwise it will fall into a dead cycle
+      # If your player doesn't meet the conditions, it would be skipped
+      # This condition would only be checked once until the next turn
       conditions:
-        # If your player doesn't meet the conditions, it would be skipped
         permission: nameplates.admin
         equals:
           value1: '%nameplates_is-latest%'

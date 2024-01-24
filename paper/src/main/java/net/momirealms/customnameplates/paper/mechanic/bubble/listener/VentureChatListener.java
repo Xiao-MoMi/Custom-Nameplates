@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
 import org.bukkit.event.EventHandler;
 
@@ -38,6 +39,8 @@ public class VentureChatListener extends AbstractChatListener {
         if (chatPlayer == null) {
             return;
         }
-        chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat());
+        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
+            chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat());
+        });
     }
 }

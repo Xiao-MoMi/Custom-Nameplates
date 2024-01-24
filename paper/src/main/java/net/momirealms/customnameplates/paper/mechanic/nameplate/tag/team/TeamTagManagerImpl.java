@@ -17,12 +17,14 @@
 
 package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.NameplateManager;
 import net.momirealms.customnameplates.api.manager.TeamTagManager;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LocationUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.PlayerInfoListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -38,10 +40,12 @@ public class TeamTagManagerImpl implements TeamTagManager {
     private final NameplateManager manager;
     private final ConcurrentHashMap<UUID, TeamPlayer> teamPlayerMap;
     private CancellableTask refreshTask;
+    private PlayerInfoListener tabListener;
 
     public TeamTagManagerImpl(NameplateManager manager) {
         this.manager = manager;
         this.teamPlayerMap = new ConcurrentHashMap<>();
+        this.tabListener = new PlayerInfoListener(this);
     }
 
     public void load(long refreshFrequency, boolean fixTab) {
@@ -66,7 +70,7 @@ public class TeamTagManagerImpl implements TeamTagManager {
                 TimeUnit.MILLISECONDS
         );
         if (fixTab) {
-            // TODO
+            ProtocolLibrary.getProtocolManager().addPacketListener(tabListener);
         }
     }
 
@@ -77,6 +81,7 @@ public class TeamTagManagerImpl implements TeamTagManager {
         for (TeamPlayer entry : teamPlayerMap.values()) {
             entry.destroy();
         }
+        ProtocolLibrary.getProtocolManager().removePacketListener(tabListener);
     }
 
     @Override
