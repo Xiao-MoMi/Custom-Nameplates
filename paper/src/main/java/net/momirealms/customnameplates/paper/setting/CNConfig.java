@@ -164,6 +164,8 @@ public class CNConfig {
         maximumPoolSize = config.getInt("other-settings.thread-pool-settings.maximumPoolSize", 10);
         keepAliveTime = config.getInt("other-settings.thread-pool-settings.keepAliveTime", 30);
         cacheSize = config.getInt("other-settings.cache-size", 100);
+
+        legacyColorSupport = config.getBoolean("other-settings.legacy-color-code-support");
     }
 
     public static boolean isOtherTeamPluginHooked() {
