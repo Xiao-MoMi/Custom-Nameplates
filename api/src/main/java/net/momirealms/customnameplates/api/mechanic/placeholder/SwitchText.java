@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api.mechanic.placeholder;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -41,9 +42,9 @@ public class SwitchText {
         this.toParse = toParse;
     }
 
-    public String getValue(Player player) {
+    public String getValue(OfflinePlayer player) {
         String parsed = PlaceholderAPI.setPlaceholders(player, toParse);
-        return valueMap.getOrDefault(parsed, defaultValue);
+        return PlaceholderAPI.setPlaceholders(player, valueMap.getOrDefault(parsed, defaultValue));
     }
 
     public static class Builder {

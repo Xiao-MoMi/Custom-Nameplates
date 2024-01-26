@@ -18,12 +18,10 @@
 package net.momirealms.customnameplates.api.mechanic.placeholder;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 public class VanillaHud {
 

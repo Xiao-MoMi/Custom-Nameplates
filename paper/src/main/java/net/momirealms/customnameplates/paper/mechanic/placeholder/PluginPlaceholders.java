@@ -119,6 +119,11 @@ public class PluginPlaceholders extends PlaceholderExpansion {
                 if (vanillaHud == null) return "Vanilla text not exists: " + mainArg;
                 return vanillaHud.getValue(offlinePlayer);
             }
+            case "switch" -> {
+                SwitchText switchText = placeholderManager.getSwitchText(mainArg);
+                if (switchText == null) return "Switch text not exists: " + mainArg;
+                return switchText.getValue(offlinePlayer);
+            }
         }
 
         Player onlinePlayer = offlinePlayer.getPlayer();

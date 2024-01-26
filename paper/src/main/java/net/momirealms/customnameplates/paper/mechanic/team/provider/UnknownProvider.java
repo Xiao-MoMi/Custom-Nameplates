@@ -18,10 +18,11 @@
 package net.momirealms.customnameplates.paper.mechanic.team.provider;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.common.team.TeamColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +33,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class UnknownProvider extends PacketAdapter implements TeamProvider, Listener {
 

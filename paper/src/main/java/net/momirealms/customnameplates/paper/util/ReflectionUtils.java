@@ -17,17 +17,13 @@
 
 package net.momirealms.customnameplates.paper.util;
 
-import com.comphenix.protocol.utility.MinecraftFields;
-import com.comphenix.protocol.utility.MinecraftMethods;
 import com.comphenix.protocol.utility.MinecraftReflection;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 public class ReflectionUtils {
 

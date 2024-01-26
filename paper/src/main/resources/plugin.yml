@@ -7,34 +7,34 @@ folia-supported: true
 depend: [ ProtocolLib ,PlaceholderAPI ]
 softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen ]
 permissions:
-  nameplates.*:
+  nameplates.command.*:
     description: Gives access to all nameplate user commands
     children:
-      nameplates.equip: true
-      nameplates.unequip: true
-      nameplates.preview: true
-      nameplates.list: true
-  nameplates.equip:
+      nameplates.command.equip: true
+      nameplates.command.unequip: true
+      nameplates.command.preview: true
+      nameplates.command.list: true
+  nameplates.command.equip:
     default: true
-  nameplates.unequip:
+  nameplates.command.unequip:
     default: true
-  nameplates.preview:
+  nameplates.command.preview:
     default: true
-  nameplates.list:
+  nameplates.command.list:
     default: true
   customnameplates.admin:
     default: op
-  bubbles.*:
+  bubbles.command.*:
     description: Gives access to bubble all user commands
     children:
       bubbles.equip: true
       bubbles.unequip: true
       bubbles.list: true
-  bubbles.equip:
+  bubbles.command.equip:
     default: true
-  bubbles.unequip:
+  bubbles.command.unequip:
     default: true
-  bubbles.list:
+  bubbles.command.list:
     default: true
   bubbles.use:
-    default: false
+    default: true

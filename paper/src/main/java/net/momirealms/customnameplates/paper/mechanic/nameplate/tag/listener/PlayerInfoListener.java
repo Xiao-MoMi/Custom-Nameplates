@@ -26,9 +26,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.destroystokyo.paper.profile.PlayerProfile;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.paper.mechanic.nameplate.NameplateManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.team.TeamTagManagerImpl;
 
 import java.util.ArrayList;

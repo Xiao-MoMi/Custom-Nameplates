@@ -107,7 +107,7 @@ public class CommandManager {
 
         public static CommandAPICommand getListCommand() {
             return new CommandAPICommand("list")
-                    .withPermission("bubbles.list")
+                    .withPermission("bubbles.command.list")
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.bubbleModule) return;
                         List<String> bubbles = CustomNameplatesPlugin.get().getBubbleManager().getAvailableBubblesDisplayNames(player);
@@ -125,15 +125,22 @@ public class CommandManager {
 
         public static CommandAPICommand getEquipCommand() {
             return new CommandAPICommand("equip")
-                    .withPermission("bubbles.equip")
+                    .withPermission("bubbles.command.equip")
                     .withArguments(new StringArgument("bubble").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getBubbleManager().getAvailableBubbles((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.bubbleModule) return;
                         String bubble = (String) args.get("bubble");
-                        if (!CustomNameplatesPlugin.get().getBubbleManager().equipBubble(player, bubble)) {
+                        if (!CustomNameplatesPlugin.get().getBubbleManager().containsBubble(bubble)) {
                             AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_BUBBLE_NOT_EXIST);
                             return;
                         }
+
+                        if (!CustomNameplatesPlugin.get().getBubbleManager().hasBubble(player, bubble)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_BUBBLE_NOT_AVAILABLE);
+                            return;
+                        }
+
+                        CustomNameplatesPlugin.get().getBubbleManager().equipBubble(player, bubble);
                         Bubble bubbleInstance = CustomNameplatesPlugin.get().getBubbleManager().getBubble(bubble);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_BUBBLE.replace("{Bubble}", bubbleInstance.getDisplayName()));
                     });
@@ -141,7 +148,7 @@ public class CommandManager {
 
         public static CommandAPICommand getUnEquipCommand() {
             return new CommandAPICommand("unequip")
-                    .withPermission("bubbles.unequip")
+                    .withPermission("bubbles.command.unequip")
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.bubbleModule) return;
                         CustomNameplatesPlugin.get().getBubbleManager().unEquipBubble(player);
@@ -218,7 +225,7 @@ public class CommandManager {
 
         public static CommandAPICommand getPreviewCommand() {
             return new CommandAPICommand("preview")
-                    .withPermission("nameplates.preview")
+                    .withPermission("nameplates.command.preview")
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.nameplateModule) return;
                         NameplatePlayer nameplatePlayer = CustomNameplatesPlugin.get().getNameplateManager().getNameplatePlayer(player.getUniqueId());
@@ -290,15 +297,23 @@ public class CommandManager {
 
         public static CommandAPICommand getEquipCommand() {
             return new CommandAPICommand("equip")
-                    .withPermission("nameplates.equip")
+                    .withPermission("nameplates.command.equip")
                     .withArguments(new StringArgument("nameplate").replaceSuggestions(ArgumentSuggestions.strings(commandSenderSuggestionInfo -> CustomNameplatesPlugin.get().getNameplateManager().getAvailableNameplates((Player) commandSenderSuggestionInfo.sender()).toArray(new String[0]))))
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.nameplateModule) return;
                         String nameplate = (String) args.get("nameplate");
-                        if (!CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, false)) {
+
+                        if (!CustomNameplatesPlugin.get().getNameplateManager().containsNameplate(nameplate)) {
                             AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_EXISTS);
                             return;
                         }
+
+                        if (!CustomNameplatesPlugin.get().getNameplateManager().hasNameplate(player, nameplate)) {
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_NAMEPLATE_NOT_AVAILABLE);
+                            return;
+                        }
+
+                        CustomNameplatesPlugin.get().getNameplateManager().equipNameplate(player, nameplate, false);
                         Nameplate nameplateInstance = CustomNameplatesPlugin.get().getNameplateManager().getNameplate(nameplate);
                         AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_EQUIP_NAMEPLATE.replace("{Nameplate}", nameplateInstance.getDisplayName()));
                     });
@@ -306,7 +321,7 @@ public class CommandManager {
 
         public static CommandAPICommand getUnEquipCommand() {
             return new CommandAPICommand("unequip")
-                    .withPermission("nameplates.unequip")
+                    .withPermission("nameplates.command.unequip")
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.nameplateModule) return;
                         CustomNameplatesPlugin.get().getNameplateManager().unEquipNameplate(player, false);
@@ -316,7 +331,7 @@ public class CommandManager {
 
         public static CommandAPICommand getListCommand() {
             return new CommandAPICommand("list")
-                    .withPermission("nameplates.list")
+                    .withPermission("nameplates.command.list")
                     .executesPlayer((player, args) -> {
                         if (!CNConfig.nameplateModule) return;
                         List<String> nameplates = CustomNameplatesPlugin.get().getNameplateManager().getAvailableNameplateDisplayNames(player);
@@ -383,7 +398,7 @@ public class CommandManager {
 
         public static CommandAPICommand getAboutCommand() {
             return new CommandAPICommand("about")
-                    .withPermission("customnameplates.about")
+                    .withPermission("customnameplates.admin")
                     .executes((sender, args) -> {
                         AdventureManagerImpl.getInstance().sendMessage(sender, "<#3CB371>⚓ CustomNameplates <gray>- <#98FB98>" + CustomNameplatesPlugin.getInstance().getVersionManager().getPluginVersion());
                         AdventureManagerImpl.getInstance().sendMessage(sender, "<#7FFFAA>A plugin that provides adjustable images for texts");
