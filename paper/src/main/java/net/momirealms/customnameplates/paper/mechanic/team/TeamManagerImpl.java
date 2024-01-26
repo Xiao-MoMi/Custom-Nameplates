@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.paper.mechanic.team;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -34,11 +36,16 @@ import net.momirealms.customnameplates.paper.mechanic.team.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TeamManagerImpl implements TeamManager, PluginMessageListener {
 
@@ -52,65 +59,94 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         this.teamPacketAdaptor = new TeamPacket_1_17();
     }
 
+    /**
+     * This method would only be called when CustomNameplates manage the team
+     *
+     * @param player player
+     */
     @Override
     public void createTeam(Player player) {
         if (CNConfig.disableTeamManage) return;
-        String team = teamProvider.getTeam(player);
-        if (team == null) {
-            LogUtils.warn("Failed to get player " + player.getName() + "'s team.");
-            return;
-        }
-        PacketContainer createOwner = teamPacketAdaptor.getTeamCreatePacket(
-                TeamCreate.builder()
-                        .teamName(team)
-                        .color(TeamColor.WHITE)
-                        .display("")
-                        .prefix("")
-                        .suffix("")
-                        .members(Collections.singletonList(player.getName()))
-                        .collisionRule(TeamCollisionRule.ALWAYS)
-                        .tagVisibility(TeamTagVisibility.ALWAYS)
-                        .build()
-        );
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            PacketManager.getInstance().send(online, createOwner);
-            if (online == player) continue;
-            String onlineTeam = teamProvider.getTeam(online);
-            PacketContainer createOther = teamPacketAdaptor.getTeamCreatePacket(
+        if (CNConfig.isOtherTeamPluginHooked()) return;
+        String team = teamProvider.getTeam(player, null);
+        if (!team.equals(player.getName())) return;
+        if (CNConfig.createRealTeam) {
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            Team playerTeam = scoreboard.getTeam(team);
+            if (playerTeam == null) {
+                playerTeam = scoreboard.registerNewTeam(team);
+            }
+            playerTeam.addPlayer(player);
+        } else {
+            PacketContainer createOwner = teamPacketAdaptor.getTeamCreatePacket(
                     TeamCreate.builder()
-                            .teamName(onlineTeam)
+                            .teamName(team)
                             .color(TeamColor.WHITE)
                             .display("")
                             .prefix("")
                             .suffix("")
-                            .members(Collections.singletonList(online.getName()))
+                            .members(Collections.singletonList(player.getName()))
                             .collisionRule(TeamCollisionRule.ALWAYS)
                             .tagVisibility(TeamTagVisibility.ALWAYS)
                             .build()
             );
-            PacketManager.getInstance().send(player, createOther);
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                PacketManager.getInstance().send(online, createOwner);
+                if (online == player) continue;
+                String onlineTeam = teamProvider.getTeam(online, null);
+                PacketContainer createOther = teamPacketAdaptor.getTeamCreatePacket(
+                        TeamCreate.builder()
+                                .teamName(onlineTeam)
+                                .color(TeamColor.WHITE)
+                                .display("")
+                                .prefix("")
+                                .suffix("")
+                                .members(Collections.singletonList(online.getName()))
+                                .collisionRule(TeamCollisionRule.ALWAYS)
+                                .tagVisibility(TeamTagVisibility.ALWAYS)
+                                .build()
+                );
+                PacketManager.getInstance().send(player, createOther);
+            }
         }
     }
 
+    /**
+     * This method would only be called when CustomNameplates manage the team
+     *
+     * @param player player
+     */
     @Override
     public void removeTeam(Player player) {
         if (CNConfig.disableTeamManage) return;
-        String team = teamProvider.getTeam(player);
-        PacketContainer packet = teamPacketAdaptor.getTeamRemovePacket(
-                TeamRemove.builder()
-                        .teamName(team)
-                        .build()
-        );
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (player == online) continue;
-            PacketManager.getInstance().send(online, packet);
+        if (CNConfig.isOtherTeamPluginHooked()) return;
+        String team = teamProvider.getTeam(player, null);
+        // If the team is created by other plugins
+        if (!team.equals(player.getName())) return;
+        if (CNConfig.createRealTeam) {
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            Optional.ofNullable(scoreboard.getTeam(team)).ifPresent(Team::unregister);
+        } else {
+            PacketContainer packet = teamPacketAdaptor.getTeamRemovePacket(
+                    TeamRemove.builder()
+                            .teamName(team)
+                            .build()
+            );
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (player == online) continue;
+                PacketManager.getInstance().send(online, packet);
+            }
         }
     }
 
     @Override
     public void updateTeam(Player owner, Player viewer, String prefix, String suffix, TeamColor color, TeamTagVisibility visibility) {
         if (CNConfig.disableTeamManage) return;
-        String team = teamProvider.getTeam(owner);
+        String team = teamProvider.getTeam(owner, viewer);
+        if (team == null) {
+            LogUtils.warn("Failed to get player " + owner.getName() + "'s team for viewer " + viewer.getName());
+            return;
+        }
         if (color == TeamColor.NONE || color == TeamColor.CUSTOM)
             color = TeamColor.WHITE;
         if (plugin.getNameplateManager().isProxyMode()) {
@@ -145,6 +181,12 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
     }
 
     public void unload() {
+        if (teamProvider instanceof Listener listener) {
+            HandlerList.unregisterAll(listener);
+        }
+        if (teamProvider instanceof PacketAdapter adapter) {
+            ProtocolLibrary.getProtocolManager().removePacketListener(adapter);
+        }
         Bukkit.getServer().getMessenger().unregisterIncomingPluginChannel(plugin, CHANNEL);
         Bukkit.getServer().getMessenger().unregisterOutgoingPluginChannel(plugin, CHANNEL);
     }
@@ -159,13 +201,19 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         } else {
             teamProvider = new DefaultProvider();
         }
+        if (teamProvider instanceof Listener listener) {
+            Bukkit.getPluginManager().registerEvents(listener, plugin);
+        }
+        if (teamProvider instanceof PacketAdapter adapter) {
+            ProtocolLibrary.getProtocolManager().addPacketListener(adapter);
+        }
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(plugin, CHANNEL);
         Bukkit.getServer().getMessenger().registerIncomingPluginChannel(plugin, CHANNEL, this);
     }
 
     @Override
-    public String getTeamName(Player player) {
-        return null;
+    public String getTeamName(Player player, Player viewer) {
+        return teamProvider.getTeam(player, viewer);
     }
 
     private void handleMessage(String... message) {
@@ -197,5 +245,14 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player -> {
             player.sendPluginMessage(plugin, CHANNEL, dataOutput.toByteArray());
         });
+    }
+
+    public void disable() {
+        unload();
+        if (CNConfig.disableTeamManage) return;
+        if (CNConfig.isOtherTeamPluginHooked()) return;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            removeTeam(player);
+        }
     }
 }

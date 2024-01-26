@@ -34,6 +34,7 @@ public class EntityLookListener extends PacketAdapter {
         this.manager = manager;
     }
 
+    @Override
     public void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
         manager.onEntityMove(event.getPlayer(),

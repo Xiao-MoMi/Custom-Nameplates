@@ -33,7 +33,8 @@ public class EntitySpawnListener extends PacketAdapter {
         this.manager = manager;
     }
 
-    public synchronized void onPacketSending(PacketEvent event) {
+    @Override
+    public void onPacketSending(PacketEvent event) {
         manager.onEntitySpawn(event.getPlayer(), event.getPacket().getIntegers().read(0));
     }
 }

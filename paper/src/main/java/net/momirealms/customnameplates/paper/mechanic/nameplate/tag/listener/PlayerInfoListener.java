@@ -44,6 +44,7 @@ public class PlayerInfoListener extends PacketAdapter {
         this.manager = manager;
     }
 
+    @Override
     public void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
         Set<EnumWrappers.PlayerInfoAction> actions = packet.getPlayerInfoActions().read(0);

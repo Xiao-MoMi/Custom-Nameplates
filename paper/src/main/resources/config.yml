@@ -1,5 +1,5 @@
 # Do not change
-config-version: '23'
+config-version: '24'
 
 # Debug mode
 debug: false
@@ -79,7 +79,11 @@ resource-pack:
 
 other-settings:
   # Disable CustomNameplates' team management
+  # Never enable this if you are using "Team" mode for name tags
   disable-team-management: false
+
+  # Create real teams on serverside. It's not recommended to enable this unless you meet BungeeCord team bugs.
+  create-real-teams: false
 
   # It's recommended to use MiniMessage format. If you insist on using legacy color code "&", enable the support below.
   legacy-color-code-support: false

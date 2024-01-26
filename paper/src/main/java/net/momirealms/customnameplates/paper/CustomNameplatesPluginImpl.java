@@ -100,7 +100,7 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
         if (scheduler != null) ((SchedulerImpl) this.scheduler).shutdown();
         if (actionBarManager != null) ((ActionBarManagerImpl) actionBarManager).unload();
         if (nameplateManager != null) ((NameplateManagerImpl) this.nameplateManager).disable();
-        if (teamManager != null) ((TeamManagerImpl) this.teamManager).unload();
+        if (teamManager != null) ((TeamManagerImpl) this.teamManager).disable();
         if (bossBarManager != null)  ((BossBarManagerImpl) this.bossBarManager).unload();
         if (imageManager != null) ((ImageManagerImpl) this.imageManager).unload();
         if (backGroundManager != null) ((BackGroundManagerImpl) this.backGroundManager).unload();

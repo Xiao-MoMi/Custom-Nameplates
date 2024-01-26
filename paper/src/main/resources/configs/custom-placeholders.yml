@@ -1,16 +1,14 @@
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/conditional-text
 conditional-text:
   actionbar:
-    priority_0:
-      text: '%nameplates_background_other_actionbar%'
-      conditions:
-        '!gamemode': survival
     priority_1:
       text: '%nameplates_background_other_actionbar%'
       conditions:
-        '!=':
-          value1: '%player_remaining_air%'
-          value2: "300"
+        '||':
+          '!=':
+            value1: '%player_remaining_air%'
+            value2: "300"
+          '!gamemode': survival
     priority_2:
       text: '%nameplates_static_money_hud%%nameplates_offset_-180%%nameplates_static_other_actionbar%'
       conditions:

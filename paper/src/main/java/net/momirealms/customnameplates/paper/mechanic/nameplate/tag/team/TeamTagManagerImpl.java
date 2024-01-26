@@ -40,7 +40,7 @@ public class TeamTagManagerImpl implements TeamTagManager {
     private final NameplateManager manager;
     private final ConcurrentHashMap<UUID, TeamPlayer> teamPlayerMap;
     private CancellableTask refreshTask;
-    private PlayerInfoListener tabListener;
+    private final PlayerInfoListener tabListener;
 
     public TeamTagManagerImpl(NameplateManager manager) {
         this.manager = manager;

@@ -34,6 +34,7 @@ public class EntityDestroyListener extends PacketAdapter {
         this.manager = manager;
     }
 
+    @Override
     public void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
         manager.onEntityDestroy(event.getPlayer(), packet.getIntLists().read(0));

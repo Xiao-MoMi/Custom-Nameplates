@@ -46,7 +46,8 @@ public interface TeamManager {
      * Get the team player in
      *
      * @param player player
+     * @param viewer
      * @return team name
      */
-    String getTeamName(Player player);
+    String getTeamName(Player player, Player viewer);
 }

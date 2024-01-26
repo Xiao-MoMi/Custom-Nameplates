@@ -37,7 +37,7 @@ public class TABProvider implements TeamProvider {
     }
 
     @Override
-    public String getTeam(Player player) {
+    public String getTeam(Player player, Player ignore) {
         TabPlayer tabPlayer = api.getPlayer(player.getUniqueId());
         if (tabPlayer == null) {
             return null;

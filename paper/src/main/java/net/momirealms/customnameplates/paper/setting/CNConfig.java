@@ -38,7 +38,7 @@ import java.util.Objects;
 
 public class CNConfig {
 
-    public static String configVersion = "23";
+    public static String configVersion = "24";
     public static int cacheSize;
     public static int corePoolSize;
     public static long keepAliveTime;
@@ -80,6 +80,7 @@ public class CNConfig {
     public static boolean disableTeamManage;
     public static boolean velocitab;
     public static boolean unknownTeam;
+    public static boolean createRealTeam;
 
     public static void load() {
         try {
@@ -166,9 +167,10 @@ public class CNConfig {
         cacheSize = config.getInt("other-settings.cache-size", 100);
 
         legacyColorSupport = config.getBoolean("other-settings.legacy-color-code-support");
+        createRealTeam = config.getBoolean("other-settings.create-real-teams", false);
     }
 
     public static boolean isOtherTeamPluginHooked() {
-        return tabTeam || cmiTeam;
+        return tabTeam || cmiTeam || unknownTeam;
     }
 }

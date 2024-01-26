@@ -24,7 +24,7 @@ import org.bukkit.scoreboard.Team;
 public class CMIProvider implements TeamProvider {
 
     @Override
-    public String getTeam(Player player) {
+    public String getTeam(Player player, Player ignore) {
         Team team = CMI.getInstance().getSB().getPlayerTeam(player);
         if (team == null) return null;
         return team.getName();

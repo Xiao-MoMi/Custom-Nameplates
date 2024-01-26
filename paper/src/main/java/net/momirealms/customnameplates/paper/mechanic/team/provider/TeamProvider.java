@@ -21,5 +21,5 @@ import org.bukkit.entity.Player;
 
 public interface TeamProvider {
 
-    String getTeam(Player player);
+    String getTeam(Player player, Player viewer);
 }
