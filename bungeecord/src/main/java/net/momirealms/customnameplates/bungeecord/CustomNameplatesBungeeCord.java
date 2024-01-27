@@ -30,7 +30,6 @@ public class CustomNameplatesBungeeCord extends Plugin implements Listener {
         instance = this;
         this.getProxy().registerChannel(CHANNEL);
         this.getProxy().getPluginManager().registerListener(this, this);
-        this.getLogger().warning("It's not necessary to install the plugin on BungeeCord now!");
     }
 
     @Override

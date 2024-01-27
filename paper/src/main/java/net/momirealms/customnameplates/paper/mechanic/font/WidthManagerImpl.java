@@ -442,7 +442,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = (int) (((double) (x_final - i * single) / single * 8) + 1);
+                            int charWidth = x_final - (i * single) + 1;
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -501,7 +501,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = (int) (((double) (x_final - i * single) / single * 8) + 1);
+                            int charWidth = x_final - (i * single) + 1;
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -548,7 +548,8 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = (int) (((double) (x_final - i * single) / single * 8) + 1);
+
+                            int charWidth = x_final - (i * single) + 1;
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -656,7 +657,7 @@ public class WidthManagerImpl implements WidthManager {
                             int x_final = i * single;
                             outer:
                             for (int x = i * single; x < (i+1) * single; x++) {
-                                for (int y = j * single; y < (j+1) * single; y++) {
+                                for (int y = j * 12; y < (j+1) * 12; y++) {
                                     int rgb = bufferedImage.getRGB(x, y);
                                     int alpha = (rgb >> 24) & 0xff;
                                     if (alpha != 0) {
@@ -665,7 +666,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = (int) (((double) (x_final - i * single) / single * 8) + 1);
+                            int charWidth = x_final - (i * single) + 1;
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -786,7 +787,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = (int) (((double) (x_final - i * single) / single * 8) + 1);
+                            int charWidth = x_final - (i * single) + 1;
                             yml.set(unicode, charWidth);
                             i++;
                         }

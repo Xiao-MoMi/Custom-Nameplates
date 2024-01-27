@@ -61,7 +61,7 @@ background-text:
     remove-shadow: true
   hello:
     background: bedrock_1
-    text: '%nameplates_image_bubble% %nameplates_unicode_hello%'
+    text: '%nameplates_image_bubble% %nameplates_descent_hello%'
     remove-shadow: true
   update:
     background: bedrock_1
