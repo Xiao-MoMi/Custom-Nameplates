@@ -83,7 +83,7 @@ static-text:
     text: "%nameplates_background_other_actionbar%"
     value: 180
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/descent-text
 descent-text:
   location:
     text: "Your Location: %player_x%, %player_y%, %player_z%"

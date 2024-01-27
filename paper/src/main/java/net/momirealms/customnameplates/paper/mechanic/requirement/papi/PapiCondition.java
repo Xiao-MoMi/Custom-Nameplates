@@ -42,7 +42,7 @@ public class PapiCondition implements Requirement {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     private List<PapiRequirement> getRequirements(Map<String, Object> map) {
