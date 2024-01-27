@@ -7,7 +7,8 @@ actionbar:
   text-display-order:
     1:
       # Measured in ticks
-      duration: 1000
+      # -1 = infinite
+      duration: -1
       # Text content
       text: '%nameplates_conditional_actionbar%'
       # The frequency of refreshing the text, the lower the value is, the faster the placeholders are updated

@@ -119,7 +119,7 @@ public class CustomNameplatesVelocity {
                                 if (!owner.isActive() || !viewer.isActive()) {
                                         return;
                                 }
-                                String teamNameRetry = teamManager.getTeamName(owner);
+                                String teamNameRetry = teamManager.getTeam(owner, null);
                                 if (teamNameRetry != null) {
                                         teamManager.sendTeamUpdatePacket(viewer, teamNameRetry, teamColor, visibility,
                                                 MiniMessage.miniMessage().deserialize(prefix),

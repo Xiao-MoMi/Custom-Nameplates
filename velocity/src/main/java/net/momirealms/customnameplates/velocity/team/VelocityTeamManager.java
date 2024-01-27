@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public interface VelocityTeamManager {
 
     @Nullable
-    String getTeamName(Player player);
+    String getTeam(Player player, Player viewer);
 
     void sendTeamUpdatePacket(Player receiver, String team, TeamColor color, TeamTagVisibility visibility, Component prefix, Component suffix);
 }

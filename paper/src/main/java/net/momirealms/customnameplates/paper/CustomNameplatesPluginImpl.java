@@ -93,6 +93,8 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
             else this.getAdventure().sendConsoleMessage("[CustomNameplates] Update is available: <u>https://polymart.org/resource/2543<!u>");
         });
         this.getServer().getPluginManager().registerEvents((VersionManagerImpl) versionManager, this);
+        if (CNConfig.generatePackOnStart)
+            this.resourcePackManager.generateResourcePack();
     }
 
     @Override

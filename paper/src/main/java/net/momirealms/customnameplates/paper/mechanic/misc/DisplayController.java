@@ -79,7 +79,7 @@ public class DisplayController {
 
     public boolean updateText(Condition condition) {
         timeLeft--;
-        if (timeLeft <= 0) {
+        if (timeLeft == 0) {
             do {
                 index++;
                 if (index >= texts.length) {

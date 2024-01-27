@@ -111,6 +111,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     }
 
     private void generateShaders() {
+        if (!CNConfig.enableShader) return;
         String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator;
         plugin.saveResource(path + "rendertype_text.fsh", true);
         plugin.saveResource(path + "rendertype_text.json", true);
@@ -312,33 +313,42 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     }
 
     private void copyResourcePackToHookedPlugins(File resourcePackFolder) {
-            Plugin ia = Bukkit.getPluginManager().getPlugin("ItemsAdder");
-            if (ia != null) {
-                File file = new File(ia.getDataFolder(), "config.yml");
-                YamlConfiguration iaConfig = YamlConfiguration.loadConfiguration(file);
-                List<String> folders = iaConfig.getStringList("resource-pack.zip.merge_other_plugins_resourcepacks_folders");
-                boolean changed = false;
-                if (CNConfig.copyPackIA) {
-                    if (!folders.contains("CustomNameplates/ResourcePack")) {
-                        folders.add("CustomNameplates/ResourcePack");
-                        iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
-                        changed = true;
-                    }
-                } else {
-                    if (folders.contains("CustomNameplates/ResourcePack")) {
-                        folders.remove("CustomNameplates/ResourcePack");
-                        iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
-                        changed = true;
-                    }
+        Plugin ia = Bukkit.getPluginManager().getPlugin("ItemsAdder");
+        if (ia != null) {
+            File file = new File(ia.getDataFolder(), "config.yml");
+            YamlConfiguration iaConfig = YamlConfiguration.loadConfiguration(file);
+            List<String> folders = iaConfig.getStringList("resource-pack.zip.merge_other_plugins_resourcepacks_folders");
+            boolean changed = false;
+            if (CNConfig.copyPackIA) {
+                if (!folders.contains("CustomNameplates/ResourcePack")) {
+                    folders.add("CustomNameplates/ResourcePack");
+                    iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
+                    changed = true;
                 }
-                if (changed) {
-                    try {
-                        iaConfig.save(file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            } else {
+                if (folders.contains("CustomNameplates/ResourcePack")) {
+                    folders.remove("CustomNameplates/ResourcePack");
+                    iaConfig.set("resource-pack.zip.merge_other_plugins_resourcepacks_folders", folders);
+                    changed = true;
                 }
             }
+            if (changed) {
+                try {
+                    iaConfig.save(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (CNConfig.copyPackIAOld){
+            try {
+                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ItemsAdder")).getDataFolder() + File.separator + "contents" + File.separator + "nameplates" + File.separator + "resourcepack" + File.separator + "assets") );
+            }
+            catch (IOException e){
+                e.printStackTrace();
+                LogUtils.warn("Failed to copy files to ItemsAdder...");
+            }
+        }
         if (CNConfig.copyPackOraxen){
             try {
                 FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Oraxen")).getDataFolder() + File.separator + "pack" + File.separator + "assets"));

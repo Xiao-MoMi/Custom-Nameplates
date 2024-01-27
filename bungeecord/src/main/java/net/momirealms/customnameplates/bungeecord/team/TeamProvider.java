@@ -15,9 +15,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.team;
+package net.momirealms.customnameplates.bungeecord.team;
 
-public interface Team {
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+public interface TeamProvider {
 
+    String getTeam(ProxiedPlayer player, ProxiedPlayer viewer);
 }

@@ -44,7 +44,7 @@ public class VelocitabManager implements VelocityTeamManager {
 
     @Override
     @Nullable
-    public String getTeamName(Player player) {
+    public String getTeam(Player player, Player viewer) {
         Optional<TabPlayer> playerOptional = velocitabAPI.getUser(player);
         return playerOptional.map(TabPlayer::getTeamName).orElse(null);
     }

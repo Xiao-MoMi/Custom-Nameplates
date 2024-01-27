@@ -38,7 +38,7 @@ import java.util.Objects;
 
 public class CNConfig {
 
-    public static String configVersion = "24";
+    public static String configVersion = "25";
     public static int cacheSize;
     public static int corePoolSize;
     public static long keepAliveTime;
@@ -54,6 +54,7 @@ public class CNConfig {
     public static String font;
     public static char initChar;
     public static boolean copyPackIA;
+    public static boolean copyPackIAOld;
     public static boolean copyPackOraxen;
     public static boolean trChatChannel;
     public static boolean ventureChatChannel;
@@ -81,6 +82,7 @@ public class CNConfig {
     public static boolean velocitab;
     public static boolean unknownTeam;
     public static boolean createRealTeam;
+    public static boolean enableShader;
 
     public static void load() {
         try {
@@ -124,6 +126,7 @@ public class CNConfig {
         ConfigurationSection integrationSection = config.getConfigurationSection("integrations");
         if (integrationSection != null) {
             copyPackIA = integrationSection.getBoolean("resource-pack.ItemsAdder", false);
+            copyPackIAOld = integrationSection.getBoolean("resource-pack.ItemsAdder-old-method", false);
             copyPackOraxen = integrationSection.getBoolean("resource-pack.Oraxen", false);
             trChatChannel = integrationSection.getBoolean("chat.TrChat", false);
             ventureChatChannel = integrationSection.getBoolean("chat.VentureChat", false);
@@ -155,6 +158,7 @@ public class CNConfig {
 
             legacyUnicodes = packSection.getBoolean("legacy-unicodes", true);
 
+            enableShader = packSection.getBoolean("shader.enable", true);
             hideScoreboardNumber = packSection.getBoolean("shader.hide-scoreboard-number", false);
             animatedImage = packSection.getBoolean("shader.animated-text", false);
             textEffects = packSection.getBoolean("shader.ItemsAdder-text-effects", false);
