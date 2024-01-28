@@ -442,7 +442,9 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = x_final - (i * single) + 1;
+                            int pixels = x_final - i * single + 1;
+                            double times = (double) width / 128;
+                            int charWidth = (int) (pixels / times);
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -501,7 +503,9 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = x_final - (i * single) + 1;
+                            int pixels = x_final - i * single + 1;
+                            double times = (double) width / 128;
+                            int charWidth = (int) (pixels / times);
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -549,7 +553,9 @@ public class WidthManagerImpl implements WidthManager {
                                 }
                             }
 
-                            int charWidth = x_final - (i * single) + 1;
+                            int pixels = x_final - i * single + 1;
+                            double times = (double) width / 128;
+                            int charWidth = (int) (pixels / times);
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -653,11 +659,12 @@ public class WidthManagerImpl implements WidthManager {
                         char[] chars = ConfigUtils.convertUnicodeStringToChars(line);
                         for (char c : chars) {
                             int width = bufferedImage.getWidth();
+                            double times = (double) width / 144;
                             int single = width / 16;
                             int x_final = i * single;
                             outer:
                             for (int x = i * single; x < (i+1) * single; x++) {
-                                for (int y = j * 12; y < (j+1) * 12; y++) {
+                                for (int y = (int) (j * 12 * times); y < (j+1) * 12 * times; y++) {
                                     int rgb = bufferedImage.getRGB(x, y);
                                     int alpha = (rgb >> 24) & 0xff;
                                     if (alpha != 0) {
@@ -666,7 +673,9 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = x_final - (i * single) + 1;
+
+                            int pixels = x_final - i * single + 1;
+                            int charWidth = (int) (pixels / times);
                             yml.set(ConfigUtils.native2ascii(c), charWidth);
                             i++;
                         }
@@ -787,7 +796,9 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                             }
-                            int charWidth = x_final - (i * single) + 1;
+                            int pixels = x_final - i * single + 1;
+                            double times = (double) width / 128;
+                            int charWidth = (int) (pixels / times);
                             yml.set(unicode, charWidth);
                             i++;
                         }

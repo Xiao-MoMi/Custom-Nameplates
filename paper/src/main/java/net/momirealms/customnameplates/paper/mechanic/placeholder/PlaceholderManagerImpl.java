@@ -230,6 +230,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
             vanillaHudMap.put(entry.getKey(),
                     VanillaHud.builder()
+                            .reverse(innerSection.getBoolean("reverse", true))
                             .half(halfC.getCharacter())
                             .empty(emptyC.getCharacter())
                             .full(fullC.getCharacter())

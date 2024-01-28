@@ -41,8 +41,6 @@ public interface EntityTagPlayer extends NameplatePlayer {
 
     void setHatOffset(double hatOffset);
 
-    void setManageTeams(boolean manageTeams);
-
     double getHatOffset();
 
     void destroy();

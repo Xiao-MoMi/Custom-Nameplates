@@ -145,6 +145,12 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     public void load() {
         this.unlimitedTagManager.load();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityDestroyListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entitySpawnListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityLookListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityMoveListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityTeleportListener);
 
         if (!CNConfig.nameplateModule) return;
         this.loadConfig();
@@ -160,13 +166,6 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         for (Player online : Bukkit.getOnlinePlayers()) {
             createNameTag(online);
         }
-
-        Bukkit.getPluginManager().registerEvents(this, plugin);
-        ProtocolLibrary.getProtocolManager().addPacketListener(entityDestroyListener);
-        ProtocolLibrary.getProtocolManager().addPacketListener(entitySpawnListener);
-        ProtocolLibrary.getProtocolManager().addPacketListener(entityLookListener);
-        ProtocolLibrary.getProtocolManager().addPacketListener(entityMoveListener);
-        ProtocolLibrary.getProtocolManager().addPacketListener(entityTeleportListener);
     }
 
     private void loadConfig() {
@@ -259,6 +258,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
     public void onDataLoaded(NameplateDataLoadEvent event) {
+        if (!CNConfig.nameplateModule) return;
+
         OnlineUser data = event.getOnlineUser();
         String nameplate = data.getNameplateKey();
         if (nameplate.equals("none")) {
@@ -285,27 +286,36 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        // unlimited part
         var player = event.getPlayer();
         this.putEntityIDToMap(player.getEntityId(), player);
-        if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode())
-            plugin.getTeamManager().createTeam(player);
-        plugin.getScheduler().runTaskAsyncLater(() -> {
-            if (player.isOnline())
-                this.createNameTag(player);
-        }, 200, TimeUnit.MILLISECONDS);
+
+        // nameplate module part
+        if (CNConfig.nameplateModule) {
+            if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode()) {
+                plugin.getTeamManager().createTeam(player);
+            }
+            plugin.getScheduler().runTaskAsyncLater(() -> {
+                if (player.isOnline())
+                    this.createNameTag(player);
+            }, 200, TimeUnit.MILLISECONDS);
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        // unlimited part
         var player = event.getPlayer();
-        this.removeCachedNameplateFromMap(player.getUniqueId());
         this.removeEntityIDFromMap(player.getEntityId());
-
         this.teamTagManager.handlePlayerQuit(player);
         this.unlimitedTagManager.handlePlayerQuit(player);
 
-        if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode()) {
-            plugin.getTeamManager().removeTeam(player);
+        // nameplate module part
+        if (CNConfig.nameplateModule) {
+            this.removeCachedNameplateFromMap(player.getUniqueId());
+            if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode()) {
+                plugin.getTeamManager().removeTeam(player);
+            }
         }
     }
 
@@ -387,15 +397,15 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public void createNameTag(Player player) {
         if (tagMode == TagMode.TEAM) {
             putNameplatePlayerToMap(this.teamTagManager.createTagForPlayer(player, teamPrefix, teamSuffix));
-            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, false);
+            this.unlimitedTagManager.createOrGetTagForPlayer(player);
         } else if (tagMode == TagMode.UNLIMITED) {
-            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, true);
+            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player);
             for (DynamicTextTagSetting setting : tagSettings) {
                 tagPlayer.addTag(setting);
             }
             putNameplatePlayerToMap(tagPlayer);
         } else {
-            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, false);
+            this.unlimitedTagManager.createOrGetTagForPlayer(player);
         }
     }
 

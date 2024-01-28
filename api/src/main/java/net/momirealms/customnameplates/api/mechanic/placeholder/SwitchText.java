@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.api.mechanic.placeholder;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 

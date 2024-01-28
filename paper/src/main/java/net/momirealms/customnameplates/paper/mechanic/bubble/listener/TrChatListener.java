@@ -17,27 +17,37 @@
 
 package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 
+import me.arasple.mc.trchat.TrChat;
 import me.arasple.mc.trchat.api.event.TrChatEvent;
 import me.arasple.mc.trchat.module.display.channel.Channel;
+import me.arasple.mc.trchat.module.internal.filter.FilteredObject;
+import me.arasple.mc.trchat.taboolib.platform.BukkitAdapter;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
 import org.bukkit.event.EventHandler;
 
+import java.util.Arrays;
+
 public class TrChatListener extends AbstractChatListener {
+
+    private BukkitAdapter adapter;
 
     public TrChatListener(BubbleManagerImpl chatBubblesManager) {
         super(chatBubblesManager);
+        this.adapter = new BukkitAdapter();
     }
 
     @EventHandler (ignoreCancelled = true)
     public void onTrChat(TrChatEvent event) {
         if (!event.getForward()) return;
-        Channel channelName = event.getChannel();
-        for (String channel : chatBubblesManager.getBlacklistChannels()) {
-            if (channelName.equals(channel)) return;
+        Channel channel = event.getChannel();
+        String channelName = channel.getId();
+        for (String black : chatBubblesManager.getBlacklistChannels()) {
+            if (channelName.equals(black)) return;
         }
+        FilteredObject object = TrChat.INSTANCE.api().getFilterManager().filter(event.getMessage(), adapter.adaptPlayer(event.getPlayer()), true);
         CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
-            chatBubblesManager.onChat(event.getSession().getPlayer(), event.getMessage());
+            chatBubblesManager.onChat(event.getSession().getPlayer(), object.getFiltered());
         });
     }
 }

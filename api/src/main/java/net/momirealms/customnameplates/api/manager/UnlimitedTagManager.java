@@ -40,6 +40,4 @@ public interface UnlimitedTagManager {
     EntityTagEntity createOrGetTagForEntity(Entity entity);
 
     EntityTagPlayer createOrGetTagForPlayer(Player player);
-
-    EntityTagPlayer createOrGetTagForPlayer(Player player, boolean manageTeam);
 }

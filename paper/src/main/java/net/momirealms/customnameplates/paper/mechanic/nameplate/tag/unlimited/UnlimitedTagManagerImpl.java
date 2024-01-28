@@ -160,29 +160,6 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         return unlimitedPlayer;
     }
 
-    @Override
-    @SuppressWarnings("DuplicatedCode")
-    public UnlimitedPlayer createOrGetTagForPlayer(Player player, boolean manageTeam) {
-        if (!player.isOnline())
-            return null;
-        final UUID uuid = player.getUniqueId();
-        if (this.unlimitedEntityMap.containsKey(uuid)) {
-            UnlimitedPlayer unlimitedPlayer = (UnlimitedPlayer) this.unlimitedEntityMap.get(uuid);
-            unlimitedPlayer.setManageTeams(manageTeam);
-            return unlimitedPlayer;
-        }
-
-        var unlimitedPlayer = new UnlimitedPlayer(this, player);
-        this.unlimitedEntityMap.put(
-                uuid,
-                unlimitedPlayer
-        );
-        unlimitedPlayer.setManageTeams(manageTeam);
-
-        unlimitedPlayer.addNearByPlayerToMap(48);
-        return unlimitedPlayer;
-    }
-
     public UnlimitedEntity removeUnlimitedEntityFromMap(UUID uuid) {
         return unlimitedEntityMap.remove(uuid);
     }

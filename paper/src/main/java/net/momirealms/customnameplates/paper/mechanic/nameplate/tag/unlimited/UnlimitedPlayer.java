@@ -18,9 +18,11 @@
 package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.unlimited;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
+import net.momirealms.customnameplates.api.mechanic.nameplate.TagMode;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
@@ -32,18 +34,11 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
     private final Vector<DynamicTextEntity> dynamicTags;
     private double hatOffset;
     private boolean isPreviewing;
-    private boolean manageTeams;
 
     public UnlimitedPlayer(UnlimitedTagManagerImpl manager, Player player) {
         super(manager, player);
         this.owner = player;
         this.dynamicTags = new Vector<>();
-        this.manageTeams = false;
-    }
-
-    @Override
-    public void setManageTeams(boolean manageTeams) {
-        this.manageTeams = manageTeams;
     }
 
     @Override
@@ -243,27 +238,29 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
     }
 
     private void setNameInvisibleFor(Player viewer) {
-        if (!manageTeams) return;
-        CustomNameplatesPlugin.get().getTeamManager().updateTeam(
-                owner,
-                viewer,
-                "",
-               "",
-                TeamColor.WHITE,
-                TeamTagVisibility.NEVER
-        );
+        if (CNConfig.nameplateModule && CustomNameplatesPlugin.get().getNameplateManager().getTagMode() == TagMode.UNLIMITED) {
+            CustomNameplatesPlugin.get().getTeamManager().updateTeam(
+                    owner,
+                    viewer,
+                    "",
+                    "",
+                    TeamColor.WHITE,
+                    TeamTagVisibility.NEVER
+            );
+        }
     }
 
     private void setNameVisibleFor(Player viewer) {
-        if (!manageTeams) return;
-        CustomNameplatesPlugin.get().getTeamManager().updateTeam(
-                owner,
-                viewer,
-                "",
-               "",
-                TeamColor.WHITE,
-                TeamTagVisibility.ALWAYS
-        );
+        if (CNConfig.nameplateModule && CustomNameplatesPlugin.get().getNameplateManager().getTagMode() == TagMode.UNLIMITED) {
+            CustomNameplatesPlugin.get().getTeamManager().updateTeam(
+                    owner,
+                    viewer,
+                    "",
+                   "",
+                    TeamColor.WHITE,
+                    TeamTagVisibility.ALWAYS
+            );
+        }
     }
 
     public void timer() {
