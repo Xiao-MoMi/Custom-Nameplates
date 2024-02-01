@@ -43,6 +43,7 @@ import net.momirealms.customnameplates.paper.setting.CNLocale;
 import net.momirealms.customnameplates.paper.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.paper.util.Migration;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
@@ -95,6 +96,8 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
         this.getServer().getPluginManager().registerEvents((VersionManagerImpl) versionManager, this);
         if (CNConfig.generatePackOnStart)
             this.resourcePackManager.generateResourcePack();
+        if (CNConfig.metrics)
+            new Metrics(this, 16649);
     }
 
     @Override

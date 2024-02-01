@@ -41,6 +41,13 @@ public interface DataStorageInterface {
      */
     StorageType getStorageType();
 
+    /**
+     * Get a player's data by uuid
+     * This player can be an offline one
+     *
+     * @param uuid uuid
+     * @return player data
+     */
     CompletableFuture<Optional<PlayerData>> getPlayerData(UUID uuid);
 
     CompletableFuture<Boolean> updatePlayerData(UUID uuid, PlayerData playerData);

@@ -24,6 +24,7 @@ import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.Pair;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -242,21 +243,31 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     private void loadBackGroundTexts(ConfigurationSection section) {
+        if (!CNConfig.backgroundModule) return;
         for (Map.Entry<String, Object> entry : section.getValues(false).entrySet()) {
             if (!(entry.getValue() instanceof ConfigurationSection innerSection))
                 continue;
 
-            backGroundTextMap.put(entry.getKey(),
-                    BackGroundText.builder()
-                            .background(Objects.requireNonNull(plugin.getBackGroundManager().getBackGround(innerSection.getString("background"))))
-                            .text(innerSection.getString("text", ""))
-                            .removeShadow(innerSection.getBoolean("remove-shadow"))
-                            .build()
-            );
+            if (innerSection.contains("background")) {
+                String bg = innerSection.getString("background");
+                var background = plugin.getBackGroundManager().getBackGround(bg);
+                if (background == null) {
+                    LogUtils.warn("Background: " + bg + " doesn't exist");
+                    continue;
+                }
+                backGroundTextMap.put(entry.getKey(),
+                        BackGroundText.builder()
+                                .background(background)
+                                .text(innerSection.getString("text", ""))
+                                .removeShadow(innerSection.getBoolean("remove-shadow"))
+                                .build()
+                );
+            }
         }
     }
 
     private void loadNameplateTexts(ConfigurationSection section) {
+        if (!CNConfig.nameplateModule) return;
         for (Map.Entry<String, Object> entry : section.getValues(false).entrySet()) {
             if (!(entry.getValue() instanceof ConfigurationSection innerSection))
                 continue;
