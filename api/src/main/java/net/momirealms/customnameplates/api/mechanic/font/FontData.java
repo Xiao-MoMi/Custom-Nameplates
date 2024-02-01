@@ -29,18 +29,40 @@ public class FontData {
         this.defaultWidth = defaultWidth;
     }
 
+    /**
+     * Register a char's width
+     *
+     * @param codePoint code point
+     * @param width width
+     */
     public void registerCharWidth(int codePoint, int width) {
         widthData.put(codePoint, width);
     }
 
+    /**
+     * Get a character's width
+     *
+     * @param codePoint code point
+     * @return width
+     */
     public int getWidth(int codePoint) {
         return widthData.getOrDefault(codePoint, defaultWidth);
     }
 
+    /**
+     * Get the data map
+     *
+     * @return map
+     */
     public HashMap<Integer, Integer> getWidthData() {
         return widthData;
     }
 
+    /**
+     * Override the data with another one
+     *
+     * @param fontData font data
+     */
     public void overrideWith(FontData fontData) {
         if (fontData == null) return;
         widthData.putAll(fontData.getWidthData());

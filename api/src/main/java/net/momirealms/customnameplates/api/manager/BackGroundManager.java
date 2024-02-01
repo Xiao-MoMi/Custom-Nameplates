@@ -34,6 +34,11 @@ public interface BackGroundManager {
     @Nullable
     BackGround getBackGround(@NotNull String key);
 
+    /**
+     * Get all the backgrounds
+     *
+     * @return backgrounds
+     */
     Collection<BackGround> getBackGrounds();
 
     /**

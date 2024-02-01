@@ -24,6 +24,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/**
+ * Player data loaded event
+ */
 public class NameplateDataLoadEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
@@ -36,10 +39,20 @@ public class NameplateDataLoadEvent extends Event {
         this.onlineUser = onlineUser;
     }
 
+    /**
+     * Get the UUID
+     *
+     * @return uuid
+     */
     public UUID getUUID() {
         return uuid;
     }
 
+    /**
+     * Get the online user
+     *
+     * @return online user
+     */
     public OnlineUser getOnlineUser() {
         return onlineUser;
     }

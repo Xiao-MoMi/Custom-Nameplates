@@ -66,6 +66,12 @@ public enum OffsetFont {
         return this.height;
     }
 
+    /**
+     * Get offset characters
+     *
+     * @param offset offset
+     * @return chars
+     */
     public static String getOffsetChars(int offset) {
         if (offset >= 0) {
             return getShortestPosChars(offset);
@@ -74,6 +80,12 @@ public enum OffsetFont {
         }
     }
 
+    /**
+     * get negative characters
+     *
+     * @param n n > 0
+     * @return chars
+     */
     public static String getShortestNegChars(int n) {
         StringBuilder stringBuilder = new StringBuilder();
         while (n >= 128) {
@@ -126,6 +138,12 @@ public enum OffsetFont {
         return stringBuilder.toString();
     }
 
+    /**
+     * get positive characters
+     *
+     * @param n n > 0
+     * @return chars
+     */
     public static String getShortestPosChars(int n) {
         StringBuilder stringBuilder = new StringBuilder();
         while (n >= 128) {

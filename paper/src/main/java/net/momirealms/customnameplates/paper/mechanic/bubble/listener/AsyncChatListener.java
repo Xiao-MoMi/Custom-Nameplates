@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -30,6 +31,6 @@ public class AsyncChatListener extends AbstractChatListener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
-        chatBubblesManager.onChat(event.getPlayer(), event.getMessage());
+        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(event.getPlayer(), event.getMessage()));
     }
 }

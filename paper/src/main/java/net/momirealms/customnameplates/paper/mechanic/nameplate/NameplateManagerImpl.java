@@ -333,7 +333,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean putEntityIDToMap(int entityID, Entity entity) {
+    public boolean putEntityIDToMap(int entityID, @NotNull Entity entity) {
         if (this.entityID2EntityMap.containsKey(entityID))
             return false;
         this.entityID2EntityMap.put(entityID, entity);
@@ -346,7 +346,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean putCachedNameplateToMap(UUID uuid, CachedNameplate nameplate) {
+    public boolean putCachedNameplateToMap(@NotNull UUID uuid, @NotNull CachedNameplate nameplate) {
         if (this.cachedNameplateMap.containsKey(uuid)) {
             return false;
         }
@@ -355,7 +355,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public CachedNameplate removeCachedNameplateFromMap(UUID uuid) {
+    public CachedNameplate removeCachedNameplateFromMap(@NotNull UUID uuid) {
         return this.cachedNameplateMap.remove(uuid);
     }
 
@@ -374,7 +374,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean updateCachedNameplate(Player player) {
+    public boolean updateCachedNameplate(@NotNull Player player) {
         Optional<OnlineUser> onlineUser = plugin.getStorageManager().getOnlineUser(player.getUniqueId());
         if (onlineUser.isEmpty()) return false;
         Nameplate nameplate = onlineUser.get().getNameplate();
@@ -382,45 +382,49 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean updateCachedNameplate(Player player, Nameplate nameplate) {
+    public boolean updateCachedNameplate(@NotNull Player player, Nameplate nameplate) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) return false;
         return updateCachedNameplate(cachedNameplate, player, nameplate);
     }
 
     @Override
-    public CachedNameplate getCacheNameplate(Player player) {
+    public CachedNameplate getCacheNameplate(@NotNull Player player) {
         return cachedNameplateMap.get(player.getUniqueId());
     }
 
     @Override
-    public void createNameTag(Player player) {
+    public NameplatePlayer createNameTag(@NotNull Player player) {
         if (tagMode == TagMode.TEAM) {
-            putNameplatePlayerToMap(this.teamTagManager.createTagForPlayer(player, teamPrefix, teamSuffix));
+            NameplatePlayer nameplatePlayer = this.teamTagManager.createTagForPlayer(player, teamPrefix, teamSuffix);
+            putNameplatePlayerToMap(nameplatePlayer);
             this.unlimitedTagManager.createOrGetTagForPlayer(player);
+            return nameplatePlayer;
         } else if (tagMode == TagMode.UNLIMITED) {
             EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player);
             for (DynamicTextTagSetting setting : tagSettings) {
                 tagPlayer.addTag(setting);
             }
             putNameplatePlayerToMap(tagPlayer);
+            return tagPlayer;
         } else {
             this.unlimitedTagManager.createOrGetTagForPlayer(player);
+            return null;
         }
     }
 
     @Override
-    public void putNameplatePlayerToMap(NameplatePlayer player) {
+    public void putNameplatePlayerToMap(@NotNull NameplatePlayer player) {
         this.nameplatePlayerMap.put(player.getPlayer().getUniqueId(), player);
     }
 
     @Override
-    public NameplatePlayer getNameplatePlayer(UUID uuid) {
+    public NameplatePlayer getNameplatePlayer(@NotNull UUID uuid) {
         return this.nameplatePlayerMap.get(uuid);
     }
 
     @Override
-    public NameplatePlayer removeNameplatePlayerFromMap(UUID uuid) {
+    public NameplatePlayer removeNameplatePlayerFromMap(@NotNull UUID uuid) {
         return this.nameplatePlayerMap.remove(uuid);
     }
 
@@ -453,22 +457,25 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return true;
     }
 
+    @NotNull
     @Override
-    public String getNameplatePrefix(Player player) {
+    public String getNameplatePrefix(@NotNull Player player) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) return "";
         return cachedNameplate.getTagPrefix();
     }
 
+    @NotNull
     @Override
-    public String getNameplateSuffix(Player player) {
+    public String getNameplateSuffix(@NotNull Player player) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) return "";
         return cachedNameplate.getTagSuffix();
     }
 
+    @NotNull
     @Override
-    public String getFullNameTag(Player player) {
+    public String getFullNameTag(@NotNull Player player) {
         CachedNameplate cachedNameplate = cachedNameplateMap.get(player.getUniqueId());
         if (cachedNameplate == null) {
             return player.getName();
@@ -481,8 +488,9 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
                 + cachedNameplate.getNameSuffix();
     }
 
+    @NotNull
     @Override
-    public List<String> getAvailableNameplates(Player player) {
+    public List<String> getAvailableNameplates(@NotNull Player player) {
         List<String> nameplates = new ArrayList<>();
         for (String nameplate : nameplateMap.keySet()) {
             if (hasNameplate(player, nameplate)) {
@@ -492,8 +500,9 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return nameplates;
     }
 
+    @NotNull
     @Override
-    public List<String> getAvailableNameplateDisplayNames(Player player) {
+    public List<String> getAvailableNameplateDisplayNames(@NotNull Player player) {
         List<String> nameplates = new ArrayList<>();
         for (Map.Entry<String, Nameplate> entry : nameplateMap.entrySet()) {
             if (hasNameplate(player, entry.getKey())) {
@@ -504,7 +513,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean equipNameplate(Player player, String nameplateKey, boolean temp) {
+    public boolean equipNameplate(@NotNull Player player, @NotNull String nameplateKey, boolean temp) {
         Nameplate nameplate = getNameplate(nameplateKey);
         if (nameplate == null && nameplateKey.equals("none")) {
             return false;
@@ -555,14 +564,14 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public boolean registerNameplate(String key, Nameplate nameplate) {
+    public boolean registerNameplate(@NotNull String key, @NotNull Nameplate nameplate) {
         if (this.nameplateMap.containsKey(key)) return false;
         this.nameplateMap.put(key, nameplate);
         return true;
     }
 
     @Override
-    public boolean unregisterNameplate(String key) {
+    public boolean unregisterNameplate(@NotNull String key) {
         return this.nameplateMap.remove(key) != null;
     }
 
@@ -576,39 +585,43 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return previewDuration;
     }
 
+    @NotNull
     @Override
     public TagMode getTagMode() {
         return tagMode;
     }
 
+    @NotNull
     @Override
-    @Nullable
-    public Nameplate getNameplate(String key) {
+    public Nameplate getNameplate(@NotNull String key) {
         return nameplateMap.get(key);
     }
 
+    @NotNull
     @Override
     public Collection<Nameplate> getNameplates() {
         return nameplateMap.values();
     }
 
+    @NotNull
     @Override
     public Collection<String> getNameplateKeys() {
         return nameplateMap.keySet();
     }
 
     @Override
-    public boolean containsNameplate(String key) {
+    public boolean containsNameplate(@NotNull String key) {
         return nameplateMap.containsKey(key);
     }
 
     @Override
-    public boolean hasNameplate(Player player, String nameplate) {
+    public boolean hasNameplate(@NotNull Player player, @NotNull String nameplate) {
         return player.hasPermission("nameplates.equip." + nameplate);
     }
 
+    @NotNull
     @Override
-    public TeamColor getTeamColor(Player player) {
+    public TeamColor getTeamColor(@NotNull Player player) {
         CachedNameplate nameplate = getCacheNameplate(player);
         return nameplate == null ? TeamColor.WHITE : nameplate.getTeamColor();
     }
@@ -619,11 +632,13 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return defaultNameplate;
     }
 
+    @NotNull
     @Override
     public TeamTagManager getTeamTagManager() {
         return teamTagManager;
     }
 
+    @NotNull
     @Override
     public UnlimitedTagManager getUnlimitedTagManager() {
         return unlimitedTagManager;

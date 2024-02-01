@@ -859,7 +859,7 @@ public class WidthManagerImpl implements WidthManager {
     }
 
     @Override
-    public boolean registerFontData(Key key, FontData fontData) {
+    public boolean registerFontData(@NotNull Key key, @NotNull FontData fontData) {
         if (fontDataMap.containsKey(key)) {
             return false;
         }
@@ -868,18 +868,18 @@ public class WidthManagerImpl implements WidthManager {
     }
 
     @Override
-    public boolean unregisterFontData(Key key) {
+    public boolean unregisterFontData(@NotNull Key key) {
         return fontDataMap.remove(key) != null;
     }
 
     @Nullable
     @Override
-    public FontData getFontData(Key key) {
+    public FontData getFontData(@NotNull Key key) {
         return fontDataMap.get(key);
     }
 
     @Override
-    public int getTextWidth(String textWithTags) {
+    public int getTextWidth(@NotNull String textWithTags) {
         return cacheSystem.getWidthFromCache(textWithTags);
     }
 

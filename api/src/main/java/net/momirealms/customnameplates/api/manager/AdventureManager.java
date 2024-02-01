@@ -149,6 +149,12 @@ public interface AdventureManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isColorCode(char c);
 
+    /**
+     * Convert a color into decimal
+     *
+     * @param color color
+     * @return decimal
+     */
     int colorToDecimal(ChatColor color);
 
     /**
@@ -175,5 +181,11 @@ public interface AdventureManager {
      */
     String getMiniMessageFormat(Component component);
 
+    /**
+     * Get IChatComponent from Json
+     *
+     * @param json json
+     * @return component
+     */
     Object getIChatComponent(String json);
 }

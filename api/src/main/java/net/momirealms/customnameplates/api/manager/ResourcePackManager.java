@@ -26,5 +26,10 @@ public interface ResourcePackManager {
      */
     void generateResourcePack();
 
+    /**
+     * Delete a directory
+     *
+     * @param file file
+     */
     void deleteDirectory(File file);
 }

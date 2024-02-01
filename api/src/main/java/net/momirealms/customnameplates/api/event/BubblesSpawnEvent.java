@@ -23,6 +23,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An event triggered when player sends a message
+ */
 public class BubblesSpawnEvent extends PlayerEvent implements Cancellable {
 
     private boolean cancelled;
@@ -57,18 +60,34 @@ public class BubblesSpawnEvent extends PlayerEvent implements Cancellable {
         return getHandlerList();
     }
 
+    /**
+     * Get the bubble's key
+     */
     public String getBubble() {
         return bubble;
     }
 
+    /**
+     * Set the bubble
+     *
+     * @param bubble bubble's key
+     */
     public void setBubble(String bubble) {
         this.bubble = bubble;
     }
 
+    /**
+     * Get the bubble text content
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Set the bubble text content
+     *
+     * @param text text
+     */
     public void setText(String text) {
         this.text = text;
     }

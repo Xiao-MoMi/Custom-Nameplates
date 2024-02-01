@@ -34,6 +34,11 @@ public interface ImageManager {
     @Nullable
     ConfiguredChar getImage(@NotNull String key);
 
+    /**
+     * Get all the images
+     *
+     * @return images
+     */
     Collection<ConfiguredChar> getImages();
 
     /**

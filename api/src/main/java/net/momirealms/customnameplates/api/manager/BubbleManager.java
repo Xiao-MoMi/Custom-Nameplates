@@ -26,29 +26,102 @@ import java.util.List;
 
 public interface BubbleManager {
 
+    /**
+     * Register a bubble into map
+     *
+     * @param key key
+     * @param bubble bubble
+     * @return success or not
+     */
     boolean registerBubble(String key, Bubble bubble);
 
+    /**
+     * Unregister a bubble from map
+     *
+     * @param key key
+     * @return success or not
+     */
     boolean unregisterBubble(String key);
 
+    /**
+     * Get a bubble from map
+     *
+     * @param bubble key
+     * @return bubble
+     */
     @Nullable Bubble getBubble(String bubble);
 
+    /**
+     * If a player has a certain bubble
+     *
+     * @param player player
+     * @param bubble key
+     * @return
+     */
     boolean hasBubble(Player player, String bubble);
 
+    /**
+     * Get a list of the bubbles that a player has
+     *
+     * @param player player
+     * @return bubbles' keys
+     */
     List<String> getAvailableBubbles(Player player);
 
+    /**
+     * Get a list of the bubbles' display names that a player has
+     *
+     * @param player player
+     * @return bubbles' display names
+     */
     List<String> getAvailableBubblesDisplayNames(Player player);
 
+    /**
+     * Get blacklist chat channels
+     *
+     * @return channels
+     */
     String[] getBlacklistChannels();
 
+    /**
+     * Get all the bubbles
+     *
+     * @return bubbles
+     */
     Collection<Bubble> getBubbles();
 
+    /**
+     * Whether a bubble exists
+     */
     boolean containsBubble(String key);
 
+    /**
+     * Equip a bubble for a player
+     *
+     * @param player player
+     * @param bubble bubble
+     * @return success or not
+     */
     boolean equipBubble(Player player, String bubble);
 
+    /**
+     * Unequip a bubble for a player
+     *
+     * @param player player
+     */
     void unEquipBubble(Player player);
 
+    /**
+     * Get the default bubble key
+     *
+     * @return bubble key
+     */
     String getDefaultBubble();
 
+    /**
+     * Get all the bubbles' keys
+     *
+     * @return keys
+     */
     Collection<String> getBubbleKeys();
 }

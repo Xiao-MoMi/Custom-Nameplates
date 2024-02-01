@@ -19,15 +19,43 @@ package net.momirealms.customnameplates.api.manager;
 
 import net.momirealms.customnameplates.api.mechanic.font.FontData;
 import net.momirealms.customnameplates.common.Key;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface WidthManager {
 
-    boolean registerFontData(Key key, FontData fontData);
+    /**
+     * Register a font data into the plugin
+     * If there already exists one, it would fail
+     *
+     * @param key key
+     * @param fontData data
+     * @return success or not
+     */
+    boolean registerFontData(@NotNull Key key, @NotNull FontData fontData);
 
-    boolean unregisterFontData(Key key);
+    /**
+     * Unregister a font data from map
+     *
+     * @param key key
+     * @return success or not
+     */
+    boolean unregisterFontData(@NotNull Key key);
 
-    @Nullable FontData getFontData(Key key);
+    /**
+     * Get font data by key
+     *
+     * @param key key
+     * @return font data
+     */
+    @Nullable
+    FontData getFontData(@NotNull Key key);
 
-    int getTextWidth(String textWithTags);
+    /**
+     * Get text's width (MiniMessage format text)
+     *
+     * @param textWithTags text
+     * @return width
+     */
+    int getTextWidth(@NotNull String textWithTags);
 }

@@ -17,15 +17,52 @@
 
 package net.momirealms.customnameplates.api.manager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.CompletionStage;
 
 public interface VersionManager {
 
+    /**
+     * Is folia scheduler implemented
+     */
     boolean isFolia();
 
+    /**
+     * Get bukkit version
+     *
+     * @return version
+     */
     String getServerVersion();
 
+    /**
+     * Check update
+     *
+     * @return return true if plugin needs update
+     */
     CompletionStage<Boolean> checkUpdate();
+
+    /**
+     * Get plugin version
+     *
+     * @return version
+     */
+    @NotNull
+    String getPluginVersion();
+
+    /**
+     * Is the plugin the latest version
+     *
+     * @return latest or not
+     */
+    boolean isLatest();
+
+    /**
+     * Get pack format
+     *
+     * @return pack format
+     */
+    int getPackFormat();
 
     boolean isVersionNewerThan1_19();
 
@@ -36,11 +73,4 @@ public interface VersionManager {
     boolean isVersionNewerThan1_20();
 
     boolean isVersionNewerThan1_20_R2();
-
-    String getPluginVersion();
-
-    boolean isLatest();
-
-    int getPackFormat();
-
 }

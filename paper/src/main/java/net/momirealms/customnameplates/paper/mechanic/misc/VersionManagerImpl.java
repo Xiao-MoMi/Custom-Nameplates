@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -97,6 +98,7 @@ public class VersionManagerImpl implements VersionManager, Listener {
         return isNewerThan1_20_R2;
     }
 
+    @NotNull
     @Override
     public String getPluginVersion() {
         return pluginVersion;

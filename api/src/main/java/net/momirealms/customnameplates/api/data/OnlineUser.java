@@ -82,6 +82,10 @@ public class OnlineUser {
         return CustomNameplatesPlugin.get().getNameplateManager().getNameplate(temp);
     }
 
+    /**
+     * This value might be inconsistent with the key get by "getBubbleKey()"
+     * Because if a player doesn't have a bubble, his bubble would be the default one
+     */
     @Nullable
     public Bubble getBubble() {
         String temp = nameplate;

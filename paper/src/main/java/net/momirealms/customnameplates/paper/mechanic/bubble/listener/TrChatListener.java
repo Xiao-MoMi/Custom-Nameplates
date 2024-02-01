@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 public class TrChatListener extends AbstractChatListener {
 
-    private BukkitAdapter adapter;
+    private final BukkitAdapter adapter;
 
     public TrChatListener(BubbleManagerImpl chatBubblesManager) {
         super(chatBubblesManager);

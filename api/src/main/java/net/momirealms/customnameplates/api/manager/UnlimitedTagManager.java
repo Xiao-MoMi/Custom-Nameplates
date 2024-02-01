@@ -24,6 +24,14 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UnlimitedTagManager {
 
+    /**
+     * Create a named entity (ArmorStand) for an entity
+     * To apply the changes, you should add it to the EntityTagEntity
+     *
+     * @param entity entity
+     * @param setting setting
+     * @return named entity
+     */
     @NotNull StaticTextEntity createNamedEntity(EntityTagEntity entity, StaticTextTagSetting setting);
 
     /**
@@ -37,7 +45,19 @@ public interface UnlimitedTagManager {
     @NotNull
     DynamicTextEntity createNamedEntity(EntityTagPlayer player, DynamicTextTagSetting setting);
 
+    /**
+     * Create or get a tag instance
+     *
+     * @param entity entity
+     * @return entity tag instance
+     */
     EntityTagEntity createOrGetTagForEntity(Entity entity);
 
+    /**
+     * Create or get a tag instance
+     *
+     * @param player player
+     * @return entity tag instance
+     */
     EntityTagPlayer createOrGetTagForPlayer(Player player);
 }

@@ -48,7 +48,7 @@ public interface NameplateManager {
      * @param entityID entityID
      * @param entity entity
      */
-    boolean putEntityIDToMap(int entityID, Entity entity);
+    boolean putEntityIDToMap(int entityID, @NotNull Entity entity);
 
     /**
      * Remove the entity from map
@@ -66,7 +66,7 @@ public interface NameplateManager {
      * @param uuid player uuid
      * @param nameplate cached nameplate
      */
-    boolean putCachedNameplateToMap(UUID uuid, CachedNameplate nameplate);
+    boolean putCachedNameplateToMap(@NotNull UUID uuid, @NotNull CachedNameplate nameplate);
 
     /**
      * Remove CachedNameplate from map
@@ -75,7 +75,7 @@ public interface NameplateManager {
      * @return removed CachedNameplate
      */
     @Nullable
-    CachedNameplate removeCachedNameplateFromMap(UUID uuid);
+    CachedNameplate removeCachedNameplateFromMap(@NotNull UUID uuid);
 
     /**
      * Get player by entityID from the cache
@@ -102,7 +102,7 @@ public interface NameplateManager {
      * @param player player
      * @return if the nameplate is updated
      */
-    boolean updateCachedNameplate(Player player);
+    boolean updateCachedNameplate(@NotNull Player player);
 
     /**
      * Update a player's cached nameplate
@@ -111,7 +111,7 @@ public interface NameplateManager {
      * @param player player
      * @return if the nameplate is updated
      */
-    boolean updateCachedNameplate(Player player, Nameplate nameplate);
+    boolean updateCachedNameplate(@NotNull Player player, @Nullable Nameplate nameplate);
 
     /**
      * This should not be null when player's data is loaded (async process)
@@ -120,61 +120,192 @@ public interface NameplateManager {
      * @return cached nameplate
      */
     @Nullable
-    CachedNameplate getCacheNameplate(Player player);
+    CachedNameplate getCacheNameplate(@NotNull Player player);
 
     /**
      * Create a name tag for a player, the tag type is decided by the mode in nameplate.yml
+     * If mode is DISABLE, this method would return null
+     * The tag would be put into map automatically and you can get it by getNameplatePlayer(uuid)
      *
      * @param player player
      */
-    void createNameTag(Player player);
+    @Nullable
+    NameplatePlayer createNameTag(@NotNull Player player);
 
-    void putNameplatePlayerToMap(NameplatePlayer player);
+    /**
+     * Put a nameplater player to map
+     *
+     * @param player player
+     */
+    void putNameplatePlayerToMap(@NotNull NameplatePlayer player);
 
-    NameplatePlayer getNameplatePlayer(UUID uuid);
+    /**
+     * Get a nameplate player from map
+     *
+     * @param uuid uuid
+     * @return nameplate player
+     */
+    @Nullable
+    NameplatePlayer getNameplatePlayer(@NotNull UUID uuid);
 
-    NameplatePlayer removeNameplatePlayerFromMap(UUID uuid);
+    /**
+     * Remove nameplate player from map
+     *
+     * @param uuid uuid
+     * @return removed nameplate player
+     */
+    @Nullable
+    NameplatePlayer removeNameplatePlayerFromMap(@NotNull UUID uuid);
 
-    String getNameplatePrefix(Player player);
+    /**
+     * Get the nameplate's prefix with text tags
+     *
+     * @param player player
+     * @return prefix with text tags
+     */
+    @NotNull
+    String getNameplatePrefix(@NotNull Player player);
 
-    String getNameplateSuffix(Player player);
+    /**
+     * Get the nameplate's suffix with text tags
+     *
+     * @param player player
+     * @return suffix with text tags
+     */
+    @NotNull
+    String getNameplateSuffix(@NotNull Player player);
 
-    String getFullNameTag(Player player);
+    /**
+     * Get the full nameplate tag
+     *
+     * @param player player
+     * @return nameplate tag
+     */
+    @NotNull
+    String getFullNameTag(@NotNull Player player);
 
-    boolean registerNameplate(String key, Nameplate nameplate);
+    /**
+     * Register a custom nameplate into map
+     *
+     * @param key key
+     * @param nameplate nameplate
+     * @return success or not
+     */
+    boolean registerNameplate(@NotNull String key, @NotNull Nameplate nameplate);
 
-    boolean equipNameplate(Player player, String nameplateKey, boolean temp);
+    /**
+     * Unregister a nameplate from map
+     *
+     * @param key key
+     * @return success or not
+     */
+    boolean unregisterNameplate(@NotNull String key);
 
+    /**
+     * Equip a nameplate for a player
+     *
+     * @param player player
+     * @param nameplateKey key
+     * @param temp whether save to storage
+     * @return success or not
+     */
+    boolean equipNameplate(@NotNull Player player, @NotNull String nameplateKey, boolean temp);
+
+    /**
+     * Remove a nameplate for a player
+     *
+     * @param player player
+     * @param temp whether save to storage
+     */
     void unEquipNameplate(Player player, boolean temp);
 
-    boolean unregisterNameplate(String key);
-
+    /**
+     * Is team managed on proxy side
+     */
     boolean isProxyMode();
 
+    /**
+     * Get preview duration
+     */
     int getPreviewDuration();
 
+    /**
+     * Get the tag mode
+     */
+    @NotNull
     TagMode getTagMode();
 
-    Nameplate getNameplate(String key);
+    /**
+     * Get a nameplate by key
+     *
+     * @param key key
+     * @return nameplate
+     */
+    @NotNull
+    Nameplate getNameplate(@NotNull String key);
 
+    /**
+     * Get all the nameplates
+     *
+     * @return nameplates
+     */
+    @NotNull
     Collection<Nameplate> getNameplates();
 
+    /**
+     * Get all the nameplates' keys
+     *
+     * @return keys
+     */
+    @NotNull
     Collection<String> getNameplateKeys();
 
-    boolean containsNameplate(String key);
+    /**
+     * Whether a nameplate key exists
+     */
+    boolean containsNameplate(@NotNull String key);
 
-    List<String> getAvailableNameplates(Player player);
+    /**
+     * Get all the nameplates that the player has
+     *
+     * @param player player
+     * @return nameplates' keys
+     */
+    @NotNull
+    List<String> getAvailableNameplates(@NotNull Player player);
 
     /**
      * If player has permission for a certain nameplate
      */
-    boolean hasNameplate(Player player, String nameplate);
+    boolean hasNameplate(@NotNull Player player, @NotNull String nameplate);
 
-    List<String> getAvailableNameplateDisplayNames(Player player);
+    /**
+     * Get all the nameplates' display names that the player has
+     *
+     * @param player player
+     * @return nameplates' display names
+     */
+    @NotNull
+    List<String> getAvailableNameplateDisplayNames(@NotNull Player player);
 
-    TeamColor getTeamColor(Player player);
+    /**
+     * Get the nameplate's team color
+     *
+     * @param player player
+     * @return team color
+     */
+    @NotNull
+    TeamColor getTeamColor(@NotNull Player player);
 
+    /**
+     * Get team tag manager
+     */
+    @NotNull
     TeamTagManager getTeamTagManager();
 
+    /**
+     * Get unlimited tag manager
+     */
+    @NotNull
     UnlimitedTagManager getUnlimitedTagManager();
 }

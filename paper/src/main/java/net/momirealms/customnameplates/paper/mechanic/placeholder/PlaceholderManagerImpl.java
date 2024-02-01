@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.paper.mechanic.placeholder;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;

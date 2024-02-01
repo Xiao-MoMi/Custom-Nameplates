@@ -21,13 +21,37 @@ import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 
 public interface TeamTagPlayer extends NameplatePlayer {
+
+    /**
+     * Set a player's prefix
+     *
+     * @param prefix prefix
+     */
     void setPrefix(String prefix);
 
+    /**
+     * Set a player's suffix
+     *
+     * @param suffix suffix
+     */
     void setSuffix(String suffix);
 
+    /**
+     * Get a player's prefix
+     *
+     * @return prefix
+     */
     ViewerText getPrefix();
 
+    /**
+     * Get a player's suffix
+     *
+     * @return suffix
+     */
     ViewerText getSuffix();
 
+    /**
+     * Destroy the tag
+     */
     void destroy();
 }

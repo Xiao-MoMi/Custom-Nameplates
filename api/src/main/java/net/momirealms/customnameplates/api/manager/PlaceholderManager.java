@@ -44,6 +44,11 @@ public interface PlaceholderManager {
     @Nullable
     StaticText getStaticText(String key);
 
+    /**
+     * Get all the static texts
+     *
+     * @return static texts
+     */
     Collection<StaticText> getStaticTexts();
 
     /**
@@ -55,6 +60,11 @@ public interface PlaceholderManager {
     @Nullable
     SwitchText getSwitchText(String key);
 
+    /**
+     * Get all the switch texts
+     *
+     * @return switch texts
+     */
     Collection<SwitchText> getSwitchTexts();
 
     /**
@@ -66,6 +76,11 @@ public interface PlaceholderManager {
     @Nullable
     DescentText getDescentText(String key);
 
+    /**
+     * Get all the descent texts
+     *
+     * @return descent texts
+     */
     Collection<DescentText> getDescentTexts();
 
     /**
@@ -77,6 +92,11 @@ public interface PlaceholderManager {
     @Nullable
     ConditionalText getConditionalText(String key);
 
+    /**
+     * Get all the conditional texts
+     *
+     * @return conditional texts
+     */
     Collection<ConditionalText> getConditionalTexts();
 
     /**
@@ -88,6 +108,11 @@ public interface PlaceholderManager {
     @Nullable
     NameplateText getNameplateText(String key);
 
+    /**
+     * Get all the nameplate texts
+     *
+     * @return nameplate texts
+     */
     Collection<NameplateText> getNameplateTexts();
 
     /**
@@ -99,9 +124,25 @@ public interface PlaceholderManager {
     @Nullable
     BackGroundText getBackGroundText(String key);
 
+    /**
+     * Get all the background texts
+     *
+     * @return background texts
+     */
     Collection<BackGroundText> getBackGroundTexts();
 
+    /**
+     * Get a vanilla hud
+     *
+     * @param key key
+     * @return vanilla hud
+     */
     VanillaHud getVanillaHud(String key);
 
+    /**
+     * Get all the vanilla huds
+     *
+     * @return vanilla huds
+     */
     Collection<VanillaHud> getVanillaHuds();
 }

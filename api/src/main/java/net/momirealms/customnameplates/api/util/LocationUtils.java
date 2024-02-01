@@ -22,6 +22,13 @@ import org.bukkit.entity.Entity;
 
 public class LocationUtils {
 
+    /**
+     * Get distance by two entities
+     *
+     * @param e1 entity
+     * @param e2 entity
+     * @return distance
+     */
     public static double getDistance(Entity e1, Entity e2) {
         Location loc1 = e1.getLocation();
         Location loc2 = e2.getLocation();

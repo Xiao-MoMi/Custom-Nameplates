@@ -25,17 +25,32 @@ public class CharacterArranger {
         currentChar = (char) (currentChar + '\u0001');
     }
 
+    /**
+     * Get and increase the char arranged automatically by the plugin
+     *
+     * @return char
+     */
     public static char getAndIncrease() {
         char temp = currentChar;
         increase();
         return temp;
     }
 
+    /**
+     * Increase and get the char arranged automatically by the plugin
+     *
+     * @return char
+     */
     public static char increaseAndGet() {
         increase();
         return currentChar;
     }
 
+    /**
+     * Reset the initial char
+     *
+     * @param c char
+     */
     public static void reset(char c) {
         currentChar = c;
     }

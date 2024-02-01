@@ -21,7 +21,11 @@ import org.bukkit.OfflinePlayer;
 
 public class Condition {
 
-    private final OfflinePlayer player;
+    private OfflinePlayer player;
+
+    public Condition() {
+        this.player = null;
+    }
 
     public Condition(OfflinePlayer player) {
         this.player = player;
@@ -29,5 +33,27 @@ public class Condition {
 
     public OfflinePlayer getOfflinePlayer() {
         return player;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private final Condition condition;
+
+        public Builder() {
+            this.condition = new Condition();
+        }
+
+        public Builder player(OfflinePlayer player) {
+            condition.player = player;
+            return this;
+        }
+
+        public Condition build() {
+            return condition;
+        }
     }
 }
