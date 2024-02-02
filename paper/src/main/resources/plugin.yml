@@ -5,7 +5,7 @@ api-version: 1.17
 authors: [ XiaoMoMi ]
 folia-supported: true
 depend: [ ProtocolLib ,PlaceholderAPI ]
-softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen ]
+softdepend: [ MagicCosmetics, TAB, CMI, TrChat, ItemsAdder, Oraxen, CarbonChat, HuskChat ]
 permissions:
   nameplates.command.*:
     description: Gives access to all nameplate user commands

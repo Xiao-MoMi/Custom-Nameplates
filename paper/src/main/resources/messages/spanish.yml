@@ -15,7 +15,7 @@ messages:
   force-unequip-nameplates: '<white>Eliminado con éxito {Player}''s nameplate!</white>'
   not-exist-nameplates: '<white>Este nameplate no existe!</white>'
   not-available-nameplates: '<white>Este nameplate no esta actualmente disponible!</white>'
-  available-nameplates: '<white>Nameplates Disponibles: {Nameplates}.</white>'
+  available-nameplates: '<white>Nameplates Disponibles: {Nameplate}.</white>'
   have-no-nameplates: '<white>No tienes ningun nameplate aun'
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 

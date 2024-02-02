@@ -38,8 +38,35 @@ public class Migration {
         updateBubble();
         updateNameplate();
         updateCustomPlaceholders();
+        updateLanguages();
         deleteFiles();
         return true;
+    }
+
+    private static void updateLanguages() {
+        File messageFolder = new File(CustomNameplatesPlugin.get().getDataFolder(), "messages");
+        if (messageFolder.exists()) {
+            File[] files = messageFolder.listFiles();
+            if (files == null)
+                return;
+            for (File file : files) {
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                ConfigurationSection messageSection = config.getConfigurationSection("messages");
+                if (messageSection != null) {
+                    for (String key : messageSection.getKeys(false)) {
+                        String original = messageSection.getString(key);
+                        if (original != null && original.contains("{Bubbles}")) {
+                            messageSection.set(key, original.replace("{Bubbles}", "{Bubble}"));
+                        }
+                    }
+                }
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private static void deleteFiles() {

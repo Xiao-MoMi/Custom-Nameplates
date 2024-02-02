@@ -20,14 +20,15 @@ package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.william278.huskchat.bukkit.event.ChatMessageEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class AsyncChatListener extends AbstractChatListener {
+public class HuskChatListener extends AbstractChatListener {
 
-    public AsyncChatListener(BubbleManager chatBubblesManager) {
+    public HuskChatListener(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
     }
 
@@ -42,7 +43,16 @@ public class AsyncChatListener extends AbstractChatListener {
     }
 
     @EventHandler (ignoreCancelled = true)
-    public void onChat(AsyncPlayerChatEvent event) {
-        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(event.getPlayer(), event.getMessage()));
+    public void onHuskChat(ChatMessageEvent event) {
+        String channel = event.getChannelId();
+        for (String black : chatBubblesManager.getBlacklistChannels()) {
+            if (channel.equals(black)) return;
+        }
+        Player player = Bukkit.getPlayer(event.getSender().getUuid());
+        if (player == null || !player.isOnline())
+            return;
+        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
+            chatBubblesManager.onChat(player, event.getMessage());
+        });
     }
 }

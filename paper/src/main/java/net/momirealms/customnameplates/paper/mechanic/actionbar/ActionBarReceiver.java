@@ -62,7 +62,7 @@ public class ActionBarReceiver {
             }
             case UPDATE -> {
                 if (controller.isShown()) {
-                    controller.initialize();
+                    controller.initialize(condition);
                     AdventureManagerImpl.getInstance().sendActionbar(player, controller.getLatestContent());
                 } else {
                     AdventureManagerImpl.getInstance().sendActionbar(player, "");

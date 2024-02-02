@@ -17,18 +17,29 @@
 
 package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class AsyncChatListener extends AbstractChatListener {
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-    public AsyncChatListener(BubbleManager chatBubblesManager) {
+public class PaperAsyncChatListener extends AbstractChatListener {
+
+    private Method messageMethod;
+
+    public PaperAsyncChatListener(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
+        try {
+            this.messageMethod = AsyncChatEvent.class.getMethod("message");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -42,7 +53,18 @@ public class AsyncChatListener extends AbstractChatListener {
     }
 
     @EventHandler (ignoreCancelled = true)
-    public void onChat(AsyncPlayerChatEvent event) {
-        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(event.getPlayer(), event.getMessage()));
+    public void onChat(AsyncChatEvent event) {
+        Object component = getComponentFromEvent(event);
+        String message = ReflectionUtils.getMiniMessageTextFromNonShadedComponent(component);
+        CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(event.getPlayer(), message));
+    }
+
+    private Object getComponentFromEvent(AsyncChatEvent event) {
+        try {
+            return this.messageMethod.invoke(event);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return ReflectionUtils.getEmptyComponent();
     }
 }

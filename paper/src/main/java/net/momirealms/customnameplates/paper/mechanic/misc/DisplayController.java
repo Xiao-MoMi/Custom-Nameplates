@@ -21,6 +21,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.manager.RequirementManager;
 import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.entity.Player;
 
 public class DisplayController {
@@ -35,6 +36,7 @@ public class DisplayController {
     private int timeLeft;
     private int index;
     private final TimeLimitText[] texts;
+    private boolean metAnyCondition;
 
     public DisplayController(
             Player player,
@@ -44,10 +46,10 @@ public class DisplayController {
     ) {
         this.owner = player;
         this.checkFrequency = checkFrequency;
-        this.checkTimer = 0;
         this.refreshTimer = 0;
         this.requirements = requirements;
         this.texts = texts;
+        this.checkTimer = checkFrequency - 1;
     }
 
     public NextStage stateCheck(Condition condition) {
@@ -78,21 +80,33 @@ public class DisplayController {
     }
 
     public boolean updateText(Condition condition) {
-        timeLeft--;
+        if (timeLeft > 0)
+            timeLeft--;
+
+        // Definitely goto "if" on init
         if (timeLeft == 0) {
+            int triedTimes = 0;
             do {
                 index++;
                 if (index >= texts.length) {
                     index = 0;
                 }
+                if (triedTimes == texts.length) {
+                    timeLeft = Math.max(checkFrequency, 1);
+                    metAnyCondition = false;
+                    LogUtils.warn("No text is available for player " + owner.getName() + ". Please check your conditions.");
+                    return updateText("");
+                }
+                triedTimes++;
             } while (!RequirementManager.isRequirementMet(condition, texts[index].getRequirements()));
 
+            metAnyCondition = true;
             timeLeft = texts[index].getDuration();
             refreshTimer = 0;
             return updateText(texts[index].getText());
         }
 
-        if (texts[index].getRefreshFrequency() <= 0) {
+        if (!metAnyCondition || texts[index].getRefreshFrequency() <= 0) {
             return false;
         }
 
@@ -114,12 +128,13 @@ public class DisplayController {
         return true;
     }
 
-    public void initialize() {
-        index = 0;
+    public void initialize(Condition condition) {
+        index = texts.length - 1;
         checkTimer = 0;
         refreshTimer = 0;
-        timeLeft = texts[0].getDuration();
-        latestValue = PlaceholderAPI.setPlaceholders(owner, texts[0].getText());
+        timeLeft = 1;
+        // The text would definitely be refreshed
+        updateText(condition);
     }
 
     public String getLatestContent() {

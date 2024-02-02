@@ -98,7 +98,7 @@ public class BossBarReceiver {
                             if (this.bossBars[j].left().isShown())
                                 this.bossBars[j].right().hide();
 
-                        controller.initialize();
+                        controller.initialize(condition);
                         pair.right().setMiniMessageText(pair.left().getLatestContent());
                         pair.right().show();
 

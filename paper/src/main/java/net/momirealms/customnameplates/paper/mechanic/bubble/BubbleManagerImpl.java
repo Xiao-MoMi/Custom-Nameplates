@@ -19,11 +19,13 @@ package net.momirealms.customnameplates.paper.mechanic.bubble;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.OnlineUser;
 import net.momirealms.customnameplates.api.event.BubblesSpawnEvent;
 import net.momirealms.customnameplates.api.event.NameplateDataLoadEvent;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
+import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
@@ -36,10 +38,7 @@ import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.ImageParser;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.ItemsAdderImageImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.OraxenImageImpl;
-import net.momirealms.customnameplates.paper.mechanic.bubble.listener.AbstractChatListener;
-import net.momirealms.customnameplates.paper.mechanic.bubble.listener.AsyncChatListener;
-import net.momirealms.customnameplates.paper.mechanic.bubble.listener.TrChatListener;
-import net.momirealms.customnameplates.paper.mechanic.bubble.listener.VentureChatListener;
+import net.momirealms.customnameplates.paper.mechanic.bubble.listener.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -47,7 +46,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -97,7 +95,7 @@ public class BubbleManagerImpl implements BubbleManager {
     public void unload() {
         this.imageParser = null;
         this.bubbleMap.clear();
-        if (chatListener != null) HandlerList.unregisterAll(chatListener);
+        if (chatListener != null) chatListener.unregister();
     }
 
     private void loadConfig() {
@@ -127,15 +125,23 @@ public class BubbleManagerImpl implements BubbleManager {
     }
 
     private void registerListener() {
-        PluginManager pluginManager = Bukkit.getPluginManager();
         if (CNConfig.trChatChannel) {
             this.chatListener = new TrChatListener(this);
         } else if (CNConfig.ventureChatChannel) {
             this.chatListener = new VentureChatListener(this);
+        } else if (CNConfig.huskChatChannel) {
+            this.chatListener = new HuskChatListener(this);
+        } else if (CNConfig.carbonChatChannel) {
+            this.chatListener = new CarbonChatListener(this);
         } else {
-            this.chatListener = new AsyncChatListener(this);
+            try {
+                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+                this.chatListener = new PaperAsyncChatListener(this);
+            } catch (ClassNotFoundException e) {
+                this.chatListener = new AsyncChatListener(this);
+            }
         }
-        pluginManager.registerEvents(chatListener, plugin);
+        this.chatListener.register();
     }
 
     private void loadBubbles() {
@@ -213,6 +219,12 @@ public class BubbleManagerImpl implements BubbleManager {
                 || player.hasPotionEffect(PotionEffectType.INVISIBILITY)
                 || !player.hasPermission("bubbles.use")
         ) return;
+
+        if (Bukkit.isPrimaryThread()) {
+            String finalText = text;
+            CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> onChat(player, finalText));
+            return;
+        }
 
         var optionalUser = plugin.getStorageManager().getOnlineUser(player.getUniqueId());
         if (optionalUser.isEmpty()) {

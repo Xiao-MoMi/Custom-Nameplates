@@ -23,18 +23,29 @@ import me.arasple.mc.trchat.module.display.channel.Channel;
 import me.arasple.mc.trchat.module.internal.filter.FilteredObject;
 import me.arasple.mc.trchat.taboolib.platform.BukkitAdapter;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
+import net.momirealms.customnameplates.api.manager.BubbleManager;
+import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-
-import java.util.Arrays;
+import org.bukkit.event.HandlerList;
 
 public class TrChatListener extends AbstractChatListener {
 
     private final BukkitAdapter adapter;
 
-    public TrChatListener(BubbleManagerImpl chatBubblesManager) {
+    public TrChatListener(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
         this.adapter = new BukkitAdapter();
+    }
+
+    @Override
+    public void register() {
+        Bukkit.getPluginManager().registerEvents(this, CustomNameplatesPlugin.get());
+    }
+
+    @Override
+    public void unregister() {
+        HandlerList.unregisterAll(this);
     }
 
     @EventHandler (ignoreCancelled = true)

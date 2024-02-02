@@ -15,7 +15,7 @@ messages:
   force-unequip-nameplates: '<white>Успешно снят Нэймплейт у {Player}!</white>'
   not-exist-nameplates: '<white>Такой Нэйплейт не существует!</white>'
   not-available-nameplates: '<white>Этот Нэймплейт сейчас недоступен!</white>'
-  available-nameplates: '<white>Доступные Нэймплейты: {Nameplates}.</white>'
+  available-nameplates: '<white>Доступные Нэймплейты: {Nameplate}.</white>'
   have-no-nameplates: '<white>У вас еще нет никаких Нэймплейтов.'
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 

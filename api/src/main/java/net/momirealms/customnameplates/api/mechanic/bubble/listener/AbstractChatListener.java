@@ -15,16 +15,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.api.mechanic.bubble.listener;
 
-import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
+import net.momirealms.customnameplates.api.manager.BubbleManager;
 import org.bukkit.event.Listener;
 
 public abstract class AbstractChatListener implements Listener {
 
-    protected BubbleManagerImpl chatBubblesManager;
+    protected BubbleManager chatBubblesManager;
 
-    public AbstractChatListener(BubbleManagerImpl chatBubblesManager) {
+    public AbstractChatListener(BubbleManager chatBubblesManager) {
         this.chatBubblesManager = chatBubblesManager;
     }
+
+    public abstract void register();
+
+    public abstract void unregister();
 }

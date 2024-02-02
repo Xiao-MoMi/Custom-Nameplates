@@ -20,16 +20,29 @@ package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.paper.mechanic.bubble.BubbleManagerImpl;
+import net.momirealms.customnameplates.api.manager.BubbleManager;
+import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 
 public class VentureChatListener extends AbstractChatListener {
 
-    public VentureChatListener(BubbleManagerImpl chatBubblesManager) {
+    public VentureChatListener(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
     }
 
-    @EventHandler
+    @Override
+    public void register() {
+        Bukkit.getPluginManager().registerEvents(this, CustomNameplatesPlugin.get());
+    }
+
+    @Override
+    public void unregister() {
+        HandlerList.unregisterAll(this);
+    }
+
+    @EventHandler (ignoreCancelled = true)
     public void onVentureChat(VentureChatEvent event) {
         String channelName = event.getChannel().getName();
         for (String channel : chatBubblesManager.getBlacklistChannels()) {

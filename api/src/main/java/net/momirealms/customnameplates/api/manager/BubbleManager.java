@@ -124,4 +124,12 @@ public interface BubbleManager {
      * @return keys
      */
     Collection<String> getBubbleKeys();
+
+    /**
+     * Trigger chat
+     *
+     * @param player player
+     * @param text text
+     */
+    void onChat(Player player, String text);
 }

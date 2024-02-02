@@ -34,10 +34,11 @@ dependencies {
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.5")
     compileOnly("commons-io:commons-io:2.15.1")
 
-
     // chat channels
     compileOnly(files("libs/VentureChat-3.7.1.jar"))
     compileOnly(files("libs/TrChat-2.0.11.jar"))
+    compileOnly(files("libs/carbonchat-paper-3.0.0-beta.26.jar"))
+    compileOnly("net.william278:huskchat:2.7.1")
 
     // api module
     implementation(project(":api"))

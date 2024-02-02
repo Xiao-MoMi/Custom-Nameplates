@@ -116,7 +116,7 @@ public class CommandManager {
                             for (String availableBubble : bubbles) {
                                 stringJoiner.add(availableBubble);
                             }
-                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_BUBBLE.replace("{Bubble}", stringJoiner.toString()));
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_BUBBLE.replace("{Bubble}", stringJoiner.toString()).replace("{Bubbles}", stringJoiner.toString()));
                         } else {
                             AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_HAVE_NO_BUBBLE);
                         }
@@ -340,7 +340,7 @@ public class CommandManager {
                             for (String availableNameplate : nameplates) {
                                 stringJoiner.add(availableNameplate);
                             }
-                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_NAMEPLATE.replace("{Nameplates}", stringJoiner.toString()));
+                            AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_AVAILABLE_NAMEPLATE.replace("{Nameplates}", stringJoiner.toString()).replace("{Nameplate}", stringJoiner.toString()));
                         } else {
                             AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, CNLocale.MSG_HAVE_NO_NAMEPLATE);
                         }

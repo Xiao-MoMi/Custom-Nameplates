@@ -15,7 +15,7 @@ messages:
   force-unequip-nameplates: '<white>你已强制卸下玩家 {Player} 的铭牌!</white>'
   not-exist-nameplates: '<white>那个铭牌不存在!</white>'
   not-available-nameplates: '<white>你还未拥有这个铭牌!</white>'
-  available-nameplates: '<white>可用铭牌: {Nameplates}</white>'
+  available-nameplates: '<white>可用铭牌: {Nameplate}</white>'
   have-no-nameplates: '<white>你还没有拥有任何铭牌.</white>'
   force-preview: '<white>正在强制玩家 {Player} 预览铭牌</white>'
 

@@ -16,7 +16,7 @@ messages:
   force-unequip-nameplates: '<white>{Player} oyuncusunun isim etiketi başarıyla kaldırıldı!</white>'
   not-exist-nameplates: '<white>Bu isim etiketi mevcut değil!</white>'
   not-available-nameplates: '<white>Bu isim etiketi şu anda kullanılabilir değil!</white>'
-  available-nameplates: '<white>Mevcut isim etiketleri: {Nameplates}.</white>'
+  available-nameplates: '<white>Mevcut isim etiketleri: {Nameplate}.</white>'
   have-no-nameplates: '<white>Henüz hiç isim etiketiniz yok</white>'
   force-preview: '<white>Forced {Player} to preview the nameplate</white>'
 

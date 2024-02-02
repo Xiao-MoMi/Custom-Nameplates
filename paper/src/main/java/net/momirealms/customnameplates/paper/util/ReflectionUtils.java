@@ -34,6 +34,9 @@ public class ReflectionUtils {
     private static Constructor<?> updateConstructor;
     private static Method iChatComponentMethod;
     private static Object emptyComponent;
+    private static Method serializeComponentMethod;
+    private static Method keyAsStringMethod;
+    private static Object miniMessageInstance;
 
     public static void load() {
         try {
@@ -53,6 +56,17 @@ public class ReflectionUtils {
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
             LogUtils.severe("Error occurred when loading reflections", exception);
             exception.printStackTrace();
+        }
+        try {
+            Class<?> componentClass = Class.forName("net;kyori;adventure;text;Component".replace(";", "."));
+            Class<?> miniMessageClass = Class.forName("net;kyori;adventure;text;minimessage;MiniMessage".replace(";", "."));
+            Method miniMessageInstanceGetMethod = miniMessageClass.getMethod("miniMessage");
+            miniMessageInstance = miniMessageInstanceGetMethod.invoke(null);
+            serializeComponentMethod = miniMessageClass.getMethod("serialize", componentClass);
+            Class<?> keyClass = Class.forName("net;kyori;adventure;key;Key".replace(";", "."));
+            keyAsStringMethod = keyClass.getMethod("asString");
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException ignored) {
         }
     }
 
@@ -74,5 +88,23 @@ public class ReflectionUtils {
 
     public static Object getEmptyComponent() {
         return emptyComponent;
+    }
+
+    public static String getKeyAsString(Object key) {
+        try {
+            return (String) keyAsStringMethod.invoke(key);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getMiniMessageTextFromNonShadedComponent(Object component) {
+        try {
+            return (String) serializeComponentMethod.invoke(miniMessageInstance, component);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
