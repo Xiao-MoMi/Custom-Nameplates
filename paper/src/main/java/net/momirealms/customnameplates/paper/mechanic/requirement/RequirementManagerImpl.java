@@ -29,6 +29,7 @@ import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.mechanic.requirement.papi.PapiCondition;
 import net.momirealms.customnameplates.paper.util.ClassUtils;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
+import net.momirealms.customnameplates.paper.util.GeyserUtils;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
@@ -121,6 +122,7 @@ public class RequirementManagerImpl implements RequirementManager {
         this.registerPapiRequirement();
         this.registerInListRequirement();
         this.registerGameModeRequirement();
+        this.registerGeyserRequirement();
     }
 
     /**
@@ -286,6 +288,19 @@ public class RequirementManagerImpl implements RequirementManager {
         registerRequirement("random", (args) -> {
             double random = ConfigUtils.getDoubleValue(args);
             return condition -> Math.random() < random;
+        });
+    }
+
+    private void registerGeyserRequirement() {
+        registerRequirement("geyser", (args) -> {
+            boolean arg = (boolean) args;
+            return condition -> {
+                if (arg) {
+                    return GeyserUtils.isBedrockPlayer(condition.getOfflinePlayer().getUniqueId());
+                } else {
+                    return !GeyserUtils.isBedrockPlayer(condition.getOfflinePlayer().getUniqueId());
+                }
+            };
         });
     }
 

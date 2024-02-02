@@ -43,6 +43,7 @@ allprojects {
         maven("https://repo.kryptonmc.org/releases")
         maven("https://repo.oraxen.com/releases/")
         maven("https://nexus.codecrafter47.de/content/repositories/public/")
+        maven("https://repo.opencollab.dev/main/")
     }
 }
 
