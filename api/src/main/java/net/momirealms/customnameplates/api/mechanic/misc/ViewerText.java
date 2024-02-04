@@ -44,9 +44,11 @@ public class ViewerText {
         for (String placeholder : placeholders) {
             processedText = processedText.replace(placeholder, "%s");
             if (placeholder.startsWith("%viewer_")) {
-                this.placeholders[i] = new ClaimedText(null, "%" + placeholder.substring("%viewer_".length()));
+                this.placeholders[i] = new ClaimedText(null, "%" + placeholder.substring("%viewer_".length()), false);
+            } else if (placeholder.startsWith("%rel_")) {
+                this.placeholders[i] = new ClaimedText(owner, placeholder, true);
             } else {
-                this.placeholders[i] = new ClaimedText(owner, placeholder);
+                this.placeholders[i] = new ClaimedText(owner, placeholder, false);
             }
             i++;
         }
@@ -109,11 +111,13 @@ public class ViewerText {
         private final String placeholder;
         private final Player owner;
         private String latestValue;
+        private final boolean relational;
 
-        public ClaimedText(Player owner, String placeholder) {
+        public ClaimedText(Player owner, String placeholder, boolean relational) {
             this.placeholder = placeholder;
             this.owner = owner;
             this.latestValue = null;
+            this.relational = relational;
             this.update();
         }
 
@@ -125,7 +129,13 @@ public class ViewerText {
         public String getValue(Player viewer) {
             return Objects.requireNonNullElseGet(
                     latestValue,
-                    () -> PlaceholderAPI.setPlaceholders(owner == null ? viewer : owner, placeholder)
+                    () -> {
+                        if (relational) {
+                            return PlaceholderAPI.setRelationalPlaceholders(viewer, owner, placeholder);
+                        } else {
+                            return PlaceholderAPI.setPlaceholders(owner == null ? viewer : owner, placeholder);
+                        }
+                    }
             );
         }
     }

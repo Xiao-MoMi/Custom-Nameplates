@@ -15,20 +15,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
+import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
+import mineverse.Aust1n46.chat.channel.ChatChannel;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 
-public class VentureChatListener extends AbstractChatListener {
+public class VentureChatProvider extends AbstractChatProvider {
 
-    public VentureChatListener(BubbleManager chatBubblesManager) {
+    public VentureChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
     }
 
@@ -42,6 +46,25 @@ public class VentureChatListener extends AbstractChatListener {
         HandlerList.unregisterAll(this);
     }
 
+    @Override
+    public boolean hasJoinedChannel(Player player, String channelID) {
+        MineverseChatPlayer mcp = MineverseChatAPI.getOnlineMineverseChatPlayer(player);
+        return mcp.getCurrentChannel().getName().equals(channelID);
+    }
+
+    @Override
+    public boolean canJoinChannel(Player player, String channelID) {
+        ChatChannel channel = ChatChannel.getChannel(channelID);
+        if (channel == null) {
+            LogUtils.warn("Channel " + channelID + " doesn't exist.");
+            return false;
+        }
+        if (channel.hasPermission()) {
+            return player.hasPermission(channel.getPermission());
+        }
+        return true;
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onVentureChat(VentureChatEvent event) {
         String channelName = event.getChannel().getName();
@@ -53,7 +76,7 @@ public class VentureChatListener extends AbstractChatListener {
             return;
         }
         CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
-            chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat());
+            chatBubblesManager.onChat(chatPlayer.getPlayer(), event.getChat(), channelName);
         });
     }
 }

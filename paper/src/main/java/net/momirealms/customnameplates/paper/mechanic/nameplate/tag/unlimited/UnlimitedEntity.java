@@ -92,7 +92,9 @@ public class UnlimitedEntity implements EntityTagEntity {
         }
         staticTags.add(tag);
         for (Player all : nearbyPlayers) {
-            tag.addPlayerToViewers(all);
+            if (tag.getComeRule().isPassed(all, entity)) {
+                tag.addPlayerToViewers(all);
+            }
         }
     }
 
@@ -136,7 +138,6 @@ public class UnlimitedEntity implements EntityTagEntity {
             tag.removePlayerFromViewers(player);
         }
     }
-
 
     public void move(Player receiver, short x, short y, short z, boolean onGround) {
         for (StaticTextEntity tag : staticTags) {

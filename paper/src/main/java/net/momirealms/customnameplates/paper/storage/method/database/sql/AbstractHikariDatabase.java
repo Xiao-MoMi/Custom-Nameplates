@@ -55,7 +55,6 @@ public abstract class AbstractHikariDatabase extends AbstractSQLDatabase impleme
             } else if (getStorageType() == StorageType.MySQL) {
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    LogUtils.warn("It seems that you are not using MySQL 8.0+. It's recommended to update.");
                 } catch (ClassNotFoundException e2) {
                     LogUtils.warn("No MySQL driver is found");
                 }

@@ -61,7 +61,9 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
         }
         staticTags.add(tag);
         for (Player all : nearbyPlayers) {
-            tag.addPlayerToViewers(all);
+            if (tag.getComeRule().isPassed(all, owner)) {
+                tag.addPlayerToViewers(all);
+            }
         }
     }
 

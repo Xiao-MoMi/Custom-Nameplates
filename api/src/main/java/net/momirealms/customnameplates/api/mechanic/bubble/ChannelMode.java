@@ -15,20 +15,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.api.mechanic.bubble.listener;
+package net.momirealms.customnameplates.api.mechanic.bubble;
 
-import net.momirealms.customnameplates.api.manager.BubbleManager;
-import org.bukkit.event.Listener;
+public enum ChannelMode {
 
-public abstract class AbstractChatListener implements Listener {
-
-    protected BubbleManager chatBubblesManager;
-
-    public AbstractChatListener(BubbleManager chatBubblesManager) {
-        this.chatBubblesManager = chatBubblesManager;
-    }
-
-    public abstract void register();
-
-    public abstract void unregister();
+    ALL,
+    JOINED,
+    CAN_JOIN
 }

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api.manager;
 
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +26,21 @@ import java.util.Collection;
 import java.util.List;
 
 public interface BubbleManager {
+
+    /**
+     * Set a custom chat provider
+     *
+     * @param provider provider
+     * @return success or not
+     */
+    boolean setCustomChatProvider(AbstractChatProvider provider);
+
+    /**
+     * Remove a custom chat provider
+     *
+     * @return success or not
+     */
+    boolean removeCustomChatProvider();
 
     /**
      * Register a bubble into map
@@ -117,6 +133,8 @@ public interface BubbleManager {
      * @return bubble key
      */
     String getDefaultBubble();
+
+    void onChat(Player player, String text, String channel);
 
     /**
      * Get all the bubbles' keys

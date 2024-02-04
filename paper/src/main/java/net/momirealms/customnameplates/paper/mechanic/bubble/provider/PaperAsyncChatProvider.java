@@ -15,25 +15,26 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class PaperAsyncChatListener extends AbstractChatListener {
+public class PaperAsyncChatProvider extends AbstractChatProvider {
 
     private Method messageMethod;
 
-    public PaperAsyncChatListener(BubbleManager chatBubblesManager) {
+    public PaperAsyncChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
         try {
             this.messageMethod = AsyncChatEvent.class.getMethod("message");
@@ -50,6 +51,16 @@ public class PaperAsyncChatListener extends AbstractChatListener {
     @Override
     public void unregister() {
         HandlerList.unregisterAll(this);
+    }
+
+    @Override
+    public boolean hasJoinedChannel(Player player, String channelID) {
+        return true;
+    }
+
+    @Override
+    public boolean canJoinChannel(Player player, String channelID) {
+        return true;
     }
 
     @EventHandler (ignoreCancelled = true)

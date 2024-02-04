@@ -15,20 +15,26 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
+import me.arasple.mc.trchat.TrChat;
+import me.arasple.mc.trchat.api.TrChatAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
+import net.momirealms.customnameplates.api.util.LogUtils;
+import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.bukkit.BukkitHuskChat;
 import net.william278.huskchat.bukkit.event.ChatMessageEvent;
+import net.william278.huskchat.channel.Channel;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 
-public class HuskChatListener extends AbstractChatListener {
+public class HuskChatProvider extends AbstractChatProvider {
 
-    public HuskChatListener(BubbleManager chatBubblesManager) {
+    public HuskChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
     }
 
@@ -42,6 +48,30 @@ public class HuskChatListener extends AbstractChatListener {
         HandlerList.unregisterAll(this);
     }
 
+    @Override
+    public boolean hasJoinedChannel(Player player, String channelID) {
+        String channel = BukkitHuskChat.getInstance().getPlayerCache().getPlayerChannel(player.getUniqueId());
+        if (channel == null) {
+            LogUtils.warn("Channel " + channelID + " doesn't exist.");
+            return false;
+        }
+        return channel.equals(channelID);
+    }
+
+    @Override
+    public boolean canJoinChannel(Player player, String channelID) {
+        Channel channel = BukkitHuskChat.getInstance().getSettings().getChannels().get(channelID);
+        if (channel == null) {
+            LogUtils.warn("Channel " + channelID + " doesn't exist.");
+            return false;
+        }
+        String receivePerm = channel.getReceivePermission();
+        if (receivePerm == null) {
+            return true;
+        }
+        return player.hasPermission(receivePerm);
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onHuskChat(ChatMessageEvent event) {
         String channel = event.getChannelId();
@@ -52,7 +82,7 @@ public class HuskChatListener extends AbstractChatListener {
         if (player == null || !player.isOnline())
             return;
         CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> {
-            chatBubblesManager.onChat(player, event.getMessage());
+            chatBubblesManager.onChat(player, event.getMessage(), channel);
         });
     }
 }

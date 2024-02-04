@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.paper.util;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
+import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;
@@ -36,7 +37,9 @@ public class ReflectionUtils {
     private static Object emptyComponent;
     private static Method serializeComponentMethod;
     private static Method keyAsStringMethod;
+    private static Method keyFromStringMethod;
     private static Object miniMessageInstance;
+    private static Class<?> keyClass;
 
     public static void load() {
         try {
@@ -63,8 +66,9 @@ public class ReflectionUtils {
             Method miniMessageInstanceGetMethod = miniMessageClass.getMethod("miniMessage");
             miniMessageInstance = miniMessageInstanceGetMethod.invoke(null);
             serializeComponentMethod = miniMessageClass.getMethod("serialize", componentClass);
-            Class<?> keyClass = Class.forName("net;kyori;adventure;key;Key".replace(";", "."));
+            keyClass = Class.forName("net;kyori;adventure;key;Key".replace(";", "."));
             keyAsStringMethod = keyClass.getMethod("asString");
+            keyFromStringMethod = keyClass.getMethod("key", String.class);
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException ignored) {
         }
@@ -90,6 +94,10 @@ public class ReflectionUtils {
         return emptyComponent;
     }
 
+    public static Class<?> getKeyClass() {
+        return keyClass;
+    }
+
     public static String getKeyAsString(Object key) {
         try {
             return (String) keyAsStringMethod.invoke(key);
@@ -97,6 +105,15 @@ public class ReflectionUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static Object getKerFromString(String key) {
+        try {
+            return keyFromStringMethod.invoke(key);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String getMiniMessageTextFromNonShadedComponent(Object component) {

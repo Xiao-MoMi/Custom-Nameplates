@@ -25,7 +25,8 @@ import net.momirealms.customnameplates.api.event.BubblesSpawnEvent;
 import net.momirealms.customnameplates.api.event.NameplateDataLoadEvent;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.ChannelMode;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
@@ -38,7 +39,7 @@ import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.ImageParser;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.ItemsAdderImageImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.OraxenImageImpl;
-import net.momirealms.customnameplates.paper.mechanic.bubble.listener.*;
+import net.momirealms.customnameplates.paper.mechanic.bubble.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -46,6 +47,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -54,9 +57,10 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BubbleManagerImpl implements BubbleManager {
+public class BubbleManagerImpl implements BubbleManager, Listener {
 
-    private AbstractChatListener chatListener;
+    private AbstractChatProvider chatProvider;
+    private AbstractChatProvider customProvider;
     private ImageParser imageParser;
     private final HashMap<String, Bubble> bubbleMap;
     private final CustomNameplatesPluginImpl plugin;
@@ -73,6 +77,7 @@ public class BubbleManagerImpl implements BubbleManager {
     private int lengthPerLine;
     private int subStringIndex;
     private String[] blacklistChannels;
+    private ChannelMode channelMode;
 
     public BubbleManagerImpl(CustomNameplatesPluginImpl plugin) {
         this.plugin = plugin;
@@ -88,14 +93,16 @@ public class BubbleManagerImpl implements BubbleManager {
         if (!CNConfig.bubbleModule) return;
         this.loadConfig();
         this.loadBubbles();
-        this.registerListener();
+        this.registerChatProvider();
         this.registerImageParser();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public void unload() {
         this.imageParser = null;
         this.bubbleMap.clear();
-        if (chatListener != null) chatListener.unregister();
+        if (chatProvider != null) chatProvider.unregister();
+        HandlerList.unregisterAll(this);
     }
 
     private void loadConfig() {
@@ -113,6 +120,7 @@ public class BubbleManagerImpl implements BubbleManager {
         lengthPerLine = config.getInt("characters-per-line", 30);
         startFormat = config.getString("default-format.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
         endFormat = config.getString("default-format.end", "<!u></gradient>");
+        channelMode = ChannelMode.valueOf(config.getString("channel-mode","all").toUpperCase(Locale.ENGLISH));
     }
 
     private void registerImageParser() {
@@ -124,24 +132,47 @@ public class BubbleManagerImpl implements BubbleManager {
         }
     }
 
-    private void registerListener() {
-        if (CNConfig.trChatChannel) {
-            this.chatListener = new TrChatListener(this);
+    private void registerChatProvider() {
+        if (this.customProvider != null) {
+            this.chatProvider = customProvider;
+        } else if (CNConfig.trChatChannel) {
+            this.chatProvider = new TrChatProvider(this);
         } else if (CNConfig.ventureChatChannel) {
-            this.chatListener = new VentureChatListener(this);
+            this.chatProvider = new VentureChatProvider(this);
         } else if (CNConfig.huskChatChannel) {
-            this.chatListener = new HuskChatListener(this);
+            this.chatProvider = new HuskChatProvider(this);
         } else if (CNConfig.carbonChatChannel) {
-            this.chatListener = new CarbonChatListener(this);
+            this.chatProvider = new CarbonChatProvider(this);
         } else {
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
-                this.chatListener = new PaperAsyncChatListener(this);
+                this.chatProvider = new PaperAsyncChatProvider(this);
             } catch (ClassNotFoundException e) {
-                this.chatListener = new AsyncChatListener(this);
+                this.chatProvider = new AsyncChatProvider(this);
             }
         }
-        this.chatListener.register();
+        this.chatProvider.register();
+    }
+
+    @Override
+    public boolean setCustomChatProvider(AbstractChatProvider provider) {
+        if (this.customProvider != null)
+            return false;
+        this.customProvider = provider;
+        if (chatProvider != null) chatProvider.unregister();
+        this.registerChatProvider();
+        return true;
+    }
+
+    @Override
+    public boolean removeCustomChatProvider() {
+        if (this.customProvider != null) {
+            this.customProvider.unregister();
+            this.customProvider = null;
+            this.registerChatProvider();
+            return true;
+        }
+        return false;
     }
 
     private void loadBubbles() {
@@ -214,7 +245,13 @@ public class BubbleManagerImpl implements BubbleManager {
         return this.bubbleMap.remove(key) != null;
     }
 
+    @Override
     public void onChat(Player player, String text) {
+        onChat(player, text, null);
+    }
+
+    @Override
+    public void onChat(Player player, String text, String channel) {
         if (        player.getGameMode() == GameMode.SPECTATOR
                 || player.hasPotionEffect(PotionEffectType.INVISIBILITY)
                 || !player.hasPermission("bubbles.use")
@@ -270,14 +307,14 @@ public class BubbleManagerImpl implements BubbleManager {
             int finalIndex = i;
             String finalBubble = bubble;
             plugin.getScheduler().runTaskAsyncLater(
-                    () -> sendBubble(player, split[finalIndex], bubbleConfig, finalBubble),
+                    () -> sendBubble(player, split[finalIndex], bubbleConfig, finalBubble, channel),
                     (long) i * 250 + 100,
                     TimeUnit.MILLISECONDS
             );
         }
     }
 
-    private void sendBubble(Player player, String text, Bubble bubbleConfig, String key) {
+    private void sendBubble(Player player, String text, Bubble bubbleConfig, String key, @Nullable String channel) {
         if (key.equals("none")) {
             text = startFormat + PlaceholderAPI.setPlaceholders(player, prefix) + text + PlaceholderAPI.setPlaceholders(player, suffix) + endFormat;
         } else {
@@ -291,7 +328,20 @@ public class BubbleManagerImpl implements BubbleManager {
 
         StaticTextEntity entity = tagPlayer.addTag(StaticTextTagSetting.builder()
                 .leaveRule((p, e) -> true)
-                .comeRule((p, e) -> true)
+                .comeRule((p, e) -> {
+                    switch (channelMode) {
+                        case ALL -> {
+                            return true;
+                        }
+                        case JOINED -> {
+                            return channel == null || chatProvider.hasJoinedChannel(p, channel);
+                        }
+                        case CAN_JOIN -> {
+                            return channel == null || chatProvider.canJoinChannel(p, channel);
+                        }
+                    }
+                    return false;
+                })
                 .verticalOffset(yOffset)
                 .defaultText(text)
                 .plugin("bubble")

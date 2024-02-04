@@ -3,6 +3,11 @@ blacklist-channels:
   - Private
   - Staff
 
+# ALL: all the players can see the bubble
+# JOINED: players in the same channel can see each other's bubble
+# CAN_JOIN: players that have permission to certain channels would see the bubble in that channel
+channel-mode: ALL
+
 # Default bubble to display if player's bubble is "none"
 default-bubble: 'chat'
 

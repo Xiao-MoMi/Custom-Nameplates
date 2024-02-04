@@ -15,19 +15,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class AsyncChatListener extends AbstractChatListener {
+public class AsyncChatProvider extends AbstractChatProvider {
 
-    public AsyncChatListener(BubbleManager chatBubblesManager) {
+    public AsyncChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
     }
 
@@ -41,6 +42,17 @@ public class AsyncChatListener extends AbstractChatListener {
         HandlerList.unregisterAll(this);
     }
 
+    @Override
+    public boolean hasJoinedChannel(Player player, String channelID) {
+        return true;
+    }
+
+    @Override
+    public boolean canJoinChannel(Player player, String channelID) {
+        return true;
+    }
+
+    // This event is not async sometimes
     @EventHandler (ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(event.getPlayer(), event.getMessage()));

@@ -15,16 +15,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.momirealms.customnameplates.paper.mechanic.bubble.listener;
+package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
 import net.draycia.carbon.api.CarbonChat;
-import net.draycia.carbon.api.CarbonChatProvider;
+import net.draycia.carbon.api.channels.ChannelRegistry;
 import net.draycia.carbon.api.channels.ChatChannel;
 import net.draycia.carbon.api.event.CarbonEventSubscription;
 import net.draycia.carbon.api.event.events.CarbonChatEvent;
+import net.draycia.carbon.api.users.CarbonPlayer;
+import net.draycia.carbon.paper.CarbonChatPaper;
+import net.draycia.carbon.paper.users.CarbonPlayerPaper;
+import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
-import net.momirealms.customnameplates.api.mechanic.bubble.listener.AbstractChatListener;
+import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,19 +37,21 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class CarbonChatListener extends AbstractChatListener {
+public class CarbonChatProvider extends AbstractChatProvider {
 
     private final CarbonChat api;
     private CarbonEventSubscription<CarbonChatEvent> subscription;
     private Method originalMessageMethod;
     private Method channelKeyMethod;
+    private Method getChannelByKeyMethod;
 
-    public CarbonChatListener(BubbleManager chatBubblesManager) {
+    public CarbonChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
-        this.api = CarbonChatProvider.carbonChat();
+        this.api = net.draycia.carbon.api.CarbonChatProvider.carbonChat();
         try {
             this.originalMessageMethod = CarbonChatEvent.class.getMethod("originalMessage");
             this.channelKeyMethod = ChatChannel.class.getMethod("key");
+            this.getChannelByKeyMethod = ChannelRegistry.class.getMethod("channel", ReflectionUtils.getKeyClass());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +74,7 @@ public class CarbonChatListener extends AbstractChatListener {
                 return;
             Object component = getComponentFromEvent(event);
             String message = ReflectionUtils.getMiniMessageTextFromNonShadedComponent(component);
-            CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(player, message));
+            CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() -> chatBubblesManager.onChat(player, message, channel));
         });
     }
 
@@ -76,6 +83,51 @@ public class CarbonChatListener extends AbstractChatListener {
         if (subscription != null) {
             subscription.dispose();
         }
+    }
+
+    @Override
+    public boolean hasJoinedChannel(Player player, String channelID) {
+        CarbonPlayer cPlayer = null;
+        for (CarbonPlayer carbonPlayer : api.server().players()) {
+            if (carbonPlayer.uuid().equals(player.getUniqueId())) {
+                cPlayer = carbonPlayer;
+                break;
+            }
+        }
+        if (cPlayer == null) {
+            return false;
+        }
+        ChatChannel selectedChannel = cPlayer.selectedChannel();
+        if (selectedChannel == null) {
+            return false;
+        }
+        Object key = getChannelKey(selectedChannel);
+        String str = ReflectionUtils.getKeyAsString(key);
+        return str.equals(channelID);
+    }
+
+    @Override
+    public boolean canJoinChannel(Player player, String channelID) {
+        ChannelRegistry registry = api.channelRegistry();
+        Object key = ReflectionUtils.getKerFromString(channelID);
+        if (key == null) {
+            return false;
+        }
+        ChatChannel channel = null;
+        try {
+            channel = (ChatChannel) getChannelByKeyMethod.invoke(registry, key);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        if (channel == null) {
+            LogUtils.warn("Channel " + channelID + " doesn't exist.");
+            return false;
+        }
+        String perm = channel.permission();
+        if (perm == null) {
+            return true;
+        }
+        return player.hasPermission(perm);
     }
 
     private Object getChannelKey(ChatChannel channel) {

@@ -152,7 +152,6 @@ public class RedisManager extends AbstractStorage {
         try (Jedis jedis = jedisPool.getResource()) {
             byte[] key = getRedisKey("cn_data", uuid);
             byte[] data = jedis.get(key);
-            jedis.del(key);
             if (data != null) {
                 future.complete(Optional.of(plugin.getStorageManager().fromBytes(data)));
                 plugin.debug("Redis data retrieved for " + uuid + "; normal data");
