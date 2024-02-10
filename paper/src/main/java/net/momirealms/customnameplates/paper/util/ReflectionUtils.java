@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.paper.util;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
-import net.kyori.adventure.key.Key;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;

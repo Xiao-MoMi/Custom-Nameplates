@@ -17,13 +17,10 @@
 
 package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
-import me.arasple.mc.trchat.TrChat;
-import me.arasple.mc.trchat.api.TrChatAPI;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bukkit.BukkitHuskChat;
 import net.william278.huskchat.bukkit.event.ChatMessageEvent;
 import net.william278.huskchat.channel.Channel;
