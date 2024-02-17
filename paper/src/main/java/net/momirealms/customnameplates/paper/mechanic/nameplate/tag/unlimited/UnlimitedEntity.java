@@ -44,6 +44,8 @@ public class UnlimitedEntity implements EntityTagEntity {
         this.entity = entity;
         this.nearbyPlayers = new Vector<>();
         this.staticTags = new Vector<>();
+        staticTagVectorToArray();
+        playerVectorToArray();
     }
 
     public Entity getEntity() {
