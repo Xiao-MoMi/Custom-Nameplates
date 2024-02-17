@@ -91,7 +91,8 @@ other-settings:
   create-real-teams: false
 
   # It's recommended to use MiniMessage format. If you insist on using legacy color code "&", enable the support below.
-  legacy-color-code-support: false
+  # Disabling this option would make color formatting faster
+  legacy-color-code-support: true
 
   # Thread pool settings
   thread-pool-settings:
@@ -103,7 +104,7 @@ other-settings:
     # If a thread is idle for more than this attribute value, it will exit due to timeout
     keepAliveTime: 30
 
-  # delay x ticks before actionbar/bossbar is sent to players
+  # delay x ticks before actionbar/bossbar sent to players
   send-delay: 0
 
   # Set the size for the cache system. This is useful and would bring huge performance improvement if you keep it to a reasonable value

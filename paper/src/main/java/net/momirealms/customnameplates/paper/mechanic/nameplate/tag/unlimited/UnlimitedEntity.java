@@ -26,6 +26,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 public class UnlimitedEntity implements EntityTagEntity {
@@ -33,7 +35,9 @@ public class UnlimitedEntity implements EntityTagEntity {
     protected final UnlimitedTagManagerImpl manager;
     protected final Entity entity;
     protected final Vector<Player> nearbyPlayers;
+    protected Player[] nearbyPlayerArray;
     protected final Vector<StaticTextEntity> staticTags;
+    protected StaticTextEntity[] staticTagArray;
 
     public UnlimitedEntity(UnlimitedTagManagerImpl manager, Entity entity) {
         this.manager = manager;
@@ -46,8 +50,8 @@ public class UnlimitedEntity implements EntityTagEntity {
         return entity;
     }
 
-    public Vector<Player> getNearbyPlayers() {
-        return nearbyPlayers;
+    public Player[] getNearbyPlayers() {
+        return nearbyPlayerArray;
     }
 
     public void addNearbyPlayerNaturally(Player player) {
@@ -55,7 +59,8 @@ public class UnlimitedEntity implements EntityTagEntity {
             return;
         }
         nearbyPlayers.add(player);
-        for (StaticTextEntity tag : staticTags) {
+        playerVectorToArray();
+        for (StaticTextEntity tag : staticTagArray) {
             if (tag.getComeRule().isPassed(player, entity)) {
                 tag.addPlayerToViewers(player);
             }
@@ -67,7 +72,8 @@ public class UnlimitedEntity implements EntityTagEntity {
             return;
         }
         nearbyPlayers.remove(player);
-        for (StaticTextEntity tag : staticTags) {
+        playerVectorToArray();
+        for (StaticTextEntity tag : staticTagArray) {
             if (tag.getLeaveRule().isPassed(player, entity)) {
                 tag.removePlayerFromViewers(player);
             }
@@ -91,6 +97,7 @@ public class UnlimitedEntity implements EntityTagEntity {
             return;
         }
         staticTags.add(tag);
+        staticTagVectorToArray();
         for (Player all : nearbyPlayers) {
             if (tag.getComeRule().isPassed(all, entity)) {
                 tag.addPlayerToViewers(all);
@@ -109,12 +116,13 @@ public class UnlimitedEntity implements EntityTagEntity {
     public void removeTag(StaticTextEntity tag) {
         if (staticTags.remove(tag)) {
             tag.destroy();
+            staticTagVectorToArray();
         }
     }
 
     @Override
-    public Vector<StaticTextEntity> getStaticTags() {
-        return staticTags;
+    public Collection<StaticTextEntity> getStaticTags() {
+        return new ArrayList<>(staticTags);
     }
 
     @Override
@@ -123,7 +131,8 @@ public class UnlimitedEntity implements EntityTagEntity {
             return;
         }
         nearbyPlayers.add(player);
-        for (StaticTextEntity tag : staticTags) {
+        playerVectorToArray();
+        for (StaticTextEntity tag : staticTagArray) {
             tag.addPlayerToViewers(player);
         }
     }
@@ -134,31 +143,32 @@ public class UnlimitedEntity implements EntityTagEntity {
             return;
         }
         nearbyPlayers.remove(player);
-        for (StaticTextEntity tag : staticTags) {
+        playerVectorToArray();
+        for (StaticTextEntity tag : staticTagArray) {
             tag.removePlayerFromViewers(player);
         }
     }
 
     public void move(Player receiver, short x, short y, short z, boolean onGround) {
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.move(receiver, x, y, z, onGround);
         }
     }
 
     public void teleport(Player receiver, double x, double y, double z, boolean onGround) {
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.teleport(receiver, x, y, z, onGround);
         }
     }
 
     public void teleport() {
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.teleport();
         }
     }
 
     public void handlePose(Pose previous, Pose pose) {
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.handlePose(previous, pose);
         }
     }
@@ -166,16 +176,26 @@ public class UnlimitedEntity implements EntityTagEntity {
     @Override
     public void destroy() {
         manager.removeUnlimitedEntityFromMap(entity.getUniqueId());
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.destroy();
         }
         nearbyPlayers.clear();
         staticTags.clear();
+        staticTagArray = null;
+        nearbyPlayerArray = null;
     }
 
     public void respawn() {
-        for (StaticTextEntity tag : staticTags) {
+        for (StaticTextEntity tag : staticTagArray) {
             tag.respawn(entity.getPose());
         }
+    }
+
+    protected void staticTagVectorToArray() {
+        staticTagArray = staticTags.toArray(new StaticTextEntity[0]);
+    }
+
+    protected void playerVectorToArray() {
+        nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
     }
 }

@@ -20,7 +20,7 @@ package net.momirealms.customnameplates.api.mechanic.tag.unlimited;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.Vector;
+import java.util.Collection;
 
 public interface EntityTagEntity {
 
@@ -30,7 +30,7 @@ public interface EntityTagEntity {
 
     void removeTag(StaticTextEntity tag);
 
-    Vector<StaticTextEntity> getStaticTags();
+    Collection<StaticTextEntity> getStaticTags();
 
     void forceAddNearbyPlayer(Player player);
 

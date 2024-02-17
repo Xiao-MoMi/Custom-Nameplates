@@ -19,7 +19,7 @@ package net.momirealms.customnameplates.api.mechanic.tag.unlimited;
 
 import net.momirealms.customnameplates.api.mechanic.tag.NameplatePlayer;
 
-import java.util.Vector;
+import java.util.Collection;
 
 public interface EntityTagPlayer extends NameplatePlayer {
 
@@ -35,9 +35,9 @@ public interface EntityTagPlayer extends NameplatePlayer {
 
     void removeTag(StaticTextEntity tag);
 
-    Vector<DynamicTextEntity> getDynamicTags();
+    Collection<DynamicTextEntity> getDynamicTags();
 
-    Vector<StaticTextEntity> getStaticTags();
+    Collection<StaticTextEntity> getStaticTags();
 
     void setHatOffset(double hatOffset);
 
