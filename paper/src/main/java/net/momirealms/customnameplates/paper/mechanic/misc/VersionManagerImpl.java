@@ -238,7 +238,7 @@ public class VersionManagerImpl implements VersionManager, Listener {
         final Player player = event.getPlayer();
         if (player.isOp()) {
             if (!PlaceholderAPI.isRegistered("player")) {
-                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, "You haven't installed Player Expansion yet. Click <b><gold><click:run_command:/papi ecloud download Player>HERE</click></gold><b> to download.");
+                AdventureManagerImpl.getInstance().sendMessageWithPrefix(player, "You haven't installed Player Expansion yet. Click <b><gold><u><click:run_command:/papi ecloud download Player>HERE</click></u></gold></b> to download. Otherwise you might encounter console spam on first installation.");
             }
         }
     }

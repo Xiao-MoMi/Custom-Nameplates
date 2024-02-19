@@ -11,5 +11,14 @@ tasks {
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate ("org.bstats", "net.momirealms.customnameplates.libraries.bstats")
         relocate ("net.momirealms.biomeapi", "net.momirealms.customnameplates.libraries.biomeapi")
+        relocate ("org.apache.commons.pool2", "net.momirealms.customnameplates.libraries.commonspool2")
+        relocate ("com.mysql", "net.momirealms.customnameplates.libraries.mysql")
+        relocate ("org.mariadb", "net.momirealms.customnameplates.libraries.mariadb")
+        relocate ("com.zaxxer.hikari", "net.momirealms.customnameplates.libraries.hikari")
+        relocate ("redis.clients.jedis", "net.momirealms.customnameplates.libraries.jedis")
+        relocate ("com.mongodb", "net.momirealms.customnameplates.libraries.mongodb")
+        relocate ("org.bson", "net.momirealms.customnameplates.libraries.bson")
+        relocate ("dev.jorel.commandapi", "net.momirealms.customnameplates.libraries.commandapi")
+        relocate ("dev.dejvokep.boostedyaml", "net.momirealms.customnameplates.libraries.boostedyaml")
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of helper, licensed under the MIT License.
+ * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
  *  Copyright (c) contributors
@@ -23,21 +23,26 @@
  *  SOFTWARE.
  */
 
-package net.momirealms.customnameplates.paper.helper;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.annotation.*;
+package net.momirealms.customnameplates.paper.libraries.dependencies;
 
 /**
- * Annotation to indicate the required libraries for a class.
+ * Exception thrown if a dependency cannot be downloaded.
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MavenLibraries {
+public class DependencyDownloadException extends Exception {
 
-    @NotNull
-    MavenLibrary[] value() default {};
+    public DependencyDownloadException() {
 
+    }
+
+    public DependencyDownloadException(String message) {
+        super(message);
+    }
+
+    public DependencyDownloadException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DependencyDownloadException(Throwable cause) {
+        super(cause);
+    }
 }

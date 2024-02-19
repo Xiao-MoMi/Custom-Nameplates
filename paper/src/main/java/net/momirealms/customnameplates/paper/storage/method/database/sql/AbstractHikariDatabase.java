@@ -75,7 +75,7 @@ public abstract class AbstractHikariDatabase extends AbstractSQLDatabase impleme
             return;
         }
 
-        super.tablePrefix = section.getString("table-prefix", "customfishing");
+        super.tablePrefix = section.getString("table-prefix", "nameplates");
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setUsername(section.getString("user", "root"));
         hikariConfig.setPassword(section.getString("password", "pa55w0rd"));

@@ -48,7 +48,7 @@ public class SchedulerImpl implements Scheduler {
     }
 
     /**
-     * Reloads the scheduler configuration based on CustomFishingPlugin settings.
+     * Reloads the scheduler configuration based on settings.
      */
     public void reload() {
         try {

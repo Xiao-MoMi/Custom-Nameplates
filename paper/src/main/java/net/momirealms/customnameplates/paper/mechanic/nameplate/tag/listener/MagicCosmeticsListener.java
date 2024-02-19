@@ -43,6 +43,7 @@ public class MagicCosmeticsListener implements Listener {
         if (cosmetic instanceof Hat hat) {
             if (unlimitedTagManager.getUnlimitedObject(player.getUniqueId()) instanceof UnlimitedPlayer unlimitedPlayer) {
                 unlimitedPlayer.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+                unlimitedPlayer.teleport();
             }
         }
     }
@@ -59,6 +60,7 @@ public class MagicCosmeticsListener implements Listener {
                     final Cosmetic cosmetic = playerData.getHat();
                     if (cosmetic instanceof Hat hat) {
                         unlimitedPlayer.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+                        unlimitedPlayer.teleport();
                     }
                 }
             }
@@ -72,6 +74,7 @@ public class MagicCosmeticsListener implements Listener {
         if (cosmetic instanceof Hat hat) {
             if (unlimitedTagManager.getUnlimitedObject(player.getUniqueId()) instanceof UnlimitedPlayer unlimitedPlayer) {
                 unlimitedPlayer.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+                unlimitedPlayer.teleport();
             }
         }
     }
@@ -82,6 +85,7 @@ public class MagicCosmeticsListener implements Listener {
         if (event.getCosmeticType() == CosmeticType.HAT) {
             if (unlimitedTagManager.getUnlimitedObject(player.getUniqueId()) instanceof UnlimitedPlayer unlimitedPlayer) {
                 unlimitedPlayer.setHatOffset(0);
+                unlimitedPlayer.teleport();
             }
         }
     }
@@ -92,6 +96,7 @@ public class MagicCosmeticsListener implements Listener {
             if (cosmetic instanceof Hat hat) {
                 if (unlimitedTagManager.getUnlimitedObject(event.getPlayerData().getUniqueId()) instanceof UnlimitedPlayer unlimitedPlayer) {
                     unlimitedPlayer.setHatOffset(hat.isHideCosmetic() ? 0 : hat.getOffSetY());
+                    unlimitedPlayer.teleport();
                 }
             }
         }

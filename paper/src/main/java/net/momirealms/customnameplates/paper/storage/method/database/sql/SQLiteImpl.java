@@ -51,7 +51,7 @@ public class SQLiteImpl extends AbstractSQLDatabase {
     public void initialize() {
         YamlConfiguration config = plugin.getConfig("database.yml");
         this.databaseFile = new File(plugin.getDataFolder(), config.getString("SQLite.file", "data") + ".db");
-        super.tablePrefix = config.getString("SQLite.table-prefix", "customfishing");
+        super.tablePrefix = config.getString("SQLite.table-prefix", "nameplates");
         super.createTableIfNotExist();
     }
 

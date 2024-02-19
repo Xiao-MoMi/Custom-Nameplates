@@ -1,5 +1,5 @@
 /*
- * This file is part of helper, licensed under the MIT License.
+ * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
  *  Copyright (c) contributors
@@ -23,23 +23,15 @@
  *  SOFTWARE.
  */
 
-package net.momirealms.customnameplates.paper.helper;
+package net.momirealms.customnameplates.paper.libraries.dependencies.relocation;
 
-import java.lang.annotation.*;
+public final class RelocationHelper {
 
-/**
- * Represents a maven repository.
- */
-@Documented
-@Target(ElementType.LOCAL_VARIABLE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Repository {
+    // screw maven shade
+    public static final String OKIO_STRING = String.valueOf(new char[]{'o', 'k', 'i', 'o'});
+    public static final String OKHTTP3_STRING = String.valueOf(new char[]{'o', 'k', 'h', 't', 't', 'p', '3'});
 
-    /**
-     * Gets the base url of the repository.
-     *
-     * @return the base url of the repository
-     */
-    String url();
+    private RelocationHelper() {
 
+    }
 }

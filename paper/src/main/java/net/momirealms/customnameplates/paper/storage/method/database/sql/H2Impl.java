@@ -19,19 +19,23 @@ package net.momirealms.customnameplates.paper.storage.method.database.sql;
 
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.StorageType;
+import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
+import net.momirealms.customnameplates.paper.libraries.dependencies.Dependency;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.h2.jdbcx.JdbcConnectionPool;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.EnumSet;
 
 /**
  * An implementation of AbstractSQLDatabase that uses the H2 embedded database for player data storage.
  */
 public class H2Impl extends AbstractSQLDatabase {
 
-    private JdbcConnectionPool connectionPool;
+    private Object connectionPool;
+    private Method disposeMethod;
+    private Method getConnectionMethod;
 
     public H2Impl(CustomNameplatesPlugin plugin) {
         super(plugin);
@@ -44,10 +48,20 @@ public class H2Impl extends AbstractSQLDatabase {
     public void initialize() {
         YamlConfiguration config = plugin.getConfig("database.yml");
         File databaseFile = new File(plugin.getDataFolder(), config.getString("H2.file", "data.db"));
-        super.tablePrefix = config.getString("H2.table-prefix", "customnameplates");
+        super.tablePrefix = config.getString("H2.table-prefix", "nameplates");
 
         final String url = String.format("jdbc:h2:%s", databaseFile.getAbsolutePath());
-        this.connectionPool = JdbcConnectionPool.create(url, "sa", "");
+        ClassLoader classLoader = ((CustomNameplatesPluginImpl) plugin).getDependencyManager().obtainClassLoaderWith(EnumSet.of(Dependency.H2_DRIVER));
+        try {
+            Class<?> connectionClass = classLoader.loadClass("org.h2.jdbcx.JdbcConnectionPool");
+            Method createPoolMethod = connectionClass.getMethod("create", String.class, String.class, String.class);
+            this.connectionPool = createPoolMethod.invoke(null, url, "sa", "");
+            this.disposeMethod = connectionClass.getMethod("dispose");
+            this.getConnectionMethod = connectionClass.getMethod("getConnection");
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+
         super.createTableIfNotExist();
     }
 
@@ -57,7 +71,11 @@ public class H2Impl extends AbstractSQLDatabase {
     @Override
     public void disable() {
         if (connectionPool != null) {
-            connectionPool.dispose();
+            try {
+                disposeMethod.invoke(connectionPool);
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -67,7 +85,11 @@ public class H2Impl extends AbstractSQLDatabase {
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
-        return connectionPool.getConnection();
+    public Connection getConnection() {
+        try {
+            return (Connection) getConnectionMethod.invoke(connectionPool);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

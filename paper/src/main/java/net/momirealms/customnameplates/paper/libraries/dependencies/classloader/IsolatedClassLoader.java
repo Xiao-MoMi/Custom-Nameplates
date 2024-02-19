@@ -1,5 +1,5 @@
 /*
- * This file is part of helper, licensed under the MIT License.
+ * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
  *  Copyright (c) contributors
@@ -23,51 +23,32 @@
  *  SOFTWARE.
  */
 
-package net.momirealms.customnameplates.paper.helper;
+package net.momirealms.customnameplates.paper.libraries.dependencies.classloader;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.annotation.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
- * Annotation to indicate a required library for a class.
+ * A classloader "isolated" from the rest of the Minecraft server.
+ *
+ * <p>Used to load specific LuckPerms dependencies without causing conflicts
+ * with other plugins, or libraries provided by the server implementation.</p>
  */
-@Documented
-@Repeatable(MavenLibraries.class)
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MavenLibrary {
+public class IsolatedClassLoader extends URLClassLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
 
-    /**
-     * The group id of the library
-     *
-     * @return the group id of the library
-     */
-    @NotNull
-    String groupId();
-
-    /**
-     * The artifact id of the library
-     *
-     * @return the artifact id of the library
-     */
-    @NotNull
-    String artifactId();
-
-    /**
-     * The version of the library
-     *
-     * @return the version of the library
-     */
-    @NotNull
-    String version();
-
-    /**
-     * The repo where the library can be obtained from
-     *
-     * @return the repo where the library can be obtained from
-     */
-    @NotNull
-    Repository repo() default @Repository(url = "https://repo1.maven.org/maven2");
+    public IsolatedClassLoader(URL[] urls) {
+        /*
+         * ClassLoader#getSystemClassLoader returns the AppClassLoader
+         *
+         * Calling #getParent on this returns the ExtClassLoader (Java 8) or
+         * the PlatformClassLoader (Java 9). Since we want this classloader to
+         * be isolated from the Minecraft server (the app), we set the parent
+         * to be the platform class loader.
+         */
+        super(urls, ClassLoader.getSystemClassLoader().getParent());
+    }
 
 }

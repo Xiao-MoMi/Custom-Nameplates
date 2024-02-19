@@ -1,5 +1,5 @@
 /*
- * This file is part of helper, licensed under the MIT License.
+ * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
  *  Copyright (c) contributors
@@ -23,11 +23,12 @@
  *  SOFTWARE.
  */
 
-package net.momirealms.customnameplates.paper.helper;
+package net.momirealms.customnameplates.paper.libraries.classpath;
 
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
@@ -43,8 +44,10 @@ public abstract class URLClassLoaderAccess {
      * @param classLoader the class loader
      * @return the access object
      */
-    static URLClassLoaderAccess create(URLClassLoader classLoader) {
-        if (Unsafe.isSupported()) {
+    public static URLClassLoaderAccess create(URLClassLoader classLoader) {
+        if (Reflection.isSupported()) {
+            return new Reflection(classLoader);
+        } else if (Unsafe.isSupported()) {
             return new Unsafe(classLoader);
         } else {
             return Noop.INSTANCE;
@@ -63,7 +66,48 @@ public abstract class URLClassLoaderAccess {
      *
      * @param url the URL to add
      */
-    public abstract void addURL(@NotNull URL url);
+    public abstract void addURL(@NonNull URL url);
+
+    private static void throwError(Throwable cause) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("LuckPerms is unable to inject into the plugin URLClassLoader.\n" +
+                "You may be able to fix this problem by adding the following command-line argument " +
+                "directly after the 'java' command in your start script: \n'--add-opens java.base/java.lang=ALL-UNNAMED'", cause);
+    }
+
+    /**
+     * Accesses using reflection, not supported on Java 9+.
+     */
+    private static class Reflection extends URLClassLoaderAccess {
+        private static final Method ADD_URL_METHOD;
+
+        static {
+            Method addUrlMethod;
+            try {
+                addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                addUrlMethod.setAccessible(true);
+            } catch (Exception e) {
+                addUrlMethod = null;
+            }
+            ADD_URL_METHOD = addUrlMethod;
+        }
+
+        private static boolean isSupported() {
+            return ADD_URL_METHOD != null;
+        }
+
+        Reflection(URLClassLoader classLoader) {
+            super(classLoader);
+        }
+
+        @Override
+        public void addURL(@NonNull URL url) {
+            try {
+                ADD_URL_METHOD.invoke(super.classLoader, url);
+            } catch (ReflectiveOperationException e) {
+                URLClassLoaderAccess.throwError(e);
+            }
+        }
+    }
 
     /**
      * Accesses using sun.misc.Unsafe, supported on Java 9+.
@@ -106,6 +150,7 @@ public abstract class URLClassLoaderAccess {
                 unopenedURLs = null;
                 pathURLs = null;
             }
+
             this.unopenedURLs = unopenedURLs;
             this.pathURLs = pathURLs;
         }
@@ -117,9 +162,15 @@ public abstract class URLClassLoaderAccess {
         }
 
         @Override
-        public void addURL(@NotNull URL url) {
-            this.unopenedURLs.add(url);
-            this.pathURLs.add(url);
+        public void addURL(@NonNull URL url) {
+            if (this.unopenedURLs == null || this.pathURLs == null) {
+                URLClassLoaderAccess.throwError(new NullPointerException("unopenedURLs or pathURLs"));
+            }
+
+            synchronized (this.unopenedURLs)  {
+                this.unopenedURLs.add(url);
+                this.pathURLs.add(url);
+            }
         }
     }
 
@@ -131,8 +182,8 @@ public abstract class URLClassLoaderAccess {
         }
 
         @Override
-        public void addURL(@NotNull URL url) {
-            throw new UnsupportedOperationException();
+        public void addURL(@NonNull URL url) {
+            URLClassLoaderAccess.throwError(null);
         }
     }
 
