@@ -214,7 +214,7 @@ public abstract class AbstractSQLDatabase extends AbstractStorage {
     public Set<UUID> getUniqueUsers(boolean legacy) {
         Set<UUID> uuids = new HashSet<>();
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(String.format(SqlConstants.SQL_SELECT_ALL_UUID, legacy ? getTableName("fishingbag") : getTableName("data")))) {
+             PreparedStatement statement = connection.prepareStatement(String.format(SqlConstants.SQL_SELECT_ALL_UUID, getTableName("data")))) {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     UUID uuid = UUID.fromString(rs.getString("uuid"));

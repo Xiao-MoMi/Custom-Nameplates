@@ -97,7 +97,6 @@ other-settings:
   # Thread pool settings
   thread-pool-settings:
     # The size of the core Thread pool, that is, the size of the Thread pool when there is no task to execute
-    # Increase the size of corePoolSize when you are running a large server with many players fishing at the same time
     corePoolSize: 10
     # The maximum number of threads allowed to be created in the Thread pool. The current number of threads in the Thread pool will not exceed this value
     maximumPoolSize: 10

@@ -1,5 +1,8 @@
+# namespace:font
 minecraft:default:
+  # default width
   default: 8
+  # available font data template: unifont/ascii/nonlatin_european/accented/unicode(legacy)
   template-loading-sequence:
     - unifont
     - nonlatin_european
