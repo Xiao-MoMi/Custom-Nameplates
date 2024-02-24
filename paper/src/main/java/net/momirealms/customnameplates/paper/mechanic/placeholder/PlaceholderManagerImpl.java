@@ -336,7 +336,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     entry.getKey(),
                     SwitchText.builder()
                             .toParse(Objects.requireNonNull(innerSection.getString("switch")))
-                            .defaultValue(innerSection.getString("default"))
+                            .defaultValue(innerSection.getString("default", ""))
                             .valueMap(valueMap)
                             .build()
             );

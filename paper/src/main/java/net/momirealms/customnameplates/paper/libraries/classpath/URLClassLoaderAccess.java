@@ -69,7 +69,7 @@ public abstract class URLClassLoaderAccess {
     public abstract void addURL(@NonNull URL url);
 
     private static void throwError(Throwable cause) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("LuckPerms is unable to inject into the plugin URLClassLoader.\n" +
+        throw new UnsupportedOperationException("CustomNameplates is unable to inject into the plugin URLClassLoader.\n" +
                 "You may be able to fix this problem by adding the following command-line argument " +
                 "directly after the 'java' command in your start script: \n'--add-opens java.base/java.lang=ALL-UNNAMED'", cause);
     }
