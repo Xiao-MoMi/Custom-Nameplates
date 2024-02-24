@@ -5,7 +5,7 @@
 ![bStats Players](https://img.shields.io/bstats/players/16649)
 ![GitHub](https://img.shields.io/github/license/Xiao-MoMi/Custom-Nameplates)
 [![](https://jitpack.io/v/Xiao-MoMi/Custom-Nameplates.svg)](https://jitpack.io/#Xiao-MoMi/Custom-Nameplates)
-<a href="https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/" alt="GitBook">
+<a href="https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates" alt="GitBook">
 <img src="https://img.shields.io/badge/docs-gitbook-brightgreen" alt="Gitbook"/>
 </a>
 
