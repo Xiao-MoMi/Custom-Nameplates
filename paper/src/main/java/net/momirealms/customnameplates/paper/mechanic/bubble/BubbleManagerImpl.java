@@ -41,6 +41,7 @@ import net.momirealms.customnameplates.paper.mechanic.bubble.image.ItemsAdderIma
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.OraxenImageImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -256,6 +257,10 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
                 || player.hasPotionEffect(PotionEffectType.INVISIBILITY)
                 || !player.hasPermission("bubbles.use")
         ) return;
+
+        if (CNConfig.hasLibsDisguise && DisguiseUtils.isDisguised(player)) {
+            return;
+        }
 
         if (Bukkit.isPrimaryThread()) {
             String finalText = text;

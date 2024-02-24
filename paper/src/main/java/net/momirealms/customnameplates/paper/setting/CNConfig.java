@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.mechanic.bossbar.BarColor;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -85,6 +86,7 @@ public class CNConfig {
     public static boolean enableShader;
     public static boolean huskChatChannel;
     public static boolean carbonChatChannel;
+    public static boolean hasLibsDisguise;
 
     public static void load() {
         try {
@@ -176,6 +178,8 @@ public class CNConfig {
 
         legacyColorSupport = config.getBoolean("other-settings.legacy-color-code-support");
         createRealTeam = config.getBoolean("other-settings.create-real-teams", false);
+
+        hasLibsDisguise = Bukkit.getPluginManager().getPlugin("LibsDisguises") != null;
     }
 
     public static boolean isOtherTeamPluginHooked() {

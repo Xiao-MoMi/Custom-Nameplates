@@ -27,8 +27,10 @@ import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.Pair;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.mechanic.requirement.papi.PapiCondition;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.ClassUtils;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
+import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import net.momirealms.customnameplates.paper.util.GeyserUtils;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -123,6 +125,7 @@ public class RequirementManagerImpl implements RequirementManager {
         this.registerInListRequirement();
         this.registerGameModeRequirement();
         this.registerGeyserRequirement();
+        this.registerDisguisedRequirement();
     }
 
     /**
@@ -299,6 +302,20 @@ public class RequirementManagerImpl implements RequirementManager {
                     return GeyserUtils.isBedrockPlayer(condition.getOfflinePlayer().getUniqueId());
                 } else {
                     return !GeyserUtils.isBedrockPlayer(condition.getOfflinePlayer().getUniqueId());
+                }
+            };
+        });
+    }
+
+    private void registerDisguisedRequirement() {
+        registerRequirement("self-disguised", (args) -> {
+            boolean arg = (boolean) args;
+            return condition -> {
+                if (!CNConfig.hasLibsDisguise) return true;
+                if (arg) {
+                    return DisguiseUtils.isDisguised(condition.getOfflinePlayer().getPlayer());
+                } else {
+                    return !DisguiseUtils.isDisguised(condition.getOfflinePlayer().getPlayer());
                 }
             };
         });

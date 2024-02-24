@@ -33,6 +33,7 @@ unlimited:
     # Conditions (Owner side)
     owner-conditions:
       potion-effect: "INVISIBILITY<0"
+      self-disguised: false  # Requires LibsDisguises
     # Conditions (Viewer side)
     viewer-conditions: { }
   tag_2:
@@ -42,6 +43,7 @@ unlimited:
     check-frequency: 20    # Decides the frequency of the condition check
     owner-conditions:
       potion-effect: "INVISIBILITY<0"
+      self-disguised: false
     viewer-conditions:
       condition_1:
         type: permission

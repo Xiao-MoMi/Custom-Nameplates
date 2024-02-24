@@ -37,6 +37,7 @@ dependencies {
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.5")
     compileOnly("commons-io:commons-io:2.15.1")
     compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
+    compileOnly("LibsDisguises:LibsDisguises:10.0.42")
 
     // chat channels
     compileOnly(files("libs/VentureChat-3.7.1.jar"))

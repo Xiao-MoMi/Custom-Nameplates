@@ -174,6 +174,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         if (spawned == null) return;
         UnlimitedEntity unlimitedEntity = getUnlimitedObject(spawned.getUniqueId());
         if (unlimitedEntity == null) return;
+        if (receiver == spawned) return;
         unlimitedEntity.addNearbyPlayerNaturally(receiver);
     }
 

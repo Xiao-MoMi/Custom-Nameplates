@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
 
-    version = "2.3.3.0"
+    version = "2.3.3.1"
 
     apply<JavaPlugin>()
     apply(plugin = "java")
@@ -44,6 +44,7 @@ allprojects {
         maven("https://repo.oraxen.com/releases/")
         maven("https://nexus.codecrafter47.de/content/repositories/public/")
         maven("https://repo.opencollab.dev/main/")
+        maven("https://repo.md-5.net/content/groups/public/")
     }
 }
 
