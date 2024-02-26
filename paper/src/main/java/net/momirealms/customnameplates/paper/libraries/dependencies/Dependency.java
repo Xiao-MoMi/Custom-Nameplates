@@ -279,7 +279,7 @@ public enum Dependency {
     COMMONS_POOL_2(
             "org{}apache{}commons",
             "commons-pool2",
-            "2.11.0",
+            "2.12.0",
             null,
             "commons-pool2",
             Relocation.of("commonspool2", "org{}apache{}commons{}pool2")

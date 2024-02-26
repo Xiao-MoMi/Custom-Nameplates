@@ -134,7 +134,7 @@ public class RedisManager extends AbstractStorage {
      * @param message The message to send.
      */
     public void sendRedisMessage(@NotNull String channel, @NotNull String message) {
-        try (Jedis jedis = jedisPool.getResource()) {
+        try (Jedis jedis = getJedis()) {
             jedis.publish(channel, message);
             plugin.debug("Sent Redis message: " + message);
         }
@@ -149,7 +149,7 @@ public class RedisManager extends AbstractStorage {
     public CompletableFuture<Optional<PlayerData>> getPlayerData(UUID uuid) {
         var future = new CompletableFuture<Optional<PlayerData>>();
         plugin.getScheduler().runTaskAsync(() -> {
-        try (Jedis jedis = jedisPool.getResource()) {
+        try (Jedis jedis = getJedis()) {
             byte[] key = getRedisKey("cn_data", uuid);
             byte[] data = jedis.get(key);
             if (data != null) {
@@ -171,7 +171,7 @@ public class RedisManager extends AbstractStorage {
     public CompletableFuture<Boolean> updatePlayerData(UUID uuid, PlayerData playerData) {
         var future = new CompletableFuture<Boolean>();
         plugin.getScheduler().runTaskAsync(() -> {
-        try (Jedis jedis = jedisPool.getResource()) {
+        try (Jedis jedis = getJedis()) {
             jedis.setex(
                     getRedisKey("cn_data", uuid),
                     600,
