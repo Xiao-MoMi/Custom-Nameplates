@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.api.manager;
 
 import net.momirealms.customnameplates.api.mechanic.tag.team.TeamTagPlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -32,7 +33,7 @@ public interface TeamTagManager {
      *
      * @return team tag
      */
-    @Nullable
+    @NotNull
     TeamTagPlayer createTagForPlayer(Player player, String prefix, String suffix);
 
     /**

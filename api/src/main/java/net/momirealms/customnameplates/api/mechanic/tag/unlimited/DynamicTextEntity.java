@@ -49,6 +49,8 @@ public interface DynamicTextEntity {
 
     void setSneak(boolean sneaking, boolean respawn);
 
+    void updateVisibility();
+
     void removePlayerFromViewers(Player player);
 
     void addPlayerToViewers(Player player);

@@ -30,12 +30,13 @@ public class EntityDestroyListener extends PacketAdapter {
     private final NameplateManagerImpl manager;
 
     public EntityDestroyListener(NameplateManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGH, PacketType.Play.Server.ENTITY_DESTROY);
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.ENTITY_DESTROY);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         manager.onEntityDestroy(event.getPlayer(), packet.getIntLists().read(0));
     }

@@ -51,10 +51,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPoseChangeEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -80,6 +83,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     private final EntityMoveListener entityMoveListener;
     private final EntityLookListener entityLookListener;
     private final EntityTeleportListener entityTeleportListener;
+    private final EntityAddEffectListener entityAddEffectListener;
+    private final EntityRemoveEffectListener entityRemoveEffectListener;
 
     /**
      * Configs
@@ -112,6 +117,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         this.entitySpawnListener = new EntitySpawnListener(this);
         this.entityLookListener = new EntityLookListener(this);
         this.entityMoveListener = new EntityMoveListener(this);
+        this.entityAddEffectListener = new EntityAddEffectListener(this);
+        this.entityRemoveEffectListener = new EntityRemoveEffectListener(this);
     }
 
     public void reload() {
@@ -134,6 +141,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         ProtocolLibrary.getProtocolManager().removePacketListener(entityLookListener);
         ProtocolLibrary.getProtocolManager().removePacketListener(entityMoveListener);
         ProtocolLibrary.getProtocolManager().removePacketListener(entityTeleportListener);
+        ProtocolLibrary.getProtocolManager().removePacketListener(entityAddEffectListener);
+        ProtocolLibrary.getProtocolManager().removePacketListener(entityRemoveEffectListener);
     }
 
     public void disable() {
@@ -150,6 +159,8 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         ProtocolLibrary.getProtocolManager().addPacketListener(entityLookListener);
         ProtocolLibrary.getProtocolManager().addPacketListener(entityMoveListener);
         ProtocolLibrary.getProtocolManager().addPacketListener(entityTeleportListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityAddEffectListener);
+        ProtocolLibrary.getProtocolManager().addPacketListener(entityRemoveEffectListener);
 
         if (!CNConfig.nameplateModule) return;
         this.loadConfig();
@@ -285,8 +296,12 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // unlimited part
         var player = event.getPlayer();
+        handlePlayerJoin(player);
+    }
+
+    @Override
+    public void handlePlayerJoin(Player player) {
         this.putEntityIDToMap(player.getEntityId(), player);
 
         // nameplate module part
@@ -297,14 +312,18 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             plugin.getScheduler().runTaskAsyncLater(() -> {
                 if (player.isOnline())
                     this.createNameTag(player);
-            }, 200, TimeUnit.MILLISECONDS);
+            }, 100, TimeUnit.MILLISECONDS);
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        // unlimited part
         var player = event.getPlayer();
+        handlePlayerQuit(player);
+    }
+
+    @Override
+    public void handlePlayerQuit(Player player) {
         this.removeEntityIDFromMap(player.getEntityId());
         this.teamTagManager.handlePlayerQuit(player);
         this.unlimitedTagManager.handlePlayerQuit(player);
@@ -328,6 +347,17 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public void onChangePose(EntityPoseChangeEvent event) {
         if (event.getEntity() instanceof Player player) {
             unlimitedTagManager.handlePlayerPose(player, event.getPose());
+        }
+    }
+
+    // TODO: Potion effect packet seems to be only sent to the player who has effect,
+    //  it might be something related to metadata. Using BukkitAPI is not the best choice
+    //  since it might conflict with some potion plugins that based on packets
+    @EventHandler (ignoreCancelled = true)
+    public void onPotionEffectChange(EntityPotionEffectEvent event) {
+        if (event.getModifiedType() == PotionEffectType.INVISIBILITY) {
+            unlimitedTagManager.handlePotionEffect(event.getEntity(),
+                    event.getAction() == EntityPotionEffectEvent.Action.REMOVED || event.getAction() == EntityPotionEffectEvent.Action.CLEARED);
         }
     }
 
@@ -590,7 +620,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         return tagMode;
     }
 
-    @NotNull
+    @Nullable
     @Override
     public Nameplate getNameplate(@NotNull String key) {
         return nameplateMap.get(key);
@@ -660,4 +690,12 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     public void onEntityTeleport(Player receiver, int entityID, double x, double y, double z, boolean onGround) {
         unlimitedTagManager.handleEntityTeleportPacket(receiver, entityID, x, y, z, onGround);
     }
+
+//    public void onEntityRemoveEffect(Player player, int entityID) {
+//        unlimitedTagManager.handlePotionEffect(player, entityID,true);
+//    }
+//
+//    public void onEntityAddEffect(Player player, int entityID) {
+//        unlimitedTagManager.handlePotionEffect(player, entityID,false);
+//    }
 }

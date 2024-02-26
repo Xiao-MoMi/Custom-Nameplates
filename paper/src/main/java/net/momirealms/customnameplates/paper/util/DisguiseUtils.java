@@ -18,11 +18,16 @@
 package net.momirealms.customnameplates.paper.util;
 
 import me.libraryaddict.disguise.DisguiseAPI;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 public class DisguiseUtils {
 
-    public static boolean isDisguised(Player player) {
-        return DisguiseAPI.isSelfDisguised(player);
+    public static boolean isDisguised(Entity entity) {
+        return DisguiseAPI.isDisguised(entity);
+    }
+
+    public static EntityType getDisguisedType(Entity entity) {
+        return DisguiseAPI.getDisguise(entity).getType().getEntityType();
     }
 }

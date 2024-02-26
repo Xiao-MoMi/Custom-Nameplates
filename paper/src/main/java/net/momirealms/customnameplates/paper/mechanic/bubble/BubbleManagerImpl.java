@@ -18,20 +18,24 @@
 package net.momirealms.customnameplates.paper.mechanic.bubble;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.libraryaddict.disguise.DisguiseAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.OnlineUser;
 import net.momirealms.customnameplates.api.event.BubblesSpawnEvent;
 import net.momirealms.customnameplates.api.event.NameplateDataLoadEvent;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
+import net.momirealms.customnameplates.api.manager.RequirementManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.Bubble;
 import net.momirealms.customnameplates.api.mechanic.bubble.ChannelMode;
 import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import net.momirealms.customnameplates.api.mechanic.character.CharacterArranger;
 import net.momirealms.customnameplates.api.mechanic.character.ConfiguredChar;
-import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagPlayer;
+import net.momirealms.customnameplates.api.mechanic.tag.unlimited.EntityTagEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextTagSetting;
+import net.momirealms.customnameplates.api.requirement.Condition;
+import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.FontUtils;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
@@ -43,18 +47,19 @@ import net.momirealms.customnameplates.paper.mechanic.bubble.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +84,7 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
     private int subStringIndex;
     private String[] blacklistChannels;
     private ChannelMode channelMode;
+    private Requirement[] requirements;
 
     public BubbleManagerImpl(CustomNameplatesPluginImpl plugin) {
         this.plugin = plugin;
@@ -108,6 +114,7 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
 
     private void loadConfig() {
         YamlConfiguration config = plugin.getConfig("configs"  + File.separator + "bubble.yml");
+        updateConfigFile(config);
         defaultBubble = config.getString("default-bubbles", "chat");
         prefix = config.getString("text-prefix", "");
         suffix = config.getString("text-suffix", "");
@@ -122,6 +129,22 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
         startFormat = config.getString("default-format.start", "<gradient:#F5F5F5:#E1FFFF:#F5F5F5><u>");
         endFormat = config.getString("default-format.end", "<!u></gradient>");
         channelMode = ChannelMode.valueOf(config.getString("channel-mode","all").toUpperCase(Locale.ENGLISH));
+        requirements = plugin.getRequirementManager().getRequirements(config.getConfigurationSection("requirements"));
+    }
+
+    private void updateConfigFile(YamlConfiguration config) {
+        try {
+            if (!config.contains("requirements")) {
+                ConfigurationSection section = config.createSection("requirements");
+                section.set("!gamemode", "spectator");
+                section.set("permission", "bubbles.use");
+                section.set("self-disguised", false);
+                section.set("potion-effect", "INVISIBILITY<0");
+                config.save(new File(plugin.getDataFolder(), "configs"  + File.separator + "bubble.yml"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registerImageParser() {
@@ -253,12 +276,7 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
 
     @Override
     public void onChat(Player player, String text, String channel) {
-        if (        player.getGameMode() == GameMode.SPECTATOR
-                || player.hasPotionEffect(PotionEffectType.INVISIBILITY)
-                || !player.hasPermission("bubbles.use")
-        ) return;
-
-        if (CNConfig.hasLibsDisguise && DisguiseUtils.isDisguised(player)) {
+        if (!RequirementManager.isRequirementMet(new Condition(player), requirements)) {
             return;
         }
 
@@ -327,11 +345,12 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
             int width = FontUtils.getTextWidth(text);
             text = bubbleConfig.getPrefixWithFont(width) + text + bubbleConfig.getSuffixWithFont(width);
         }
-        EntityTagPlayer tagPlayer = plugin.getNameplateManager().getUnlimitedTagManager().createOrGetTagForPlayer(player);
-        if (tagPlayer == null)
+
+        EntityTagEntity tagEntity = plugin.getNameplateManager().getUnlimitedTagManager().createOrGetTagForEntity(player);
+        if (tagEntity == null)
             return;
 
-        StaticTextEntity entity = tagPlayer.addTag(StaticTextTagSetting.builder()
+        StaticTextEntity entity = tagEntity.addTag(StaticTextTagSetting.builder()
                 .leaveRule((p, e) -> true)
                 .comeRule((p, e) -> {
                     switch (channelMode) {
@@ -352,14 +371,14 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
                 .plugin("bubble")
                 .build());
 
-        for (StaticTextEntity bubble : tagPlayer.getStaticTags()) {
+        for (StaticTextEntity bubble : tagEntity.getStaticTags()) {
             if (bubble.getPlugin().equals("bubble")) {
                 bubble.setOffset(bubble.getOffset() + lineSpace);
             }
         }
 
         plugin.getScheduler().runTaskAsyncLater(() -> {
-            tagPlayer.removeTag(entity);
+            tagEntity.removeTag(entity);
         }, stayTime, TimeUnit.SECONDS);
     }
 

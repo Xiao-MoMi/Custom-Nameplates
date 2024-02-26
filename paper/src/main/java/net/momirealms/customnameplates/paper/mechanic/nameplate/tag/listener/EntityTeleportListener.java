@@ -30,12 +30,13 @@ public class EntityTeleportListener extends PacketAdapter {
     private final NameplateManagerImpl manager;
 
     public EntityTeleportListener(NameplateManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.ENTITY_TELEPORT);
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.ENTITY_TELEPORT);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         manager.onEntityTeleport(
                 event.getPlayer(),

@@ -25,8 +25,11 @@ import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.MagicCosmeticsListener;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.HandlerList;
@@ -126,6 +129,10 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
 
     @Override
     public UnlimitedEntity createOrGetTagForEntity(Entity entity) {
+        if (entity instanceof Player player) {
+            return createOrGetTagForPlayer(player);
+        }
+
         final UUID uuid = entity.getUniqueId();
         if (this.unlimitedEntityMap.containsKey(uuid)) {
             return this.unlimitedEntityMap.get(uuid);
@@ -167,6 +174,15 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     @Nullable
     public UnlimitedEntity getUnlimitedObject(UUID uuid) {
         return unlimitedEntityMap.get(uuid);
+    }
+
+    public void handlePotionEffect(Entity entity, boolean visible) {
+        UnlimitedEntity unlimitedEntity = getUnlimitedObject(entity.getUniqueId());
+        if (unlimitedEntity == null) return;
+        unlimitedEntity.setVisibility(visible);
+        if (unlimitedEntity instanceof UnlimitedPlayer unlimitedPlayer) {
+            CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(unlimitedPlayer::updateVisibility, 50, TimeUnit.MILLISECONDS);
+        }
     }
 
     public void handleEntitySpawnPacket(Player receiver, int entityId) {
@@ -228,6 +244,14 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     public void handlePlayerSneak(Player sneaker, boolean sneaking, boolean flying) {
         UnlimitedEntity unlimitedEntity = getUnlimitedObject(sneaker.getUniqueId());
         if (!(unlimitedEntity instanceof UnlimitedPlayer unlimitedPlayer)) return;
+        if (    sneaking
+                && CNConfig.hasLibsDisguise
+                && DisguiseUtils.isDisguised(sneaker)
+                && DisguiseUtils.getDisguisedType(sneaker) != EntityType.PLAYER
+        ) {
+            // disguised entities would not sneak
+            return;
+        }
         unlimitedPlayer.sneak(sneaking, flying);
     }
 }

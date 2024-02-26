@@ -30,12 +30,13 @@ public class EntityLookListener extends PacketAdapter {
     private final NameplateManagerImpl manager;
 
     public EntityLookListener(NameplateManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.REL_ENTITY_MOVE_LOOK);
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.REL_ENTITY_MOVE_LOOK);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         manager.onEntityMove(event.getPlayer(),
                 packet.getIntegers().read(0),

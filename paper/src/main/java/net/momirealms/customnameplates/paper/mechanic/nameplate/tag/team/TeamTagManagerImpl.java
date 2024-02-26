@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.Pla
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -84,11 +85,12 @@ public class TeamTagManagerImpl implements TeamTagManager {
         ProtocolLibrary.getProtocolManager().removePacketListener(tabListener);
     }
 
+    @NotNull
     @Override
     @SuppressWarnings("DuplicatedCode")
     public TeamPlayer createTagForPlayer(Player player, String prefix, String suffix) {
         if (this.teamPlayerMap.containsKey(player.getUniqueId())) {
-            return null;
+            return this.teamPlayerMap.get(player.getUniqueId());
         }
 
         var teamPlayer = new TeamPlayer(this, player, prefix, suffix);

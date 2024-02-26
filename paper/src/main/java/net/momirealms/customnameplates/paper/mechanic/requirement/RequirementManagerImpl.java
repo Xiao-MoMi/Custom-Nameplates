@@ -34,6 +34,7 @@ import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import net.momirealms.customnameplates.paper.util.GeyserUtils;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -126,6 +127,7 @@ public class RequirementManagerImpl implements RequirementManager {
         this.registerGameModeRequirement();
         this.registerGeyserRequirement();
         this.registerDisguisedRequirement();
+        this.registerDisguisedTypeRequirement();
     }
 
     /**
@@ -334,6 +336,27 @@ public class RequirementManagerImpl implements RequirementManager {
             return condition -> {
                 String currentBiome = BiomeAPI.getBiome(Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getLocation());
                 return !biomes.contains(currentBiome);
+            };
+        });
+    }
+
+    private void registerDisguisedTypeRequirement() {
+        registerRequirement("disguised-type", (args) -> {
+            HashSet<String> types = new HashSet<>(ConfigUtils.stringListArgs(args));
+            return condition -> {
+                if (!CNConfig.hasLibsDisguise) return true;
+                Player player = condition.getOfflinePlayer().getPlayer();
+                if (!DisguiseUtils.isDisguised(player)) return false;
+                return types.contains(DisguiseUtils.getDisguisedType(player).name());
+            };
+        });
+        registerRequirement("!disguised-type", (args) -> {
+            HashSet<String> types = new HashSet<>(ConfigUtils.stringListArgs(args));
+            return condition -> {
+                if (!CNConfig.hasLibsDisguise) return true;
+                Player player = condition.getOfflinePlayer().getPlayer();
+                if (!DisguiseUtils.isDisguised(player)) return false;
+                return !types.contains(DisguiseUtils.getDisguisedType(player).name());
             };
         });
     }

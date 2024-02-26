@@ -20,30 +20,25 @@ package net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.NameplateManagerImpl;
 
-public class EntityMoveListener extends PacketAdapter {
+public class EntityRemoveEffectListener extends PacketAdapter {
 
     private final NameplateManagerImpl manager;
 
-    public EntityMoveListener(NameplateManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.REL_ENTITY_MOVE);
+    public EntityRemoveEffectListener(NameplateManagerImpl manager) {
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.REMOVE_ENTITY_EFFECT);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        if (event.isCancelled()) return;
-        PacketContainer packet = event.getPacket();
-        manager.onEntityMove(event.getPlayer(),
-                packet.getIntegers().read(0),
-                packet.getShorts().read(0),
-                packet.getShorts().read(1),
-                packet.getShorts().read(2),
-                packet.getBooleans().read(0)
-        );
+//        if (event.isCancelled()) return;
+//        PacketContainer packet = event.getPacket();
+//        if (packet.getEffectTypes().read(0) == PotionEffectType.INVISIBILITY) {
+//            manager.onEntityRemoveEffect(event.getPlayer(), packet.getIntegers().read(0));
+//        }
     }
 }

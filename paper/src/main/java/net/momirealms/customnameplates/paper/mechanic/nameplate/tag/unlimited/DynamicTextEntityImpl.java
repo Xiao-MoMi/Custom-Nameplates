@@ -47,6 +47,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     private final Requirement[] ownerRequirements;
     private final Requirement[] viewerRequirements;
     private final Vector<Player> viewers;
+    private Player[] viewerArray;
     private final int refreshFrequency;
     private final int checkFrequency;
     private int checkTimer;
@@ -71,10 +72,11 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         this.viewerRequirements = viewerRequirements;
         this.checkFrequency = checkFrequency;
         this.refreshFrequency = refreshFrequency;
-        this.viewers = new Vector<>();
         this.ownerCanShow = RequirementManager.isRequirementMet(new Condition(owner.getPlayer()), ownerRequirements);
         this.destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         this.destroyPacket.getIntLists().write(0, List.of(entityId));
+        this.viewers = new Vector<>();
+        this.viewersToArray();
     }
 
     @Override
@@ -116,21 +118,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         checkTimer++;
         if (checkTimer >= checkFrequency) {
             checkTimer = 0;
-            if (!RequirementManager.isRequirementMet(new Condition(owner.getPlayer()), ownerRequirements)) {
-                ownerCanShow = false;
-                for (Player all : owner.getNearbyPlayers()) {
-                    removePlayerFromViewers(all);
-                }
-            } else {
-                ownerCanShow = true;
-                for (Player all : owner.getNearbyPlayers()) {
-                    if (canSee(all)) {
-                        addPlayerToViewers(all);
-                    } else {
-                        removePlayerFromViewers(all);
-                    }
-                }
-            }
+            updateVisibility();
         }
 
         refreshTimer++;
@@ -142,11 +130,31 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     }
 
     @Override
+    public void updateVisibility() {
+        if (!RequirementManager.isRequirementMet(new Condition(owner.getPlayer()), ownerRequirements)) {
+            ownerCanShow = false;
+            for (Player all : owner.getNearbyPlayers()) {
+                removePlayerFromViewers(all);
+            }
+        } else {
+            ownerCanShow = true;
+            for (Player all : owner.getNearbyPlayers()) {
+                if (canSee(all)) {
+                    addPlayerToViewers(all);
+                } else {
+                    removePlayerFromViewers(all);
+                }
+            }
+        }
+    }
+
+    @Override
     public void removePlayerFromViewers(Player player) {
         if (!viewers.contains(player)) {
             return;
         }
         this.viewers.remove(player);
+        viewersToArray();
         destroy(player);
     }
 
@@ -156,6 +164,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
             return;
         }
         this.viewers.add(player);
+        viewersToArray();
         spawn(player, owner.getPlayer().getPose());
     }
 
@@ -168,7 +177,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     public void setOffset(double offset) {
         if (yOffset == offset) return;
         yOffset = offset;
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, getTeleportPacket(0));
         }
     }
@@ -187,18 +196,19 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
 
     @Override
     public void spawn(Pose pose) {
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             spawn(all, pose);
         }
     }
 
     @Override
     public void destroy() {
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, destroyPacket);
         }
         viewerText.clear();
         viewers.clear();
+        viewersToArray();
     }
 
     @Override
@@ -210,15 +220,15 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     @Override
     public void teleport(double x, double y, double z, boolean onGround) {
         PacketContainer packet = getTeleportPacket(x, y, z, onGround);
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, packet);
         }
     }
 
     @Override
     public void teleport() {
-        PacketContainer packet = getTeleportPacket(getCorrection(owner.getPlayer().getPose()));
-        for (Player viewer : viewers) {
+        PacketContainer packet = getTeleportPacket(getPlayerHeight());
+        for (Player viewer : viewerArray) {
             PacketManager.getInstance().send(viewer, packet);
         }
     }
@@ -233,7 +243,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     @Override
     public void setSneak(boolean isSneaking, boolean onGround) {
         if (!onGround) {
-            for (Player viewer : viewers) {
+            for (Player viewer : viewerArray) {
                 PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, viewerText.getLatestValue(viewer), isSneaking));
             }
         }
@@ -247,7 +257,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     @Override
     public void move(short x, short y, short z, boolean onGround) {
         PacketContainer packet = getMovePacket(x, y, z, onGround);
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             PacketManager.getInstance().send(viewer, packet);
         }
     }
@@ -268,14 +278,14 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
 
     @Override
     public void respawn(Pose pose) {
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             respawn(viewer, pose);
         }
     }
 
     @Override
     public void updateText() {
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             updateText(viewer);
         }
     }
@@ -296,7 +306,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     public void handlePose(Pose previous, Pose pose) {
         // Add delay to prevent the tag from appearing earlier
         CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
-            for (Player viewer : viewers) {
+            for (Player viewer : viewerArray) {
                 respawn(viewer, pose);
             }
         }, 20, TimeUnit.MILLISECONDS);
@@ -316,7 +326,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
         packet.getIntegers().write(0, entityId);
         packet.getDoubles().write(0, x);
-        packet.getDoubles().write(1, y + owner.getHatOffset() + getCorrection(owner.getPlayer().getPose()) + yOffset);
+        packet.getDoubles().write(1, y + owner.getHatOffset() + getPlayerHeight() + yOffset);
         packet.getDoubles().write(2, z);
         packet.getBooleans().write(0, onGround);
         return packet;
@@ -332,14 +342,14 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         return packet;
     }
 
-    private Location getEntityLocation(double correction) {
+    private Location getEntityLocation(double playerHeight) {
         var player = owner.getPlayer();
         double x = player.getLocation().getX();
         double y = player.getLocation().getY();
         double z = player.getLocation().getZ();
         y += yOffset;
         y += owner.getHatOffset();
-        y += correction;
+        y += playerHeight;
         return new Location(null, x, y, z);
     }
 
@@ -348,7 +358,7 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         entityPacket.getModifier().write(0, entityId);
         entityPacket.getModifier().write(1, uuid);
         entityPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
-        Location location = getEntityLocation(getCorrection(pose));
+        Location location = getEntityLocation(getPlayerHeight());
         entityPacket.getDoubles().write(0, location.getX());
         entityPacket.getDoubles().write(1, location.getY());
         entityPacket.getDoubles().write(2, location.getZ());
@@ -356,13 +366,11 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
         return new PacketContainer[] {entityPacket, metaPacket};
     }
 
-    private double getCorrection(Pose pose) {
-        return switch (pose) {
-            case STANDING -> 1.8;
-            case SNEAKING -> 1.5;
-            case SLEEPING -> 0.2;
-            case SWIMMING, FALL_FLYING, SPIN_ATTACK -> 0.55;
-            default -> 0;
-        };
+    private double getPlayerHeight() {
+        return owner.getPlayer().getHeight();
+    }
+
+    private void viewersToArray() {
+        viewerArray = viewers.toArray(new Player[0]);
     }
 }

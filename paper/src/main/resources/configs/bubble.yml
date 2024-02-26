@@ -1,3 +1,10 @@
+# Requirements for sending the bubble
+requirements:
+  permission: bubbles.use
+  self-disguised: false
+  '!gamemode': spectator
+  potion-effect: "INVISIBILITY<0"
+
 # blacklist channels
 blacklist-channels:
   - Private

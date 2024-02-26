@@ -29,12 +29,13 @@ public class EntitySpawnListener extends PacketAdapter {
     private final NameplateManagerImpl manager;
 
     public EntitySpawnListener(NameplateManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGH, CustomNameplatesPlugin.getInstance().getVersionManager().isVersionNewerThan1_20_R2() ? PacketType.Play.Server.SPAWN_ENTITY : PacketType.Play.Server.NAMED_ENTITY_SPAWN);
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, CustomNameplatesPlugin.getInstance().getVersionManager().isVersionNewerThan1_20_R2() ? PacketType.Play.Server.SPAWN_ENTITY : PacketType.Play.Server.NAMED_ENTITY_SPAWN);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        if (event.isCancelled()) return;
         manager.onEntitySpawn(event.getPlayer(), event.getPacket().getIntegers().read(0));
     }
 }

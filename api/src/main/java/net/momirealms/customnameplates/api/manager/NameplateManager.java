@@ -39,6 +39,10 @@ public interface NameplateManager {
     @NotNull
     String getDefaultNameplate();
 
+    void handlePlayerJoin(Player player);
+
+    void handlePlayerQuit(Player player);
+
     /**
      * Put an entity's ID to map
      * This map is used for quickly getting the entity instance
@@ -241,7 +245,7 @@ public interface NameplateManager {
      * @param key key
      * @return nameplate
      */
-    @NotNull
+    @Nullable
     Nameplate getNameplate(@NotNull String key);
 
     /**

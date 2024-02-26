@@ -42,6 +42,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     private double yOffset;
     private final int entityId;
     private final Vector<Player> viewers;
+    private Player[] viewerArray;
     private final ConcurrentHashMap<UUID, String> textCache;
     private final NearbyRule comeRule;
     private final NearbyRule leaveRule;
@@ -68,6 +69,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         this.plugin = plugin;
         this.destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         this.destroyPacket.getIntLists().write(0, List.of(entityId));
+        this.viewersToArray();
     }
 
     @Override
@@ -109,6 +111,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
             return;
         }
         this.viewers.remove(player);
+        viewersToArray();
         destroy(player);
     }
 
@@ -118,6 +121,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
             return;
         }
         this.viewers.add(player);
+        viewersToArray();
         spawn(player, owner.getEntity().getPose());
     }
 
@@ -130,7 +134,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     public void setOffset(double offset) {
         if (yOffset == offset) return;
         yOffset = offset;
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, getTeleportPacket());
         }
     }
@@ -139,7 +143,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     public void setText(String text) {
         if (text.equals(defaultText)) return;
         this.defaultText = text;
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, getText(viewer), owner.getEntity().isSneaking()));
         }
     }
@@ -174,11 +178,12 @@ public class StaticTextEntityImpl implements StaticTextEntity {
 
     @Override
     public void destroy() {
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, destroyPacket);
         }
         viewers.clear();
         textCache.clear();
+        viewersToArray();
     }
 
     @Override
@@ -190,7 +195,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     @Override
     public void teleport(double x, double y, double z, boolean onGround) {
         PacketContainer packet = getTeleportPacket(x, y, z, onGround);
-        for (Player all : viewers) {
+        for (Player all : viewerArray) {
             PacketManager.getInstance().send(all, packet);
         }
     }
@@ -205,7 +210,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     @Override
     public void teleport() {
         PacketContainer packet = getTeleportPacket();
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             PacketManager.getInstance().send(viewer, packet);
         }
     }
@@ -218,7 +223,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     @Override
     public void move(short x, short y, short z, boolean onGround) {
         PacketContainer packet = getMovePacket(x, y, z, onGround);
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             PacketManager.getInstance().send(viewer, packet);
         }
     }
@@ -239,7 +244,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
 
     @Override
     public void respawn(Pose pose) {
-        for (Player viewer : viewers) {
+        for (Player viewer : viewerArray) {
             respawn(viewer, pose);
         }
     }
@@ -253,10 +258,19 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     public void handlePose(Pose previous, Pose pose) {
         // Add delay to prevent the tag from appearing earlier
         CustomNameplatesPlugin.get().getScheduler().runTaskAsyncLater(() -> {
-            for (Player viewer : viewers) {
+            for (Player viewer : viewerArray) {
                 respawn(viewer, pose);
             }
         }, 20, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void setSneak(boolean isSneaking, boolean onGround) {
+        if (!onGround) {
+            for (Player viewer : viewerArray) {
+                PacketManager.getInstance().send(viewer, FakeEntityUtils.getMetaPacket(entityId, getText(viewer), isSneaking));
+            }
+        }
     }
 
     public PacketContainer getMovePacket(short x, short y, short z, boolean onGround) {
@@ -273,7 +287,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
         packet.getIntegers().write(0, entityId);
         packet.getDoubles().write(0, x);
-        packet.getDoubles().write(1, y + yOffset);
+        packet.getDoubles().write(1, y + ((owner instanceof UnlimitedPlayer player) ? player.getHatOffset() : 0) + getCorrection() + yOffset);
         packet.getDoubles().write(2, z);
         packet.getBooleans().write(0, onGround);
         return packet;
@@ -295,6 +309,8 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         double y = entity.getLocation().getY();
         double z = entity.getLocation().getZ();
         y += yOffset;
+        if (owner instanceof UnlimitedPlayer player) y += player.getHatOffset();
+        y += getCorrection();
         return new Location(null, x, y, z);
     }
 
@@ -305,9 +321,17 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         entityPacket.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
         Location location = getEntityLocation();
         entityPacket.getDoubles().write(0, location.getX());
-        entityPacket.getDoubles().write(1, location.getY() + (pose == Pose.SNEAKING ? -0.3 : 0));
+        entityPacket.getDoubles().write(1, location.getY());
         entityPacket.getDoubles().write(2, location.getZ());
         PacketContainer metaPacket = FakeEntityUtils.getMetaPacket(entityId, text, pose == Pose.SNEAKING);
         return new PacketContainer[] {entityPacket, metaPacket};
+    }
+
+    private double getCorrection() {
+        return owner.getEntity().getHeight() - 1.8;
+    }
+
+    private void viewersToArray() {
+        viewerArray = viewers.toArray(new Player[0]);
     }
 }

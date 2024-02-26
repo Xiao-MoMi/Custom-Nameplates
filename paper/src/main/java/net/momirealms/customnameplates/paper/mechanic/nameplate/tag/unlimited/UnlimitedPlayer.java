@@ -197,6 +197,9 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
     }
 
     public void sneak(boolean sneaking, boolean flying) {
+        for (StaticTextEntity tag : staticTagArray) {
+            tag.setSneak(sneaking, !flying);
+        }
         for (DynamicTextEntity tag : dynamicTagArray) {
             tag.setSneak(sneaking, !flying);
         }
@@ -271,6 +274,12 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
     public void timer() {
         for (DynamicTextEntity tag : dynamicTagArray) {
             tag.timer();
+        }
+    }
+
+    public void updateVisibility() {
+        for (DynamicTextEntity tag : dynamicTagArray) {
+            tag.updateVisibility();
         }
     }
 

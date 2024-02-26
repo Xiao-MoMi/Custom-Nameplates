@@ -38,12 +38,13 @@ public class PlayerInfoListener extends PacketAdapter {
     private final TeamTagManagerImpl manager;
 
     public PlayerInfoListener(TeamTagManagerImpl manager) {
-        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO);
+        super(CustomNameplatesPlugin.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.PLAYER_INFO);
         this.manager = manager;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         Set<EnumWrappers.PlayerInfoAction> actions = packet.getPlayerInfoActions().read(0);
         if (!actions.contains(EnumWrappers.PlayerInfoAction.UPDATE_DISPLAY_NAME))

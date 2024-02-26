@@ -36,7 +36,7 @@ public class MagicCosmeticsListener implements Listener {
         this.unlimitedTagManager = unlimitedTagManager;
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onChangeCos(CosmeticChangeEquipEvent event) {
         final Cosmetic cosmetic = event.getNewCosmetic();
         final Player player = event.getPlayer();
@@ -48,7 +48,7 @@ public class MagicCosmeticsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onEnterBlackListWorld(PlayerChangeBlacklistEvent event) {
         var player = event.getPlayer();
         if (unlimitedTagManager.getUnlimitedObject(player.getUniqueId()) instanceof UnlimitedPlayer unlimitedPlayer) {
@@ -67,7 +67,7 @@ public class MagicCosmeticsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onEquip(CosmeticEquipEvent event) {
         final Cosmetic cosmetic = event.getCosmetic();
         final Player player = event.getPlayer();
@@ -79,7 +79,7 @@ public class MagicCosmeticsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onUnEquip(CosmeticUnEquipEvent event) {
         final Player player = event.getPlayer();
         if (event.getCosmeticType() == CosmeticType.HAT) {
@@ -90,7 +90,7 @@ public class MagicCosmeticsListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onDataLoaded(PlayerDataLoadEvent event) {
         for (Cosmetic cosmetic : event.getEquippedCosmetics()) {
             if (cosmetic instanceof Hat hat) {

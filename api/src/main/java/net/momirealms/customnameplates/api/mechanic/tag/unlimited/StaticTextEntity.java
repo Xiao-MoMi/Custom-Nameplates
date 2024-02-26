@@ -73,4 +73,6 @@ public interface StaticTextEntity {
     UUID getUUID();
 
     void handlePose(Pose previous, Pose pose);
+
+    void setSneak(boolean sneaking, boolean onGround);
 }

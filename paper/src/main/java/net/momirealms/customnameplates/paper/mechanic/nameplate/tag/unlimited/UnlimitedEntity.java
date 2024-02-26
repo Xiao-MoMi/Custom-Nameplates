@@ -200,4 +200,22 @@ public class UnlimitedEntity implements EntityTagEntity {
     protected void playerVectorToArray() {
         nearbyPlayerArray = nearbyPlayers.toArray(new Player[0]);
     }
+
+    public void setVisibility(boolean visible) {
+        if (!visible) {
+            for (StaticTextEntity tag : staticTagArray) {
+                for (Player player : nearbyPlayerArray) {
+                    tag.removePlayerFromViewers(player);
+                }
+            }
+        } else {
+            for (StaticTextEntity tag : staticTagArray) {
+                for (Player player : nearbyPlayerArray) {
+                    if (tag.getComeRule().isPassed(player, entity)) {
+                        tag.addPlayerToViewers(player);
+                    }
+                }
+            }
+        }
+    }
 }
