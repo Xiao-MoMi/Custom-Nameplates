@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.paper.mechanic.bubble;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.libraryaddict.disguise.DisguiseAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.OnlineUser;
@@ -45,11 +44,9 @@ import net.momirealms.customnameplates.paper.mechanic.bubble.image.ItemsAdderIma
 import net.momirealms.customnameplates.paper.mechanic.bubble.image.OraxenImageImpl;
 import net.momirealms.customnameplates.paper.mechanic.bubble.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
-import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

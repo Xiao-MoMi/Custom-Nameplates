@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.paper.util;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.Disguise;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
@@ -25,6 +26,11 @@ public class DisguiseUtils {
 
     public static boolean isDisguised(Entity entity) {
         return DisguiseAPI.isDisguised(entity);
+    }
+
+    public static double getDisguisedHeight(Entity entity) {
+        Disguise disguise = DisguiseAPI.getDisguise(entity);
+        return disguise.getHeight() + disguise.getWatcher().getYModifier() + disguise.getWatcher().getNameYModifier();
     }
 
     public static EntityType getDisguisedType(Entity entity) {

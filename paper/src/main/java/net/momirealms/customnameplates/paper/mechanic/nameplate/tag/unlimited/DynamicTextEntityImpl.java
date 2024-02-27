@@ -26,6 +26,8 @@ import net.momirealms.customnameplates.api.mechanic.tag.unlimited.DynamicTextEnt
 import net.momirealms.customnameplates.api.requirement.Condition;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -367,6 +369,9 @@ public class DynamicTextEntityImpl implements DynamicTextEntity {
     }
 
     private double getPlayerHeight() {
+        if (CNConfig.hasLibsDisguise && DisguiseUtils.isDisguised(owner.getPlayer()) && DisguiseUtils.getDisguisedType(owner.getPlayer()) != EntityType.PLAYER) {
+            return DisguiseUtils.getDisguisedHeight(owner.getPlayer());
+        }
         return owner.getPlayer().getHeight();
     }
 

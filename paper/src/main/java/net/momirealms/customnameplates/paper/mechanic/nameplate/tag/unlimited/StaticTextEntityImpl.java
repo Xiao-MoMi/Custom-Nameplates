@@ -23,6 +23,8 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.NearbyRule;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.StaticTextEntity;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import net.momirealms.customnameplates.paper.util.FakeEntityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -328,7 +330,11 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     }
 
     private double getCorrection() {
-        return owner.getEntity().getHeight() - 1.8;
+        double height = owner.getEntity().getHeight();
+        if (CNConfig.hasLibsDisguise && DisguiseUtils.isDisguised(owner.getEntity()) && DisguiseUtils.getDisguisedType(owner.getEntity()) != EntityType.PLAYER) {
+            height = DisguiseUtils.getDisguisedHeight(owner.getEntity());
+        }
+        return height - 1.8;
     }
 
     private void viewersToArray() {

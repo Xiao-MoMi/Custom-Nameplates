@@ -24,12 +24,11 @@ import net.momirealms.customnameplates.api.mechanic.misc.ViewerText;
 import net.momirealms.customnameplates.api.mechanic.tag.unlimited.*;
 import net.momirealms.customnameplates.api.scheduler.CancellableTask;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.DisguiseListener;
 import net.momirealms.customnameplates.paper.mechanic.nameplate.tag.listener.MagicCosmeticsListener;
-import net.momirealms.customnameplates.paper.setting.CNConfig;
-import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.HandlerList;
@@ -47,6 +46,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     private final ConcurrentHashMap<UUID, UnlimitedEntity> unlimitedEntityMap;
     private CancellableTask refreshTask;
     private MagicCosmeticsListener magicCosmeticsListener;
+    private DisguiseListener disguiseListener;
     private final VehicleChecker vehicleChecker;
 
     public UnlimitedTagManagerImpl(NameplateManager nameplateManager) {
@@ -55,6 +55,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         this.vehicleChecker = new VehicleChecker(this);
         if (Bukkit.getPluginManager().getPlugin("MagicCosmetics") != null) {
             this.magicCosmeticsListener = new MagicCosmeticsListener(this);
+        }
+        if (Bukkit.getPluginManager().getPlugin("LibsDisguises") != null) {
+            this.disguiseListener = new DisguiseListener(this);
         }
     }
     
@@ -85,6 +88,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         if (this.magicCosmeticsListener != null) {
             Bukkit.getPluginManager().registerEvents(magicCosmeticsListener, CustomNameplatesPlugin.get());
         }
+        if (this.disguiseListener != null) {
+            Bukkit.getPluginManager().registerEvents(disguiseListener, CustomNameplatesPlugin.get());
+        }
     }
     
     public void unload() {
@@ -97,6 +103,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
         }
         if (this.magicCosmeticsListener != null) {
             HandlerList.unregisterAll(magicCosmeticsListener);
+        }
+        if (this.disguiseListener != null) {
+            HandlerList.unregisterAll(disguiseListener);
         }
     }
 
@@ -163,7 +172,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
                 unlimitedPlayer
         );
 
-        unlimitedPlayer.addNearByPlayerToMap(48);
+        if (player.getGameMode() != GameMode.SPECTATOR) {
+            unlimitedPlayer.addNearByPlayerToMap(48);
+        }
         return unlimitedPlayer;
     }
 
@@ -244,14 +255,6 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     public void handlePlayerSneak(Player sneaker, boolean sneaking, boolean flying) {
         UnlimitedEntity unlimitedEntity = getUnlimitedObject(sneaker.getUniqueId());
         if (!(unlimitedEntity instanceof UnlimitedPlayer unlimitedPlayer)) return;
-        if (    sneaking
-                && CNConfig.hasLibsDisguise
-                && DisguiseUtils.isDisguised(sneaker)
-                && DisguiseUtils.getDisguisedType(sneaker) != EntityType.PLAYER
-        ) {
-            // disguised entities would not sneak
-            return;
-        }
         unlimitedPlayer.sneak(sneaking, flying);
     }
 }
