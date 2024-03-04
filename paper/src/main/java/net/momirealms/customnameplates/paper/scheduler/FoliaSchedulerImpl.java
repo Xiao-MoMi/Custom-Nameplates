@@ -42,7 +42,11 @@ public class FoliaSchedulerImpl implements SyncScheduler {
      */
     @Override
     public void runSyncTask(Runnable runnable, Location location) {
-        Bukkit.getRegionScheduler().execute(plugin, location, runnable);
+        if (location == null) {
+            Bukkit.getGlobalRegionScheduler().execute(plugin, runnable);
+        } else {
+            Bukkit.getRegionScheduler().execute(plugin, location, runnable);
+        }
     }
 
     /**
@@ -56,6 +60,9 @@ public class FoliaSchedulerImpl implements SyncScheduler {
      */
     @Override
     public CancellableTask runTaskSyncTimer(Runnable runnable, Location location, long delay, long period) {
+        if (location == null) {
+            return new FoliaCancellableTask(Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, (scheduledTask -> runnable.run()), delay, period));
+        }
         return new FoliaCancellableTask(Bukkit.getRegionScheduler().runAtFixedRate(plugin, location, (scheduledTask -> runnable.run()), delay, period));
     }
 
@@ -69,6 +76,15 @@ public class FoliaSchedulerImpl implements SyncScheduler {
      */
     @Override
     public CancellableTask runTaskSyncLater(Runnable runnable, Location location, long delay) {
+        if (delay == 0) {
+            if (location == null) {
+                return new FoliaCancellableTask(Bukkit.getGlobalRegionScheduler().run(plugin, (scheduledTask -> runnable.run())));
+            }
+            return new FoliaCancellableTask(Bukkit.getRegionScheduler().run(plugin, location, (scheduledTask -> runnable.run())));
+        }
+        if (location == null) {
+            return new FoliaCancellableTask(Bukkit.getGlobalRegionScheduler().runDelayed(plugin, (scheduledTask -> runnable.run()), delay));
+        }
         return new FoliaCancellableTask(Bukkit.getRegionScheduler().runDelayed(plugin, location, (scheduledTask -> runnable.run()), delay));
     }
 
