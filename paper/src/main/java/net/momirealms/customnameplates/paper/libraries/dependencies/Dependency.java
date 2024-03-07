@@ -290,7 +290,15 @@ public enum Dependency {
             "2.10.1",
             null,
             "gson"
-    ),;
+    ),
+    BIOME_API(
+            "com{}github{}Xiao-MoMi",
+            "BiomeAPI",
+            "0.2",
+            "jitpack",
+            "biome-api",
+            Relocation.of("biomeapi", "net{}momirealms{}biomeapi")
+    );
 
     private final String mavenRepoPath;
     private final String version;

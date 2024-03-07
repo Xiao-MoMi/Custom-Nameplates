@@ -38,6 +38,7 @@ dependencies {
     compileOnly("commons-io:commons-io:2.15.1")
     compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.42")
+    compileOnly("com.github.Xiao-MoMi:BiomeAPI:0.2")
 
     // chat channels
     compileOnly(files("libs/VentureChat-3.7.1.jar"))
@@ -52,9 +53,6 @@ dependencies {
     // adventure
     implementation("net.kyori:adventure-api:4.15.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.2")
-
-    // local lib
-    implementation(files("libs/BiomeAPI.jar"))
 }
 
 tasks {

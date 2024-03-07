@@ -327,14 +327,14 @@ public class RequirementManagerImpl implements RequirementManager {
         registerRequirement("biome", (args) -> {
             HashSet<String> biomes = new HashSet<>(ConfigUtils.stringListArgs(args));
             return condition -> {
-                String currentBiome = BiomeAPI.getBiome(Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getLocation());
+                String currentBiome = BiomeAPI.getBiomeAt(Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getLocation());
                 return biomes.contains(currentBiome);
             };
         });
         registerRequirement("!biome", (args) -> {
             HashSet<String> biomes = new HashSet<>(ConfigUtils.stringListArgs(args));
             return condition -> {
-                String currentBiome = BiomeAPI.getBiome(Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getLocation());
+                String currentBiome = BiomeAPI.getBiomeAt(Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getLocation());
                 return !biomes.contains(currentBiome);
             };
         });
