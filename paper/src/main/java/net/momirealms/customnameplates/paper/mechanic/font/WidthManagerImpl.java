@@ -29,6 +29,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.WidthManager;
 import net.momirealms.customnameplates.api.mechanic.background.BackGround;
@@ -907,7 +908,6 @@ public class WidthManagerImpl implements WidthManager {
             ElementNode node = (ElementNode) MiniMessage.miniMessage().deserializeToTree(text);
             ArrayList<Tuple<String, Key, Boolean>> list = new ArrayList<>();
             nodeToStringInfo(node, list, Key.of("minecraft", "default"), false);
-
             int totalLength = 0;
             for (Tuple<String, Key, Boolean> element : list) {
                 FontData data = getFontData(element.getMid());
@@ -936,7 +936,11 @@ public class WidthManagerImpl implements WidthManager {
             } else if (node instanceof TagNode tagNode) {
                 if (tagNode.tag() instanceof Inserting inserting) {
                     Component component = inserting.value();
-                    isBold = component.hasDecoration(TextDecoration.BOLD);
+                    if (component.decoration(TextDecoration.BOLD) == TextDecoration.State.TRUE) {
+                        isBold = true;
+                    } else if (component.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE) {
+                        isBold = false;
+                    }
                     var key = component.font();
                     if (key != null) {
                         font = net.momirealms.customnameplates.common.Key.of(key.namespace(), key.value());

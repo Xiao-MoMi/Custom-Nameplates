@@ -36,3 +36,13 @@ customcrops:default:
     뀃: 6
     뀄: 6
     뀅: 4
+
+minecraft:customcrops:
+  default: 8
+  template-loading-sequence: []
+  values:
+    뀁: -2
+    뀂: 4
+    뀃: 6
+    뀄: 6
+    뀅: 4
