@@ -85,7 +85,8 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
                         Dependency.SQLITE_DRIVER,
                         Dependency.BSTATS_BASE,
                         Dependency.HIKARI,
-                        Dependency.BSTATS_BUKKIT
+                        Dependency.BSTATS_BUKKIT,
+                        Dependency.BIOME_API
                 )
         ));
         ReflectionUtils.load();

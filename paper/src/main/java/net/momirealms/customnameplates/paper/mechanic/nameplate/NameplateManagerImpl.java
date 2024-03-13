@@ -312,7 +312,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             plugin.getScheduler().runTaskAsyncLater(() -> {
                 if (player.isOnline())
                     this.createNameTag(player);
-            }, 100, TimeUnit.MILLISECONDS);
+            }, 50, TimeUnit.MILLISECONDS);
         }
     }
 

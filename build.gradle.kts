@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
 
-    version = "2.3.3.4"
+    version = "2.3.3.6"
 
     apply<JavaPlugin>()
     apply(plugin = "java")
