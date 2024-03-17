@@ -29,7 +29,6 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
-import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.WidthManager;
 import net.momirealms.customnameplates.api.mechanic.background.BackGround;

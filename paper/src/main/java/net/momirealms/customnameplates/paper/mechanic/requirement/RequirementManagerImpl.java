@@ -32,7 +32,6 @@ import net.momirealms.customnameplates.paper.util.ClassUtils;
 import net.momirealms.customnameplates.paper.util.ConfigUtils;
 import net.momirealms.customnameplates.paper.util.DisguiseUtils;
 import net.momirealms.customnameplates.paper.util.GeyserUtils;
-import org.bson.types.Binary;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

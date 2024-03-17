@@ -122,7 +122,7 @@ public class ViewerText {
         }
 
         public void update() {
-            if (owner == null) return;
+            if (owner == null || relational) return;
             this.latestValue = PlaceholderAPI.setPlaceholders(owner, placeholder);
         }
 

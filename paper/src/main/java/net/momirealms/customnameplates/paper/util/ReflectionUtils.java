@@ -39,6 +39,7 @@ public class ReflectionUtils {
     private static Method keyFromStringMethod;
     private static Object miniMessageInstance;
     private static Class<?> keyClass;
+    private static boolean isPaper;
 
     public static void load() {
         try {
@@ -68,6 +69,7 @@ public class ReflectionUtils {
             keyClass = Class.forName("net;kyori;adventure;key;Key".replace(";", "."));
             keyAsStringMethod = keyClass.getMethod("asString");
             keyFromStringMethod = keyClass.getMethod("key", String.class);
+            isPaper = true;
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException ignored) {
         }
@@ -95,6 +97,10 @@ public class ReflectionUtils {
 
     public static Class<?> getKeyClass() {
         return keyClass;
+    }
+
+    public static boolean isPaper() {
+        return isPaper;
     }
 
     public static String getKeyAsString(Object key) {

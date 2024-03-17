@@ -294,7 +294,7 @@ public enum Dependency {
     BIOME_API(
             "com{}github{}Xiao-MoMi",
             "BiomeAPI",
-            "0.2",
+            "0.3",
             "jitpack",
             "biome-api",
             Relocation.of("biomeapi", "net{}momirealms{}biomeapi")
