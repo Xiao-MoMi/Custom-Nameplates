@@ -72,10 +72,12 @@ public class WidthManagerImpl implements WidthManager {
     private FontData NONLATIN_EUROPEAN_DATA;
     private FontData UNIFONT_DATA;
     private FontData UNICODE_DATA;
+    private final HashSet<Integer> bitMapChars;
 
     public WidthManagerImpl(CustomNameplatesPlugin plugin) {
         this.plugin = plugin;
         this.fontDataMap = new HashMap<>();
+        this.bitMapChars = new HashSet<>();
         this.saveFontImages();
         this.cacheImageWidthIfNotCached();
         this.loadCachedFontData();
@@ -96,6 +98,7 @@ public class WidthManagerImpl implements WidthManager {
         if (this.cacheSystem != null)
             this.cacheSystem.destroy();
         fontDataMap.clear();
+        bitMapChars.clear();
     }
 
     private void loadInternalConfigs() {
@@ -158,6 +161,10 @@ public class WidthManagerImpl implements WidthManager {
                     Key.of(CNConfig.namespace, "ascent_" + ascent), descentFont
             );
         }
+
+        this.bitMapChars.addAll(ASCII_DATA.getWidthData().keySet());
+        this.bitMapChars.addAll(NONLATIN_EUROPEAN_DATA.getWidthData().keySet());
+        this.bitMapChars.addAll(ACCENTED_DATA.getWidthData().keySet());
     }
 
     private void loadUserConfigs() {
@@ -176,6 +183,7 @@ public class WidthManagerImpl implements WidthManager {
                         case "unifont" -> fontData.overrideWith(UNIFONT_DATA);
                     }
                 }
+                boolean defaultFont = entry.getKey().equals("minecraft:default");
                 ConfigurationSection customSection = innerSection.getConfigurationSection("values");
                 if (customSection != null)
                     for (Map.Entry<String, Object> innerEntry : customSection.getValues(false).entrySet()) {
@@ -187,8 +195,12 @@ public class WidthManagerImpl implements WidthManager {
                                 continue;
                             }
                             fontData.registerCharWidth(stripped.charAt(0), (Integer) innerEntry.getValue());
+                            if (defaultFont)
+                                bitMapChars.add((int) stripped.charAt(0));
                         } else if (key.length() == 1) {
                             fontData.registerCharWidth(key.charAt(0), (Integer) innerEntry.getValue());
+                            if (defaultFont)
+                                bitMapChars.add((int) key.charAt(0));
                         } else {
                             LogUtils.warn("Illegal image format: " + key);
                         }
@@ -858,6 +870,10 @@ public class WidthManagerImpl implements WidthManager {
         }
     }
 
+    public boolean isNotReplacedUnifont(int codePoint) {
+        return !bitMapChars.contains(codePoint);
+    }
+
     @Override
     public boolean registerFontData(@NotNull Key key, @NotNull FontData fontData) {
         if (fontDataMap.containsKey(key)) {
@@ -906,24 +922,47 @@ public class WidthManagerImpl implements WidthManager {
                 text = AdventureManagerImpl.getInstance().legacyToMiniMessage(text);
             ElementNode node = (ElementNode) MiniMessage.miniMessage().deserializeToTree(text);
             ArrayList<Tuple<String, Key, Boolean>> list = new ArrayList<>();
-            nodeToStringInfo(node, list, Key.of("minecraft", "default"), false);
+            Key defaultFont = Key.of("minecraft", "default");
+            nodeToStringInfo(node, list, defaultFont, false);
             int totalLength = 0;
-            for (Tuple<String, Key, Boolean> element : list) {
+            for (int i = 0, size = list.size(); i < size; i++) {
+                Tuple<String, Key, Boolean> element = list.get(i);
                 FontData data = getFontData(element.getMid());
                 if (data == null) {
                     LogUtils.warn("Unknown font: " + element.getMid() + " Please register it in font-width-data.yml");
                     continue;
                 }
                 char[] chars = element.getLeft().toCharArray();
-                for (int i = 0; i < chars.length; i++) {
-                    if (Character.isHighSurrogate(chars[i])) {
-                        totalLength += data.getWidth(Character.toCodePoint(chars[i], chars[++i]));
-                    } else {
-                        totalLength += data.getWidth(chars[i]);
+                if (!element.getMid().equals(defaultFont)) {
+                    for (int j = 0; j < chars.length; j++) {
+                        int width;
+                        if (Character.isHighSurrogate(chars[j])) {
+                            width = data.getWidth(Character.toCodePoint(chars[j], chars[++j]));
+                        } else {
+                            width = data.getWidth(chars[j]);
+                        }
+                        totalLength += (width + (element.getRight() ? 2 : 1)) * 2;
+                    }
+                } else {
+                    for (int j = 0; j < chars.length; j++) {
+                        if (Character.isHighSurrogate(chars[j])) {
+                            int codePoint = Character.toCodePoint(chars[j], chars[++j]);
+                            if (isNotReplacedUnifont(codePoint)) {
+                                totalLength += (data.getWidth(codePoint) * 2 + (element.getRight() ? 3 : 2));
+                            } else {
+                                totalLength += (element.getRight() ? 2 : 1) * 2;
+                            }
+                        } else {
+                            if (isNotReplacedUnifont(chars[j])) {
+                                totalLength += (data.getWidth(chars[j]) * 2 + (element.getRight() ? 3 : 2));
+                            } else {
+                                totalLength += (data.getWidth(chars[j]) + (element.getRight() ? 2 : 1)) * 2;
+                            }
+                        }
                     }
                 }
-                totalLength += element.getRight() ? element.getLeft().length() * 2 : element.getLeft().length();
             }
+            totalLength /= 2;
             return totalLength;
         }
 

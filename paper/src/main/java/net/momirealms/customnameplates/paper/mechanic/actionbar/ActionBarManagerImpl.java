@@ -24,6 +24,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.ActionBarManager;
@@ -61,11 +62,15 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
     private ActionBarConfig config;
     private ChatMessageListener chatMessageListener;
     private SystemChatListener systemChatListener;
+    private final MiniMessage miniMessage;
 
     public ActionBarManagerImpl(CustomNameplatesPlugin plugin) {
         this.receiverMap = new ConcurrentHashMap<>();
         this.plugin = plugin;
         this.actionBarListener = new ActionBarListener(this);
+        this.miniMessage = MiniMessage.builder()
+                .strict(true)
+                .build();
         if (plugin.getVersionManager().isVersionNewerThan1_19()) {
             this.systemChatListener = new SystemChatListener(this);
         } else {
@@ -178,13 +183,12 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
                 event.setCancelled(true);
                 String json = packet.getStrings().readSafely(0);
                 if (json != null && !json.isEmpty()) {
-                    System.out.println(json);
                     Component component = GsonComponentSerializer.gson().deserialize(json);
                     if (component instanceof TranslatableComponent) {
                         // We can't get TranslatableComponent's width :(
                         return;
                     }
-                    receiver.setOtherPluginText(AdventureManagerImpl.getInstance().getMiniMessageFormat(component), System.currentTimeMillis());
+                    receiver.setOtherPluginText(miniMessage.serialize(component), System.currentTimeMillis());
                 } else {
                     WrappedChatComponent wrappedChatComponent = packet.getChatComponents().readSafely(0);
                     if (wrappedChatComponent != null) {
@@ -193,7 +197,7 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
                         if (component instanceof TranslatableComponent) {
                             return;
                         }
-                        receiver.setOtherPluginText(AdventureManagerImpl.getInstance().getMiniMessageFormat(component), System.currentTimeMillis());
+                        receiver.setOtherPluginText(miniMessage.serialize(component), System.currentTimeMillis());
                     }
                 }
             }
@@ -216,7 +220,7 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
                         // We can't get TranslatableComponent's width :(
                         return;
                     }
-                    receiver.setOtherPluginText(AdventureManagerImpl.getInstance().getMiniMessageFormat(component), System.currentTimeMillis());
+                    receiver.setOtherPluginText(miniMessage.serialize(component), System.currentTimeMillis());
                 }
             }
         }
@@ -235,9 +239,7 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
                 }
                 event.setCancelled(true);
                 receiver.setOtherPluginText(
-                        AdventureManagerImpl.getInstance().getMiniMessageFormat(
-                                GsonComponentSerializer.gson().deserialize(strJson)
-                        ), System.currentTimeMillis()
+                        miniMessage.serialize(GsonComponentSerializer.gson().deserialize(strJson)), System.currentTimeMillis()
                 );
             } else if (ReflectionUtils.isPaper()) {
                 Object adventureComponent = packet.getModifier().readSafely(1);
