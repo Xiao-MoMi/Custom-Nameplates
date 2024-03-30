@@ -197,10 +197,10 @@ public class AdventureManagerImpl implements AdventureManager {
                 case 'f' -> stringBuilder.append("<white>");
                 case 'r' -> stringBuilder.append("<r><!i>");
                 case 'l' -> stringBuilder.append("<b>");
-                case 'm' -> stringBuilder.append("<s>");
+                case 'm' -> stringBuilder.append("<st>");
                 case 'o' -> stringBuilder.append("<i>");
                 case 'n' -> stringBuilder.append("<u>");
-                case 'k' -> stringBuilder.append("<o>");
+                case 'k' -> stringBuilder.append("<obf>");
                 case 'x' -> {
                     if (i + 13 >= chars.length
                             || !isColorCode(chars[i+2])
