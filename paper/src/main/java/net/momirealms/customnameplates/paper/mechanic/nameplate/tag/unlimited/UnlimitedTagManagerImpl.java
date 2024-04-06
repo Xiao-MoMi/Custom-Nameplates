@@ -118,7 +118,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
                 setting.getComeRule(),
                 setting.getLeaveRule(),
                 setting.getDefaultText(),
-                setting.getPlugin()
+                setting.getID()
         );
     }
 

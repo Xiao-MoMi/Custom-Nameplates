@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public interface StaticTextEntity {
 
-    String getPlugin();
+    String getID();
 
     boolean isShownTo(Player viewer);
 

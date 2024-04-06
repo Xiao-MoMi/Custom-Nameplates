@@ -24,14 +24,14 @@ public class StaticTextTagSetting {
     private NearbyRule comeRule;
     private NearbyRule leaveRule;
     private String defaultText;
-    private String plugin;
+    private String id;
 
-    public StaticTextTagSetting(double verticalOffset, NearbyRule comeRule, NearbyRule leaveRule, String defaultText, String plugin) {
+    public StaticTextTagSetting(double verticalOffset, NearbyRule comeRule, NearbyRule leaveRule, String defaultText, String id) {
         this.verticalOffset = verticalOffset;
         this.comeRule = comeRule;
         this.leaveRule = leaveRule;
         this.defaultText = defaultText;
-        this.plugin = plugin;
+        this.id = id;
     }
 
     private StaticTextTagSetting() {
@@ -39,7 +39,7 @@ public class StaticTextTagSetting {
         comeRule = (player, entity) -> true;
         leaveRule = (player, entity) -> true;
         defaultText = "";
-        plugin = "";
+        id = "";
     }
 
     public static Builder builder() {
@@ -78,8 +78,8 @@ public class StaticTextTagSetting {
             return this;
         }
 
-        public Builder plugin(String type) {
-            this.setting.plugin = type;
+        public Builder id(String id) {
+            this.setting.id = id;
             return this;
         }
 
@@ -100,8 +100,8 @@ public class StaticTextTagSetting {
         return defaultText;
     }
 
-    public String getPlugin() {
-        return plugin;
+    public String getID() {
+        return id;
     }
 
     public NearbyRule getLeaveRule() {

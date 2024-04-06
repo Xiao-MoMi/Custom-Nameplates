@@ -365,11 +365,11 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
                 })
                 .verticalOffset(yOffset)
                 .defaultText(text)
-                .plugin("bubble")
+                .id("bubble")
                 .build());
 
         for (StaticTextEntity bubble : tagEntity.getStaticTags()) {
-            if (bubble.getPlugin().equals("bubble")) {
+            if (bubble.getID().equals("bubble")) {
                 bubble.setOffset(bubble.getOffset() + lineSpace);
             }
         }

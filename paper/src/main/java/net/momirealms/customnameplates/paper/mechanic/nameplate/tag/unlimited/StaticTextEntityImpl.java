@@ -49,7 +49,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
     private final NearbyRule comeRule;
     private final NearbyRule leaveRule;
     private String defaultText;
-    private final String plugin;
+    private final String id;
     private final PacketContainer destroyPacket;
 
     public StaticTextEntityImpl (
@@ -58,7 +58,7 @@ public class StaticTextEntityImpl implements StaticTextEntity {
             NearbyRule comeRule,
             NearbyRule leaveRule,
             String defaultText,
-            String plugin
+            String id
     ) {
         this.entityId = FakeEntityUtils.getAndIncrease();
         this.owner = owner;
@@ -68,15 +68,15 @@ public class StaticTextEntityImpl implements StaticTextEntity {
         this.comeRule = comeRule;
         this.leaveRule = leaveRule;
         this.defaultText = defaultText;
-        this.plugin = plugin;
+        this.id = id;
         this.destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         this.destroyPacket.getIntLists().write(0, List.of(entityId));
         this.viewersToArray();
     }
 
     @Override
-    public String getPlugin() {
-        return plugin;
+    public String getID() {
+        return id;
     }
 
     @Override
