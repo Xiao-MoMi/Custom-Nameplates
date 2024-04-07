@@ -33,11 +33,6 @@ conditional-text:
       conditions:
         weather:
           - thunder
-    priority_4:
-      text: 'Rainstorm'
-      conditions:
-        weather:
-          - rainstorm
 
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/nameplate-text
 nameplate-text:

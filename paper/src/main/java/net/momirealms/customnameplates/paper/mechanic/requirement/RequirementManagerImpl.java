@@ -378,9 +378,8 @@ public class RequirementManagerImpl implements RequirementManager {
             return condition -> {
                 String currentWeather;
                 World world = Objects.requireNonNull(condition.getOfflinePlayer().getPlayer()).getWorld();
-                if (world.hasStorm()) currentWeather = "rainstorm";
+                if (world.isClearWeather()) currentWeather = "clear";
                 else if (world.isThundering()) currentWeather = "thunder";
-                else if (world.isClearWeather()) currentWeather = "clear";
                 else currentWeather = "rain";
                 for (String weather : weathers)
                     if (weather.equalsIgnoreCase(currentWeather))
