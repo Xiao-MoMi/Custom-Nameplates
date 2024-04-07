@@ -139,14 +139,6 @@ public class PluginPlaceholders extends PlaceholderExpansion {
                 if (minutes < 10) return hours + ":0" + minutes + ap;
                 else return hours + ":" + minutes + ap;
             }
-            case "time-24" -> {
-                long time = onlinePlayer.getWorld().getTime();
-                double converttime = time * 3.6;
-                int hours = (int) Math.floor(converttime % 86400 / 3600);
-                int minutes = (int) Math.floor(converttime % 3600 / 60);
-                int mchours = hours <= 17 ? hours + 6 : hours - 18;
-                return mchours + ":" + (minutes >= 10 ? minutes : "0"+minutes);
-            }
             case "actionbar" -> {
                 return plugin.getActionBarManager().getOtherPluginActionBar(onlinePlayer);
             }
