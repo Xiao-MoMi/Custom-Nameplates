@@ -11,8 +11,8 @@ metrics: true
 update-checker: true
 
 # Language
-# english/chinese/spanish/russian/turkish/french
-lang: english
+# https://github.com/Xiao-MoMi/Custom-Nameplates/tree/main/paper/src/main/resources/messages
+lang: en
 
 # Modules
 modules:
