@@ -164,6 +164,8 @@ public class BubbleManagerImpl implements BubbleManager, Listener {
             this.chatProvider = new HuskChatProvider(this);
         } else if (CNConfig.carbonChatChannel) {
             this.chatProvider = new CarbonChatProvider(this);
+        }  else if (CNConfig.advancedChatChannel) {
+            this.chatProvider = new AdvancedChatProvider(this);
         } else {
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
