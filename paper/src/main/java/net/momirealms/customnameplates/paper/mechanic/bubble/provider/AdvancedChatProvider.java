@@ -1,24 +1,24 @@
 package net.momirealms.customnameplates.paper.mechanic.bubble.provider;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
 import net.advancedplugins.chat.api.AdvancedChatAPI;
 import net.advancedplugins.chat.channel.ChatChannel;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.BubbleManager;
 import net.momirealms.customnameplates.api.mechanic.bubble.provider.AbstractChatProvider;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class AdvancedChatProvider extends AbstractChatProvider {
-    private static final AdvancedChatAPI api = AdvancedChatAPI.getApi();
     private static final String joinPermission = "advancedchat.channel.join.";
+    private final AdvancedChatAPI api;
 
     public AdvancedChatProvider(BubbleManager chatBubblesManager) {
         super(chatBubblesManager);
+        this.api = AdvancedChatAPI.getApi();
     }
 
     @Override
@@ -43,11 +43,7 @@ public class AdvancedChatProvider extends AbstractChatProvider {
 
     @Override
     public boolean canJoinChannel(Player player, String channelID) {
-        ChatChannel channel = api.getChatChannels()
-                .stream()
-                .filter(i -> i.getSectionName().equals(channelID))
-                .findFirst()
-                .orElse(null);
+        ChatChannel channel = api.getChatChannel(channelID);
         if (channel == null) {
             LogUtils.warn("Channel " + channelID + " doesn't exist");
             return false;
@@ -55,9 +51,10 @@ public class AdvancedChatProvider extends AbstractChatProvider {
         return player.hasPermission(joinPermission + channelID);
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler (ignoreCancelled = true)
-    public void onAdvancedChat(AsyncChatEvent event) {
-        // Pending
+    public void onAdvancedChat(AsyncPlayerChatEvent event) {
+        // Proper API pending
         Player player = event.getPlayer();
         if (!player.isOnline()) return;
 
@@ -67,9 +64,9 @@ public class AdvancedChatProvider extends AbstractChatProvider {
             if (channel.getSectionName().equals(blacklisted)) return;
         }
 
-        String message = ReflectionUtils.getMiniMessageTextFromNonShadedComponent(event.message());
         CustomNameplatesPlugin.get().getScheduler().runTaskAsync(() ->
-                chatBubblesManager.onChat(player, message, channel.getSectionName())
+                chatBubblesManager.onChat(player, event.getMessage(), channel.getSectionName())
         );
+
     }
 }
