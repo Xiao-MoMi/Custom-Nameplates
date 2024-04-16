@@ -30,6 +30,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class CNLocale {
@@ -60,23 +61,27 @@ public class CNLocale {
     public static String MSG_HAVE_NO_BUBBLE;
 
     public static void load() {
-        try {
-            YamlDocument.create(
-                    new File(CustomNameplatesPlugin.getInstance().getDataFolder(), "messages/" + CNConfig.language + ".yml"),
-                    Objects.requireNonNull(CustomNameplatesPlugin.getInstance().getResource("messages/" + CNConfig.language + ".yml")),
-                    GeneralSettings.DEFAULT,
-                    LoaderSettings
-                            .builder()
-                            .setAutoUpdate(true)
-                            .build(),
-                    DumperSettings.DEFAULT,
-                    UpdaterSettings
-                            .builder()
-                            .setVersioning(new BasicVersioning("config-version"))
-                            .build()
-            );
-        } catch (IOException e) {
-            LogUtils.warn(e.getMessage());
+        InputStream inputStream = CustomNameplatesPlugin.getInstance().getResource("messages/" + CNConfig.language + ".yml");
+        if (inputStream != null) {
+            try {
+                YamlDocument.create(
+                        new File(CustomNameplatesPlugin.getInstance().getDataFolder(), "messages/" + CNConfig.language + ".yml"),
+                        inputStream,
+                        GeneralSettings.DEFAULT,
+                        LoaderSettings
+                                .builder()
+                                .setAutoUpdate(true)
+                                .build(),
+                        DumperSettings.DEFAULT,
+                        UpdaterSettings
+                                .builder()
+                                .setVersioning(new BasicVersioning("config-version"))
+                                .build()
+                );
+                inputStream.close();
+            } catch (IOException e) {
+                LogUtils.warn(e.getMessage());
+            }
         }
         loadSettings(CustomNameplatesPlugin.get().getConfig("messages/" + CNConfig.language + ".yml"));
     }
