@@ -523,13 +523,19 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 "        vertex.y += 1;\n" +
                 "        vertex.x += 1;\n" +
                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
+                "    } else if (Color.xyz == vec3(253., 254., 255.) / 255.) {\n" +
+                "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                "        vertex.y += 1;\n" +
+                "        vertex.x += 1;\n" +
+                "        vertex.z -= 0.002;\n" +
+                "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                 "    } else if (Color.xyz == vec3(254., 254., 254.) / 255.) {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
                 "        vertex.z -= 0.001;\n" +
                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                 "    } else if (Color.xyz == vec3(253., 254., 254.) / 255.) {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                "        vertex.z -= 0.0011;\n" +
+                "        vertex.z -= 0.0015;\n" +
                 "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                 "    } else {\n" +
                 "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +

@@ -50,7 +50,7 @@ public class BackGroundText {
         if (parsed.equals("")) return "";
         int parsedWidth = FontUtils.getTextWidth(parsed);
         String bg = FontUtils.surroundNameplateFont(backGround.getBackGroundImage(parsedWidth));
-        return (removeShadow ? "<#FFFEFD>" + bg + "</#FFFEFD>" : bg)+ parsed;
+        return (removeShadow ? "<#FDFEFF>" + bg + "</#FDFEFF>" : bg)+ parsed;
     }
 
     public static Builder builder() {
