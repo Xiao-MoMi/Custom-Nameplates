@@ -21,14 +21,19 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.data.PlayerData;
 import net.momirealms.customnameplates.api.data.StorageType;
 import net.momirealms.customnameplates.api.util.LogUtils;
+import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
+import net.momirealms.customnameplates.paper.libraries.dependencies.Dependency;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.sql.*;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,6 +44,7 @@ public class SQLiteImpl extends AbstractSQLDatabase {
 
     private Connection connection;
     private File databaseFile;
+    private Constructor<?> connectionConstructor;
 
     public SQLiteImpl(CustomNameplatesPlugin plugin) {
         super(plugin);
@@ -49,6 +55,14 @@ public class SQLiteImpl extends AbstractSQLDatabase {
      */
     @Override
     public void initialize() {
+        ClassLoader classLoader = ((CustomNameplatesPluginImpl) plugin).getDependencyManager().obtainClassLoaderWith(EnumSet.of(Dependency.SQLITE_DRIVER, Dependency.SLF4J_SIMPLE, Dependency.SLF4J_API));
+        try {
+            Class<?> connectionClass = classLoader.loadClass("org.sqlite.jdbc4.JDBC4Connection");
+            connectionConstructor = connectionClass.getConstructor(String.class, String.class, Properties.class);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+
         YamlConfiguration config = plugin.getConfig("database.yml");
         this.databaseFile = new File(plugin.getDataFolder(), config.getString("SQLite.file", "data") + ".db");
         super.tablePrefix = config.getString("SQLite.table-prefix", "nameplates");
@@ -143,34 +157,21 @@ public class SQLiteImpl extends AbstractSQLDatabase {
      */
     @Override
     public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            setConnection();
+        if (connection != null && !connection.isClosed()) {
+            return connection;
         }
-        return connection;
-    }
-
-    /**
-     * Set up the connection to the SQLite database.
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void setConnection() {
         try {
-            if (!databaseFile.exists()) databaseFile.createNewFile();
-            Class.forName("org.sqlite.JDBC");
-            SQLiteConfig config = new SQLiteConfig();
-            config.enforceForeignKeys(true);
-            config.setEncoding(SQLiteConfig.Encoding.UTF8);
-            config.setSynchronous(SQLiteConfig.SynchronousMode.FULL);
-            connection = DriverManager.getConnection(
-                    String.format("jdbc:sqlite:%s", databaseFile.getAbsolutePath()),
-                    config.toProperties()
-            );
-        } catch (IOException e) {
-            LogUtils.warn("Failed to create the SQLite database.");
-        } catch (SQLException e) {
-            LogUtils.warn("Failed to initialize SQLite database.");
-        } catch (ClassNotFoundException e) {
-            LogUtils.warn("Failed to find SQLite driver.");
+            var properties = new Properties();
+            properties.setProperty("foreign_keys", Boolean.toString(true));
+            properties.setProperty("encoding", "'UTF-8'");
+            properties.setProperty("synchronous", "FULL");
+            connection = (Connection) this.connectionConstructor.newInstance("jdbc:sqlite:" + databaseFile.toString(), databaseFile.toString(), properties);
+            return connection;
+        } catch (ReflectiveOperationException e) {
+            if (e.getCause() instanceof SQLException) {
+                throw (SQLException) e.getCause();
+            }
+            throw new RuntimeException(e);
         }
     }
 }

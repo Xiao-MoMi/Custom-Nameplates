@@ -28,7 +28,7 @@ package net.momirealms.customnameplates.paper.libraries.dependencies;
 import com.google.gson.JsonElement;
 
 /**
- * Applies LuckPerms specific behaviour for {@link Dependency}s.
+ * Applies CustomNameplates specific behaviour for {@link Dependency}s.
  */
 public class DependencyRegistry {
 

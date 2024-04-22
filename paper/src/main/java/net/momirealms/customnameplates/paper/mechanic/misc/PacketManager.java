@@ -47,7 +47,7 @@ public class PacketManager {
 
     public void send(Player player, PacketContainer packet) {
         if (!player.isOnline()) {
-            LogUtils.warn(player.getName() + " not online");
+            return;
         }
         this.plugin.debug("Packet sent: " + packet.getType() + " to " + player.getName());
         this.protocolManager.sendServerPacket(player, packet);

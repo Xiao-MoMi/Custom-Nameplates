@@ -25,11 +25,11 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.10.1")
 
     // database
-    compileOnly("org.xerial:sqlite-jdbc:3.43.0.0")
+    compileOnly("org.xerial:sqlite-jdbc:3.45.3.0")
     compileOnly("com.h2database:h2:2.2.224")
-    compileOnly("org.mongodb:mongodb-driver-sync:4.11.1")
+    compileOnly("org.mongodb:mongodb-driver-sync:5.0.1")
     compileOnly("com.zaxxer:HikariCP:5.0.1")
-    compileOnly("redis.clients:jedis:5.1.0")
+    compileOnly("redis.clients:jedis:5.1.2")
 
     // others
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0c-r5")
@@ -51,7 +51,7 @@ dependencies {
     implementation(project(":common"))
 
     // adventure
-    implementation("net.kyori:adventure-api:4.15.0")
+    implementation("net.kyori:adventure-api:4.16.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.2")
 }
 

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The dependencies used by LuckPerms.
+ * The dependencies used by CustomNameplates.
  */
 public enum Dependency {
 
@@ -71,7 +71,7 @@ public enum Dependency {
     ADVENTURE_API(
             "net{}kyori",
             "adventure-api",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-api",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -79,7 +79,7 @@ public enum Dependency {
     ADVENTURE_KEY(
             "net{}kyori",
             "adventure-key",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-key",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -87,7 +87,7 @@ public enum Dependency {
     ADVENTURE_NBT(
             "net{}kyori",
             "adventure-nbt",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-nbt",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -95,7 +95,7 @@ public enum Dependency {
     ADVENTURE_LEGACY_SERIALIZER(
             "net{}kyori",
             "adventure-text-serializer-legacy",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-text-serializer-legacy",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -103,7 +103,7 @@ public enum Dependency {
     ADVENTURE_TEXT_LOGGER(
             "net{}kyori",
             "adventure-text-logger-slf4j",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-text-logger-slf4j",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -111,7 +111,7 @@ public enum Dependency {
     ADVENTURE_GSON(
             "net{}kyori",
             "adventure-text-serializer-gson",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-text-serializer-gson",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -119,7 +119,7 @@ public enum Dependency {
     ADVENTURE_GSON_LEGACY(
             "net{}kyori",
             "adventure-text-serializer-gson-legacy-impl",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-text-serializer-gson-legacy-impl",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -151,7 +151,7 @@ public enum Dependency {
     ADVENTURE_TEXT_MINIMESSAGE(
             "net{}kyori",
             "adventure-text-minimessage",
-            "4.15.0",
+            "4.16.0",
             null,
             "adventure-text-minimessage",
             Relocation.of("adventure", "net{}kyori{}adventure")
@@ -198,7 +198,7 @@ public enum Dependency {
     SQLITE_DRIVER(
             "org.xerial",
             "sqlite-jdbc",
-            "3.45.1.0",
+            "3.45.3.0",
             null,
             "sqlite-jdbc"
     ),
@@ -227,7 +227,7 @@ public enum Dependency {
     MONGODB_DRIVER_CORE(
             "org{}mongodb",
             "mongodb-driver-core",
-            "4.11.1",
+            "5.0.1",
             null,
             "mongodb-driver-core",
             Relocation.of("mongodb", "com{}mongodb"),
@@ -236,7 +236,7 @@ public enum Dependency {
     MONGODB_DRIVER_SYNC(
             "org{}mongodb",
             "mongodb-driver-sync",
-            "4.11.1",
+            "5.0.1",
             null,
             "mongodb-driver-sync",
             Relocation.of("mongodb", "com{}mongodb"),
@@ -245,7 +245,7 @@ public enum Dependency {
     MONGODB_DRIVER_BSON(
             "org{}mongodb",
             "bson",
-            "4.11.1",
+            "5.0.1",
             null,
             "mongodb-bson",
             Relocation.of("mongodb", "com{}mongodb"),
@@ -254,7 +254,7 @@ public enum Dependency {
     JEDIS(
             "redis{}clients",
             "jedis",
-            "5.1.0",
+            "5.1.2",
             null,
             "jedis",
             Relocation.of("jedis", "redis{}clients{}jedis"),
