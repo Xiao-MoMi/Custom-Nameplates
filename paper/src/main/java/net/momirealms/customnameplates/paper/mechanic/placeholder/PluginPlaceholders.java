@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.paper.mechanic.placeholder;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.PlaceholderManager;
@@ -26,6 +27,7 @@ import net.momirealms.customnameplates.api.mechanic.font.OffsetFont;
 import net.momirealms.customnameplates.api.mechanic.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.mechanic.placeholder.*;
 import net.momirealms.customnameplates.api.util.FontUtils;
+import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -123,6 +125,11 @@ public class PluginPlaceholders extends PlaceholderExpansion {
                 SwitchText switchText = placeholderManager.getSwitchText(mainArg);
                 if (switchText == null) return "Switch text not exists: " + mainArg;
                 return switchText.getValue(offlinePlayer);
+            }
+            // fix MagicAvatar's ugly colors
+            case "magicavatar" -> {
+                String parsed = PlaceholderAPI.setPlaceholders(offlinePlayer, "%magicavatar_player%");
+                return parsed.replace("§r", "");
             }
         }
 

@@ -51,8 +51,8 @@ dependencies {
     implementation(project(":common"))
 
     // adventure
-    implementation("net.kyori:adventure-api:4.16.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    compileOnly("net.kyori:adventure-api:4.16.0")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.2")
 }
 
 tasks {
