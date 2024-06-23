@@ -2,17 +2,17 @@ plugins {
     id("java")
     id("application")
     id("maven-publish")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 allprojects {
 
-    version = "2.3.3.9"
+    version = "2.4.0"
 
     apply<JavaPlugin>()
     apply(plugin = "java")
     apply(plugin = "application")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.goooler.shadow")
     apply(plugin = "org.gradle.maven-publish")
 
     application {
@@ -20,8 +20,8 @@ allprojects {
     }
 
     repositories {
-        maven("https://maven.aliyun.com/repository/public/")
         mavenCentral()
+        maven("https://maven.aliyun.com/repository/public/")
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://repo.dmulloy2.net/repository/public/")

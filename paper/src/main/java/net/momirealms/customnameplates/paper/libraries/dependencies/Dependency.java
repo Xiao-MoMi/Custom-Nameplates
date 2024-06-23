@@ -63,9 +63,17 @@ public enum Dependency {
     COMMAND_API(
             "dev{}jorel",
             "commandapi-bukkit-shade",
-            "9.4.0",
+            "9.5.1",
             null,
             "commandapi-bukkit",
+            Relocation.of("commandapi", "dev{}jorel{}commandapi")
+    ),
+    COMMAND_API_MOJMAP(
+            "dev{}jorel",
+            "commandapi-bukkit-shade-mojang-mapped",
+            "9.5.1",
+            null,
+            "commandapi-bukkit-mojang-mapped",
             Relocation.of("commandapi", "dev{}jorel{}commandapi")
     ),
     MARIADB_DRIVER(

@@ -286,6 +286,10 @@ public class AdventureManagerImpl implements AdventureManager {
         }
     }
 
+    public Audience audience(Player player) {
+        return adventure.player(player);
+    }
+
     public class CacheSystem {
 
         private final LoadingCache<String, Object> miniMessageToIChatComponentCache;

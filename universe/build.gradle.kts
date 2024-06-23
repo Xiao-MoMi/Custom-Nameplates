@@ -10,7 +10,7 @@ tasks {
     shadowJar {
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate ("org.bstats", "net.momirealms.customnameplates.libraries.bstats")
-        relocate ("net.momirealms.biomeapi", "net.momirealms.customnameplates.libraries.biomeapi")
+        relocate ("net.momirealms.sparrow.heart", "net.momirealms.customnameplates.libraries.sparrow")
         relocate ("org.apache.commons.pool2", "net.momirealms.customnameplates.libraries.commonspool2")
         relocate ("com.mysql", "net.momirealms.customnameplates.libraries.mysql")
         relocate ("org.mariadb", "net.momirealms.customnameplates.libraries.mariadb")

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.paper.util;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
+import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.util.LogUtils;
 
 import java.lang.reflect.Constructor;
@@ -42,23 +43,43 @@ public class ReflectionUtils {
     private static boolean isPaper;
 
     public static void load() {
-        try {
-            Class<?> bar = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss");
-            Field remove = bar.getDeclaredField("f");
-            remove.setAccessible(true);
-            removeBossBarPacket = remove.get(null);
-            Class<?> packetBossClassF = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss$f");
-            progressConstructor = packetBossClassF.getDeclaredConstructor(float.class);
-            progressConstructor.setAccessible(true);
-            Class<?> packetBossClassE = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss$e");
-            updateConstructor = packetBossClassE.getDeclaredConstructor(MinecraftReflection.getIChatBaseComponentClass());
-            updateConstructor.setAccessible(true);
-            iChatComponentMethod = MinecraftReflection.getChatSerializerClass().getMethod("a", String.class);
-            iChatComponentMethod.setAccessible(true);
-            emptyComponent = iChatComponentMethod.invoke(null, "{\"text\":\"\"}");
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
-            LogUtils.severe("Error occurred when loading reflections", exception);
-            exception.printStackTrace();
+        if (CustomNameplatesPlugin.get().getVersionManager().isMojmap()) {
+            try {
+                Class<?> bar = Class.forName("net.minecraft.network.protocol.game.ClientboundBossEventPacket");
+                Field remove = bar.getDeclaredField("REMOVE_OPERATION");
+                remove.setAccessible(true);
+                removeBossBarPacket = remove.get(null);
+                Class<?> packetBossClassF = Class.forName("net.minecraft.network.protocol.game.ClientboundBossEventPacket$UpdateProgressOperation");
+                progressConstructor = packetBossClassF.getDeclaredConstructor(float.class);
+                progressConstructor.setAccessible(true);
+                Class<?> packetBossClassE = Class.forName("net.minecraft.network.protocol.game.ClientboundBossEventPacket$UpdateNameOperation");
+                updateConstructor = packetBossClassE.getDeclaredConstructor(MinecraftReflection.getIChatBaseComponentClass());
+                updateConstructor.setAccessible(true);
+                Class<?> craftChatMessageClass = Class.forName("org.bukkit.craftbukkit.util.CraftChatMessage");
+                iChatComponentMethod = craftChatMessageClass.getDeclaredMethod("fromJSON", String.class);
+                iChatComponentMethod.setAccessible(true);
+                emptyComponent = iChatComponentMethod.invoke(null, "{\"text\":\"\"}");
+            } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
+                LogUtils.severe("Error occurred while loading reflections", exception);
+            }
+        } else {
+            try {
+                Class<?> bar = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss");
+                Field remove = bar.getDeclaredField("f");
+                remove.setAccessible(true);
+                removeBossBarPacket = remove.get(null);
+                Class<?> packetBossClassF = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss$f");
+                progressConstructor = packetBossClassF.getDeclaredConstructor(float.class);
+                progressConstructor.setAccessible(true);
+                Class<?> packetBossClassE = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutBoss$e");
+                updateConstructor = packetBossClassE.getDeclaredConstructor(MinecraftReflection.getIChatBaseComponentClass());
+                updateConstructor.setAccessible(true);
+                iChatComponentMethod = MinecraftReflection.getChatSerializerClass().getMethod("a", String.class);
+                iChatComponentMethod.setAccessible(true);
+                emptyComponent = iChatComponentMethod.invoke(null, "{\"text\":\"\"}");
+            } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
+                LogUtils.severe("Error occurred while loading reflections", exception);
+            }
         }
         try {
             Class<?> componentClass = Class.forName("net;kyori;adventure;text;Component".replace(";", "."));

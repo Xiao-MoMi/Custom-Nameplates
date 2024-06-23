@@ -27,13 +27,15 @@ import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.message.MessageType;
-import net.momirealms.customnameplates.common.team.TeamCollisionRule;
-import net.momirealms.customnameplates.common.team.TeamColor;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
+import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
-import net.momirealms.customnameplates.paper.mechanic.team.packet.*;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
+import net.momirealms.sparrow.heart.SparrowHeart;
+import net.momirealms.sparrow.heart.feature.team.TeamCollisionRule;
+import net.momirealms.sparrow.heart.feature.team.TeamColor;
+import net.momirealms.sparrow.heart.feature.team.TeamVisibility;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -50,13 +52,11 @@ import java.util.Optional;
 public class TeamManagerImpl implements TeamManager, PluginMessageListener {
 
     private final CustomNameplatesPlugin plugin;
-    private final TeamPacketAdaptor teamPacketAdaptor;
     private TeamProvider teamProvider;
     private static final String CHANNEL = "customnameplates:cnp";
 
     public TeamManagerImpl(CustomNameplatesPlugin plugin) {
         this.plugin = plugin;
-        this.teamPacketAdaptor = new TeamPacket_1_17();
     }
 
     /**
@@ -78,35 +78,33 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
             }
             playerTeam.addPlayer(player);
         } else {
-            PacketContainer createOwner = teamPacketAdaptor.getTeamCreatePacket(
-                    TeamCreate.builder()
-                            .teamName(team)
-                            .color(TeamColor.WHITE)
-                            .display("")
-                            .prefix("")
-                            .suffix("")
-                            .members(Collections.singletonList(player.getName()))
-                            .collisionRule(TeamCollisionRule.ALWAYS)
-                            .tagVisibility(TeamTagVisibility.ALWAYS)
-                            .build()
-            );
             for (Player online : Bukkit.getOnlinePlayers()) {
-                PacketManager.getInstance().send(online, createOwner);
+                SparrowHeart.getInstance().addClientSideTeam(online, team,
+                        Collections.singletonList(player.getName()),
+                        "{\"text\":\"\"}",
+                        "{\"text\":\"\"}",
+                        "{\"text\":\"\"}",
+                        TeamVisibility.ALWAYS,
+                        TeamVisibility.ALWAYS,
+                        TeamCollisionRule.ALWAYS,
+                        TeamColor.WHITE,
+                        true,
+                        true
+                );
                 if (online == player) continue;
                 String onlineTeam = teamProvider.getTeam(online, null);
-                PacketContainer createOther = teamPacketAdaptor.getTeamCreatePacket(
-                        TeamCreate.builder()
-                                .teamName(onlineTeam)
-                                .color(TeamColor.WHITE)
-                                .display("")
-                                .prefix("")
-                                .suffix("")
-                                .members(Collections.singletonList(online.getName()))
-                                .collisionRule(TeamCollisionRule.ALWAYS)
-                                .tagVisibility(TeamTagVisibility.ALWAYS)
-                                .build()
+                SparrowHeart.getInstance().addClientSideTeam(player, team,
+                        Collections.singletonList(onlineTeam),
+                        "{\"text\":\"\"}",
+                        "{\"text\":\"\"}",
+                        "{\"text\":\"\"}",
+                        TeamVisibility.ALWAYS,
+                        TeamVisibility.ALWAYS,
+                        TeamCollisionRule.ALWAYS,
+                        TeamColor.WHITE,
+                        true,
+                        true
                 );
-                PacketManager.getInstance().send(player, createOther);
             }
         }
     }
@@ -127,28 +125,23 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             Optional.ofNullable(scoreboard.getTeam(team)).ifPresent(Team::unregister);
         } else {
-            PacketContainer packet = teamPacketAdaptor.getTeamRemovePacket(
-                    TeamRemove.builder()
-                            .teamName(team)
-                            .build()
-            );
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (player == online) continue;
-                PacketManager.getInstance().send(online, packet);
+                SparrowHeart.getInstance().removeClientSideTeam(online, team);
             }
         }
     }
 
     @Override
-    public void updateTeam(Player owner, Player viewer, String prefix, String suffix, TeamColor color, TeamTagVisibility visibility) {
+    public void updateTeam(Player owner, Player viewer, String prefix, String suffix, net.momirealms.customnameplates.common.team.TeamColor color, TeamTagVisibility visibility) {
         if (CNConfig.disableTeamManage) return;
         String team = teamProvider.getTeam(owner, viewer);
         if (team == null) {
             LogUtils.warn("Failed to get player " + owner.getName() + "'s team for viewer " + viewer.getName());
             return;
         }
-        if (color == TeamColor.NONE || color == TeamColor.CUSTOM)
-            color = TeamColor.WHITE;
+        if (color == net.momirealms.customnameplates.common.team.TeamColor.NONE || color == net.momirealms.customnameplates.common.team.TeamColor.CUSTOM)
+            color = net.momirealms.customnameplates.common.team.TeamColor.WHITE;
         if (plugin.getNameplateManager().isProxyMode()) {
             this.sendPluginMessage(
                     MessageType.UPDATE,
@@ -160,18 +153,18 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
                     visibility.name()
             );
         } else {
-            PacketContainer packet = teamPacketAdaptor.getTeamUpdatePacket(
-                    TeamUpdate.builder()
-                            .teamName(team)
-                            .color(color)
-                            .display("")
-                            .prefix(prefix)
-                            .suffix(suffix)
-                            .tagVisibility(visibility)
-                            .collisionRule(TeamCollisionRule.ALWAYS)
-                            .build()
+            SparrowHeart.getInstance().updateClientSideTeam(
+                    viewer, team,
+                    "{\"text\":\"\"}",
+                    AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(prefix)),
+                    AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(suffix)),
+                    TeamVisibility.ALWAYS,
+                    TeamVisibility.ALWAYS,
+                    TeamCollisionRule.ALWAYS,
+                    TeamColor.valueOf(color.name()),
+                    true,
+                    true
             );
-            PacketManager.getInstance().send(viewer, packet);
         }
     }
 

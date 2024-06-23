@@ -22,6 +22,7 @@ import net.momirealms.customnameplates.api.manager.VersionManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,14 +41,11 @@ import java.util.concurrent.CompletableFuture;
  */
 public class VersionManagerImpl implements VersionManager, Listener {
 
-    private final boolean isNewerThan1_19;
-    private final boolean isNewerThan1_19_R2;
-    private final boolean isNewerThan1_19_R3;
-    private final boolean isNewerThan1_20;
-    private final boolean isNewerThan1_20_R2;
-    private final String serverVersion;
+
+    private final float mcVersion;
     private final CustomNameplatesPluginImpl plugin;
     private boolean isFolia;
+    private boolean isMojmap;
     private final String pluginVersion;
     private boolean isLatest = true;
 
@@ -55,47 +53,47 @@ public class VersionManagerImpl implements VersionManager, Listener {
     public VersionManagerImpl(CustomNameplatesPluginImpl plugin) {
         this.plugin = plugin;
         // Get the server version
-        serverVersion = plugin.getServer().getClass().getPackage().getName().split("\\.")[3];
-        String[] split = serverVersion.split("_");
-        int main_ver = Integer.parseInt(split[1]);
-        // Determine if the server version is newer than 1_19_R2 and 1_20_R1
-        if (main_ver >= 20) {
-            isNewerThan1_20_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
-            isNewerThan1_19_R2 = isNewerThan1_19_R3 = true;
-            isNewerThan1_20 = true;
-            isNewerThan1_19 = true;
-        } else if (main_ver == 19) {
-            isNewerThan1_19_R2 = Integer.parseInt(split[2].substring(1)) >= 2;
-            isNewerThan1_19_R3 = Integer.parseInt(split[2].substring(1)) >= 3;
-            isNewerThan1_20 = isNewerThan1_20_R2 = false;
-            isNewerThan1_19 = true;
-        } else {
-            isNewerThan1_19 = isNewerThan1_19_R2= isNewerThan1_19_R3 = false;
-            isNewerThan1_20 = isNewerThan1_20_R2 = false;
-        }
-        // Check if the server is Folia
-        try {
-            Class.forName("io.papermc.paper.threadedregions.scheduler.AsyncScheduler");
-            this.isFolia = true;
-        } catch (ClassNotFoundException ignored) {
-        }
+
+        String[] split = Bukkit.getServer().getBukkitVersion().split("-")[0].split("\\.");
+        this.mcVersion = Float.parseFloat(split[1] + "." + split[2]);
+
         // Get the plugin version
         this.pluginVersion = plugin.getDescription().getVersion();
+
+        // Check if the server is Folia
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            this.isFolia = true;
+        } catch (ClassNotFoundException ignored) {
+            this.isFolia = false;
+        }
+
+        // Check if the server is Mojmap
+        try {
+            Class.forName("net.minecraft.network.protocol.game.ClientboundBossEventPacket");
+            this.isMojmap = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
+
+    @Override
+    public boolean isMojmap() {
+        return isMojmap;
     }
 
     @Override
     public boolean isVersionNewerThan1_19_R2() {
-        return isNewerThan1_19_R2;
+        return mcVersion >= 19.3;
     }
 
     @Override
     public boolean isVersionNewerThan1_20() {
-        return isNewerThan1_20;
+        return mcVersion >= 20;
     }
 
     @Override
     public boolean isVersionNewerThan1_20_R2() {
-        return isNewerThan1_20_R2;
+        return mcVersion >= 20.2;
     }
 
     @NotNull
@@ -111,36 +109,42 @@ public class VersionManagerImpl implements VersionManager, Listener {
 
     @Override
     public boolean isVersionNewerThan1_19() {
-        return isNewerThan1_19;
+        return mcVersion >= 19;
     }
 
     @Override
     public boolean isVersionNewerThan1_19_R3() {
-        return isNewerThan1_19_R3;
+        return mcVersion >= 19.4;
     }
 
     @Override
     public int getPackFormat() {
-        switch (serverVersion) {
-            case "v1_20_R3" -> {
+        switch (Bukkit.getServer().getBukkitVersion().split("-")[0]) {
+            case "1.21" -> {
+                return 34;
+            }
+            case "1.20.5", "1.20.6" -> {
+                return 32;
+            }
+            case "1.20.3", "1.20.4" -> {
                 return 22;
             }
-            case "v1_20_R2" -> {
+            case "1.20.2" -> {
                 return 18;
             }
-            case "v1_20_R1" -> {
+            case "1.20", "1.20.1" -> {
                 return 15;
             }
-            case "v1_19_R3" -> {
+            case "1.19.4" -> {
                 return 13;
             }
-            case "v1_19_R2" -> {
+            case "1.19.3" -> {
                 return 12;
             }
-            case "v1_19_R1" -> {
+            case "1.19", "1.19.1", "1.19.2" -> {
                 return 9;
             }
-            case "v1_18_R1", "v1_18_R2" -> {
+            case "1.18", "1.18.1", "1.18.2" -> {
                 return 8;
             }
             default -> {
@@ -152,11 +156,6 @@ public class VersionManagerImpl implements VersionManager, Listener {
     @Override
     public boolean isFolia() {
         return isFolia;
-    }
-
-    @Override
-    public String getServerVersion() {
-        return serverVersion;
     }
 
     // Method to asynchronously check for plugin updates

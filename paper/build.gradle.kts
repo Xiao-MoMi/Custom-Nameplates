@@ -38,7 +38,6 @@ dependencies {
     compileOnly("commons-io:commons-io:2.15.1")
     compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.42")
-    implementation("com.github.Xiao-MoMi:BiomeAPI:0.3")
 
     // chat channels
     compileOnly(files("libs/VentureChat-3.7.1.jar"))
@@ -49,17 +48,18 @@ dependencies {
     // api module
     implementation(project(":api"))
     implementation(project(":common"))
+    implementation(files("libs/Sparrow-Heart-0.17.jar"))
 
     // adventure
-    compileOnly("net.kyori:adventure-api:4.16.0")
-    compileOnly("net.kyori:adventure-platform-bukkit:4.3.2")
+    compileOnly("net.kyori:adventure-api:4.17.0")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
 }
 
 tasks {
     shadowJar {
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate ("org.bstats", "net.momirealms.customnameplates.libraries.bstats")
-        relocate ("net.momirealms.biomeapi", "net.momirealms.customnameplates.libraries.biomeapi")
+        relocate ("net.momirealms.sparrow.heart", "net.momirealms.customnameplates.libraries.sparrow")
         relocate ("org.apache.commons.pool2", "net.momirealms.customnameplates.libraries.commonspool2")
         relocate ("com.mysql", "net.momirealms.customnameplates.libraries.mysql")
         relocate ("org.mariadb", "net.momirealms.customnameplates.libraries.mariadb")

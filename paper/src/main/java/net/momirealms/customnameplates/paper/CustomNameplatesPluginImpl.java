@@ -64,13 +64,14 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
 
     @Override
     public void onLoad() {
+        this.versionManager = new VersionManagerImpl(this);
         this.dependencyManager = new DependencyManagerImpl(this, new ReflectionClassPathAppender(this.getClassLoader()));
         this.dependencyManager.loadDependencies(new ArrayList<>(
                 List.of(
                         Dependency.GSON,
                         Dependency.SLF4J_API,
                         Dependency.SLF4J_SIMPLE,
-                        Dependency.COMMAND_API,
+                        versionManager.isMojmap() ? Dependency.COMMAND_API_MOJMAP : Dependency.COMMAND_API,
                         Dependency.BOOSTED_YAML,
                         Dependency.BIOME_API,
                         Dependency.ADVENTURE_BUNDLE,
@@ -99,7 +100,6 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
             return;
         }
         this.adventureManager = new AdventureManagerImpl(this);
-        this.versionManager = new VersionManagerImpl(this);
         this.scheduler = new SchedulerImpl(this);
         this.storageManager = new StorageManagerImpl(this);
         this.requirementManager = new RequirementManagerImpl(this);
