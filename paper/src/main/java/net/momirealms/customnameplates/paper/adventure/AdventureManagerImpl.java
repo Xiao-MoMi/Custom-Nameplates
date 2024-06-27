@@ -75,8 +75,8 @@ public class AdventureManagerImpl implements AdventureManager {
         this.cacheSystem = new CacheSystem(CNConfig.cacheSize);
     }
 
-    public WrappedChatComponent getWrappedChatComponentFromMiniMessage(String text) {
-        return cacheSystem.getWrappedChatComponentFromCache(text);
+    public String getJsonComponentFromMiniMessage(String text) {
+        return cacheSystem.getJsonComponentFromCache(text);
     }
 
     public Object getIChatComponentFromMiniMessage(String text) {
@@ -294,7 +294,7 @@ public class AdventureManagerImpl implements AdventureManager {
 
         private final LoadingCache<String, Object> miniMessageToIChatComponentCache;
         private final LoadingCache<String, Component> miniMessageToComponentCache;
-        private final LoadingCache<String, WrappedChatComponent> miniMessageToWrappedChatComponentCache;
+        private final LoadingCache<String, String> miniMessageToJsonChatComponentCache;
 
         public CacheSystem(int size) {
             miniMessageToIChatComponentCache = CacheBuilder.newBuilder()
@@ -319,15 +319,15 @@ public class AdventureManagerImpl implements AdventureManager {
                                     return fetchComponent(text);
                                 }
                             });
-            miniMessageToWrappedChatComponentCache = CacheBuilder.newBuilder()
+            miniMessageToJsonChatComponentCache = CacheBuilder.newBuilder()
                     .maximumSize(size)
                     .expireAfterWrite(10, TimeUnit.MINUTES)
                     .build(
                             new CacheLoader<>() {
                                 @NotNull
                                 @Override
-                                public WrappedChatComponent load(@NotNull String text) {
-                                    return fetchWrappedChatComponent(text);
+                                public String load(@NotNull String text) {
+                                    return fetchJsonChatComponent(text);
                                 }
                             });
         }
@@ -353,11 +353,11 @@ public class AdventureManagerImpl implements AdventureManager {
         }
 
         @NotNull
-        private WrappedChatComponent fetchWrappedChatComponent(String text) {
+        private String fetchJsonChatComponent(String text) {
             if (CNConfig.legacyColorSupport) {
-                return WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(legacyToMiniMessage(text))));
+                return GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(legacyToMiniMessage(text)));
             } else {
-                return WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text)));
+                return GsonComponentSerializer.gson().serialize(MiniMessage.miniMessage().deserialize(text));
             }
         }
 
@@ -379,12 +379,12 @@ public class AdventureManagerImpl implements AdventureManager {
             }
         }
 
-        public WrappedChatComponent getWrappedChatComponentFromCache(String text) {
+        public String getJsonComponentFromCache(String text) {
             try {
-                return miniMessageToWrappedChatComponentCache.get(text);
+                return miniMessageToJsonChatComponentCache.get(text);
             } catch (ExecutionException e) {
                 e.printStackTrace();
-                return WrappedChatComponent.fromText("");
+                return "{\"text\":\"\"}";
             }
         }
     }

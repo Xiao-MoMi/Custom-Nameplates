@@ -48,7 +48,7 @@ dependencies {
     // api module
     implementation(project(":api"))
     implementation(project(":common"))
-    implementation(files("libs/Sparrow-Heart-0.17.jar"))
+    implementation(files("libs/Sparrow-Heart-0.18.jar"))
 
     // adventure
     compileOnly("net.kyori:adventure-api:4.17.0")

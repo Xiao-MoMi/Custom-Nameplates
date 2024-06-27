@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.paper.util;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
@@ -55,7 +56,7 @@ public class FakeEntityUtils {
         WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
         WrappedDataWatcher.Serializer serializer1 = WrappedDataWatcher.Registry.get(Boolean.class);
         WrappedDataWatcher.Serializer serializer2 = WrappedDataWatcher.Registry.get(Byte.class);
-        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(AdventureManagerImpl.getInstance().getWrappedChatComponentFromMiniMessage(miniMessage).getHandle()));
+        wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(WrappedChatComponent.fromJson(AdventureManagerImpl.getInstance().getJsonComponentFromMiniMessage(miniMessage)).getHandle()));
         wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, serializer1), true);
         byte flag = 0x20;
         if (sneak) flag += (byte) 0x02;
