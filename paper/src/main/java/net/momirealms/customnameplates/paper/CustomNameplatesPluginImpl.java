@@ -73,8 +73,6 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
                         Dependency.SLF4J_SIMPLE,
                         versionManager.isMojmap() ? Dependency.COMMAND_API_MOJMAP : Dependency.COMMAND_API,
                         Dependency.BOOSTED_YAML,
-                        Dependency.BIOME_API,
-                        Dependency.ADVENTURE_BUNDLE,
                         Dependency.MYSQL_DRIVER,
                         Dependency.MARIADB_DRIVER,
                         Dependency.MONGODB_DRIVER_SYNC,

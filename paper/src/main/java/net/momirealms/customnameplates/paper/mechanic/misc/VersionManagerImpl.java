@@ -55,7 +55,7 @@ public class VersionManagerImpl implements VersionManager, Listener {
         // Get the server version
 
         String[] split = Bukkit.getServer().getBukkitVersion().split("-")[0].split("\\.");
-        this.mcVersion = Float.parseFloat(split[1] + "." + split[2]);
+        this.mcVersion = Float.parseFloat(split[1] + "." + (split.length >= 3 ? split[2] : "0"));
 
         // Get the plugin version
         this.pluginVersion = plugin.getDescription().getVersion();

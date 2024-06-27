@@ -88,13 +88,13 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
                         TeamVisibility.ALWAYS,
                         TeamCollisionRule.ALWAYS,
                         TeamColor.WHITE,
-                        true,
-                        true
+                        false,
+                        false
                 );
                 if (online == player) continue;
                 String onlineTeam = teamProvider.getTeam(online, null);
-                SparrowHeart.getInstance().addClientSideTeam(player, team,
-                        Collections.singletonList(onlineTeam),
+                SparrowHeart.getInstance().addClientSideTeam(player, onlineTeam,
+                        Collections.singletonList(online.getName()),
                         "{\"text\":\"\"}",
                         "{\"text\":\"\"}",
                         "{\"text\":\"\"}",
@@ -102,8 +102,8 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
                         TeamVisibility.ALWAYS,
                         TeamCollisionRule.ALWAYS,
                         TeamColor.WHITE,
-                        true,
-                        true
+                        false,
+                        false
                 );
             }
         }
@@ -156,14 +156,14 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
             SparrowHeart.getInstance().updateClientSideTeam(
                     viewer, team,
                     "{\"text\":\"\"}",
-                    AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(prefix)),
-                    AdventureManagerImpl.getInstance().componentToJson(AdventureManagerImpl.getInstance().getComponentFromMiniMessage(suffix)),
-                    TeamVisibility.ALWAYS,
+                    AdventureManagerImpl.getInstance().getJsonComponentFromMiniMessage(prefix),
+                    AdventureManagerImpl.getInstance().getJsonComponentFromMiniMessage(suffix),
+                    TeamVisibility.valueOf(visibility.name()),
                     TeamVisibility.ALWAYS,
                     TeamCollisionRule.ALWAYS,
                     TeamColor.valueOf(color.name()),
-                    true,
-                    true
+                    false,
+                    false
             );
         }
     }

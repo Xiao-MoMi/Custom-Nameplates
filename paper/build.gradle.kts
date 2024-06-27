@@ -48,11 +48,11 @@ dependencies {
     // api module
     implementation(project(":api"))
     implementation(project(":common"))
-    implementation(files("libs/Sparrow-Heart-0.18.jar"))
+    implementation(files("libs/Sparrow-Heart-0.19.jar"))
 
     // adventure
-    compileOnly("net.kyori:adventure-api:4.17.0")
-    compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
+    implementation("net.kyori:adventure-api:4.17.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.3")
 }
 
 tasks {

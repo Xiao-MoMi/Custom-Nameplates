@@ -202,24 +202,6 @@ public enum Dependency {
             "2.10.1",
             null,
             "gson"
-    ),
-    BIOME_API(
-            "com{}github{}Xiao-MoMi",
-            "BiomeAPI",
-            "0.6",
-            "jitpack",
-            "biome-api",
-            Relocation.of("biomeapi", "net{}momirealms{}biomeapi")
-    ),
-    ADVENTURE_BUNDLE(
-            "com.github.Xiao-MoMi",
-            "Adventure-Bundle",
-            "4.16.0",
-            "jitpack",
-            "adventure-bundle",
-            Relocation.of("adventure", "net{}kyori{}adventure"),
-            Relocation.of("option", "net{}kyori{}option"),
-            Relocation.of("examination", "net{}kyori{}examination")
     );
 
     private final String mavenRepoPath;

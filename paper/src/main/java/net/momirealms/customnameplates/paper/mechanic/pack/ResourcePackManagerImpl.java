@@ -496,23 +496,23 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
 
     private void setPackFormat() {
         plugin.saveResource("ResourcePack" + File.separator + "pack.mcmeta", false);
-        File format_file = new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack.mcmeta");
-        String line;
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(format_file), StandardCharsets.UTF_8))) {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append(System.lineSeparator());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
-                        "ResourcePack" + File.separator + "pack.mcmeta")), StandardCharsets.UTF_8))) {
-            writer.write(sb.toString().replace("%version%", String.valueOf(plugin.getVersionManager().getPackFormat())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        File format_file = new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack.mcmeta");
+//        String line;
+//        StringBuilder sb = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(format_file), StandardCharsets.UTF_8))) {
+//            while ((line = reader.readLine()) != null) {
+//                sb.append(line).append(System.lineSeparator());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try (BufferedWriter writer = new BufferedWriter(
+//                new OutputStreamWriter(new FileOutputStream(new File(plugin.getDataFolder(),
+//                        "ResourcePack" + File.separator + "pack.mcmeta")), StandardCharsets.UTF_8))) {
+//            writer.write(sb.toString().replace("%version%", String.valueOf(plugin.getVersionManager().getPackFormat())));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static class ShaderConstants {
