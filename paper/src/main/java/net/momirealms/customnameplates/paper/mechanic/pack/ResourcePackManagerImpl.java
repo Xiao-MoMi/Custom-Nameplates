@@ -90,7 +90,8 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         // save unicodes
         this.saveLegacyUnicodes();
         // generate shaders
-        this.generateShaders();
+        this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
+        this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
 
         // add offset characters
         this.getOffsets(texturesFolder).forEach(providers::add);
@@ -110,9 +111,8 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         this.copyResourcePackToHookedPlugins(resourcePackFolder);
     }
 
-    private void generateShaders() {
+    private void generateShaders(String path) {
         if (!CNConfig.enableShader) return;
-        String path = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator;
         plugin.saveResource(path + "rendertype_text.fsh", true);
         plugin.saveResource(path + "rendertype_text.json", true);
         plugin.saveResource(path + "rendertype_text.vsh", true);

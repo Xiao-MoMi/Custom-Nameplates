@@ -1,1 +1,21 @@
-{"pack":{"pack_format":%version%,"description":"CustomNameplates"}}
+{
+  "pack":{
+    "pack_format": 8,
+    "description":"CustomNameplates",
+    "supported_formats": {
+      "min_inclusive": 8,
+      "max_inclusive": 34
+    }
+  },
+  "overlays": {
+    "entries": [
+      {
+        "formats": {
+          "min_inclusive": 32,
+          "max_inclusive": 34
+        },
+        "directory": "overlay_1_20_5"
+      }
+    ]
+  }
+}
