@@ -327,6 +327,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         this.removeEntityIDFromMap(player.getEntityId());
         this.teamTagManager.handlePlayerQuit(player);
         this.unlimitedTagManager.handlePlayerQuit(player);
+        this.removeNameplatePlayerFromMap(player.getUniqueId());
 
         // nameplate module part
         if (CNConfig.nameplateModule) {
