@@ -85,8 +85,10 @@ public class StorageManagerImpl implements Listener, StorageManager {
                if (player == null || !player.isOnline()) return;
                var onlineUser = new OnlineUser(player, playerData);
                this.putOnlineUserInMap(onlineUser);
-               NameplateDataLoadEvent syncEvent = new NameplateDataLoadEvent(uuid, onlineUser);
-               plugin.getServer().getPluginManager().callEvent(syncEvent);
+               plugin.getScheduler().runTaskAsync(() -> {
+                   NameplateDataLoadEvent syncEvent = new NameplateDataLoadEvent(uuid, onlineUser);
+                   plugin.getServer().getPluginManager().callEvent(syncEvent);
+               });
            }
         });
     }

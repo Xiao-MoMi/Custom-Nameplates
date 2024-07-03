@@ -22,7 +22,7 @@ public class NoneStorage extends AbstractStorage {
 
     @Override
     public CompletableFuture<Optional<PlayerData>> getPlayerData(UUID uuid) {
-        return CompletableFuture.completedFuture(Optional.empty());
+        return CompletableFuture.completedFuture(Optional.of(PlayerData.empty()));
     }
 
     @Override
