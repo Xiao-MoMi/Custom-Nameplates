@@ -26,5 +26,6 @@ public enum StorageType {
     MySQL,
     MariaDB,
     MongoDB,
-    Redis
+    Redis,
+    None
 }

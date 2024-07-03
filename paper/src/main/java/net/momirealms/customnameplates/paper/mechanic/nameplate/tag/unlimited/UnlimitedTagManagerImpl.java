@@ -213,7 +213,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     }
 
     public void handlePlayerQuit(Player quit) {
-        UnlimitedEntity unlimitedEntity = getUnlimitedObject(quit.getUniqueId());
+        UnlimitedEntity unlimitedEntity = removeUnlimitedEntityFromMap(quit.getUniqueId());
         if (unlimitedEntity != null) {
             unlimitedEntity.destroy();
         }
