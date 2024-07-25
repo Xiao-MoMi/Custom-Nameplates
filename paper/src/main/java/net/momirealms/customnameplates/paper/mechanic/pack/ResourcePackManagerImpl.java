@@ -90,9 +90,21 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         // save unicodes
         this.saveLegacyUnicodes();
         // generate shaders
-        this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
-        this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
-
+        if (!plugin.getVersionManager().isVersionNewerThan1_20_5()) {
+            this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
+            this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
+        } else {
+            this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator);
+            try {
+                FileUtils.copyDirectory(
+                        new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"),
+                        new File(plugin.getDataFolder(), "ResourcePack")
+                );
+                FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         // add offset characters
         this.getOffsets(texturesFolder).forEach(providers::add);
         // add nameplate characters
@@ -495,7 +507,14 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     }
 
     private void setPackFormat() {
-        plugin.saveResource("ResourcePack" + File.separator + "pack.mcmeta", false);
+        if (plugin.getVersionManager().isVersionNewerThan1_20_5()) {
+            plugin.saveResource("ResourcePack" + File.separator + "pack_1_20_5.mcmeta", false);
+            File file = new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack_1_20_5.mcmeta");
+            file.renameTo(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack.mcmeta"));
+        } else {
+            plugin.saveResource("ResourcePack" + File.separator + "pack.mcmeta", false);
+        }
+
 //        File format_file = new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "pack.mcmeta");
 //        String line;
 //        StringBuilder sb = new StringBuilder();

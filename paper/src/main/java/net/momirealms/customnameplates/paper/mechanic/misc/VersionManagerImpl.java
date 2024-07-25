@@ -96,6 +96,11 @@ public class VersionManagerImpl implements VersionManager, Listener {
         return mcVersion >= 20.2;
     }
 
+    @Override
+    public boolean isVersionNewerThan1_20_5() {
+        return mcVersion >= 20.5;
+    }
+
     @NotNull
     @Override
     public String getPluginVersion() {

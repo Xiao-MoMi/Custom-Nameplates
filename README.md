@@ -1,6 +1,7 @@
 # Custom-Nameplates
 
 ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Xiao-MoMi/Custom-Nameplates)
+![Code Size](https://img.shields.io/github/languages/code-size/Xiao-MoMi/Custom-Nameplates)
 ![bStats Servers](https://img.shields.io/bstats/servers/16649)
 ![bStats Players](https://img.shields.io/bstats/players/16649)
 ![GitHub](https://img.shields.io/github/license/Xiao-MoMi/Custom-Nameplates)

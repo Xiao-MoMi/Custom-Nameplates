@@ -35,6 +35,8 @@ public interface VersionManager {
      */
     CompletionStage<Boolean> checkUpdate();
 
+    boolean isVersionNewerThan1_20_5();
+
     /**
      * Get plugin version
      *
