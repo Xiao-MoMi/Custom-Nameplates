@@ -48,7 +48,7 @@ dependencies {
     // api module
     implementation(project(":api"))
     implementation(project(":common"))
-    implementation("com.github.Xiao-MoMi:Sparrow-Heart:0.33")
+    implementation("com.github.Xiao-MoMi:Sparrow-Heart:0.34")
 
     // adventure
     implementation("net.kyori:adventure-api:4.17.0")

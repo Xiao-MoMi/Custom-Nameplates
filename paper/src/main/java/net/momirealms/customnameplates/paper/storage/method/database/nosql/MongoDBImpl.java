@@ -67,9 +67,10 @@ public class MongoDBImpl extends AbstractStorage {
 
         collectionPrefix = section.getString("collection-prefix", "nameplates");
         var settings = MongoClientSettings.builder().uuidRepresentation(UuidRepresentation.STANDARD);
-        if (!section.getString("connection-uri", "").equals("")) {
+        if (!section.getString("connection-uri", "").isEmpty()) {
             settings.applyConnectionString(new ConnectionString(section.getString("connection-uri", "")));
-            mongoClient = MongoClients.create(settings.build());
+            this.mongoClient = MongoClients.create(settings.build());
+            this.database = mongoClient.getDatabase(section.getString("database", "minecraft"));
             return;
         }
 
