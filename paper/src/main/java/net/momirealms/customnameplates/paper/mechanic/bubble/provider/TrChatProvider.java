@@ -71,6 +71,11 @@ public class TrChatProvider extends AbstractChatProvider {
         }
     }
 
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        return false;
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onTrChat(TrChatEvent event) {
         if (!event.getForward()) return;

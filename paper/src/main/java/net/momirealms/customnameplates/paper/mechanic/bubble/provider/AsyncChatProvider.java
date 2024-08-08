@@ -52,6 +52,11 @@ public class AsyncChatProvider extends AbstractChatProvider {
         return true;
     }
 
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        return false;
+    }
+
     // This event is not async sometimes
     @EventHandler (ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
