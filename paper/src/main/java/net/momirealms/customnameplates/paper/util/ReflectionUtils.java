@@ -135,7 +135,7 @@ public class ReflectionUtils {
 
     public static Object getKerFromString(String key) {
         try {
-            return keyFromStringMethod.invoke(key);
+            return keyFromStringMethod.invoke(null, key);
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
