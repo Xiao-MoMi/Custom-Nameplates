@@ -95,10 +95,8 @@ public class CarbonChatProvider extends AbstractChatProvider {
             return false;
         }
         ChatChannel selectedChannel = cPlayer.selectedChannel();
-        if (selectedChannel == null) {
-            return false;
-        }
-        Object key = getChannelKey(selectedChannel);
+        ChatChannel currentChannel = selectedChannel != null ? selectedChannel : api.channelRegistry().defaultChannel();
+        Object key = getChannelKey(currentChannel);
         String str = ReflectionUtils.getKeyAsString(key);
         return str.equals(channelID);
     }
