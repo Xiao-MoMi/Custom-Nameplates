@@ -30,9 +30,11 @@ import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 public class CarbonChatProvider extends AbstractChatProvider {
 
@@ -123,6 +125,28 @@ public class CarbonChatProvider extends AbstractChatProvider {
             return true;
         }
         return player.hasPermission(perm);
+    }
+
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        CarbonPlayer sPlayer = carbonPlayer(sender.getUniqueId());
+        CarbonPlayer rPlayer = carbonPlayer(receiver.getUniqueId());
+        if (sPlayer == null || rPlayer == null) {
+            return false;
+        }
+        return sPlayer.ignoring(rPlayer.uuid());
+    }
+
+    @Nullable
+    private CarbonPlayer carbonPlayer(UUID uuid) {
+        CarbonPlayer carbonPlayer = null;
+        for (CarbonPlayer cPlayer : api.server().players()) {
+            if (cPlayer.uuid().equals(uuid)) {
+                carbonPlayer = cPlayer;
+                break;
+            }
+        }
+        return carbonPlayer;
     }
 
     private Object getChannelKey(ChatChannel channel) {

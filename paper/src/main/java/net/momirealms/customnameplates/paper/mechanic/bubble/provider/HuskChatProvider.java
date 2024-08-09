@@ -69,6 +69,11 @@ public class HuskChatProvider extends AbstractChatProvider {
         return player.hasPermission(receivePerm);
     }
 
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        return false;
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onHuskChat(ChatMessageEvent event) {
         String channel = event.getChannelId();

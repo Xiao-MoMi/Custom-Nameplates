@@ -65,6 +65,11 @@ public class VentureChatProvider extends AbstractChatProvider {
         return true;
     }
 
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        return false;
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onVentureChat(VentureChatEvent event) {
         String channelName = event.getChannel().getName();

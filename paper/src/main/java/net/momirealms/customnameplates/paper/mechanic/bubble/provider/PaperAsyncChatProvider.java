@@ -63,6 +63,11 @@ public class PaperAsyncChatProvider extends AbstractChatProvider {
         return true;
     }
 
+    @Override
+    public boolean isIgnoring(Player sender, Player receiver) {
+        return false;
+    }
+
     @EventHandler (ignoreCancelled = true)
     public void onChat(AsyncChatEvent event) {
         Object component = getComponentFromEvent(event);
