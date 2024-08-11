@@ -134,7 +134,7 @@ public class CarbonChatProvider extends AbstractChatProvider {
         if (sPlayer == null || rPlayer == null) {
             return false;
         }
-        return sPlayer.ignoring(rPlayer.uuid());
+        return rPlayer.ignoring(sPlayer.uuid());
     }
 
     @Nullable

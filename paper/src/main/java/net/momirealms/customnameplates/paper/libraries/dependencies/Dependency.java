@@ -87,7 +87,7 @@ public enum Dependency {
     BOOSTED_YAML(
             "dev{}dejvokep",
             "boosted-yaml",
-            "1.3.4",
+            "1.3.6",
             null,
             "boosted-yaml",
             Relocation.of("boostedyaml", "dev{}dejvokep{}boostedyaml")
@@ -95,7 +95,7 @@ public enum Dependency {
     MYSQL_DRIVER(
             "com{}mysql",
             "mysql-connector-j",
-            "8.4.0",
+            "9.0.0",
             null,
             "mysql-connector-j",
             Relocation.of("mysql", "com{}mysql")
@@ -110,7 +110,7 @@ public enum Dependency {
     SQLITE_DRIVER(
             "org.xerial",
             "sqlite-jdbc",
-            "3.45.3.0",
+            "3.46.0.1",
             null,
             "sqlite-jdbc"
     ),

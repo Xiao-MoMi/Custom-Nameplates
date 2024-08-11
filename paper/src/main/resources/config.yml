@@ -1,5 +1,5 @@
 # Do not change
-config-version: '26'
+config-version: '27'
 
 # Debug mode
 debug: false
@@ -40,6 +40,7 @@ integrations:
     VentureChat: false
     HuskChat: false
     CarbonChat: false
+    AdvancedChat: false
 
 resource-pack:
   # disable resource pack generation on server start

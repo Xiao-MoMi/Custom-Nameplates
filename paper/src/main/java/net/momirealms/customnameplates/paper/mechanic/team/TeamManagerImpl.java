@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.paper.mechanic.team;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -29,7 +28,6 @@ import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.common.message.MessageType;
 import net.momirealms.customnameplates.common.team.TeamTagVisibility;
 import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
-import net.momirealms.customnameplates.paper.mechanic.misc.PacketManager;
 import net.momirealms.customnameplates.paper.mechanic.team.provider.*;
 import net.momirealms.customnameplates.paper.setting.CNConfig;
 import net.momirealms.sparrow.heart.SparrowHeart;

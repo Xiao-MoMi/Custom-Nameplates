@@ -22,7 +22,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
-import net.momirealms.customnameplates.api.util.LogUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

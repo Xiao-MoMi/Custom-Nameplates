@@ -3,16 +3,16 @@ dependencies {
     compileOnly("dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT")
 
     // command
-    compileOnly("dev.jorel:commandapi-bukkit-core:9.3.0")
+    compileOnly("dev.jorel:commandapi-bukkit-core:9.5.1")
 
     // packet
     compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
 
     // papi
-    compileOnly("me.clip:placeholderapi:2.11.5")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 
     // config
-    compileOnly("dev.dejvokep:boosted-yaml:1.3.2")
+    compileOnly("dev.dejvokep:boosted-yaml:1.3.6")
 
     // bStats
     compileOnly("org.bstats:bstats-bukkit:3.0.2")
@@ -29,7 +29,7 @@ dependencies {
     compileOnly("com.h2database:h2:2.2.224")
     compileOnly("org.mongodb:mongodb-driver-sync:5.0.1")
     compileOnly("com.zaxxer:HikariCP:5.0.1")
-    compileOnly("redis.clients:jedis:5.1.2")
+    compileOnly("redis.clients:jedis:5.1.3")
 
     // others
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0c-r5")
@@ -43,12 +43,13 @@ dependencies {
     compileOnly(files("libs/VentureChat-3.7.1.jar"))
     compileOnly(files("libs/TrChat-2.0.11.jar"))
     compileOnly(files("libs/carbonchat-paper-3.0.0-beta.26.jar"))
+    compileOnly(files("libs/AdvancedChat-1.3.7.jar"))
     compileOnly("net.william278:huskchat:2.7.1")
 
     // api module
     implementation(project(":api"))
     implementation(project(":common"))
-    implementation("com.github.Xiao-MoMi:Sparrow-Heart:0.34")
+    implementation("com.github.Xiao-MoMi:Sparrow-Heart:0.35")
 
     // adventure
     implementation("net.kyori:adventure-api:4.17.0")

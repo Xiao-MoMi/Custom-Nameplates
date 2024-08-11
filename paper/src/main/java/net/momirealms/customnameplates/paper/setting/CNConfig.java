@@ -39,7 +39,7 @@ import java.util.Objects;
 
 public class CNConfig {
 
-    public static String configVersion = "26";
+    public static String configVersion = "27";
     public static int cacheSize;
     public static int corePoolSize;
     public static long keepAliveTime;
@@ -86,6 +86,7 @@ public class CNConfig {
     public static boolean enableShader;
     public static boolean huskChatChannel;
     public static boolean carbonChatChannel;
+    public static boolean advancedChatChannel;
     public static boolean hasLibsDisguise;
 
     public static void load() {
@@ -136,6 +137,7 @@ public class CNConfig {
             ventureChatChannel = integrationSection.getBoolean("chat.VentureChat", false);
             huskChatChannel = integrationSection.getBoolean("chat.HuskChat", false);
             carbonChatChannel = integrationSection.getBoolean("chat.CarbonChat", false);
+            advancedChatChannel = integrationSection.getBoolean("chat.AdvancedChat", false);
             tabTeam = integrationSection.getBoolean("team.TAB", false);
             cmiTeam = integrationSection.getBoolean("team.CMI", false);
             velocitab = integrationSection.getBoolean("team.Velocitab", false);

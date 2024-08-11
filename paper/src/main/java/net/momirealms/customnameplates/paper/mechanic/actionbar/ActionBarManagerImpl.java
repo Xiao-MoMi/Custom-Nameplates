@@ -29,7 +29,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.ActionBarManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
-import net.momirealms.customnameplates.paper.adventure.AdventureManagerImpl;
 import net.momirealms.customnameplates.paper.mechanic.actionbar.listener.ActionBarListener;
 import net.momirealms.customnameplates.paper.mechanic.actionbar.listener.ChatMessageListener;
 import net.momirealms.customnameplates.paper.mechanic.actionbar.listener.SystemChatListener;
