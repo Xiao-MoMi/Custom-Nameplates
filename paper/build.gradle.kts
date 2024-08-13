@@ -3,7 +3,7 @@ dependencies {
     compileOnly("dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT")
 
     // command
-    compileOnly("dev.jorel:commandapi-bukkit-core:9.5.1")
+    compileOnly("dev.jorel:commandapi-bukkit-core:9.5.3")
 
     // packet
     compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
