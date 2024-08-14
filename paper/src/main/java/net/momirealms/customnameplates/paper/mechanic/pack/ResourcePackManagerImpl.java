@@ -638,7 +638,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 "        vec2 uv = (texCoord0 * 256 - corner) / frames.x;\n" +
                 "        if (uv.x > pixel.y || uv.y > pixel.z)\n" +
                 "            discard;\n" +
-                "        int time = int(GameTime * 1200 * pixel.x) % int(frames.x * frames.y);\n" +
+                "        int time = int(GameTime * pixel.r * 10 * pixel.x) % int(frames.x * frames.y);\n" +
                 "        uv = corner + mod(uv, pixel.yz) + vec2(time % frames.x, time / frames.x % frames.y) * pixel.yz;\n" +
                 "        color = texture(Sampler0, uv / 256.0) * vertexColor * ColorModulator;\n" +
                 "    }";
