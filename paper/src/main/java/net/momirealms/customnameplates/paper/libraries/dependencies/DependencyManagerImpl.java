@@ -26,12 +26,14 @@
 package net.momirealms.customnameplates.paper.libraries.dependencies;
 
 import com.google.common.collect.ImmutableSet;
+import net.draycia.carbon.common.config.ConfigManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
 import net.momirealms.customnameplates.paper.CustomNameplatesPluginImpl;
 import net.momirealms.customnameplates.paper.libraries.classpath.ClassPathAppender;
 import net.momirealms.customnameplates.paper.libraries.dependencies.classloader.IsolatedClassLoader;
 import net.momirealms.customnameplates.paper.libraries.dependencies.relocation.Relocation;
 import net.momirealms.customnameplates.paper.libraries.dependencies.relocation.RelocationHandler;
+import net.momirealms.customnameplates.paper.setting.CNConfig;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
@@ -156,7 +158,7 @@ public class DependencyManagerImpl implements DependencyManager {
         if (forceRepo == null) {
             // attempt to download the dependency from each repo in order.
             for (DependencyRepository repo : DependencyRepository.values()) {
-                if (repo.getId().equals("maven") && TimeZone.getDefault().getID().startsWith("Asia")) {
+                if (repo.getId().equals("maven") && CNConfig.language.equals("zh_cn")) {
                     continue;
                 }
                 try {
