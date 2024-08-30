@@ -157,12 +157,9 @@ public class DependencyManagerImpl implements DependencyManager {
         String forceRepo = dependency.getRepo();
         if (forceRepo == null) {
             // attempt to download the dependency from each repo in order.
-            for (DependencyRepository repo : DependencyRepository.values()) {
-                if (repo.getId().equals("maven") && CNConfig.language.equals("zh_cn")) {
-                    continue;
-                }
+            for (DependencyRepository repo : DependencyRepository.repos()) {
                 try {
-                    LogUtils.info("Downloading dependency(" + fileName + ") from " + repo.getUrl() + dependency.getMavenRepoPath());
+                    LogUtils.info("Downloading dependency(" + fileName + ")[" + repo.getUrl() + dependency.getMavenRepoPath() + "]");
                     repo.download(dependency, file);
                     LogUtils.info("Successfully downloaded " + fileName);
                     return file;
@@ -174,7 +171,7 @@ public class DependencyManagerImpl implements DependencyManager {
             DependencyRepository repository = DependencyRepository.getByID(forceRepo);
             if (repository != null) {
                 try {
-                    LogUtils.info("Downloading dependency(" + fileName + ") from " + repository.getUrl() + dependency.getMavenRepoPath());
+                    LogUtils.info("Downloading dependency(" + fileName + ")[" + repository.getUrl() + dependency.getMavenRepoPath() + "]");
                     repository.download(dependency, file);
                     LogUtils.info("Successfully downloaded " + fileName);
                     return file;

@@ -22,6 +22,8 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CustomNameplatesPlugin;
 import net.momirealms.customnameplates.api.manager.TeamManager;
 import net.momirealms.customnameplates.api.util.LogUtils;
@@ -43,6 +45,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -68,43 +71,43 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         if (CNConfig.isOtherTeamPluginHooked()) return;
         String team = teamProvider.getTeam(player, null);
         if (!team.equals(player.getName())) return;
-        if (CNConfig.createRealTeam) {
-            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-            Team playerTeam = scoreboard.getTeam(team);
-            if (playerTeam == null) {
-                playerTeam = scoreboard.registerNewTeam(team);
-            }
-            playerTeam.addPlayer(player);
-        } else {
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                SparrowHeart.getInstance().addClientSideTeam(online, team,
-                        Collections.singletonList(player.getName()),
-                        "{\"text\":\"\"}",
-                        "{\"text\":\"\"}",
-                        "{\"text\":\"\"}",
-                        TeamVisibility.ALWAYS,
-                        TeamVisibility.ALWAYS,
-                        TeamCollisionRule.ALWAYS,
-                        TeamColor.WHITE,
-                        false,
-                        false
-                );
-                if (online == player) continue;
-                String onlineTeam = teamProvider.getTeam(online, null);
-                SparrowHeart.getInstance().addClientSideTeam(player, onlineTeam,
-                        Collections.singletonList(online.getName()),
-                        "{\"text\":\"\"}",
-                        "{\"text\":\"\"}",
-                        "{\"text\":\"\"}",
-                        TeamVisibility.ALWAYS,
-                        TeamVisibility.ALWAYS,
-                        TeamCollisionRule.ALWAYS,
-                        TeamColor.WHITE,
-                        false,
-                        false
-                );
-            }
+//        if (CNConfig.createRealTeam) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team playerTeam = scoreboard.getTeam(team);
+        if (playerTeam == null) {
+            playerTeam = scoreboard.registerNewTeam(team);
         }
+        playerTeam.addPlayer(player);
+//        } else {
+//            for (Player online : Bukkit.getOnlinePlayers()) {
+//                SparrowHeart.getInstance().addClientSideTeam(online, team,
+//                        Collections.singletonList(player.getName()),
+//                        "{\"text\":\"\"}",
+//                        "{\"text\":\"\"}",
+//                        "{\"text\":\"\"}",
+//                        TeamVisibility.ALWAYS,
+//                        TeamVisibility.ALWAYS,
+//                        TeamCollisionRule.ALWAYS,
+//                        TeamColor.WHITE,
+//                        false,
+//                        false
+//                );
+//                if (online == player) continue;
+//                String onlineTeam = teamProvider.getTeam(online, null);
+//                SparrowHeart.getInstance().addClientSideTeam(player, onlineTeam,
+//                        Collections.singletonList(online.getName()),
+//                        "{\"text\":\"\"}",
+//                        "{\"text\":\"\"}",
+//                        "{\"text\":\"\"}",
+//                        TeamVisibility.ALWAYS,
+//                        TeamVisibility.ALWAYS,
+//                        TeamCollisionRule.ALWAYS,
+//                        TeamColor.WHITE,
+//                        false,
+//                        false
+//                );
+//            }
+//        }
     }
 
     /**
@@ -119,15 +122,15 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         String team = teamProvider.getTeam(player, null);
         // If the team is created by other plugins
         if (!team.equals(player.getName())) return;
-        if (CNConfig.createRealTeam) {
-            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-            Optional.ofNullable(scoreboard.getTeam(team)).ifPresent(Team::unregister);
-        } else {
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                if (player == online) continue;
-                SparrowHeart.getInstance().removeClientSideTeam(online, team);
-            }
-        }
+//        if (CNConfig.createRealTeam) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Optional.ofNullable(scoreboard.getTeam(team)).ifPresent(Team::unregister);
+//        } else {
+//            for (Player online : Bukkit.getOnlinePlayers()) {
+//                if (player == online) continue;
+//                SparrowHeart.getInstance().removeClientSideTeam(online, team);
+//            }
+//        }
     }
 
     @Override

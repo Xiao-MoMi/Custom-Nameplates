@@ -57,7 +57,8 @@ public interface UnlimitedTagManager {
      * Create or get a tag instance
      *
      * @param player player
+     * @param isJoin
      * @return entity tag instance
      */
-    EntityTagPlayer createOrGetTagForPlayer(Player player);
+    EntityTagPlayer createOrGetTagForPlayer(Player player, boolean isJoin);
 }

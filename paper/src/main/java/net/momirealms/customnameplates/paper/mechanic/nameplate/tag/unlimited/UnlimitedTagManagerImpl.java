@@ -139,7 +139,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     @Override
     public UnlimitedEntity createOrGetTagForEntity(Entity entity) {
         if (entity instanceof Player player) {
-            return createOrGetTagForPlayer(player);
+            return createOrGetTagForPlayer(player, false);
         }
 
         final UUID uuid = entity.getUniqueId();
@@ -158,7 +158,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
     }
 
     @Override
-    public UnlimitedPlayer createOrGetTagForPlayer(Player player) {
+    public UnlimitedPlayer createOrGetTagForPlayer(Player player, boolean isJoin) {
         if (!player.isOnline())
             return null;
         final UUID uuid = player.getUniqueId();
@@ -172,7 +172,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager {
                 unlimitedPlayer
         );
 
-        if (player.getGameMode() != GameMode.SPECTATOR) {
+        if (player.getGameMode() != GameMode.SPECTATOR && !isJoin) {
             unlimitedPlayer.addNearByPlayerToMap(48);
         }
         return unlimitedPlayer;

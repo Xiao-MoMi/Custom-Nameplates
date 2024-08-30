@@ -132,9 +132,10 @@ public interface NameplateManager {
      * The tag would be put into map automatically and you can get it by getNameplatePlayer(uuid)
      *
      * @param player player
+     * @param isJoin
      */
     @Nullable
-    NameplatePlayer createNameTag(@NotNull Player player);
+    NameplatePlayer createNameTag(@NotNull Player player, boolean isJoin);
 
     /**
      * Put a nameplater player to map

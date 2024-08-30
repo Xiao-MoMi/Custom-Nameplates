@@ -33,6 +33,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,15 +57,7 @@ public enum DependencyRepository {
     /**
      * Maven Central
      */
-    MAVEN_CENTRAL_MIRROR("aliyun", "https://maven.aliyun.com/repository/public/"),
-    /**
-     * Code MC
-     */
-    CODE_MC("codemc", "https://repo.codemc.io/repository/maven-public/"),
-    /**
-     * Jitpack
-     */
-    JITPACK("jitpack", "https://jitpack.io/");
+    MAVEN_CENTRAL_MIRROR("aliyun", "https://maven.aliyun.com/repository/public/");
 
     private final String url;
     private final String id;
@@ -73,6 +69,14 @@ public enum DependencyRepository {
 
     public String getUrl() {
         return url;
+    }
+
+    public static List<DependencyRepository> repos() {
+        ArrayList<DependencyRepository> list = new ArrayList<>(List.of(values()));
+        if (Locale.getDefault() == Locale.SIMPLIFIED_CHINESE) {
+            Collections.reverse(list);
+        }
+        return list;
     }
 
     public static DependencyRepository getByID(String id) {

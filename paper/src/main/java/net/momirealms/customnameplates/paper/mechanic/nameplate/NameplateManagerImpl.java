@@ -174,7 +174,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
         }, refreshFrequency * 50, refreshFrequency * 50, TimeUnit.MILLISECONDS);
 
         for (Player online : Bukkit.getOnlinePlayers()) {
-            createNameTag(online);
+            createNameTag(online, false);
         }
     }
 
@@ -309,10 +309,7 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
             if (!CNConfig.isOtherTeamPluginHooked() && !isProxyMode()) {
                 plugin.getTeamManager().createTeam(player);
             }
-            plugin.getScheduler().runTaskAsyncLater(() -> {
-                if (player.isOnline())
-                    this.createNameTag(player);
-            }, 50, TimeUnit.MILLISECONDS);
+            this.createNameTag(player, true);
         }
     }
 
@@ -424,21 +421,21 @@ public class NameplateManagerImpl implements NameplateManager, Listener {
     }
 
     @Override
-    public NameplatePlayer createNameTag(@NotNull Player player) {
+    public NameplatePlayer createNameTag(@NotNull Player player, boolean isJoin) {
         if (tagMode == TagMode.TEAM) {
             NameplatePlayer nameplatePlayer = this.teamTagManager.createTagForPlayer(player, teamPrefix, teamSuffix);
             putNameplatePlayerToMap(nameplatePlayer);
-            this.unlimitedTagManager.createOrGetTagForPlayer(player);
+            this.unlimitedTagManager.createOrGetTagForPlayer(player, isJoin);
             return nameplatePlayer;
         } else if (tagMode == TagMode.UNLIMITED) {
-            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player);
+            EntityTagPlayer tagPlayer = this.unlimitedTagManager.createOrGetTagForPlayer(player, isJoin);
             for (DynamicTextTagSetting setting : tagSettings) {
                 tagPlayer.addTag(setting);
             }
             putNameplatePlayerToMap(tagPlayer);
             return tagPlayer;
         } else {
-            this.unlimitedTagManager.createOrGetTagForPlayer(player);
+            this.unlimitedTagManager.createOrGetTagForPlayer(player, isJoin);
             return null;
         }
     }

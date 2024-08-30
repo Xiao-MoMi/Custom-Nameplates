@@ -147,7 +147,6 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
         }
         nearbyPlayers.add(player);
         playerVectorToArray();
-        setNameInvisibleFor(player);
         for (StaticTextEntity tag : staticTagArray) {
             if (tag.getComeRule().isPassed(player, entity)) {
                 tag.addPlayerToViewers(player);
@@ -158,6 +157,7 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
                 tag.addPlayerToViewers(player);
             }
         }
+        setNameInvisibleFor(player);
     }
 
     @Override
@@ -167,7 +167,6 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
         }
         nearbyPlayers.remove(player);
         playerVectorToArray();
-        setNameVisibleFor(player);
         for (StaticTextEntity tag : staticTagArray) {
             if (tag.getLeaveRule().isPassed(player, entity)) {
                 tag.removePlayerFromViewers(player);
@@ -176,13 +175,16 @@ public class UnlimitedPlayer extends UnlimitedEntity implements EntityTagPlayer 
         for (DynamicTextEntity tag : dynamicTagArray) {
             tag.removePlayerFromViewers(player);
         }
+        setNameVisibleFor(player);
     }
 
     @Override
     public void destroy() {
         manager.removeUnlimitedEntityFromMap(entity.getUniqueId());
         for (Player viewer : getNearbyPlayers()) {
-            setNameVisibleFor(viewer);
+            if (getPlayer().isOnline()) {
+                setNameVisibleFor(viewer);
+            }
         }
         for (DynamicTextEntity tag : dynamicTagArray) {
             tag.destroy();
