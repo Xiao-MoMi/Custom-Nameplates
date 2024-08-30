@@ -51,6 +51,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -143,6 +144,11 @@ public class CustomNameplatesPluginImpl extends CustomNameplatesPlugin implement
         if (storageManager != null) ((StorageManagerImpl) this.storageManager).disable();
         if (adventureManager != null) ((AdventureManagerImpl) this.adventureManager).close();
         if (versionManager != null) HandlerList.unregisterAll((VersionManagerImpl) versionManager);
+        for (Team team : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {
+            if (team.getName().startsWith("CNP_")) {
+                team.unregister();
+            }
+        }
     }
 
     @Override

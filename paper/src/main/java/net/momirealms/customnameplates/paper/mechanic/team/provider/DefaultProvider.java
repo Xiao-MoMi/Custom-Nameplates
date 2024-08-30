@@ -29,7 +29,7 @@ public class DefaultProvider implements TeamProvider {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team team = scoreboard.getPlayerTeam(player);
         if (team == null) {
-            return player.getName();
+            return "CNP_" + player.getName();
         }
         return team.getName();
     }

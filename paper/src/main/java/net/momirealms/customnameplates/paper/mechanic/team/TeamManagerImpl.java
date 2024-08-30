@@ -70,7 +70,7 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         if (CNConfig.disableTeamManage) return;
         if (CNConfig.isOtherTeamPluginHooked()) return;
         String team = teamProvider.getTeam(player, null);
-        if (!team.equals(player.getName())) return;
+        if (!team.equals("CNP_" + player.getName())) return;
 //        if (CNConfig.createRealTeam) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team playerTeam = scoreboard.getTeam(team);
@@ -121,7 +121,7 @@ public class TeamManagerImpl implements TeamManager, PluginMessageListener {
         if (CNConfig.isOtherTeamPluginHooked()) return;
         String team = teamProvider.getTeam(player, null);
         // If the team is created by other plugins
-        if (!team.equals(player.getName())) return;
+        if (!team.equals("CNP_" + player.getName())) return;
 //        if (CNConfig.createRealTeam) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Optional.ofNullable(scoreboard.getTeam(team)).ifPresent(Team::unregister);
