@@ -88,6 +88,7 @@ public class CNConfig {
     public static boolean carbonChatChannel;
     public static boolean advancedChatChannel;
     public static boolean hasLibsDisguise;
+    public static boolean catchOtherActionBar;
 
     public static void load() {
         try {
@@ -182,6 +183,8 @@ public class CNConfig {
         createRealTeam = config.getBoolean("other-settings.create-real-teams", false);
 
         hasLibsDisguise = Bukkit.getPluginManager().getPlugin("LibsDisguises") != null;
+
+        catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
     }
 
     public static boolean isOtherTeamPluginHooked() {

@@ -1,5 +1,5 @@
 # Do not change
-config-version: '27'
+config-version: '28'
 
 # Debug mode
 debug: false
@@ -113,3 +113,6 @@ other-settings:
   # The more people on your server, the higher the efficiency of the caching system's operation.
   # In most cases you don't have to edit this value. You can increase this value appropriately, especially when there are many players on your server.
   cache-size: 256
+
+  # Decides whether CustomNameplates should catch actionbar sent by other plugins
+  catch-other-plugin-actionbar: true

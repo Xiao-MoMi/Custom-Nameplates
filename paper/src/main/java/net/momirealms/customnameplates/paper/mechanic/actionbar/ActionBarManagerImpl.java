@@ -85,9 +85,11 @@ public class ActionBarManagerImpl implements ActionBarManager, Listener {
         }
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        if (actionBarListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(actionBarListener);
-        if (systemChatListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(systemChatListener);
-        if (chatMessageListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(chatMessageListener);
+        if (CNConfig.catchOtherActionBar) {
+            if (actionBarListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(actionBarListener);
+            if (systemChatListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(systemChatListener);
+            if (chatMessageListener != null) ProtocolLibrary.getProtocolManager().addPacketListener(chatMessageListener);
+        }
     }
 
     public void unload() {
