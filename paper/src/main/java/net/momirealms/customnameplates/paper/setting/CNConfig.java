@@ -185,6 +185,8 @@ public class CNConfig {
         hasLibsDisguise = Bukkit.getPluginManager().getPlugin("LibsDisguises") != null;
 
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
+
+        sendDelay = config.getInt("other-settings.send-delay", 0);
     }
 
     public static boolean isOtherTeamPluginHooked() {
