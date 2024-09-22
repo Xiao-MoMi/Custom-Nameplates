@@ -39,3 +39,7 @@ argument.parse.failure.aggregate.failure: "<red>Invalid component '<arg:0>': <ar
 argument.parse.failure.either: "<red>Could not resolve <arg:1> or <arg:2> from '<arg:0>'</red>"
 argument.parse.failure.namedtextcolor: "<red>'<arg:0>' is not a named text color</red>"
 command.reload.success: "<white>Reloaded. Took <green><arg:0></green> ms.</white>"
+command.debug.performance:
+  - "<white>Average thread load in the past minute: <arg:0>%</white> <gray>(<arg:1>/50ms)</gray>"
+  - "<white>Check conditions：<arg:2>ms</white>"
+  - "<white>Update placeholders：<arg:3>ms</white>"

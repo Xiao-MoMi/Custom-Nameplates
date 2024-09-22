@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.actionbar.BukkitActionBarManager;
+import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.packet.BukkitPacketSender;
 import net.momirealms.customnameplates.bukkit.player.BukkitCNPlayer;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
@@ -34,7 +35,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class BukkitCustomNameplates extends CustomNameplates implements Listener {
 
@@ -44,13 +44,14 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     private final PluginLogger logger;
     private final AbstractJavaScheduler<Location> scheduler;
 
+    private BukkitSenderFactory senderFactory;
+    private BukkitCommandManager commandManager;
+
     private final JavaPlugin bootstrap;
 
     private final List<JoinQuitListener> joinQuitListeners = new ArrayList<>();
 
     private boolean loaded = false;
-
-    private SchedulerTask nameplatesMainTask;
 
     public BukkitCustomNameplates(JavaPlugin bootstrap) {
         this.bootstrap = bootstrap;
@@ -91,8 +92,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             return;
         }
 
-        this.platform = new BukkitPlatform(this);
         this.packetSender = new BukkitPacketSender();
+        this.commandManager = new BukkitCommandManager(this);
+        this.senderFactory = new BukkitSenderFactory(this);
+        this.platform = new BukkitPlatform(this);
+        this.senderFactory = new BukkitSenderFactory(this);
         this.configManager = new BukkitConfigManager(this);
         this.trackerManager = new BukkitTrackerManager(this);
         this.translationManager = new TranslationManager(this);
@@ -104,6 +108,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
         Bukkit.getPluginManager().registerEvents(this, getBootstrap());
 
+        this.commandManager.registerDefaultFeatures();
         this.reload();
 
         this.loaded = true;
@@ -112,11 +117,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     @Override
     public void disable() {
         if (!this.loaded) return;
-        if (this.nameplatesMainTask != null) this.nameplatesMainTask.cancel();
+        super.disable();
 
         this.configManager.disable();
         this.actionBarManager.disable();
 
+        this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
 
         this.loaded = false;
@@ -124,17 +130,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     @Override
     public void reload() {
+        super.reload();
         this.configManager.reload();
         this.translationManager.reload();
         this.actionBarManager.reload();
         this.requirementManager.reload();
-
-        if (this.nameplatesMainTask != null) this.nameplatesMainTask.cancel();
-        this.nameplatesMainTask = getScheduler().asyncRepeating(() -> {
-            actionBarManager.refreshConditions();
-            placeholderManager.refreshPlaceholders();
-            actionBarManager.checkHeartBeats();
-        }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -210,5 +210,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerQuit(cnPlayer);
         }
+    }
+
+    public BukkitSenderFactory getSenderFactory() {
+        return senderFactory;
     }
 }

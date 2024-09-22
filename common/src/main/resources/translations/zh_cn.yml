@@ -39,3 +39,7 @@ argument.parse.failure.aggregate.failure: "<red>无效的组件 '<arg:0>': <arg:
 argument.parse.failure.either: "<red>无法从 '<arg:0>' 解析 <arg:1> 或 <arg:2></red>"
 argument.parse.failure.namedtextcolor: "<red>'<arg:0>' 不是颜色代码</red>"
 command.reload.success: "<white>重新加载完成.耗时 <green><arg:0></green> 毫秒</white>"
+command.debug.performance:
+  - "<white>过去一分钟的线程负载: <arg:0>%</white> <gray>(<arg:1>/50ms)</gray>"
+  - "<white>刷新动作栏条件耗时：<arg:2>ms</white>"
+  - "<white>更新变量耗时：<arg:3>ms</white>"

@@ -92,7 +92,7 @@ public class ActionBarSender implements Feature {
                 CarouselText carouselText = currentConfig.carouselTexts()[order];
                 timeLeft = carouselText.duration();
                 currentActionBar = carouselText.preParsedDynamicText().fastCreate(owner);
-                owner.forceUpdate(currentActionBar.placeholders());
+                owner.forceUpdate(new HashSet<>(currentActionBar.placeholders()));
                 notifyPlaceholderUpdates(owner, false);
             }
         }

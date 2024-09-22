@@ -22,4 +22,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 
 public interface MessageConstants {
 
+    TranslatableComponent.Builder COMMAND_RELOAD_SUCCESS = Component.translatable().key("command.reload.success");;
+    TranslatableComponent.Builder COMMAND_DEBUG_PERFORMANCE = Component.translatable().key("command.debug.performance");;
 }

@@ -45,5 +45,5 @@ public interface CNPlayer<P> {
 
     boolean isMet(CNPlayer<?> another, Requirement[] requirements);
 
-    void forceUpdate(List<Placeholder> placeholders);
+    void forceUpdate(Set<Placeholder> placeholders);
 }

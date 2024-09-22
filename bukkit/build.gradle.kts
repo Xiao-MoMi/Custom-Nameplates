@@ -29,6 +29,11 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-gson:${rootProject.properties["adventure_bundle_version"]}") {
         exclude("com.google.code.gson", "gson")
     }
+
+    // Cloud
+    compileOnly("org.incendo:cloud-core:${rootProject.properties["cloud_core_version"]}")
+    compileOnly("org.incendo:cloud-minecraft-extras:${rootProject.properties["cloud_minecraft_extras_version"]}")
+    compileOnly("org.incendo:cloud-paper:${rootProject.properties["cloud_paper_version"]}")
 }
 
 tasks {

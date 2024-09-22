@@ -106,7 +106,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
         feature2Placeholders.put(feature, allPlaceholdersUsedInFeature);
         for (Placeholder placeholder : allPlaceholdersUsedInFeature) {
             Set<Feature> featureSet = placeholder2Features.computeIfAbsent(placeholder, k -> {
-                forceUpdate(List.of(placeholder));
+                forceUpdate(Set.of(placeholder));
                 return new HashSet<>();
             });
             featureSet.add(feature);
@@ -184,7 +184,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public void forceUpdate(List<Placeholder> placeholders) {
+    public void forceUpdate(Set<Placeholder> placeholders) {
         for (Placeholder placeholder : placeholders) {
             if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
                 setValue(placeholder.id(), sharedPlaceholder.getLatestValue());

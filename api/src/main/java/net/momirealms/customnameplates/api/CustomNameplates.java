@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.api;
 
+import net.kyori.adventure.audience.Audience;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
@@ -8,9 +9,12 @@ import net.momirealms.customnameplates.api.tracker.TrackerManager;
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
+import net.momirealms.customnameplates.common.sender.SenderFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -29,9 +33,23 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected ActionBarManager actionBarManager;
     protected Platform platform;
     protected ConcurrentHashMap<UUID, CNPlayer<?>> onlinePlayerMap = new ConcurrentHashMap<>();
+    protected MainTask mainTask = new MainTask(this);
+    protected SchedulerTask scheduledMainTask;
 
     protected CustomNameplates() {
         instance = this;
+    }
+
+    @Override
+    public void reload() {
+        if (scheduledMainTask != null)
+            scheduledMainTask.cancel();
+        scheduledMainTask = getScheduler().asyncRepeating(mainTask, 50, 50, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void disable() {
+        if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
     }
 
     public TrackerManager getTrackerManager() {

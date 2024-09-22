@@ -1,0 +1,26 @@
+#
+# Don't change this
+#
+config-version: "${config_version}"
+
+#
+# For safety reasons, editing this file requires a restart to apply
+#
+
+# A command to reload the plugin
+# Usage: [COMMAND]
+reload:
+  enable: true
+  permission: customnameplates.command.reload
+  usage:
+    - /customnameplates reload
+    - /nameplates reload
+
+# A command to debug the load of the cpu
+# Usage: [COMMAND]
+debug_performance:
+  enable: true
+  permission: customnameplates.command.debug.performance
+  usage:
+    - /customnameplates debug performance
+    - /nameplates debug performance
