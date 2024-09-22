@@ -4,6 +4,7 @@ import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderUpdateTask;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.tracker.TrackedEntityView;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public interface CNPlayer<P> {
     boolean isMet(CNPlayer<?> another, Requirement[] requirements);
 
     void forceUpdate(Set<Placeholder> placeholders);
+
+    TrackedEntityView<P> getTracker();
 }

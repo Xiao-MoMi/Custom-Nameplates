@@ -29,7 +29,7 @@ public class PlaceholderUpdateTask implements Runnable {
                 playerResults.put(player, player.request(owner));
             } else if (placeholder instanceof RelationalPlaceholder relational) {
                 Map<CNPlayer<?>, String> values = new HashMap<>();
-                for (CNPlayer<?> player : CustomNameplates.getInstance().getOnlinePlayers()) {
+                for (CNPlayer<?> player : owner.getTracker().nearbyPlayers()) {
                     values.put(player, relational.request(owner, player));
                 }
                 relationalResults.put(relational, values);

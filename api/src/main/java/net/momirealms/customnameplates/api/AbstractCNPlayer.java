@@ -15,7 +15,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     /**
      * 获取当前玩家被哪些玩家track了
      */
-    protected TrackedEntityView<P> trackedEntityView;
+    protected TrackedEntityView<P> tracker;
     private boolean isLoaded = false;
 
     /**
@@ -196,5 +196,10 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
                 }
             }
         }
+    }
+
+    @Override
+    public TrackedEntityView<P> getTracker() {
+        return tracker;
     }
 }
