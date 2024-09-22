@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MainTask implements Runnable {
 
-    private static final Map<Integer, Integer> TIME_1 = new ConcurrentHashMap<>();
-    private static final Map<Integer, Integer> TIME_2 = new ConcurrentHashMap<>();
+    private static final Map<Integer, Integer> TIME_1 = new ConcurrentHashMap<>(1600, 0.8F);
+    private static final Map<Integer, Integer> TIME_2 = new ConcurrentHashMap<>(1600, 0.8F);
     private int timer;
 
     private final CustomNameplates plugin;

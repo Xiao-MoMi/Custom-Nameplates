@@ -63,10 +63,12 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             }
         }
 
-        for (CNPlayer<?> player : plugin.getOnlinePlayers()) {
+        Collection<CNPlayer<?>> player1 = plugin.getOnlinePlayers();
+
+        for (CNPlayer<?> player : player1) {
+
             PlaceholderUpdateTask task = player.getRefreshValueTask();
             if (task == null) continue;
-
             task.run();
 
             Set<Feature> featuresToNotifyUpdates = new HashSet<>();

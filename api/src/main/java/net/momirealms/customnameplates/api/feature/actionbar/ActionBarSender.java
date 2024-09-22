@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ActionBarSender implements Feature {
@@ -35,6 +36,19 @@ public class ActionBarSender implements Feature {
         return "ActionBarSender";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActionBarSender sender = (ActionBarSender) o;
+        return owner == sender.owner;
+    }
+
+    @Override
+    public int hashCode() {
+        return owner.name().hashCode();
+    }
+
     public ActionBarSender(ActionBarManager manager, CNPlayer<?> owner) {
         this.owner = owner;
         this.manager = manager;
@@ -44,9 +58,6 @@ public class ActionBarSender implements Feature {
 
     public void onConditionTimerCheck() {
         ActionBarConfig[] configs = manager.allConfigs();
-
-
-
         outer: {
             for (ActionBarConfig config : configs) {
                 if (owner.isMet(config.requirements())) {
@@ -122,7 +133,7 @@ public class ActionBarSender implements Feature {
     @Override
     public Set<Placeholder> activePlaceholders() {
         if (currentActionBar == null) return Collections.emptySet();
-        return new HashSet<>(currentActionBar.placeholders());
+        return currentActionBar.placeholders();
     }
 
     @Override
