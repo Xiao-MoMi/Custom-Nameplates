@@ -1,0 +1,102 @@
+# Do not modify this value
+config-version: '${config_version}'
+# Enables or disables debug mode
+debug: false
+# Enables or disables metrics collection via BStats
+metrics: true
+# Enables automatic update checks
+update-checker: true
+# Forces a specific locale (e.g., zh_cn)
+force-locale: ''
+# Module Settings
+# Modifying these modules may result in distorted images. If this occurs, reinstall the newly generated resource pack.
+modules:
+  nameplates: true
+  backgrounds: true
+  bubbles: true
+  bossbars: true
+  actionbars: true
+  images: true
+# Plugin Integrations
+integrations:
+  # Should Nameplates merge resource packs with these plugins during reload?
+  resource-pack:
+    ItemsAdder: false
+    ItemsAdder-old-method: false
+    Oraxen: false
+  # Should Nameplates utilize team management from these plugins?
+  # Note: You can only enable one due to Minecraft's limitation of players belonging to only one team at a time.
+  # This may lead to compatibility issues with plugins that also rely on teams.
+  team:
+    unknown: false
+    TAB: false
+    CMI: false
+    Velocitab: false # Requires CustomNameplates on Velocity as well
+  # Some chats, such as staff chats or menu inputs, may need to be excluded from capture.
+  # Supported chat plugins are listed below, which allow blacklist channels and /ignore functionality to work correctly.
+  chat:
+    TrChat: false
+    VentureChat: false
+    HuskChat: false
+    CarbonChat: false
+    AdvancedChat: false
+# Resource Pack Generation Settings
+resource-pack:
+  # Disables resource pack generation at server startup
+  disable-generation-on-start: false
+  # Namespace identifier
+  namespace: "nameplates"
+  # Font selection
+  font: "default"
+  # The starting character for custom fonts
+  # This character is used, but it won't affect normal Korean characters during chat, as they belong to the "minecraft:default" font.
+  initial-char: '뀁'
+  # Specify directories for PNG file generation.
+  # This helps maintain an organized resource pack structure.
+  image-path:
+    nameplates: 'font/nameplates/'
+    backgrounds: 'font/backgrounds/'
+    images: 'font/images/'
+    bubbles: 'font/bubbles/'
+    space-split: 'font/base/'
+  # Shader Settings
+  shader:
+    # Enables shader generation
+    enable: true
+    # Hides scoreboard numbers
+    hide-scoreboard-number: false
+    # Enables support for animated text shaders
+    animated-text: false
+    # Enables ItemsAdder text effect support
+    ItemsAdder-text-effects: false
+  # Bossbar transparency settings
+  transparent-bossbar:
+    # Specify the color of the bossbar to hide
+    color: YELLOW
+    # Generate transparent bossbars for Minecraft 1.20.2+
+    "1_20_2+": true
+    # Generate transparent bossbars for Minecraft 1.17-1.20.1
+    "1_17-1_20_1": true
+  # Legacy Unicode support for Minecraft 1.20+ clients, as these images were removed in 1.20, affecting the creation of decent texts.
+  # Enabling this increases your resource pack size by approximately 900KB.
+  legacy-unicodes: true
+# Additional Settings
+other-settings:
+  # Disables CustomNameplates' team management
+  # Do not enable if you are using "Team" mode for name tags
+  disable-team-management: false
+  # Create actual teams on the server side. This is not recommended unless you're experiencing BungeeCord team-related bugs.
+  create-real-teams: false
+  # It is recommended to use the MiniMessage format. If you prefer legacy color codes using "&", enable this support.
+  # Disabling it will improve color formatting performance.
+  legacy-color-code-support: true
+  # Set a delay for actionbar/bossbar to prevent compatibility issues
+  send-delay: 0
+  # Determines whether CustomNameplates should capture actionbars from other plugins
+  catch-other-plugin-actionbar: true
+  # Set the default placeholder refresh interval
+  default-placeholder-refresh-interval: 10
+  # Set the refresh interval for better performance in ticks
+  placeholder-refresh-interval:
+    "%player_name%": 10
+    "%vault_prefix%": 10

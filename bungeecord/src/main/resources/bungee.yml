@@ -1,4 +1,0 @@
-name: CustomNameplates
-main: net.momirealms.customnameplates.bungeecord.CustomNameplatesBungeeCord
-version: '${version}'
-author: XiaoMoMi
