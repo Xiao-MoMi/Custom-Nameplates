@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class ActionBarSender implements Feature {
@@ -30,6 +29,8 @@ public class ActionBarSender implements Feature {
     private long externalExpireTime;
 
     private String latestActionBar;
+
+    private boolean textChangeFlag = false;
 
     @Override
     public String name() {
@@ -103,13 +104,17 @@ public class ActionBarSender implements Feature {
                 CarouselText carouselText = currentConfig.carouselTexts()[order];
                 timeLeft = carouselText.duration();
                 currentActionBar = carouselText.preParsedDynamicText().fastCreate(owner);
-                owner.forceUpdate(new HashSet<>(currentActionBar.placeholders()));
-                notifyPlaceholderUpdates(owner, false);
+                textChangeFlag = true;
             }
         }
     }
 
     public void onHeartBeatTimer() {
+        if (textChangeFlag) {
+            refresh();
+            sendLatestActionBar();
+            return;
+        }
         if (shouldSendBeatPacket()) {
             sendLatestActionBar();
         }
@@ -117,6 +122,7 @@ public class ActionBarSender implements Feature {
 
     public void refresh() {
         latestActionBar = this.currentActionBar.render(owner);
+        textChangeFlag = false;
     }
 
     public void sendLatestActionBar() {
