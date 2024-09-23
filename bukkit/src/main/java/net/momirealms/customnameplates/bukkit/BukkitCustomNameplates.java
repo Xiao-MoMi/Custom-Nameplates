@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.bukkit;
 
+import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
@@ -134,7 +135,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     @Override
     public void reload() {
         super.reload();
+        for (CNPlayer<?> player : getOnlinePlayers()) {
+            ((AbstractCNPlayer<?>) player).reload();
+        }
         this.configManager.reload();
+        this.placeholderManager.reload();
         this.translationManager.reload();
         this.actionBarManager.reload();
         this.bossBarManager.reload();

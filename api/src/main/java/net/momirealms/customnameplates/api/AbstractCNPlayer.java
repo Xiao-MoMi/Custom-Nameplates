@@ -69,15 +69,11 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     public void reload() {
-        clearValueCache();
+        cachedValues.clear();
+        cachedRelationalValues.clear();
         activeFeatures.clear();
         placeholder2Features.clear();
         feature2Placeholders.clear();
-    }
-
-    private void clearValueCache() {
-        cachedValues.clear();
-        cachedRelationalValues.clear();
     }
 
     @Override
@@ -117,10 +113,12 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     public void removeFeature(Feature feature) {
         activeFeatures.remove(feature);
         Set<Placeholder> placeholders = feature2Placeholders.remove(feature);
-        for (Placeholder placeholder : placeholders) {
-            Set<Feature> featureSet = placeholder2Features.get(placeholder);
-            featureSet.remove(feature);
-            if (featureSet.isEmpty()) placeholder2Features.remove(placeholder);
+        if (placeholders != null) {
+            for (Placeholder placeholder : placeholders) {
+                Set<Feature> featureSet = placeholder2Features.get(placeholder);
+                featureSet.remove(feature);
+                if (featureSet.isEmpty()) placeholder2Features.remove(placeholder);
+            }
         }
     }
 

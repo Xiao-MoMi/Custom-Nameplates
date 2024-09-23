@@ -47,6 +47,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     public void unload() {
         this.refreshIntervals.clear();
         this.placeholders.clear();
+        this.sharedPlaceholders.clear();
     }
 
     @Override
