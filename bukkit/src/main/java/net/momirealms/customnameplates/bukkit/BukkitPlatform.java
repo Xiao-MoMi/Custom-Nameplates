@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.sql.Ref;
 import java.util.UUID;
 
 public class BukkitPlatform implements Platform {
@@ -135,49 +134,63 @@ public class BukkitPlatform implements Platform {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onPacketSend(CNPlayer<?> player, Object packet) {
+    public boolean onPacketSend(CNPlayer<?> player, Object packet) {
         try {
             if (Reflections.clazz$ClientboundBundlePacket.isInstance(packet)) {
                 Iterable<Object> packets = (Iterable<Object>) Reflections.field$BundlePacket$packets.get(packet);
                 for (Object p : packets) {
-                    handlePacket(player, p);
+                    if (handlePacket(player, p)) {
+                        return true;
+                    }
                 }
+                return false;
             } else {
-                handlePacket(player, packet);
+                return handlePacket(player, packet);
             }
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void handlePacket(CNPlayer<?> player, Object packet) throws ReflectiveOperationException {
+    private boolean handlePacket(CNPlayer<?> player, Object packet) throws ReflectiveOperationException {
         switch (packet.getClass().getSimpleName()) {
             case "ClientboundSetActionBarTextPacket" -> {
-                if (!ConfigManager.actionbarModule()) return;
+                if (!ConfigManager.actionbarModule()) return false;
                 Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
                 Object contents = Reflections.method$Component$getContents.invoke(component);
                 if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
                     String name = (String) Reflections.field$ScoreContents$name.get(contents);
                     String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
-                    if (name.equals("np") && objective.equals("ab")) return;
+                    if (name.equals("np") && objective.equals("ab")) return false;
                 }
-                ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                plugin.getScheduler().async().execute(() -> {
+                    ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                });
+                return true;
             }
             case "ClientboundSystemChatPacket" -> {
-                if (!ConfigManager.actionbarModule()) return;
+                if (!ConfigManager.actionbarModule()) return false;
                 boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
                 if (actionBar) {
-                    if (VersionHelper.isVersionNewerThan1_20_4()) {
-                        Object component = Reflections.field$ClientboundSystemChatPacket$component.get(packet);
-                        if (component == null) return;
-                        ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
-                    } else {
-                        String json = (String) Reflections.field$ClientboundSystemChatPacket$text.get(packet);
-                        if (json == null) return;
-                        ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
-                    }
+                    plugin.getScheduler().async().execute(() -> {
+                        try {
+                            if (VersionHelper.isVersionNewerThan1_20_4()) {
+                                Object component = Reflections.field$ClientboundSystemChatPacket$component.get(packet);
+                                if (component == null) return;
+                                ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                            } else {
+                                String json = (String) Reflections.field$ClientboundSystemChatPacket$text.get(packet);
+                                if (json == null) return;
+                                ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
+                            }
+                        } catch (ReflectiveOperationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

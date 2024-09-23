@@ -21,5 +21,5 @@ public interface Platform {
 
     void updateBossBarName(CNPlayer<?> player, UUID uuid, Object component);
 
-    void onPacketSend(CNPlayer<?> player, Object packet);
+    boolean onPacketSend(CNPlayer<?> player, Object packet);
 }

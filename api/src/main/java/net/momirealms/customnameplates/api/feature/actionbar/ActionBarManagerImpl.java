@@ -7,7 +7,6 @@ import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.CarouselText;
-import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 
@@ -53,7 +52,6 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     public void refreshConditions() {
         for (ActionBarSender sender : senders.values()) {
             sender.onConditionTimerCheck();
-            System.out.println(sender.externalActionBar());
         }
     }
 

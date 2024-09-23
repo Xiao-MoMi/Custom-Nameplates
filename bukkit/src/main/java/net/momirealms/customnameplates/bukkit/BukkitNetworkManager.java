@@ -102,7 +102,8 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
         @Override
         public void write(ChannelHandlerContext context, Object packet, ChannelPromise channelPromise) {
             try {
-                plugin.getPlatform().onPacketSend(player, packet);
+                boolean cancel = plugin.getPlatform().onPacketSend(player, packet);
+                if (cancel) return;
             } catch (Throwable e) {
                 plugin.getPluginLogger().severe("An error occurred when reading packets", e);
             }
