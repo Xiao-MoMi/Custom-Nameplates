@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.bukkit.player;
+package net.momirealms.customnameplates.bukkit;
 
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;

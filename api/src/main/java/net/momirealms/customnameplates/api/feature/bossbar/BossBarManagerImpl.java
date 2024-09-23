@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractBossBarManager implements BossBarManager, JoinQuitListener {
+public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
 
     private final CustomNameplates plugin;
     private final LinkedHashMap<String, BossBarConfig> configs = new LinkedHashMap<>();
     private final ConcurrentHashMap<UUID, BossBarDisplayController> senders = new ConcurrentHashMap<>();
     private BossBarConfig[] configArray = new BossBarConfig[0];
 
-    public AbstractBossBarManager(CustomNameplates plugin) {
+    public BossBarManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
     }
 

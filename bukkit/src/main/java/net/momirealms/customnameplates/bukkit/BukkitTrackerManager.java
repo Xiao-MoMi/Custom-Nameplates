@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.bukkit.tracker;
+package net.momirealms.customnameplates.bukkit;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;

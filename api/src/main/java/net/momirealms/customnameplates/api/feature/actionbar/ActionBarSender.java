@@ -7,11 +7,14 @@ import net.momirealms.customnameplates.api.feature.DynamicText;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
 
 public class ActionBarSender implements Feature {
 
@@ -131,7 +134,7 @@ public class ActionBarSender implements Feature {
     public void sendLatestActionBar() {
         if (latestContent != null) {
             updateLastUpdateTime();
-            CustomNameplates.getInstance().getPlatform().sendActionBar(owner, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
+            CustomNameplates.getInstance().getPlatform().sendActionBar(owner, AdventureHelper.miniMessageToMinecraftComponent(latestContent, "np", "ab"));
         }
     }
 
@@ -173,12 +176,13 @@ public class ActionBarSender implements Feature {
     @Nullable
     public String externalActionBar() {
         if (System.currentTimeMillis() > externalExpireTime) {
-            externalActionBar = null;
+            externalActionBar = "";
         }
         return externalActionBar;
     }
 
-    public void externalActionBar(String externalActionBar) {
+    public void externalActionBar(@NotNull String externalActionBar) {
+        requireNonNull(externalActionBar);
         this.externalActionBar = externalActionBar;
         this.externalExpireTime = System.currentTimeMillis() + 3000;
     }

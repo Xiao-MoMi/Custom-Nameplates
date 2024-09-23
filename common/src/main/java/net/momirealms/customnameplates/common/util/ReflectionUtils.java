@@ -47,7 +47,7 @@ public class ReflectionUtils {
     }
 
     @Nullable
-    public static Field getField(final Class<?> clazz, final String field) {
+    public static Field getDeclaredField(final Class<?> clazz, final String field) {
         try {
             return setAccessible(clazz.getDeclaredField(field));
         } catch (NoSuchFieldException e) {
@@ -56,7 +56,7 @@ public class ReflectionUtils {
     }
 
     @NotNull
-    public static Field getField(@NotNull Class<?> clazz, @NotNull String... possibleNames) {
+    public static Field getDeclaredField(@NotNull Class<?> clazz, @NotNull String... possibleNames) {
         List<String> possibleNameList = Arrays.asList(possibleNames);
         for (Field field : clazz.getDeclaredFields()) {
             if (possibleNameList.contains(field.getName())) {
@@ -67,7 +67,7 @@ public class ReflectionUtils {
     }
 
     @Nullable
-    public static Field getField(final Class<?> clazz, final int index) {
+    public static Field getDeclaredField(final Class<?> clazz, final int index) {
         int i = 0;
         for (final Field field : clazz.getDeclaredFields()) {
             if (index == i) {
@@ -79,7 +79,7 @@ public class ReflectionUtils {
     }
 
     @Nullable
-    public static Field getInstanceField(final Class<?> clazz, final int index) {
+    public static Field getInstanceDeclaredField(final Class<?> clazz, final int index) {
         int i = 0;
         for (final Field field : clazz.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) {
@@ -93,7 +93,7 @@ public class ReflectionUtils {
     }
 
     @Nullable
-    public static Field getField(final Class<?> clazz, final Class<?> type, int index) {
+    public static Field getDeclaredField(final Class<?> clazz, final Class<?> type, int index) {
         int i = 0;
         for (final Field field : clazz.getDeclaredFields()) {
             if (field.getType() == type) {
@@ -107,7 +107,7 @@ public class ReflectionUtils {
     }
 
     @Nullable
-    public static Field getInstanceField(@NotNull Class<?> clazz, final Class<?> type, int index) {
+    public static Field getInstanceDeclaredField(@NotNull Class<?> clazz, final Class<?> type, int index) {
         int i = 0;
         for (final Field field : clazz.getDeclaredFields()) {
             if (field.getType() == type && !Modifier.isStatic(field.getModifiers())) {
@@ -121,7 +121,7 @@ public class ReflectionUtils {
     }
 
     @NotNull
-    public static List<Field> getFields(final Class<?> clazz) {
+    public static List<Field> getDeclaredFields(final Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             fields.add(setAccessible(field));
@@ -130,7 +130,7 @@ public class ReflectionUtils {
     }
 
     @NotNull
-    public static List<Field> getInstanceFields(@NotNull Class<?> clazz) {
+    public static List<Field> getInstanceDeclaredFields(@NotNull Class<?> clazz) {
         List<Field> list = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) {
@@ -141,7 +141,7 @@ public class ReflectionUtils {
     }
 
     @NotNull
-    public static List<Field> getFields(@NotNull final Class<?> clazz, @NotNull final Class<?> type) {
+    public static List<Field> getDeclaredFields(@NotNull final Class<?> clazz, @NotNull final Class<?> type) {
         List<Field> fields = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             if (field.getType() == type) {
@@ -152,7 +152,7 @@ public class ReflectionUtils {
     }
 
     @NotNull
-    public static List<Field> getInstanceFields(@NotNull Class<?> clazz, @NotNull Class<?> type) {
+    public static List<Field> getInstanceDeclaredFields(@NotNull Class<?> clazz, @NotNull Class<?> type) {
         List<Field> list = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
             if (field.getType() == type && !Modifier.isStatic(field.getModifiers())) {

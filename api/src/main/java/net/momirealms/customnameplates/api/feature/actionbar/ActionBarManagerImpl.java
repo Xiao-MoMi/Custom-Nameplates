@@ -7,6 +7,7 @@ import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.CarouselText;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 
@@ -16,14 +17,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractActionBarManager implements ActionBarManager, JoinQuitListener {
+public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener {
 
     protected final CustomNameplates plugin;
     private final LinkedHashMap<String, ActionBarConfig> configs = new LinkedHashMap<>();
     private final ConcurrentHashMap<UUID, ActionBarSender> senders = new ConcurrentHashMap<>();
     private ActionBarConfig[] configArray = new ActionBarConfig[0];
 
-    public AbstractActionBarManager(CustomNameplates plugin) {
+    public ActionBarManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
     }
 
@@ -52,6 +53,7 @@ public abstract class AbstractActionBarManager implements ActionBarManager, Join
     public void refreshConditions() {
         for (ActionBarSender sender : senders.values()) {
             sender.onConditionTimerCheck();
+            System.out.println(sender.externalActionBar());
         }
     }
 
@@ -74,6 +76,22 @@ public abstract class AbstractActionBarManager implements ActionBarManager, Join
     @Override
     public ActionBarConfig[] allConfigs() {
         return configArray;
+    }
+
+    public void handleActionBarPacket(CNPlayer<?> player, String miniMessage) {
+        ActionBarSender sender = senders.get(player.uuid());
+        if (sender != null) {
+            sender.externalActionBar(miniMessage);
+        }
+    }
+
+    @Override
+    public String getExternalActionBar(CNPlayer<?> player) {
+        ActionBarSender sender = senders.get(player.uuid());
+        if (sender != null) {
+            return sender.externalActionBar();
+        }
+        return "";
     }
 
     @Override

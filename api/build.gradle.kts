@@ -13,6 +13,8 @@ dependencies {
     compileOnly("net.kyori:adventure-text-minimessage:${rootProject.properties["adventure_bundle_version"]}")
     compileOnly("net.kyori:adventure-text-serializer-gson:${rootProject.properties["adventure_bundle_version"]}")
     compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
+    // Netty
+    compileOnly("io.netty:netty-all:4.1.113.Final")
 }
 
 tasks {

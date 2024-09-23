@@ -42,6 +42,7 @@ public class AdventureHelper {
     private final Cache<String, String> miniMessageToJsonCache;
     private final Cache<String, Component> miniMessageToComponentCache;
     private final Cache<String, Object> miniMessageToMinecraftComponentCache;
+    private final Cache<Object, String> minecraftComponentToMiniMessageCache;
     private final Cache<String, String> jsonToMiniMessageCache;
     private final Cache<String, Component> jsonToComponentCache;
     private final Cache<Component, String> componentToJsonCache;
@@ -70,6 +71,11 @@ public class AdventureHelper {
                         .executor(executor)
                         .build();
         this.miniMessageToMinecraftComponentCache =
+                Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .executor(executor)
+                        .build();
+        this.minecraftComponentToMiniMessageCache =
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .executor(executor)
@@ -122,7 +128,7 @@ public class AdventureHelper {
     }
 
     /**
-     * Converts a JSON string to a MiniMessage string.
+     * Converts a json string to a MiniMessage string.
      *
      * @param json the JSON string
      * @return the MiniMessage string representation
@@ -147,11 +153,34 @@ public class AdventureHelper {
         );
     }
 
+    public static String miniMessageToJson(String miniMessage, String name, String objective) {
+        AdventureHelper instance = getInstance();
+        return instance.miniMessageToJsonCache.get(miniMessage, (text) ->
+                instance.gsonComponentSerializer.serialize(Component.score().name(name).objective(objective).build().append(miniMessage(text)))
+        );
+    }
+
     public static Object miniMessageToMinecraftComponent(String miniMessage) {
         AdventureHelper instance = getInstance();
         return instance.miniMessageToMinecraftComponentCache.get(miniMessage, (text) -> {
             String json = miniMessageToJson(text);
             return CustomNameplates.getInstance().getPlatform().jsonToMinecraftComponent(json);
+        });
+    }
+
+    public static Object miniMessageToMinecraftComponent(String miniMessage, String name, String objective) {
+        AdventureHelper instance = getInstance();
+        return instance.miniMessageToMinecraftComponentCache.get(miniMessage, (text) -> {
+            String json = miniMessageToJson(text, name, objective);
+            return CustomNameplates.getInstance().getPlatform().jsonToMinecraftComponent(json);
+        });
+    }
+
+    public static String minecraftComponentToMiniMessage(Object component) {
+        AdventureHelper instance = getInstance();
+        return instance.minecraftComponentToMiniMessageCache.get(component, (object) -> {
+            String json = CustomNameplates.getInstance().getPlatform().minecraftComponentToJson(object);
+            return jsonToMiniMessage(json);
         });
     }
 

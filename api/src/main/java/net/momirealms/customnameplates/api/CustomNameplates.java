@@ -3,6 +3,7 @@ package net.momirealms.customnameplates.api;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
 import net.momirealms.customnameplates.api.packet.PacketSender;
+import net.momirealms.customnameplates.api.packet.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
 import net.momirealms.customnameplates.api.tracker.TrackerManager;
@@ -29,6 +30,7 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected Consumer<Supplier<String>> debugger = (s) -> getPluginLogger().info("[DEBUG] " + s.get());
     protected ConfigManager configManager;
     protected PacketSender packetSender;
+    protected PipelineInjector pipelineInjector;
     protected PlaceholderManager placeholderManager;
     protected RequirementManager requirementManager;
     protected ActionBarManager actionBarManager;

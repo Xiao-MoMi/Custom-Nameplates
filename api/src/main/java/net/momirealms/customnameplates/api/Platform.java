@@ -9,6 +9,8 @@ public interface Platform {
 
     Object jsonToMinecraftComponent(String json);
 
+    String minecraftComponentToJson(Object component);
+
     Placeholder registerPlatformPlaceholder(String id);
 
     void sendActionBar(CNPlayer<?> player, Object component);
@@ -18,4 +20,6 @@ public interface Platform {
     void removeBossBar(CNPlayer<?> player, UUID uuid);
 
     void updateBossBarName(CNPlayer<?> player, UUID uuid, Object component);
+
+    void onPacketSend(CNPlayer<?> player, Object packet);
 }

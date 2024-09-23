@@ -4,16 +4,13 @@ import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
+import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
+import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
-import net.momirealms.customnameplates.bukkit.actionbar.BukkitActionBarManager;
-import net.momirealms.customnameplates.bukkit.bossbar.BukkitBossBarManager;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
-import net.momirealms.customnameplates.bukkit.packet.BukkitPacketSender;
-import net.momirealms.customnameplates.bukkit.player.BukkitCNPlayer;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
-import net.momirealms.customnameplates.bukkit.tracker.BukkitTrackerManager;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
@@ -93,7 +90,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             return;
         }
 
-        this.packetSender = new BukkitPacketSender();
+        BukkitNetworkManager networkManager = new BukkitNetworkManager(this);
+        this.packetSender = networkManager;
+        this.pipelineInjector = networkManager;
         this.commandManager = new BukkitCommandManager(this);
         this.senderFactory = new BukkitSenderFactory(this);
         this.platform = new BukkitPlatform(this);
@@ -102,8 +101,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.trackerManager = new BukkitTrackerManager(this);
         this.translationManager = new TranslationManager(this);
         this.placeholderManager = new PlaceholderManagerImpl(this);
-        this.actionBarManager = new BukkitActionBarManager(this);
-        this.bossBarManager = new BukkitBossBarManager(this);
+        this.actionBarManager = new ActionBarManagerImpl(this);
+        this.bossBarManager = new BossBarManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
@@ -183,8 +182,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     }
 
     @Override
-    public BukkitPacketSender getPacketSender() {
-        return (BukkitPacketSender) packetSender;
+    public BukkitNetworkManager getPacketSender() {
+        return (BukkitNetworkManager) packetSender;
     }
 
     public JavaPlugin getBootstrap() {
@@ -203,6 +202,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             getPluginLogger().severe("Player " + event.getPlayer().getName() + " is duplicated");
         }
 
+        pipelineInjector.inject(cnPlayer);
+
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerJoin(cnPlayer);
         }
@@ -215,6 +216,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             getPluginLogger().severe("Player " + event.getPlayer().getName() + " is not recorded by CustomNameplates");
             return;
         }
+
+        pipelineInjector.uninject(cnPlayer);
 
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerQuit(cnPlayer);
