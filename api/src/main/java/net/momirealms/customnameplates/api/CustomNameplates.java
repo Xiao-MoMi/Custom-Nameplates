@@ -1,7 +1,7 @@
 package net.momirealms.customnameplates.api;
 
-import net.kyori.adventure.audience.Audience;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
+import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
 import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
@@ -10,9 +10,10 @@ import net.momirealms.customnameplates.common.dependency.DependencyManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.CustomPlugin;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
-import net.momirealms.customnameplates.common.sender.SenderFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -31,6 +32,7 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected PlaceholderManager placeholderManager;
     protected RequirementManager requirementManager;
     protected ActionBarManager actionBarManager;
+    protected BossBarManager bossBarManager;
     protected Platform platform;
     protected ConcurrentHashMap<UUID, CNPlayer<?>> onlinePlayerMap = new ConcurrentHashMap<>();
     protected MainTask mainTask = new MainTask(this);

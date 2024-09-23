@@ -1,22 +1,26 @@
-# Player can only receive at most 1 actionbar at the same time
+# Important: Players can only see one actionbar at any given moment, no overlap allowed!
 actionbar:
-  # The frequency of checking conditions for a bar, measured in ticks
-  check-frequency: 10
+  # Players need this permission to display the actionbar, the conditions can be customized
   conditions:
-    permission: "actionbar.show"
+    condition_1:
+      type: permission
+      refresh-interval: 20  # Refresh rate, in ticks, to recheck the permission status
+      value:
+        - actionbar.show
   text-display-order:
     1:
-      # Measured in ticks
-      # -1 = infinite
+      # Duration of the text display, measured in ticks (20 ticks = 1 second)
+      # -1 means the text will stay on the screen forever!
       duration: -1
-      # Text content
+      # The message to be shown in the actionbar
       text: '%nameplates_conditional_actionbar%'
-      # The frequency of refreshing the text, the lower the value is, the faster the placeholders are updated
-      # measured in ticks, -1 = disable refreshing
-      refresh-frequency: 1
-      # Optional
-      # When enabling conditions, make sure that players would see at least one in the order,
-      # otherwise it will fall into a dead cycle
-      # If your player doesn't meet the conditions, it would be skipped
-      # This condition would only be checked once until the next turn
+      # Automatically refresh the placeholders used in the 'text' each time the text appears
+      update-on-display: true
+      # Optional settings for finer control:
+      # When enabling conditions, make sure at least one valid actionbar is displayed to the player,
+      # or it may lead to an endless loop with nothing visible.
+      # If the player doesn't meet the condition, this actionbar will simply be skipped.
+      # The condition is only checked once per cycle, until the next time it comes around.
       conditions: {}
+    #2: ...
+    #3: ...

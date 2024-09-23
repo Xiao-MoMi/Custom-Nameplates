@@ -1,7 +1,9 @@
 package net.momirealms.customnameplates.api;
 
-import net.momirealms.customnameplates.api.packet.WrappedActionBarPacket;
+import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+
+import java.util.UUID;
 
 public interface Platform {
 
@@ -9,5 +11,11 @@ public interface Platform {
 
     Placeholder registerPlatformPlaceholder(String id);
 
-    void sendActionBar(CNPlayer<?> player, WrappedActionBarPacket packet);
+    void sendActionBar(CNPlayer<?> player, Object component);
+
+    void createBossBar(CNPlayer<?> player, UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color);
+
+    void removeBossBar(CNPlayer<?> player, UUID uuid);
+
+    void updateBossBarName(CNPlayer<?> player, UUID uuid, Object component);
 }

@@ -5,9 +5,8 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.feature.DynamicText;
 import net.momirealms.customnameplates.api.feature.Feature;
-import net.momirealms.customnameplates.api.packet.WrappedActionBarPacket;
-import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -28,7 +27,7 @@ public class ActionBarSender implements Feature {
     private String externalActionBar;
     private long externalExpireTime;
 
-    private String latestActionBar;
+    private String latestContent;
 
     private boolean textChangeFlag = false;
 
@@ -74,7 +73,7 @@ public class ActionBarSender implements Feature {
             // no actionbar available
             currentConfig = null;
             currentActionBar = null;
-            latestActionBar = null;
+            latestContent = null;
         }
 
         if (currentConfig != null) {
@@ -88,7 +87,7 @@ public class ActionBarSender implements Feature {
                 do {
                     if (triedTimes == currentConfig.carouselTexts().length) {
                         timeLeft = 20;
-                        latestActionBar = null;
+                        latestContent = null;
                         CustomNameplates.getInstance().getPluginLogger().warn("No text in order is available for player " + owner.name() + ". Please check your actionbar's conditions.");
                         return;
                     }
@@ -104,6 +103,10 @@ public class ActionBarSender implements Feature {
                 CarouselText carouselText = currentConfig.carouselTexts()[order];
                 timeLeft = carouselText.duration();
                 currentActionBar = carouselText.preParsedDynamicText().fastCreate(owner);
+
+                if (carouselText.updateOnDisplay()) {
+                    owner.forceUpdate(currentActionBar.placeholders());
+                }
                 textChangeFlag = true;
             }
         }
@@ -121,14 +124,14 @@ public class ActionBarSender implements Feature {
     }
 
     public void refresh() {
-        latestActionBar = this.currentActionBar.render(owner);
+        latestContent = this.currentActionBar.render(owner);
         textChangeFlag = false;
     }
 
     public void sendLatestActionBar() {
-        if (latestActionBar != null) {
+        if (latestContent != null) {
             updateLastUpdateTime();
-            CustomNameplates.getInstance().getPlatform().sendActionBar(owner, new WrappedActionBarPacket(AdventureHelper.miniMessageToMinecraftComponent(latestActionBar)));
+            CustomNameplates.getInstance().getPlatform().sendActionBar(owner, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
         }
     }
 

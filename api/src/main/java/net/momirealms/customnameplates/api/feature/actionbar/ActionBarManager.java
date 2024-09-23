@@ -10,9 +10,5 @@ public interface ActionBarManager extends Reloadable {
 
     ActionBarConfig getConfig(String name);
 
-    ActionBarConfig addConfig(ActionBarConfig config);
-
-    ActionBarConfig removeConfig(String name);
-
     ActionBarConfig[] allConfigs();
 }

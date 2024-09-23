@@ -1,9 +1,9 @@
 package net.momirealms.customnameplates.bukkit.packet;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.bukkit.util.BukkitReflectionUtils;
-import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.common.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 

@@ -25,10 +25,10 @@
 
 package net.momirealms.customnameplates.bukkit.scheduler;
 
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.scheduler.impl.BukkitExecutor;
 import net.momirealms.customnameplates.bukkit.scheduler.impl.FoliaExecutor;
-import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.common.plugin.scheduler.AbstractJavaScheduler;
 import net.momirealms.customnameplates.common.plugin.scheduler.RegionExecutor;
 import org.bukkit.Location;

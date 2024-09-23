@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.actionbar.BukkitActionBarManager;
+import net.momirealms.customnameplates.bukkit.bossbar.BukkitBossBarManager;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.packet.BukkitPacketSender;
 import net.momirealms.customnameplates.bukkit.player.BukkitCNPlayer;
@@ -21,7 +22,6 @@ import net.momirealms.customnameplates.common.plugin.logging.JavaPluginLogger;
 import net.momirealms.customnameplates.common.plugin.logging.PluginLogger;
 import net.momirealms.customnameplates.common.plugin.scheduler.AbstractJavaScheduler;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerAdapter;
-import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -102,9 +102,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.translationManager = new TranslationManager(this);
         this.placeholderManager = new PlaceholderManagerImpl(this);
         this.actionBarManager = new BukkitActionBarManager(this);
+        this.bossBarManager = new BukkitBossBarManager(this);
         this.requirementManager = new BukkitRequirementManager(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
+        this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
 
         Bukkit.getPluginManager().registerEvents(this, getBootstrap());
 
@@ -121,6 +123,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
         this.configManager.disable();
         this.actionBarManager.disable();
+        this.bossBarManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -134,6 +137,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.configManager.reload();
         this.translationManager.reload();
         this.actionBarManager.reload();
+        this.bossBarManager.reload();
         this.requirementManager.reload();
     }
 

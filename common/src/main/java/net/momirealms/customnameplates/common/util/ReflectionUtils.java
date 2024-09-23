@@ -7,7 +7,6 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReflectionUtils {
 
@@ -222,6 +221,15 @@ public class ReflectionUtils {
     public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameterTypes) {
         try {
             return clazz.getConstructor(parameterTypes);
+        } catch (NoSuchMethodException | SecurityException ignore) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Constructor<?> getDeclaredConstructor(Class<?> clazz, Class<?>... parameterTypes) {
+        try {
+            return setAccessible(clazz.getDeclaredConstructor(parameterTypes));
         } catch (NoSuchMethodException | SecurityException ignore) {
             return null;
         }

@@ -2,6 +2,7 @@ package net.momirealms.customnameplates.api.feature;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+
 import java.util.Set;
 
 public interface Feature {

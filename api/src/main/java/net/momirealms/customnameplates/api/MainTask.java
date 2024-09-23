@@ -19,6 +19,7 @@ public class MainTask implements Runnable {
     public void run() {
         long time1 = System.nanoTime();
         plugin.actionBarManager.refreshConditions();
+        plugin.bossBarManager.onTick();
         long time2 = System.nanoTime();
         plugin.placeholderManager.refreshPlaceholders();
         long time3 = System.nanoTime();

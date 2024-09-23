@@ -1,7 +1,6 @@
 package net.momirealms.customnameplates.api.placeholder;
 
 import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.CustomNameplates;
 
 import java.util.HashMap;
 import java.util.List;

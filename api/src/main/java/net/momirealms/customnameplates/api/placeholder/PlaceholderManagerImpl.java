@@ -2,11 +2,10 @@ package net.momirealms.customnameplates.api.placeholder;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
-import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
+import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.Feature;
-import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -21,9 +20,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
     private final CustomNameplates plugin;
     private final HashMap<String, Integer> refreshIntervals = new HashMap<>();
-    private SchedulerTask timerRefreshTask;
 
     private final Map<String, Placeholder> placeholders = new HashMap<>();
+    private final Map<String, SharedPlaceholder> sharedPlaceholders = new HashMap<>();
 
     public PlaceholderManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -53,17 +52,14 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     @Override
     public void refreshPlaceholders() {
 
-        Map<CNPlayer<?>, Set<Feature>> tasks1 = new HashMap<>();  // owner updates
-        Map<CNPlayer<?>, Map<Feature, List<CNPlayer<?>>>> tasks2 = new HashMap<>();  // relational updates
-
         // updates all the shared value
-        for (Placeholder placeholder : placeholders.values()) {
-            if (placeholder instanceof SharedPlaceholder shared) {
-                shared.update();
-            }
+        for (SharedPlaceholder placeholder : sharedPlaceholders.values()) {
+            placeholder.update();
         }
 
         for (CNPlayer<?> player : plugin.getOnlinePlayers()) {
+
+            if (!player.isOnline()) continue;
 
             PlaceholderUpdateTask task = player.getRefreshValueTask();
             if (task == null) continue;
@@ -108,24 +104,20 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 }
             }
 
-            tasks1.put(player, featuresToNotifyUpdates);
-            tasks2.put(player, relationalFeaturesToNotifyUpdates);
-        }
-
-        for (Map.Entry<CNPlayer<?>, Set<Feature>> entry : tasks1.entrySet()) {
-            for (Feature feature : entry.getValue()) {
-                feature.notifyPlaceholderUpdates(entry.getKey(), false);
-            }
-        }
-
-        for (Map.Entry<CNPlayer<?>, Map<Feature, List<CNPlayer<?>>>> entry : tasks2.entrySet()) {
-            CNPlayer<?> player = entry.getKey();
-            for (Map.Entry<Feature, List<CNPlayer<?>>> innerEntry : entry.getValue().entrySet()) {
-                Feature feature = innerEntry.getKey();
-                for (CNPlayer<?> other : innerEntry.getValue()) {
-                    feature.notifyPlaceholderUpdates(player, other, false);
+            // Switch to another thread for updating
+            plugin.getScheduler().async().execute(() -> {
+                // Async task takes time and the player might have been offline
+                if (!player.isOnline()) return;
+                for (Feature feature : featuresToNotifyUpdates) {
+                    feature.notifyPlaceholderUpdates(player, false);
                 }
-            }
+                for (Map.Entry<Feature, List<CNPlayer<?>>> innerEntry : relationalFeaturesToNotifyUpdates.entrySet()) {
+                    Feature feature = innerEntry.getKey();
+                    for (CNPlayer<?> other : innerEntry.getValue()) {
+                        feature.notifyPlaceholderUpdates(player, other, false);
+                    }
+                }
+            });
         }
     }
 
@@ -137,28 +129,28 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     @Override
     public <T extends Placeholder> T registerPlaceholder(T placeholder) {
         placeholders.put(placeholder.id(), placeholder);
+        if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
+            sharedPlaceholders.put(placeholder.id(), sharedPlaceholder);
+        }
         return placeholder;
     }
 
     @Override
     public PlayerPlaceholder registerPlayerPlaceholder(String id, int refreshInterval, Function<CNPlayer<?>, String> function) {
         PlayerPlaceholderImpl impl = new PlayerPlaceholderImpl(this, id, refreshInterval, function);
-        placeholders.put(id, impl);
-        return impl;
+        return registerPlaceholder(impl);
     }
 
     @Override
     public RelationalPlaceholder registerRelationalPlaceholder(String id, int refreshInterval, BiFunction<CNPlayer<?>, CNPlayer<?>, String> function) {
         RelationalPlaceholderImpl impl = new RelationalPlaceholderImpl(this, id, refreshInterval, function);
-        placeholders.put(id, impl);
-        return impl;
+        return registerPlaceholder(impl);
     }
 
     @Override
     public SharedPlaceholder registerSharedPlaceholder(String id, int refreshInterval, Supplier<String> contextSupplier) {
         SharedPlaceholderImpl impl = new SharedPlaceholderImpl(this, id, refreshInterval, contextSupplier);
-        placeholders.put(id, impl);
-        return impl;
+        return registerPlaceholder(impl);
     }
 
     @Override

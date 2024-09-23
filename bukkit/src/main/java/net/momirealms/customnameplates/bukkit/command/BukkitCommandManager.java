@@ -18,9 +18,7 @@
 package net.momirealms.customnameplates.bukkit.command;
 
 import net.kyori.adventure.util.Index;
-import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
-import net.momirealms.customnameplates.bukkit.BukkitSenderFactory;
 import net.momirealms.customnameplates.bukkit.command.feature.DebugPerformanceCommand;
 import net.momirealms.customnameplates.bukkit.command.feature.ReloadCommand;
 import net.momirealms.customnameplates.common.command.AbstractCommandManager;

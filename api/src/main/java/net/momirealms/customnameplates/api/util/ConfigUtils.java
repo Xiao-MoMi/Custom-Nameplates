@@ -14,7 +14,8 @@ public class ConfigUtils {
         return new CarouselText(
                 section.getInt("duration", 200),
                 CustomNameplates.getInstance().getRequirementManager().parseRequirements(section.getSection("conditions")),
-                section.getString("text", "")
+                section.getString("text", ""),
+                section.getBoolean("update-on-display", true)
         );
     }
 
@@ -22,7 +23,7 @@ public class ConfigUtils {
         TreeMap<Integer, CarouselText> map = new TreeMap<>();
         if (section == null) {
             CustomNameplates.getInstance().getPluginLogger().warn("text-display-order section is null, this might cause bugs!");
-            map.put(1, new CarouselText(100, new Requirement[0], ""));
+            map.put(1, new CarouselText(100, new Requirement[0], "", false));
             return map.values().toArray(new CarouselText[0]);
         }
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {

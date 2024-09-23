@@ -7,7 +7,6 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.tracker.TrackedEntityView;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

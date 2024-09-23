@@ -3,7 +3,7 @@ package net.momirealms.customnameplates.bukkit.util;
 import net.momirealms.customnameplates.common.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 public final class BukkitReflectionUtils {
