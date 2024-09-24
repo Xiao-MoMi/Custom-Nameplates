@@ -2,9 +2,6 @@ package net.momirealms.customnameplates.api.feature.nametag;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
-import org.w3c.dom.stylesheets.LinkStyle;
-
-import java.util.List;
 
 public interface UnlimitedTagManager extends Reloadable {
 

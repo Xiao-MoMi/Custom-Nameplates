@@ -12,7 +12,9 @@ import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitListener {

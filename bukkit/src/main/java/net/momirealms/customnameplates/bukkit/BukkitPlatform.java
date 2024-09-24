@@ -18,13 +18,11 @@ import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.bukkit.util.TextDisplayData;
 import net.momirealms.customnameplates.common.util.TriConsumer;
-import net.momirealms.customnameplates.common.util.TriFunction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class BukkitPlatform implements Platform {
