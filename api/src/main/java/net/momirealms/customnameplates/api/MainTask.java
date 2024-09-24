@@ -20,6 +20,7 @@ public class MainTask implements Runnable {
         long time1 = System.nanoTime();
         plugin.actionBarManager.refreshConditions();
         plugin.bossBarManager.onTick();
+        plugin.unlimitedTagManager.onTick();
         long time2 = System.nanoTime();
         plugin.placeholderManager.refreshPlaceholders();
         long time3 = System.nanoTime();

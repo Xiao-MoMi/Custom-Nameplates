@@ -10,12 +10,15 @@ import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImp
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
+import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.placeholder.DummyPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.bukkit.util.TextDisplayData;
+import net.momirealms.customnameplates.common.util.TriConsumer;
+import net.momirealms.customnameplates.common.util.TriFunction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -29,37 +32,36 @@ public class BukkitPlatform implements Platform {
     private final CustomNameplates plugin;
     private final boolean placeholderAPI;
 
-    private static final HashMap<String, BiFunction<CNPlayer, Object, Boolean>> packetFunctions = new HashMap<>();
+    private static final HashMap<String, TriConsumer<CNPlayer, PacketEvent, Object>> packetFunctions = new HashMap<>();
 
-    private static void registerPacketConsumer(final BiFunction<CNPlayer, Object, Boolean> functions, String... packet) {
+    private static void registerPacketConsumer(final TriConsumer<CNPlayer, PacketEvent, Object> functions, String... packet) {
         for (String s : packet) {
             packetFunctions.put(s, functions);
         }
     }
 
     static {
-        registerPacketConsumer((player, packet) -> {
-            if (!ConfigManager.actionbarModule()) return false;
+        registerPacketConsumer((player, event, packet) -> {
+            if (!ConfigManager.actionbarModule()) return;
             try {
                 Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
                 Object contents = Reflections.method$Component$getContents.invoke(component);
                 if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
                     String name = (String) Reflections.field$ScoreContents$name.get(contents);
                     String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
-                    if (name.equals("np") && objective.equals("ab")) return false;
+                    if (name.equals("np") && objective.equals("ab")) return;
                 }
                 CustomNameplates.getInstance().getScheduler().async().execute(() -> {
                     ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
                 });
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetActionBarTextPacket", e);
-                return false;
             }
-            return true;
+            event.setCancelled(true);
         }, "ClientboundSetActionBarTextPacket");
 
-        registerPacketConsumer((player, packet) -> {
-            if (!ConfigManager.actionbarModule()) return false;
+        registerPacketConsumer((player, event, packet) -> {
+            if (!ConfigManager.actionbarModule()) return;
             try {
             boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
                 if (actionBar) {
@@ -80,49 +82,50 @@ public class BukkitPlatform implements Platform {
                             throw new RuntimeException(e);
                         }
                     });
-                    return true;
+                    event.setCancelled(true);
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSystemChatPacket", e);
-                return false;
             }
-            return true;
         }, "ClientboundSystemChatPacket");
 
         // 1.20.2+
-        registerPacketConsumer((player, packet) -> {
-            if (!VersionHelper.isVersionNewerThan1_20_2()) return false;
+        registerPacketConsumer((player, event, packet) -> {
+            if (!VersionHelper.isVersionNewerThan1_20_2()) return;
             try {
                 int entityID = (int) Reflections.field$ClientboundAddEntityPacket$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
                     player.addPlayerToTracker(added);
+                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                    if (delayed != null) {
+                        event.addDelayedTask(delayed);
+                    }
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundAddEntityPacket", e);
-                return false;
             }
-            return false;
         }, "ClientboundAddEntityPacket", "PacketPlayOutSpawnEntity");
 
         // 1.19.4-1.20.1
-        registerPacketConsumer((player, packet) -> {
-            if (VersionHelper.isVersionNewerThan1_20_2()) return false;
+        registerPacketConsumer((player, event, packet) -> {
+            if (VersionHelper.isVersionNewerThan1_20_2()) return;
             try {
                 int entityID = (int) Reflections.field$PacketPlayOutNamedEntitySpawn$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
                     player.addPlayerToTracker(added);
-                    CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                    if (delayed != null) {
+                        event.addDelayedTask(delayed);
+                    }
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle PacketPlayOutNamedEntitySpawn", e);
-                return false;
             }
-            return false;
         }, "PacketPlayOutNamedEntitySpawn");
 
-        registerPacketConsumer((player, packet) -> {
+        registerPacketConsumer((player, event, packet) -> {
             try {
                 IntList intList = (IntList) Reflections.field$ClientboundRemoveEntitiesPacket$entityIds.get(packet);
                 for (int i : intList) {
@@ -134,13 +137,11 @@ public class BukkitPlatform implements Platform {
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundRemoveEntitiesPacket", e);
-                return false;
             }
-            return false;
         }, "PacketPlayOutEntityDestroy", "ClientboundRemoveEntitiesPacket");
 
         // for cosmetic plugin compatibility
-        registerPacketConsumer((player, packet) -> {
+        registerPacketConsumer((player, event, packet) -> {
             try {
                 int[] passengers = (int[]) Reflections.field$ClientboundSetPassengersPacket$passengers.get(packet);
                 int vehicle = (int) Reflections.field$ClientboundSetPassengersPacket$vehicle.get(packet);
@@ -158,9 +159,8 @@ public class BukkitPlatform implements Platform {
                     Reflections.field$ClientboundSetPassengersPacket$passengers.set(packet, merged);
                 }
             } catch (ReflectiveOperationException e) {
-                return false;
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetPassengersPacket", e);
             }
-            return false;
         }, "PacketPlayOutMount", "ClientboundSetPassengersPacket");
     }
 
@@ -291,6 +291,7 @@ public class BukkitPlatform implements Platform {
 
             // It's shit
             ArrayList<Object> values = new ArrayList<>();
+            TextDisplayData.BillboardConstraints.addEntityDataIfNotDefaultValue((byte) 3,              values);
             TextDisplayData.BackgroundColor.addEntityDataIfNotDefaultValue(     backgroundColor,       values);
             TextDisplayData.Text.addEntityDataIfNotDefaultValue(                component,             values);
             TextDisplayData.TextOpacity.addEntityDataIfNotDefaultValue(         opacity,               values);
@@ -355,7 +356,7 @@ public class BukkitPlatform implements Platform {
     @Override
     public Object vec3(double x, double y, double z) {
         try {
-            return Reflections.constructor$Vec3.newInstance(x, y, z);
+            return Reflections.constructor$Vector3f.newInstance((float) x, (float) y, (float) z);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -363,27 +364,24 @@ public class BukkitPlatform implements Platform {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean onPacketSend(CNPlayer player, Object packet) {
+    public void onPacketSend(CNPlayer player, PacketEvent event) {
         try {
+            Object packet = event.getPacket();
             if (Reflections.clazz$ClientboundBundlePacket.isInstance(packet)) {
                 Iterable<Object> packets = (Iterable<Object>) Reflections.field$BundlePacket$packets.get(packet);
                 for (Object p : packets) {
-                    if (handlePacket(player, p)) {
-                        return true;
-                    }
+                    handlePacket(player, event, p);
                 }
-                return false;
             } else {
-                return handlePacket(player, packet);
+                handlePacket(player, event, packet);
             }
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean handlePacket(CNPlayer player, Object packet) throws ReflectiveOperationException {
-        return Optional.ofNullable(packetFunctions.get(packet.getClass().getSimpleName()))
-                .map(function -> function.apply(player, packet))
-                .orElse(false);
+    private void handlePacket(CNPlayer player, PacketEvent event, Object packet) throws ReflectiveOperationException {
+        Optional.ofNullable(packetFunctions.get(packet.getClass().getSimpleName()))
+                .ifPresent(function -> function.accept(player, event, packet));
     }
 }

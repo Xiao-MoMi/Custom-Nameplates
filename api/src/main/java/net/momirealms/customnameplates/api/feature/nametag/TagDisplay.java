@@ -122,7 +122,7 @@ public class TagDisplay implements RelationalFeature {
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
         CustomNameplates.getInstance().getPlatform().createTextDisplay(
-                viewer, entityID, uuid, owner.position(), 0f, 0f, 0d, component,
+                viewer, entityID, uuid, owner.position().add(0,1.8,0), 0f, 0f, 0d, component,
                 config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
                 config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(), config.scale(), config.translation(),
                 config.lineWidth(), owner.isCrouching()

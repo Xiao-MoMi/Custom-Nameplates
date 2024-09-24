@@ -12,9 +12,7 @@ import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitListener {
@@ -88,11 +86,12 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
     }
 
     @Override
-    public void onAddPlayer(CNPlayer player, CNPlayer added) {
+    public Runnable onAddPlayer(CNPlayer player, CNPlayer added) {
         TagDisplayController controller = tagControllers.get(player.uuid());
         if (controller != null) {
-            controller.handlePlayerAdd(added);
+            return controller.handlePlayerAdd(added);
         }
+        return null;
     }
 
     @Override
@@ -125,7 +124,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                             .lineWidth(section.getInt("line-width", 200))
                             .hasShadow(section.getBoolean("has-shadow", false))
                             .seeThrough(section.getBoolean("is-see-through", false))
+                            .opacity(section.getByte("opacity", (byte) -1))
                             .useDefaultBackgroundColor(section.getBoolean("use-default-background-color", false))
+                            .backgroundColor(ConfigUtils.argb(section.getString("background-color", "64,0,0,0")))
                             .carouselText(
                                     section.contains("text") ?
                                             new CarouselText[]{new CarouselText(-1, new Requirement[0], section.getString("text"), false)} :

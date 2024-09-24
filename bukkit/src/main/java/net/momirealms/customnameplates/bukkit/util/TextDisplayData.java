@@ -23,8 +23,8 @@ public class TextDisplayData<T> {
     public static final TextDisplayData<Integer> TransformationInterpolationDuration = of(9, EntityDataValue.Serializers$INT, 0);
     public static final TextDisplayData<Integer> PositionRotationInterpolationDuration = of(10, EntityDataValue.Serializers$INT, 0);
 
-    public static final TextDisplayData<Object> Translation = of(11, EntityDataValue.Serializers$VECTOR3, Reflections.instance$Vec3$Zero);
-    public static final TextDisplayData<Object> Scale = of(12, EntityDataValue.Serializers$VECTOR3, Reflections.instance$Vec3$Zero);
+    public static final TextDisplayData<Object> Translation = of(11, EntityDataValue.Serializers$VECTOR3, Reflections.instance$Vector3f$None);
+    public static final TextDisplayData<Object> Scale = of(12, EntityDataValue.Serializers$VECTOR3, Reflections.instance$Vector3f$None);
     public static final TextDisplayData<Object> RotationLeft = of(13, EntityDataValue.Serializers$QUATERNION, Reflections.instance$Quaternionf$None);
     public static final TextDisplayData<Object> RotationRight = of(14, EntityDataValue.Serializers$QUATERNION, Reflections.instance$Quaternionf$None);
     public static final TextDisplayData<Byte> BillboardConstraints = of(15, EntityDataValue.Serializers$BYTE, (byte) 0);
@@ -70,12 +70,12 @@ public class TextDisplayData<T> {
         return defaultValue;
     }
 
-    public Object createEntityDataIfNotDefaultValue(Object value) {
+    public Object createEntityDataIfNotDefaultValue(T value) {
         if (defaultValue().equals(value)) return null;
         return EntityDataValue.create(id, serializer, value);
     }
 
-    public void addEntityDataIfNotDefaultValue(Object value, List<Object> list) {
+    public void addEntityDataIfNotDefaultValue(T value, List<Object> list) {
         if (defaultValue().equals(value)) return;
         list.add(EntityDataValue.create(id, serializer, value));
     }
@@ -124,7 +124,7 @@ public class TextDisplayData<T> {
     private static final int HAS_GLOWING_EFFECT = 0x40;    // 64
     private static final int IS_FLYING_WITH_ELYTRA = 0x80; // 128
 
-    public static int encodeMask(boolean isOnFire, boolean isCrouching, boolean isUnused,
+    public static byte encodeMask(boolean isOnFire, boolean isCrouching, boolean isUnused,
                                       boolean isSprinting, boolean isSwimming, boolean isInvisible,
                                       boolean hasGlowingEffect, boolean isFlyingWithElytra) {
         int bitMask = 0;
@@ -154,6 +154,6 @@ public class TextDisplayData<T> {
             bitMask |= IS_FLYING_WITH_ELYTRA;
         }
 
-        return bitMask;
+        return (byte) bitMask;
     }
 }

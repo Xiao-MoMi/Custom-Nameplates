@@ -393,7 +393,7 @@ public class Reflections {
     );
 
     public static final Field field$ClientboundRemoveEntitiesPacket$entityIds = requireNonNull(
-            ReflectionUtils.getDeclaredField(
+            ReflectionUtils.getInstanceDeclaredField(
                     clazz$ClientboundRemoveEntitiesPacket, 0
             )
     );
@@ -429,11 +429,26 @@ public class Reflections {
             )
     );
 
-    public static final Field field$EntityType$TEXT_DISPLAY = requireNonNull(
-            ReflectionUtils.getDeclaredField(
-                    clazz$EntityType, "TEXT_DISPLAY"
-            )
-    );
+    public static final Field field$EntityType$TEXT_DISPLAY;
+
+    static {
+        System.out.println(VersionHelper.version());
+        if (VersionHelper.isVersionNewerThan1_20_5()) {
+            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
+                    clazz$EntityType,
+                    "TEXT_DISPLAY", "bb");
+        } else if (VersionHelper.isVersionNewerThan1_20_4()) {
+            System.out.println("Niubility");
+            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
+                    clazz$EntityType,
+                    "TEXT_DISPLAY", "aY");
+        } else {
+            System.out.println("sb");
+            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
+                    clazz$EntityType,
+                    "TEXT_DISPLAY", "aX");
+        }
+    }
 
     public static final Object instance$EntityType$TEXT_DISPLAY;
 
@@ -467,13 +482,13 @@ public class Reflections {
     );
 
     public static final Field field$ClientboundSetPassengersPacket$vehicle = requireNonNull(
-            ReflectionUtils.getDeclaredField(
+            ReflectionUtils.getInstanceDeclaredField(
                     clazz$ClientboundSetPassengersPacket, 0
             )
     );
 
     public static final Field field$ClientboundSetPassengersPacket$passengers = requireNonNull(
-            ReflectionUtils.getDeclaredField(
+            ReflectionUtils.getInstanceDeclaredField(
                     clazz$ClientboundSetPassengersPacket, 1
             )
     );
@@ -533,7 +548,7 @@ public class Reflections {
 
     public static final Constructor<?> constructor$EntityDataAccessor = requireNonNull(
             ReflectionUtils.getConstructor(
-                    clazz$EntityDataAccessor, clazz$EntityDataSerializer
+                    clazz$EntityDataAccessor, int.class, clazz$EntityDataSerializer
             )
     );
 
@@ -546,7 +561,7 @@ public class Reflections {
 
     public static final Method method$SynchedEntityData$DataValue$create = requireNonNull(
             ReflectionUtils.getMethod(
-                    clazz$SynchedEntityData$DataValue, 0
+                    clazz$SynchedEntityData$DataValue, clazz$SynchedEntityData$DataValue, clazz$EntityDataAccessor, Object.class
             )
     );
 
@@ -574,7 +589,7 @@ public class Reflections {
 
     public static final Constructor<?> constructor$Quaternionf = requireNonNull(
             ReflectionUtils.getConstructor(
-                    clazz$Quaternionf, float.class, float.class, float.class
+                    clazz$Quaternionf, float.class, float.class, float.class, float.class
             )
     );
 
@@ -583,6 +598,28 @@ public class Reflections {
     static {
         try {
             instance$Quaternionf$None = constructor$Quaternionf.newInstance(0f, 0f, 0f, 1f);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static final Class<?> clazz$Vector3f = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "org.joml.Vector3f"
+            )
+    );
+
+    public static final Constructor<?> constructor$Vector3f = requireNonNull(
+            ReflectionUtils.getConstructor(
+                    clazz$Vector3f, float.class, float.class, float.class
+            )
+    );
+
+    public static final Object instance$Vector3f$None;
+
+    static {
+        try {
+            instance$Vector3f$None = constructor$Vector3f.newInstance(0f, 0f, 0f);
         } catch (ReflectiveOperationException e) {
             throw new AssertionError(e);
         }

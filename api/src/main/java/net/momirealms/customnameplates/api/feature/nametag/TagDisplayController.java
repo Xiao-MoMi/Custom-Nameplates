@@ -3,10 +3,7 @@ package net.momirealms.customnameplates.api.feature.nametag;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TagDisplayController {
 
@@ -98,7 +95,7 @@ public class TagDisplayController {
         }
     }
 
-    public void handlePlayerAdd(CNPlayer another) {
+    public Runnable handlePlayerAdd(CNPlayer another) {
         boolean updatePassengers = false;
         for (TagDisplay display : this.tags) {
             if (display.isShown()) {
@@ -112,8 +109,9 @@ public class TagDisplayController {
         }
         if (updatePassengers) {
             Set<Integer> realPassengers = owner.passengers();
-            updatePassengers(another, realPassengers);
+            return () -> updatePassengers(another, realPassengers);
         }
+        return null;
     }
 
     private void updatePassengers(CNPlayer another, Set<Integer> realPassengers) {
@@ -124,6 +122,7 @@ public class TagDisplayController {
         for (int passenger : fakePassengers) {
             passengers[index++] = passenger;
         }
+        System.out.println("更新" + another.name() + Arrays.toString(passengers));
         CustomNameplates.getInstance().getPlatform().setPassengers(another, owner.entityID(), passengers);
     }
 }

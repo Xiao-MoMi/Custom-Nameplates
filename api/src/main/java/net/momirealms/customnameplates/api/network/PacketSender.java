@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.packet;
+package net.momirealms.customnameplates.api.network;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -9,5 +9,5 @@ public interface PacketSender {
 
     void sendPacket(CNPlayer player, Object packet);
 
-    void sendPackets(@NotNull CNPlayer player, List<Object> packet);
+    void sendPacket(@NotNull CNPlayer player, List<Object> packet);
 }

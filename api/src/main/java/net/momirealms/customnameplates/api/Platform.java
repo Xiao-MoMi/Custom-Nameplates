@@ -1,6 +1,7 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
+import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
@@ -25,7 +26,7 @@ public interface Platform {
 
     void updateBossBarName(CNPlayer player, UUID uuid, Object component);
 
-    boolean onPacketSend(CNPlayer player, Object packet);
+    void onPacketSend(CNPlayer player, PacketEvent event);
 
     void createTextDisplay(
             CNPlayer player,

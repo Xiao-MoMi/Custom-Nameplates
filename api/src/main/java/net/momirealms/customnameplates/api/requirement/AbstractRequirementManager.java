@@ -63,14 +63,22 @@ public abstract class AbstractRequirementManager implements RequirementManager {
                 if (hasRequirement(typeOrName)) {
                     requirements.add(parseSimpleRequirement(typeOrName, entry.getValue()));
                 } else {
-                    requirements.add(parseRichRequirement(section.getSection(typeOrName)));
+                    Section inner = section.getSection(typeOrName);
+                    if (inner != null) {
+                        requirements.add(parseRichRequirement(inner));
+                    } else {
+                        plugin.getPluginLogger().warn("Invalid requirement type found at " + section.getRouteAsString() + "." + typeOrName);
+                    }
                 }
             }
         return requirements.toArray(new Requirement[0]);
     }
 
     @Override
-    public @NotNull Requirement parseRichRequirement(@NotNull Section section) {
+    public @NotNull Requirement parseRichRequirement(@Nullable Section section) {
+        if (section == null) {
+            return Requirement.empty();
+        }
         String type = section.getString("type");
         if (type == null) {
             plugin.getPluginLogger().warn("No requirement type found at " + section.getRouteAsString());

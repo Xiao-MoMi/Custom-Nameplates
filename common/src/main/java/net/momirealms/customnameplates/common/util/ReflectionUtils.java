@@ -221,6 +221,19 @@ public class ReflectionUtils {
         return null;
     }
 
+    public static Method getStaticMethod(final Class<?> clazz, int index) {
+        int i = 0;
+        for (Method method : clazz.getMethods()) {
+            if (Modifier.isStatic(method.getModifiers())) {
+                if (i == index) {
+                    return setAccessible(method);
+                }
+                i++;
+            }
+        }
+        return null;
+    }
+
     @Nullable
     public static Method getMethod(final Class<?> clazz, int index) {
         int i = 0;

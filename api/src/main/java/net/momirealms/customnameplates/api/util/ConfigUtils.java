@@ -41,6 +41,10 @@ public class ConfigUtils {
         return map.values().toArray(new CarouselText[0]);
     }
 
+    public static int argb(String arg) {
+        return argb(arg.split(","));
+    }
+
     public static int argb(String[] args) {
         int alpha = args.length > 1 ? Integer.parseInt(args[0]) : 64;
         int red = args.length > 2 ? Integer.parseInt(args[1]) : 0;

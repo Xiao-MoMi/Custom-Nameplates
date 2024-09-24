@@ -8,7 +8,6 @@ import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImp
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
-import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
@@ -109,6 +108,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
+        this.joinQuitListeners.add((JoinQuitListener) unlimitedTagManager);
 
         Bukkit.getPluginManager().registerEvents(this, getBootstrap());
 

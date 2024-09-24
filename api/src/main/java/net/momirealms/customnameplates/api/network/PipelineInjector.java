@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.packet;
+package net.momirealms.customnameplates.api.network;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;

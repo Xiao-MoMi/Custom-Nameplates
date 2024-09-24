@@ -69,6 +69,10 @@ public class VersionHelper {
         checkFolia();
     }
 
+    public static float version() {
+        return version;
+    }
+
     private static void checkMojMap() {
         // Check if the server is Mojmap
         try {
@@ -87,23 +91,23 @@ public class VersionHelper {
     }
 
     public static boolean isVersionNewerThan1_20_5() {
-        return version >= 20.5;
+        return version >= 20.49;
     }
 
     public static boolean isVersionNewerThan1_20_4() {
-        return version >= 20.4;
+        return version >= 20.39;
     }
 
     public static boolean isVersionNewerThan1_19_4() {
-        return version >= 19.4;
+        return version >= 19.39;
     }
 
     public static boolean isVersionNewerThan1_20_2() {
-        return version >= 20.2;
+        return version >= 20.19;
     }
 
     public static boolean isVersionNewerThan1_20() {
-        return version >= 20.2;
+        return version >= 20;
     }
 
     public static boolean isFolia() {

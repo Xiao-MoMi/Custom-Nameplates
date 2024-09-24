@@ -75,6 +75,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         activeFeatures.clear();
         placeholder2Features.clear();
         feature2Placeholders.clear();
+        trackedPassengers.clear();
     }
 
     @Override

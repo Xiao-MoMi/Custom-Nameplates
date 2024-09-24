@@ -3,8 +3,9 @@ package net.momirealms.customnameplates.bukkit;
 import io.netty.channel.*;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.packet.PacketSender;
-import net.momirealms.customnameplates.api.packet.PipelineInjector;
+import net.momirealms.customnameplates.api.network.PacketEvent;
+import net.momirealms.customnameplates.api.network.PacketSender;
+import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public void sendPackets(@NotNull CNPlayer player, final List<Object> packet) {
+    public void sendPacket(@NotNull CNPlayer player, final List<Object> packet) {
         packetsConsumer.accept(player, packet);
     }
 
@@ -102,8 +103,14 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
         @Override
         public void write(ChannelHandlerContext context, Object packet, ChannelPromise channelPromise) {
             try {
-                boolean cancel = plugin.getPlatform().onPacketSend(player, packet);
-                if (cancel) return;
+                PacketEvent event = new PacketEvent(packet);
+                plugin.getPlatform().onPacketSend(player, event);
+                if (event.isCancelled()) return;
+                channelPromise.addListener((p) -> {
+                    for (Runnable task : event.getDelayedTasks()) {
+                        task.run();
+                    }
+                });
             } catch (Throwable e) {
                 plugin.getPluginLogger().severe("An error occurred when reading packets", e);
             }
