@@ -15,14 +15,14 @@ import java.util.function.Function;
 public class PreParsedDynamicText {
 
     private final String text;
-    private final List<Function<CNPlayer<?>, Function<CNPlayer<?>, String>>> textFunctions = new ArrayList<>();
+    private final List<Function<CNPlayer, Function<CNPlayer, String>>> textFunctions = new ArrayList<>();
     private final Set<Placeholder> set;
 
     public PreParsedDynamicText(String text) {
         this.text = text;
         PlaceholderManager manager = CustomNameplates.getInstance().getPlaceholderManager();
         List<String> detectedPlaceholders = manager.detectPlaceholders(text);
-        List<Function<CNPlayer<?>, Function<CNPlayer<?>, String>>> convertor = new ArrayList<>(detectedPlaceholders.size());
+        List<Function<CNPlayer, Function<CNPlayer, String>>> convertor = new ArrayList<>(detectedPlaceholders.size());
         List<Placeholder> placeholders = new ArrayList<>(detectedPlaceholders.size());
         for (String id : detectedPlaceholders) {
             Placeholder placeholder = manager.getPlaceholder(id);
@@ -58,9 +58,9 @@ public class PreParsedDynamicText {
         set = new HashSet<>(new HashSet<>(placeholders));
     }
 
-    public DynamicText fastCreate(CNPlayer<?> player) {
-        List<Function<CNPlayer<?>, String>> functions = new ArrayList<>();
-        for (Function<CNPlayer<?>, Function<CNPlayer<?>, String>> textFunction : textFunctions) {
+    public DynamicText fastCreate(CNPlayer player) {
+        List<Function<CNPlayer, String>> functions = new ArrayList<>();
+        for (Function<CNPlayer, Function<CNPlayer, String>> textFunction : textFunctions) {
             functions.add(textFunction.apply(player));
         }
         return new DynamicText(

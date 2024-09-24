@@ -13,5 +13,5 @@ public interface ActionBarManager extends Reloadable {
 
     ActionBarConfig[] allConfigs();
 
-    String getExternalActionBar(CNPlayer<?> player);
+    String getExternalActionBar(CNPlayer player);
 }

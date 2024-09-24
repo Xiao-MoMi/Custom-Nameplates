@@ -6,7 +6,9 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
+import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
+import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
@@ -98,11 +100,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.platform = new BukkitPlatform(this);
         this.senderFactory = new BukkitSenderFactory(this);
         this.configManager = new BukkitConfigManager(this);
-        this.trackerManager = new BukkitTrackerManager(this);
         this.translationManager = new TranslationManager(this);
         this.placeholderManager = new PlaceholderManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.bossBarManager = new BossBarManagerImpl(this);
+        this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
@@ -124,6 +126,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.configManager.disable();
         this.actionBarManager.disable();
         this.bossBarManager.disable();
+        this.unlimitedTagManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -134,14 +137,15 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     @Override
     public void reload() {
         super.reload();
-        for (CNPlayer<?> player : getOnlinePlayers()) {
-            ((AbstractCNPlayer<?>) player).reload();
+        for (CNPlayer player : getOnlinePlayers()) {
+            ((AbstractCNPlayer) player).reload();
         }
         this.configManager.reload();
         this.placeholderManager.reload();
         this.translationManager.reload();
         this.actionBarManager.reload();
         this.bossBarManager.reload();
+        this.unlimitedTagManager.reload();
         this.requirementManager.reload();
     }
 
@@ -181,11 +185,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         return getBootstrap().getDescription().getVersion();
     }
 
-    @Override
-    public BukkitNetworkManager getPacketSender() {
-        return (BukkitNetworkManager) packetSender;
-    }
-
     public JavaPlugin getBootstrap() {
         return bootstrap;
     }
@@ -196,12 +195,13 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        CNPlayer<?> cnPlayer = new BukkitCNPlayer(this, event.getPlayer());
-        CNPlayer<?> previous = onlinePlayerMap.put(cnPlayer.uuid(), cnPlayer);
+        CNPlayer cnPlayer = new BukkitCNPlayer(this, event.getPlayer());
+        CNPlayer previous = onlinePlayerMap.put(cnPlayer.uuid(), cnPlayer);
         if (previous != null) {
             getPluginLogger().severe("Player " + event.getPlayer().getName() + " is duplicated");
         }
 
+        entityIDFastLookup.put(cnPlayer.entityID(), cnPlayer);
         pipelineInjector.inject(cnPlayer);
 
         for (JoinQuitListener listener : joinQuitListeners) {
@@ -211,12 +211,13 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        CNPlayer<?> cnPlayer = onlinePlayerMap.remove(event.getPlayer().getUniqueId());
+        CNPlayer cnPlayer = onlinePlayerMap.remove(event.getPlayer().getUniqueId());
         if (cnPlayer == null) {
             getPluginLogger().severe("Player " + event.getPlayer().getName() + " is not recorded by CustomNameplates");
             return;
         }
 
+        entityIDFastLookup.remove(cnPlayer.entityID());
         pipelineInjector.uninject(cnPlayer);
 
         for (JoinQuitListener listener : joinQuitListeners) {

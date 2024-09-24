@@ -16,7 +16,7 @@ import java.util.UUID;
 public class BossBarSender implements Feature, BossBar {
 
     private final UUID uuid = UUID.randomUUID();
-    private final CNPlayer<?> owner;
+    private final CNPlayer owner;
 
     private boolean isShown = false;
     private final BossBarConfig config;
@@ -27,7 +27,7 @@ public class BossBarSender implements Feature, BossBar {
 
     private String latestContent;
 
-    public BossBarSender(CNPlayer<?> owner, BossBarConfig config) {
+    public BossBarSender(CNPlayer owner, BossBarConfig config) {
         this.owner = owner;
         this.config = config;
     }
@@ -150,7 +150,7 @@ public class BossBarSender implements Feature, BossBar {
     }
 
     @Override
-    public void notifyPlaceholderUpdates(CNPlayer<?> p1, boolean force) {
+    public void notifyPlaceholderUpdates(CNPlayer p1, boolean force) {
         refresh();
         if (isShown()) {
             sendLatestBossBarName();

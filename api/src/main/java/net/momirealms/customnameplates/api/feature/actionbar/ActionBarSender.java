@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 public class ActionBarSender implements Feature {
 
     private final ActionBarManager manager;
-    private final CNPlayer<?> owner;
+    private final CNPlayer owner;
     private long lastUpdateTime;
 
     private ActionBarConfig currentConfig;
@@ -52,7 +52,7 @@ public class ActionBarSender implements Feature {
         return owner.name().hashCode();
     }
 
-    public ActionBarSender(ActionBarManager manager, CNPlayer<?> owner) {
+    public ActionBarSender(ActionBarManager manager, CNPlayer owner) {
         this.owner = owner;
         this.manager = manager;
         this.owner.addFeature(this);
@@ -160,7 +160,7 @@ public class ActionBarSender implements Feature {
     }
 
     @Override
-    public void notifyPlaceholderUpdates(CNPlayer<?> player, boolean force) {
+    public void notifyPlaceholderUpdates(CNPlayer player, boolean force) {
         refresh();
         sendLatestActionBar();
     }

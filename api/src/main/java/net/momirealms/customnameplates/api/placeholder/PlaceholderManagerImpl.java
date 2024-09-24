@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.Feature;
+import net.momirealms.customnameplates.api.feature.RelationalFeature;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -58,7 +59,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             placeholder.update();
         }
 
-        for (CNPlayer<?> player : plugin.getOnlinePlayers()) {
+        for (CNPlayer player : plugin.getOnlinePlayers()) {
 
             if (!player.isOnline()) continue;
 
@@ -86,18 +87,18 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             }
 
             // Update only for players with a mutual relationship
-            Map<Feature, List<CNPlayer<?>>> relationalFeaturesToNotifyUpdates = new HashMap<>();
-            for (Map.Entry<RelationalPlaceholder, Map<CNPlayer<?>, String>> entry : task.getRelationalResults().entrySet()) {
+            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new HashMap<>();
+            for (Map.Entry<RelationalPlaceholder, Map<CNPlayer, String>> entry : task.getRelationalResults().entrySet()) {
                 RelationalPlaceholder placeholder = entry.getKey();
-                Map<CNPlayer<?>, String> value = entry.getValue();
-                for (Map.Entry<CNPlayer<?>, String> relationalEntry : value.entrySet()) {
+                Map<CNPlayer, String> value = entry.getValue();
+                for (Map.Entry<CNPlayer, String> relationalEntry : value.entrySet()) {
                     String newValue = relationalEntry.getValue();
                     String previous = player.setRelationalValue(placeholder.id(), relationalEntry.getKey(), newValue);
                     if (!newValue.equals(previous)) {
                         for (Feature feature : player.getUsedFeatures(placeholder)) {
                             // Filter features that will not be updated for all players
                             if (!featuresToNotifyUpdates.contains(feature)) {
-                                List<CNPlayer<?>> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
                                 players.add(relationalEntry.getKey());
                             }
                         }
@@ -112,10 +113,12 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 for (Feature feature : featuresToNotifyUpdates) {
                     feature.notifyPlaceholderUpdates(player, false);
                 }
-                for (Map.Entry<Feature, List<CNPlayer<?>>> innerEntry : relationalFeaturesToNotifyUpdates.entrySet()) {
+                for (Map.Entry<Feature, List<CNPlayer>> innerEntry : relationalFeaturesToNotifyUpdates.entrySet()) {
                     Feature feature = innerEntry.getKey();
-                    for (CNPlayer<?> other : innerEntry.getValue()) {
-                        feature.notifyPlaceholderUpdates(player, other, false);
+                    if (feature instanceof RelationalFeature relationalFeature) {
+                        for (CNPlayer other : innerEntry.getValue()) {
+                            relationalFeature.notifyPlaceholderUpdates(player, other, false);
+                        }
                     }
                 }
             });
@@ -137,13 +140,13 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     @Override
-    public PlayerPlaceholder registerPlayerPlaceholder(String id, int refreshInterval, Function<CNPlayer<?>, String> function) {
+    public PlayerPlaceholder registerPlayerPlaceholder(String id, int refreshInterval, Function<CNPlayer, String> function) {
         PlayerPlaceholderImpl impl = new PlayerPlaceholderImpl(this, id, refreshInterval, function);
         return registerPlaceholder(impl);
     }
 
     @Override
-    public RelationalPlaceholder registerRelationalPlaceholder(String id, int refreshInterval, BiFunction<CNPlayer<?>, CNPlayer<?>, String> function) {
+    public RelationalPlaceholder registerRelationalPlaceholder(String id, int refreshInterval, BiFunction<CNPlayer, CNPlayer, String> function) {
         RelationalPlaceholderImpl impl = new RelationalPlaceholderImpl(this, id, refreshInterval, function);
         return registerPlaceholder(impl);
     }

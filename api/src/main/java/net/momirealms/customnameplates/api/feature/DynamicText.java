@@ -10,12 +10,12 @@ import java.util.function.Function;
 
 public class DynamicText {
 
-    private final CNPlayer<?> owner;
+    private final CNPlayer owner;
     private final String text;
-    private final List<Function<CNPlayer<?>, String>> texts = new ArrayList<>();
+    private final List<Function<CNPlayer, String>> texts = new ArrayList<>();
     private final Set<Placeholder> placeholders;
 
-    public DynamicText(CNPlayer<?> owner, String text, List<Function<CNPlayer<?>, String>> texts, Set<Placeholder> placeholders) {
+    public DynamicText(CNPlayer owner, String text, List<Function<CNPlayer, String>> texts, Set<Placeholder> placeholders) {
         this.owner = owner;
         this.text = text;
         this.texts.addAll(texts);
@@ -26,9 +26,9 @@ public class DynamicText {
         return placeholders;
     }
 
-    public String render(CNPlayer<?> viewer) {
+    public String render(CNPlayer viewer) {
         StringBuilder builder = new StringBuilder();
-        for (Function<CNPlayer<?>, String> function : texts) {
+        for (Function<CNPlayer, String> function : texts) {
             builder.append(function.apply(viewer));
         }
         return builder.toString();

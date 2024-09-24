@@ -21,7 +21,7 @@ import net.momirealms.customnameplates.api.CNPlayer;
 
 public interface Requirement {
 
-    boolean isSatisfied(CNPlayer<?> p1, CNPlayer<?> p2);
+    boolean isSatisfied(CNPlayer p1, CNPlayer p2);
 
     String type();
 

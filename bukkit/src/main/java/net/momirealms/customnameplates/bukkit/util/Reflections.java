@@ -8,6 +8,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -371,4 +372,219 @@ public class Reflections {
                     clazz$ClientboundBundlePacket.getSuperclass(), Iterable.class, 0
             )
     );
+
+    public static final Class<?> clazz$ClientboundAddEntityPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutSpawnEntity"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundAddEntityPacket")
+            )
+    );
+
+    public static final Class<?> clazz$PacketPlayOutNamedEntitySpawn =
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutNamedEntitySpawn")
+            );
+
+    public static final Class<?> clazz$ClientboundRemoveEntitiesPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundRemoveEntitiesPacket"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutEntityDestroy")
+            )
+    );
+
+    public static final Field field$ClientboundRemoveEntitiesPacket$entityIds = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundRemoveEntitiesPacket, 0
+            )
+    );
+
+    public static final Field field$ClientboundAddEntityPacket$entityId = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundAddEntityPacket, int.class, 0
+            )
+    );
+
+    public static final Field field$PacketPlayOutNamedEntitySpawn$entityId = clazz$PacketPlayOutNamedEntitySpawn != null ?
+            ReflectionUtils.getDeclaredField(
+                    clazz$PacketPlayOutNamedEntitySpawn, int.class, 0
+            ) : null;
+
+    public static final Class<?> clazz$EntityType = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.entity.EntityType"),
+                    BukkitReflectionUtils.assembleMCClass("world.entity.EntityTypes")
+            )
+    );
+
+    public static final Class<?> clazz$Vec3 = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.phys.Vec3"),
+                    BukkitReflectionUtils.assembleMCClass("world.phys.Vec3D")
+            )
+    );
+
+    public static final Constructor<?> constructor$Vec3 = requireNonNull(
+            ReflectionUtils.getConstructor(
+                    clazz$Vec3, double.class, double.class, double.class
+            )
+    );
+
+    public static final Field field$EntityType$TEXT_DISPLAY = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$EntityType, "TEXT_DISPLAY"
+            )
+    );
+
+    public static final Object instance$EntityType$TEXT_DISPLAY;
+
+    static {
+        try {
+            instance$EntityType$TEXT_DISPLAY = field$EntityType$TEXT_DISPLAY.get(clazz$EntityType);
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static final Constructor<?> constructor$ClientboundAddEntityPacket = requireNonNull(
+            ReflectionUtils.getConstructor(clazz$ClientboundAddEntityPacket,
+                    int.class, UUID.class,
+                    double.class, double.class, double.class,
+                    float.class, float.class,
+                    clazz$EntityType,
+                    int.class, clazz$Vec3, double.class
+            )
+    );
+
+    public static final Constructor<?> constructor$ClientboundRemoveEntitiesPacket = requireNonNull(
+            ReflectionUtils.getConstructor(clazz$ClientboundRemoveEntitiesPacket, int[].class)
+    );
+
+    public static final Class<?> clazz$ClientboundSetPassengersPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutMount"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundSetPassengersPacket")
+            )
+    );
+
+    public static final Field field$ClientboundSetPassengersPacket$vehicle = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundSetPassengersPacket, 0
+            )
+    );
+
+    public static final Field field$ClientboundSetPassengersPacket$passengers = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundSetPassengersPacket, 1
+            )
+    );
+
+    public static Object allocateClientboundSetPassengersPacketInstance() throws InstantiationException {
+            return UNSAFE.allocateInstance(clazz$ClientboundSetPassengersPacket);
+    }
+
+    public static final Field field$Vec3$Zero = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$Vec3, clazz$Vec3, 0
+            )
+    );
+
+    public static final Object instance$Vec3$Zero;
+
+    static {
+        try {
+            instance$Vec3$Zero = field$Vec3$Zero.get(null);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static final Class<?> clazz$ClientboundSetEntityDataPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutEntityMetadata"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundSetEntityDataPacket")
+            )
+    );
+
+    public static final Constructor<?> constructor$ClientboundSetEntityDataPacket = requireNonNull(
+            ReflectionUtils.getConstructor(clazz$ClientboundSetEntityDataPacket,
+                    int.class, List.class)
+    );
+
+    public static final Class<?> clazz$EntityDataSerializers = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.EntityDataSerializers"),
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.DataWatcherRegistry")
+            )
+    );
+
+    public static final Class<?> clazz$EntityDataSerializer = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.EntityDataSerializer"),
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.DataWatcherSerializer")
+            )
+    );
+
+    public static final Class<?> clazz$EntityDataAccessor = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.EntityDataAccessor"),
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.DataWatcherObject")
+            )
+    );
+
+    public static final Constructor<?> constructor$EntityDataAccessor = requireNonNull(
+            ReflectionUtils.getConstructor(
+                    clazz$EntityDataAccessor, clazz$EntityDataSerializer
+            )
+    );
+
+    public static final Class<?> clazz$SynchedEntityData$DataValue = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.SynchedEntityData$DataValue"),
+                    BukkitReflectionUtils.assembleMCClass("network.syncher.DataWatcher$b")
+            )
+    );
+
+    public static final Method method$SynchedEntityData$DataValue$create = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$SynchedEntityData$DataValue, 0
+            )
+    );
+
+    public static final Method method$Component$empty = requireNonNull(
+            ReflectionUtils.getStaticMethod(
+                    clazz$Component, clazz$Component
+            )
+    );
+
+    public static final Object instance$Component$empty;
+
+    static {
+        try {
+            instance$Component$empty = method$Component$empty.invoke(null);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static final Class<?> clazz$Quaternionf = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "org.joml.Quaternionf"
+            )
+    );
+
+    public static final Constructor<?> constructor$Quaternionf = requireNonNull(
+            ReflectionUtils.getConstructor(
+                    clazz$Quaternionf, float.class, float.class, float.class
+            )
+    );
+
+    public static final Object instance$Quaternionf$None;
+
+    static {
+        try {
+            instance$Quaternionf$None = constructor$Quaternionf.newInstance(0f, 0f, 0f, 1f);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
+    }
 }

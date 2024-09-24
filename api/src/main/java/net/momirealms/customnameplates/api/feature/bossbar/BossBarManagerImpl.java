@@ -34,7 +34,7 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
         if (!ConfigManager.bossbarModule()) return;
         this.loadConfig();
         this.resetArray();
-        for (CNPlayer<?> online : plugin.getOnlinePlayers()) {
+        for (CNPlayer online : plugin.getOnlinePlayers()) {
             onPlayerJoin(online);
         }
     }
@@ -61,7 +61,7 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
     }
 
     @Override
-    public void onPlayerJoin(CNPlayer<?> player) {
+    public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.bossbarModule()) return;
         BossBarDisplayController sender = new BossBarDisplayController(this, player);
         BossBarDisplayController previous = senders.put(player.uuid(), sender);
@@ -71,7 +71,7 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
     }
 
     @Override
-    public void onPlayerQuit(CNPlayer<?> player) {
+    public void onPlayerQuit(CNPlayer player) {
         BossBarDisplayController sender = senders.remove(player.uuid());
         if (sender != null) {
             sender.destroy();

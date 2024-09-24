@@ -13,8 +13,5 @@ public interface Feature {
 
     Set<Placeholder> allPlaceholders();
 
-    void notifyPlaceholderUpdates(CNPlayer<?> p1, boolean force);
-
-    default void notifyPlaceholderUpdates(CNPlayer<?> p1, CNPlayer<?> p2, boolean force) {
-    }
+    void notifyPlaceholderUpdates(CNPlayer p1, boolean force);
 }

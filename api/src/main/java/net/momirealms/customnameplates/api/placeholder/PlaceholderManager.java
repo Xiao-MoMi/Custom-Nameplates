@@ -25,13 +25,13 @@ public interface PlaceholderManager extends Reloadable {
     PlayerPlaceholder registerPlayerPlaceholder(
             String id,
             int refreshInterval,
-            Function<CNPlayer<?>, String> function
+            Function<CNPlayer, String> function
     );
 
     RelationalPlaceholder registerRelationalPlaceholder(
             String id,
             int refreshInterval,
-            BiFunction<CNPlayer<?>, CNPlayer<?>, String> function
+            BiFunction<CNPlayer, CNPlayer, String> function
     );
 
     Placeholder getPlaceholder(String id);

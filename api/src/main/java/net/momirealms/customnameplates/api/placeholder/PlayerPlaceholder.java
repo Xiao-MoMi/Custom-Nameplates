@@ -4,5 +4,5 @@ import net.momirealms.customnameplates.api.CNPlayer;
 
 public interface PlayerPlaceholder extends Placeholder {
 
-    String request(CNPlayer<?> player);
+    String request(CNPlayer player);
 }

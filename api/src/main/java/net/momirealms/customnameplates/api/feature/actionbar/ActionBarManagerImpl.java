@@ -33,7 +33,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
         if (!ConfigManager.actionbarModule()) return;
         this.loadConfig();
         this.resetArray();
-        for (CNPlayer<?> online : plugin.getOnlinePlayers()) {
+        for (CNPlayer online : plugin.getOnlinePlayers()) {
             onPlayerJoin(online);
         }
     }
@@ -76,7 +76,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
         return configArray;
     }
 
-    public void handleActionBarPacket(CNPlayer<?> player, String miniMessage) {
+    public void handleActionBarPacket(CNPlayer player, String miniMessage) {
         ActionBarSender sender = senders.get(player.uuid());
         if (sender != null) {
             sender.externalActionBar(miniMessage);
@@ -84,7 +84,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     }
 
     @Override
-    public String getExternalActionBar(CNPlayer<?> player) {
+    public String getExternalActionBar(CNPlayer player) {
         ActionBarSender sender = senders.get(player.uuid());
         if (sender != null) {
             return sender.externalActionBar();
@@ -93,7 +93,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     }
 
     @Override
-    public void onPlayerJoin(CNPlayer<?> player) {
+    public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.actionbarModule()) return;
         ActionBarSender sender = new ActionBarSender(this, player);
         ActionBarSender previous = senders.put(player.uuid(), sender);
@@ -103,7 +103,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     }
 
     @Override
-    public void onPlayerQuit(CNPlayer<?> player) {
+    public void onPlayerQuit(CNPlayer player) {
         ActionBarSender sender = senders.remove(player.uuid());
         if (sender != null) {
             sender.destroy();

@@ -1,50 +1,57 @@
-# Team / Unlimited / Disable
-mode: TEAM
-
-# The duration (in seconds) that the nameplate preview will last for.
+# Duration (in seconds) for which the nameplate preview will be displayed.
 preview-duration: 5
 
-# Default nameplate to display if player's nameplate is "none"
+# Default nameplate shown when a player's nameplate is set to "none."
 default-nameplate: 'none'
 
-# This decides what %nameplates_prefix/suffix% would return
+# Configuration for nameplate behavior and appearance.
 nameplate:
+  # Frequency (in seconds) for refreshing the nameplate.
   refresh-frequency: 10
+  # Prefix to be displayed before the player's name.
+  # The prefix here will become part of the nameplate
   prefix: ''
+  # Placeholder for the player's name
   player-name: '%player_name%'
+  # Suffix to be displayed after the player's name.
+  # The suffix here will become part of the nameplate
   suffix: ''
 
-# Settings for Team mode
+# Configuration for Team tags.
 team:
-  # measured in ticks
-  refresh-frequency: 10
+  # Prefix to display before the player's name.
   prefix: '%nameplates_prefix%'
+  # Suffix to display after the player's name.
   suffix: '%nameplates_suffix%'
-  # Don't enable this if you are using a custom Tab plugin
+  # Option to hide the player's name (true/false).
+  hide-name: false
+  # Placeholder for glow color; set if using other glow plugins.
+  glow-color: ''
+  # Disable this option if using a custom Tab plugin.
   fix-Tab: false
 
-# Settings for Unlimited mode
+# Configuration for Unlimited tags.
 unlimited:
   tag_1:
-    # The texts to display
+    # Text to be displayed for the tag.
     text: '%nameplates_nametag%'
-    # Verticle offset of the fake entity
-    vertical-offset: -1
-    # Conditions (Owner side)
+    # Translation for the fake display entity.
+    translation: 0,1,0
+    # Conditions applicable on the owner side.
     owner-conditions:
+      # Potion effect condition for invisibility.
       potion-effect: "INVISIBILITY<0"
-      self-disguised: false  # Requires LibsDisguises
-    # Conditions (Viewer side)
-    viewer-conditions: { }
-  tag_2:
-    text: "IP: %player_ip%  My IP: %viewer_player_ip%"  # If a placeholder starts with "%viewer_", it would display the viewer's.
-    vertical-offset: -0.7
-    refresh-frequency: 10  # Decides the frequency of the text refreshing
-    check-frequency: 20    # Decides the frequency of the condition check
-    owner-conditions:
-      potion-effect: "INVISIBILITY<0"
+      # Option to check if the owner is self-disguised.
       self-disguised: false
-    viewer-conditions:
-      condition_1:
-        type: permission
-        value: 'nameplates.admin'
+    # Conditions applicable for viewers (currently empty).
+    viewer-conditions: { }
+    # view-range: 1.0
+    # shadow-radius: 0.0
+    # shadow-strength: 1.0
+    # scale: 1.0,1.0,1.0
+    # line-width: 200
+    # background-color: 64,0,0,0 # argb
+    # alignment: CENTER
+    # has-shadow: false
+    # is-see-through: false
+    # use-default-background-color: false

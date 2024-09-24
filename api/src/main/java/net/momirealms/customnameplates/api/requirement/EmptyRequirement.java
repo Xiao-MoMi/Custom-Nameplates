@@ -11,7 +11,7 @@ public class EmptyRequirement implements Requirement {
     }
 
     @Override
-    public boolean isSatisfied(CNPlayer<?> p1, CNPlayer<?> p2) {
+    public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         return true;
     }
 

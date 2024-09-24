@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PacketSender {
 
-    void sendPacket(CNPlayer<?> player, Object packet);
+    void sendPacket(CNPlayer player, Object packet);
 
-    void sendPackets(@NotNull CNPlayer<?> player, List<Object> packet);
+    void sendPackets(@NotNull CNPlayer player, List<Object> packet);
 }

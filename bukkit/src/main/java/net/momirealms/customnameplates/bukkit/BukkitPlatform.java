@@ -1,5 +1,6 @@
 package net.momirealms.customnameplates.bukkit;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
@@ -11,17 +12,157 @@ import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.DummyPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
+import net.momirealms.customnameplates.bukkit.util.TextDisplayData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class BukkitPlatform implements Platform {
 
     private final CustomNameplates plugin;
     private final boolean placeholderAPI;
+
+    private static final HashMap<String, BiFunction<CNPlayer, Object, Boolean>> packetFunctions = new HashMap<>();
+
+    private static void registerPacketConsumer(final BiFunction<CNPlayer, Object, Boolean> functions, String... packet) {
+        for (String s : packet) {
+            packetFunctions.put(s, functions);
+        }
+    }
+
+    static {
+        registerPacketConsumer((player, packet) -> {
+            if (!ConfigManager.actionbarModule()) return false;
+            try {
+                Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
+                Object contents = Reflections.method$Component$getContents.invoke(component);
+                if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
+                    String name = (String) Reflections.field$ScoreContents$name.get(contents);
+                    String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
+                    if (name.equals("np") && objective.equals("ab")) return false;
+                }
+                CustomNameplates.getInstance().getScheduler().async().execute(() -> {
+                    ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                });
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetActionBarTextPacket", e);
+                return false;
+            }
+            return true;
+        }, "ClientboundSetActionBarTextPacket");
+
+        registerPacketConsumer((player, packet) -> {
+            if (!ConfigManager.actionbarModule()) return false;
+            try {
+            boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
+                if (actionBar) {
+                    CustomNameplates.getInstance().getScheduler().async().execute(() -> {
+                        try {
+                            if (VersionHelper.isVersionNewerThan1_20_4()) {
+                                // 1.20.4+
+                                Object component = Reflections.field$ClientboundSystemChatPacket$component.get(packet);
+                                if (component == null) return;
+                                ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                            } else {
+                                // 1.20.4-
+                                String json = (String) Reflections.field$ClientboundSystemChatPacket$text.get(packet);
+                                if (json == null) return;
+                                ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
+                            }
+                        } catch (ReflectiveOperationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    return true;
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSystemChatPacket", e);
+                return false;
+            }
+            return true;
+        }, "ClientboundSystemChatPacket");
+
+        // 1.20.2+
+        registerPacketConsumer((player, packet) -> {
+            if (!VersionHelper.isVersionNewerThan1_20_2()) return false;
+            try {
+                int entityID = (int) Reflections.field$ClientboundAddEntityPacket$entityId.get(packet);
+                CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
+                if (added != null) {
+                    player.addPlayerToTracker(added);
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundAddEntityPacket", e);
+                return false;
+            }
+            return false;
+        }, "ClientboundAddEntityPacket", "PacketPlayOutSpawnEntity");
+
+        // 1.19.4-1.20.1
+        registerPacketConsumer((player, packet) -> {
+            if (VersionHelper.isVersionNewerThan1_20_2()) return false;
+            try {
+                int entityID = (int) Reflections.field$PacketPlayOutNamedEntitySpawn$entityId.get(packet);
+                CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
+                if (added != null) {
+                    player.addPlayerToTracker(added);
+                    CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle PacketPlayOutNamedEntitySpawn", e);
+                return false;
+            }
+            return false;
+        }, "PacketPlayOutNamedEntitySpawn");
+
+        registerPacketConsumer((player, packet) -> {
+            try {
+                IntList intList = (IntList) Reflections.field$ClientboundRemoveEntitiesPacket$entityIds.get(packet);
+                for (int i : intList) {
+                    CNPlayer removed = CustomNameplates.getInstance().getPlayer(i);
+                    if (removed != null) {
+                        player.removePlayerFromTracker(removed);
+                        CustomNameplates.getInstance().getUnlimitedTagManager().onRemovePlayer(player, removed);
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundRemoveEntitiesPacket", e);
+                return false;
+            }
+            return false;
+        }, "PacketPlayOutEntityDestroy", "ClientboundRemoveEntitiesPacket");
+
+        // for cosmetic plugin compatibility
+        registerPacketConsumer((player, packet) -> {
+            try {
+                int[] passengers = (int[]) Reflections.field$ClientboundSetPassengersPacket$passengers.get(packet);
+                int vehicle = (int) Reflections.field$ClientboundSetPassengersPacket$vehicle.get(packet);
+                CNPlayer another = CustomNameplates.getInstance().getPlayer(vehicle);
+                if (another != null) {
+                    Set<Integer> otherEntities = player.getTrackedPassengers(another);
+                    for (int passenger : passengers) {
+                        otherEntities.add(passenger);
+                    }
+                    int[] merged = new int[otherEntities.size()];
+                    int index = 0;
+                    for (Integer element : otherEntities) {
+                        merged[index++] = element;
+                    }
+                    Reflections.field$ClientboundSetPassengersPacket$passengers.set(packet, merged);
+                }
+            } catch (ReflectiveOperationException e) {
+                return false;
+            }
+            return false;
+        }, "PacketPlayOutMount", "ClientboundSetPassengersPacket");
+    }
 
     public BukkitPlatform(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -84,7 +225,7 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public void sendActionBar(CNPlayer<?> player, Object component) {
+    public void sendActionBar(CNPlayer player, Object component) {
         try {
             plugin.getPacketSender().sendPacket(player, Reflections.constructor$ClientboundSetActionBarTextPacket.newInstance(component));
         } catch (ReflectiveOperationException e) {
@@ -93,7 +234,7 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public void createBossBar(CNPlayer<?> player, UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color) {
+    public void createBossBar(CNPlayer player, UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color) {
         try {
             Object barColor = Reflections.method$BossEvent$BossBarColor$valueOf.invoke(null, color.name());
             Object barOverlay = Reflections.method$BossEvent$BossBarOverlay$valueOf.invoke(null, overlay.name());
@@ -113,7 +254,7 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public void removeBossBar(CNPlayer<?> player, UUID uuid) {
+    public void removeBossBar(CNPlayer player, UUID uuid) {
         try {
             plugin.getPacketSender().sendPacket(player, Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, Reflections.instance$ClientboundBossEventPacket$REMOVE_OPERATION));
         } catch (ReflectiveOperationException e) {
@@ -122,7 +263,7 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public void updateBossBarName(CNPlayer<?> player, UUID uuid, Object component) {
+    public void updateBossBarName(CNPlayer player, UUID uuid, Object component) {
         try {
             Object operation = Reflections.constructor$ClientboundBossEventPacket$UpdateNameOperation.newInstance(component);
             Object packet = Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, operation);
@@ -132,9 +273,97 @@ public class BukkitPlatform implements Platform {
         }
     }
 
+    @Override
+    public void createTextDisplay(
+            CNPlayer player,
+            int entityID, UUID uuid,
+            Vector3 position, float pitch, float yaw, double headYaw,
+            Object component, int backgroundColor, byte opacity,
+            boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment,
+            float viewRange, float shadowRadius, float shadowStrength,
+            Vector3 scale, Vector3 translation, int lineWidth, boolean isCrouching
+    ) {
+        try {
+            Object addEntityPacket = Reflections.constructor$ClientboundAddEntityPacket.newInstance(
+                    entityID, uuid, position.x(), position.y(), position.z(), pitch, yaw,
+                    Reflections.instance$EntityType$TEXT_DISPLAY, 0, Reflections.instance$Vec3$Zero, headYaw
+            );
+
+            // It's shit
+            ArrayList<Object> values = new ArrayList<>();
+            TextDisplayData.BackgroundColor.addEntityDataIfNotDefaultValue(     backgroundColor,       values);
+            TextDisplayData.Text.addEntityDataIfNotDefaultValue(                component,             values);
+            TextDisplayData.TextOpacity.addEntityDataIfNotDefaultValue(         opacity,               values);
+            TextDisplayData.ViewRange.addEntityDataIfNotDefaultValue(           viewRange,             values);
+            TextDisplayData.ShadowRadius.addEntityDataIfNotDefaultValue(        shadowRadius,          values);
+            TextDisplayData.ShadowStrength.addEntityDataIfNotDefaultValue(      shadowStrength,        values);
+            TextDisplayData.LineWidth.addEntityDataIfNotDefaultValue(           lineWidth,             values);
+            TextDisplayData.Scale.addEntityDataIfNotDefaultValue(               scale.toVec3(),        values);
+            TextDisplayData.Translation.addEntityDataIfNotDefaultValue(         translation.toVec3(),  values);
+            TextDisplayData.TextDisplayMasks.addEntityDataIfNotDefaultValue(TextDisplayData.encodeMask(hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment.getId()), values);
+            TextDisplayData.EntityMasks.addEntityDataIfNotDefaultValue(TextDisplayData.encodeMask(false, isCrouching, false, false, false, false, false, false), values);
+
+            Object setDataPacket = Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
+
+            plugin.getPacketSender().sendPacket(player, List.of(addEntityPacket, setDataPacket));
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Consumer<List<Object>> createTextComponentModifier(Object component) {
+        return (values) -> TextDisplayData.Text.addEntityDataIfNotDefaultValue(component, values);
+    }
+
+    @Override
+    public void updateTextDisplay(CNPlayer player, int entityID, List<Consumer<List<Object>>> modifiers) {
+        try {
+            ArrayList<Object> values = new ArrayList<>();
+            for (Consumer<List<Object>> modifier : modifiers) {
+                modifier.accept(values);
+            }
+            Object setDataPacket = Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
+            plugin.getPacketSender().sendPacket(player, setDataPacket);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void setPassengers(CNPlayer player, int vehicle, int[] passengers) {
+        try {
+            Object packet = Reflections.allocateClientboundSetPassengersPacketInstance();
+            Reflections.field$ClientboundSetPassengersPacket$passengers.set(packet, passengers);
+            Reflections.field$ClientboundSetPassengersPacket$vehicle.set(packet, vehicle);
+            plugin.getPacketSender().sendPacket(player, packet);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void removeEntity(CNPlayer player, int... entityID) {
+        try {
+            Object packet = Reflections.constructor$ClientboundRemoveEntitiesPacket.newInstance((Object) entityID);
+            plugin.getPacketSender().sendPacket(player, packet);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Object vec3(double x, double y, double z) {
+        try {
+            return Reflections.constructor$Vec3.newInstance(x, y, z);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public boolean onPacketSend(CNPlayer<?> player, Object packet) {
+    public boolean onPacketSend(CNPlayer player, Object packet) {
         try {
             if (Reflections.clazz$ClientboundBundlePacket.isInstance(packet)) {
                 Iterable<Object> packets = (Iterable<Object>) Reflections.field$BundlePacket$packets.get(packet);
@@ -152,45 +381,9 @@ public class BukkitPlatform implements Platform {
         }
     }
 
-    private boolean handlePacket(CNPlayer<?> player, Object packet) throws ReflectiveOperationException {
-        switch (packet.getClass().getSimpleName()) {
-            case "ClientboundSetActionBarTextPacket" -> {
-                if (!ConfigManager.actionbarModule()) return false;
-                Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
-                Object contents = Reflections.method$Component$getContents.invoke(component);
-                if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
-                    String name = (String) Reflections.field$ScoreContents$name.get(contents);
-                    String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
-                    if (name.equals("np") && objective.equals("ab")) return false;
-                }
-                plugin.getScheduler().async().execute(() -> {
-                    ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
-                });
-                return true;
-            }
-            case "ClientboundSystemChatPacket" -> {
-                if (!ConfigManager.actionbarModule()) return false;
-                boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
-                if (actionBar) {
-                    plugin.getScheduler().async().execute(() -> {
-                        try {
-                            if (VersionHelper.isVersionNewerThan1_20_4()) {
-                                Object component = Reflections.field$ClientboundSystemChatPacket$component.get(packet);
-                                if (component == null) return;
-                                ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
-                            } else {
-                                String json = (String) Reflections.field$ClientboundSystemChatPacket$text.get(packet);
-                                if (json == null) return;
-                                ((ActionBarManagerImpl) plugin.getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
-                            }
-                        } catch (ReflectiveOperationException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean handlePacket(CNPlayer player, Object packet) throws ReflectiveOperationException {
+        return Optional.ofNullable(packetFunctions.get(packet.getClass().getSimpleName()))
+                .map(function -> function.apply(player, packet))
+                .orElse(false);
     }
 }

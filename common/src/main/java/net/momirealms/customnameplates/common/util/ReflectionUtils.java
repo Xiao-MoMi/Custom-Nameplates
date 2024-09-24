@@ -182,6 +182,57 @@ public class ReflectionUtils {
         return null;
     }
 
+    @Nullable
+    public static Method getMethod(final Class<?> clazz, Class<?> returnType, final Class<?>... parameterTypes) {
+        outer:
+        for (Method method : clazz.getMethods()) {
+            if (method.getParameterCount() != parameterTypes.length) {
+                continue;
+            }
+            Class<?>[] types = method.getParameterTypes();
+            for (int i = 0; i < types.length; i++) {
+                if (types[i] != parameterTypes[i]) {
+                    continue outer;
+                }
+            }
+            if (returnType.isAssignableFrom(method.getReturnType())) return method;
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Method getStaticMethod(final Class<?> clazz, Class<?> returnType, final Class<?>... parameterTypes) {
+        outer:
+        for (Method method : clazz.getMethods()) {
+            if (method.getParameterCount() != parameterTypes.length) {
+                continue;
+            }
+            if (!Modifier.isStatic(method.getModifiers())) {
+                continue;
+            }
+            Class<?>[] types = method.getParameterTypes();
+            for (int i = 0; i < types.length; i++) {
+                if (types[i] != parameterTypes[i]) {
+                    continue outer;
+                }
+            }
+            if (returnType.isAssignableFrom(method.getReturnType())) return method;
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Method getMethod(final Class<?> clazz, int index) {
+        int i = 0;
+        for (Method method : clazz.getMethods()) {
+            if (i == index) {
+                return setAccessible(method);
+            }
+            i++;
+        }
+        return null;
+    }
+
     public static Method getMethodOrElseThrow(final Class<?> clazz, final String[] possibleMethodNames, final Class<?>[] parameterTypes) throws NoSuchMethodException {
         Method method = getMethod(clazz, possibleMethodNames, parameterTypes);
         if (method == null) {

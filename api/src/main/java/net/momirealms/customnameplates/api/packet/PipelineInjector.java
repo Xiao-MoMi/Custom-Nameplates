@@ -6,11 +6,11 @@ import net.momirealms.customnameplates.api.CNPlayer;
 
 public interface PipelineInjector {
 
-    Channel getChannel(CNPlayer<?> player);
+    Channel getChannel(CNPlayer player);
 
-    ChannelDuplexHandler createHandler(CNPlayer<?> player);
+    ChannelDuplexHandler createHandler(CNPlayer player);
 
-    void inject(CNPlayer<?> player);
+    void inject(CNPlayer player);
 
-    void uninject(CNPlayer<?> player);
+    void uninject(CNPlayer player);
 }

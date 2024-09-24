@@ -19,7 +19,7 @@ public class NotPermissionRequirement extends AbstractRequirement {
     }
 
     @Override
-    public boolean isSatisfied(CNPlayer<?> p1, CNPlayer<?> p2) {
+    public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         for (String perm : permissions) {
             if (((Player) p1.player()).hasPermission(perm)) {
                 return false;

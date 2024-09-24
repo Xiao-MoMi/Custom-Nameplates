@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 
 public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
-    private final BiConsumer<CNPlayer<?>, List<Object>> packetsConsumer;
+    private final BiConsumer<CNPlayer, List<Object>> packetsConsumer;
     private final CustomNameplates plugin;
 
     public BukkitNetworkManager(CustomNameplates plugin) {
@@ -31,7 +31,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public void sendPacket(@NotNull CNPlayer<?> player, final Object packet) {
+    public void sendPacket(@NotNull CNPlayer player, final Object packet) {
         try {
             Reflections.method$SendPacket.invoke(
                     Reflections.field$PlayerConnection.get(
@@ -42,12 +42,12 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public void sendPackets(@NotNull CNPlayer<?> player, final List<Object> packet) {
+    public void sendPackets(@NotNull CNPlayer player, final List<Object> packet) {
         packetsConsumer.accept(player, packet);
     }
 
     @Override
-    public Channel getChannel(CNPlayer<?> player) {
+    public Channel getChannel(CNPlayer player) {
         try {
             return (Channel) Reflections.field$Channel.get(
                     Reflections.field$NetworkManager.get(
@@ -62,12 +62,12 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public ChannelDuplexHandler createHandler(CNPlayer<?> player) {
+    public ChannelDuplexHandler createHandler(CNPlayer player) {
         return new CNChannelHandler(player);
     }
 
     @Override
-    public void inject(CNPlayer<?> player) {
+    public void inject(CNPlayer player) {
         Channel channel = getChannel(player);
         try {
             ChannelPipeline pipeline = channel.pipeline();
@@ -83,7 +83,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public void uninject(CNPlayer<?> player) {
+    public void uninject(CNPlayer player) {
         Channel channel = getChannel(player);
         channel.eventLoop().submit(() -> {
             channel.pipeline().remove("nameplates_packet_handler");
@@ -93,9 +93,9 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
     public class CNChannelHandler extends ChannelDuplexHandler {
 
-        private final CNPlayer<?> player;
+        private final CNPlayer player;
 
-        public CNChannelHandler(CNPlayer<?> player) {
+        public CNChannelHandler(CNPlayer player) {
             this.player = player;
         }
 

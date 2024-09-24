@@ -7,11 +7,11 @@ import java.util.List;
 
 public class BossBarDisplayController {
 
-    private final CNPlayer<?> owner;
+    private final CNPlayer owner;
     private final BossBarManager manager;
     private final BossBarSender[] senders;
 
-    public BossBarDisplayController(BossBarManager manager, CNPlayer<?> owner) {
+    public BossBarDisplayController(BossBarManager manager, CNPlayer owner) {
         this.owner = owner;
         this.manager = manager;
         List<BossBarSender> senderList = new ArrayList<>();
@@ -40,10 +40,10 @@ public class BossBarDisplayController {
                     }
                 } else {
                     states[i] = 2;
-                    sender.tick();
                     if (i > index) {
                         sender.hide();
                     }
+                    sender.tick();
                 }
             } else {
                 if (sender.isShown()) {

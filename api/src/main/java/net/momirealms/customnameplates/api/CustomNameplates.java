@@ -2,17 +2,18 @@ package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
+import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManager;
 import net.momirealms.customnameplates.api.packet.PacketSender;
 import net.momirealms.customnameplates.api.packet.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
-import net.momirealms.customnameplates.api.tracker.TrackerManager;
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.CustomPlugin;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +25,6 @@ public abstract class CustomNameplates implements CustomPlugin {
 
     private static CustomNameplates instance;
 
-    protected TrackerManager trackerManager;
     protected DependencyManager dependencyManager;
     protected TranslationManager translationManager;
     protected Consumer<Supplier<String>> debugger = (s) -> getPluginLogger().info("[DEBUG] " + s.get());
@@ -35,10 +35,12 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected RequirementManager requirementManager;
     protected ActionBarManager actionBarManager;
     protected BossBarManager bossBarManager;
+    protected UnlimitedTagManager unlimitedTagManager;
     protected Platform platform;
-    protected ConcurrentHashMap<UUID, CNPlayer<?>> onlinePlayerMap = new ConcurrentHashMap<>();
     protected MainTask mainTask = new MainTask(this);
     protected SchedulerTask scheduledMainTask;
+    protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
+    protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();
 
     protected CustomNameplates() {
         instance = this;
@@ -54,10 +56,6 @@ public abstract class CustomNameplates implements CustomPlugin {
     @Override
     public void disable() {
         if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
-    }
-
-    public TrackerManager getTrackerManager() {
-        return trackerManager;
     }
 
     @Override
@@ -96,16 +94,24 @@ public abstract class CustomNameplates implements CustomPlugin {
         return actionBarManager;
     }
 
+    public UnlimitedTagManager getUnlimitedTagManager() {
+        return unlimitedTagManager;
+    }
+
     public Platform getPlatform() {
         return platform;
     }
 
-    public Collection<CNPlayer<?>> getOnlinePlayers() {
+    public Collection<CNPlayer> getOnlinePlayers() {
         return new HashSet<>(onlinePlayerMap.values());
     }
 
-    public CNPlayer<?> getPlayer(UUID uuid) {
+    public CNPlayer getPlayer(UUID uuid) {
         return onlinePlayerMap.get(uuid);
+    }
+
+    public CNPlayer getPlayer(int entityID) {
+        return entityIDFastLookup.get(entityID);
     }
 
     public static CustomNameplates getInstance() {

@@ -3,19 +3,18 @@ package net.momirealms.customnameplates.api;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.placeholder.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;
-import net.momirealms.customnameplates.api.tracker.TrackedEntityView;
 
 import java.util.*;
 
-public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
+public abstract class AbstractCNPlayer implements CNPlayer {
 
     protected final CustomNameplates plugin;
-    protected final P player;
+    protected final Object player;
 
     /**
      * 获取当前玩家被哪些玩家track了
      */
-    protected TrackedEntityView<P> tracker;
+    protected Set<CNPlayer> tracker = Collections.synchronizedSet(new HashSet<>());
     private boolean isLoaded = false;
 
     /**
@@ -26,24 +25,26 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     /**
      * 此处缓存了所有解析过的变量，Relational则是缓存了与某个玩家的关系变量，仅更新当前处于active状态的变量。
      */
-    private final HashMap<String, String> cachedValues = new HashMap<>();
-    private final HashMap<String, WeakHashMap<CNPlayer<?>, String>> cachedRelationalValues = new HashMap<>();
+    private final Map<String, String> cachedValues = new HashMap<>();
+    private final Map<String, WeakHashMap<CNPlayer, String>> cachedRelationalValues = new HashMap<>();
 
     /**
      * 此处缓存了所有解析过的条件，Relational则是缓存了与某个玩家的关系条件
      */
-    private final HashMap<Requirement, Boolean> cachedRequirements = new HashMap<>();
-    private final HashMap<Requirement, WeakHashMap<CNPlayer<?>, Boolean>> cachedRelationalRequirements = new HashMap<>();
+    private final Map<Requirement, Boolean> cachedRequirements = new HashMap<>();
+    private final Map<Requirement, WeakHashMap<CNPlayer, Boolean>> cachedRelationalRequirements = new HashMap<>();
 
     /*
      * 这里维护了一个双向的Map以方便更新对应的Feature。
      * 插件会先获取当前处于活跃状态的变量（由Feature提供），根据变量的更新情况，判断是否需要反馈到对应的Feature以便只在必要的时刻进行更新
      */
     private final Set<Feature> activeFeatures = new HashSet<>();
-    private final HashMap<Placeholder, Set<Feature>> placeholder2Features = new HashMap<>();
-    private final HashMap<Feature, Set<Placeholder>> feature2Placeholders = new HashMap<>();
+    private final Map<Placeholder, Set<Feature>> placeholder2Features = new HashMap<>();
+    private final Map<Feature, Set<Placeholder>> feature2Placeholders = new HashMap<>();
 
-    protected AbstractCNPlayer(CustomNameplates plugin, P player) {
+    private final Map<CNPlayer, Set<Integer>> trackedPassengers = Collections.synchronizedMap(new WeakHashMap<>());
+
+    protected AbstractCNPlayer(CustomNameplates plugin, Object player) {
         this.plugin = plugin;
         this.player = player;
     }
@@ -82,7 +83,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public P player() {
+    public Object player() {
         return player;
     }
 
@@ -128,8 +129,8 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public String setRelationalValue(String id, CNPlayer<?> another, String value) {
-        WeakHashMap<CNPlayer<?>, String> map = cachedRelationalValues.computeIfAbsent(id, k -> new WeakHashMap<>());
+    public String setRelationalValue(String id, CNPlayer another, String value) {
+        WeakHashMap<CNPlayer, String> map = cachedRelationalValues.computeIfAbsent(id, k -> new WeakHashMap<>());
         return map.put(another, value);
     }
 
@@ -139,8 +140,8 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public String getRelationalValue(String id, CNPlayer<?> another) {
-        WeakHashMap<CNPlayer<?>, String> map = cachedRelationalValues.get(id);
+    public String getRelationalValue(String id, CNPlayer another) {
+        WeakHashMap<CNPlayer, String> map = cachedRelationalValues.get(id);
         if (map == null) {
             return id;
         }
@@ -168,9 +169,9 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public boolean isMet(CNPlayer<?> another, Requirement[] requirements) {
+    public boolean isMet(CNPlayer another, Requirement[] requirements) {
         for (Requirement requirement : requirements) {
-            WeakHashMap<CNPlayer<?>, Boolean> innerMap = cachedRelationalRequirements.get(requirement);
+            WeakHashMap<CNPlayer, Boolean> innerMap = cachedRelationalRequirements.get(requirement);
             if (innerMap != null) {
                 boolean finalResult = Objects.requireNonNullElseGet(innerMap.get(another), () -> requirement.isSatisfied(this, another));
                 if (!finalResult) {
@@ -189,7 +190,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
             } else if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
                 setValue(placeholder.id(), playerPlaceholder.request(this));
             } else if (placeholder instanceof RelationalPlaceholder relational) {
-                for (CNPlayer<?> player : CustomNameplates.getInstance().getOnlinePlayers()) {
+                for (CNPlayer player : CustomNameplates.getInstance().getOnlinePlayers()) {
                     setRelationalValue(placeholder.id(), player, relational.request(this, player));
                 }
             }
@@ -197,7 +198,51 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer<P> {
     }
 
     @Override
-    public TrackedEntityView<P> getTracker() {
-        return tracker;
+    public void addPlayerToTracker(CNPlayer another) {
+        tracker.add(another);
+        for (Placeholder placeholder : activePlaceholders()) {
+            if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+                String value = relationalPlaceholder.request(this, another);
+                setRelationalValue(placeholder.id(), another, value);
+            }
+        }
+    }
+
+    @Override
+    public void removePlayerFromTracker(CNPlayer another) {
+        tracker.remove(another);
+    }
+
+    @Override
+    public Collection<CNPlayer> nearbyPlayers() {
+        return new ArrayList<>(tracker);
+    }
+
+    @Override
+    public void trackPassengers(CNPlayer another, int... passengers) {
+        trackedPassengers.compute(another, (key, existingIds) -> {
+            Set<Integer> ids = existingIds != null ? existingIds : Collections.synchronizedSet(new HashSet<>());
+            for (int passenger : passengers) {
+                ids.add(passenger);
+            }
+            return ids;
+        });
+    }
+
+    @Override
+    public void untrackPassengers(CNPlayer another, int... passengers) {
+        Optional.ofNullable(trackedPassengers.get(another)).ifPresent(existingIds -> {
+            for (int passenger : passengers) {
+                existingIds.remove(passenger);
+            }
+            if (existingIds.isEmpty()) {
+                trackedPassengers.remove(another);
+            }
+        });
+    }
+
+    @Override
+    public Set<Integer> getTrackedPassengers(CNPlayer another) {
+        return Optional.ofNullable(trackedPassengers.get(another)).map(HashSet::new).orElse(new HashSet<>());
     }
 }
