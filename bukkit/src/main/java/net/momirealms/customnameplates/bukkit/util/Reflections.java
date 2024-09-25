@@ -8,6 +8,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -621,4 +622,106 @@ public class Reflections {
             throw new AssertionError(e);
         }
     }
+
+    public static final Field field$ClientboundSetEntityDataPacket$id = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundSetEntityDataPacket, int.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundSetEntityDataPacket$packedItems = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundSetEntityDataPacket, List.class, 0
+            )
+    );
+
+    public static final Field field$SynchedEntityData$DataValue$id = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$SynchedEntityData$DataValue, int.class, 0
+            )
+    );
+
+    public static final Field field$SynchedEntityData$DataValue$value = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$SynchedEntityData$DataValue, 2
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundUpdateAttributesPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundUpdateAttributesPacket"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutUpdateAttributes")
+            )
+    );
+
+    public static final Field field$ClientboundUpdateAttributesPacket$id = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundUpdateAttributesPacket, int.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundUpdateAttributesPacket$attributes = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundUpdateAttributesPacket, List.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundUpdateAttributesPacket$AttributeSnapshot = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundUpdateAttributesPacket$AttributeSnapshot"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutUpdateAttributes$AttributeSnapshot")
+            )
+    );
+
+    public static final Class<?> clazz$Holder = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.Holder")
+            )
+    );
+
+    public static final Field field$ClientboundUpdateAttributesPacket$AttributeSnapshot$attribute =
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundUpdateAttributesPacket$AttributeSnapshot, clazz$Holder, 0
+                    );
+
+    public static final Field field$ClientboundUpdateAttributesPacket$AttributeSnapshot$base =
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundUpdateAttributesPacket$AttributeSnapshot, double.class, 0
+            );
+
+    public static final Field field$ClientboundUpdateAttributesPacket$AttributeSnapshot$modifiers =
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundUpdateAttributesPacket$AttributeSnapshot, Collection.class, 0
+            );
+
+    public static final Method method$Holder$value = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$Holder, 0
+            )
+    );
+
+    public static final Class<?> clazz$Attribute = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.entity.ai.attributes.Attribute"),
+                    BukkitReflectionUtils.assembleMCClass("world.entity.ai.attributes.AttributeBase")
+            )
+    );
+
+    public static final Field field$Attribute$id = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$Attribute, String.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$AttributeModifier = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.entity.ai.attributes.AttributeModifier")
+            )
+    );
+
+    public static final Field field$AttributeModifier$amount = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$AttributeModifier, double.class, 0
+            )
+    );
 }

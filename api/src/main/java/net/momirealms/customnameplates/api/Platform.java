@@ -16,20 +16,21 @@ public interface Platform {
 
     String minecraftComponentToJson(Object component);
 
+    Object vec3(double x, double y, double z);
+
     Placeholder registerPlatformPlaceholder(String id);
-
-    void sendActionBar(CNPlayer player, Object component);
-
-    void createBossBar(CNPlayer player, UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color);
-
-    void removeBossBar(CNPlayer player, UUID uuid);
-
-    void updateBossBarName(CNPlayer player, UUID uuid, Object component);
 
     void onPacketSend(CNPlayer player, PacketEvent event);
 
-    void createTextDisplay(
-            CNPlayer player,
+    Object setActionBarTextPacket(Object component);
+
+    Object createBossBarPacket(UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color);
+
+    Object removeBossBarPacket(UUID uuid);
+
+    Object updateBossBarNamePacket(UUID uuid, Object component);
+
+    List<Object> createTextDisplayPacket(
             int entityID, UUID uuid,
             Vector3 position, float pitch, float yaw, double headYaw,
             Object component, int backgroundColor, byte opacity,
@@ -40,11 +41,9 @@ public interface Platform {
 
     Consumer<List<Object>> createTextComponentModifier(Object component);
 
-    void updateTextDisplay(CNPlayer player, int entityID, List<Consumer<List<Object>>> modifiers);
+    Object updateTextDisplayPacket(CNPlayer player, int entityID, List<Consumer<List<Object>>> modifiers);
 
-    void setPassengers(CNPlayer player, int vehicle, int[] passengers);
+    Object setPassengersPacket(int vehicle, int[] passengers);
 
-    void removeEntity(CNPlayer player, int... entityID);
-
-    Object vec3(double x, double y, double z);
+    Object removeEntityPacket(int... entityID);
 }

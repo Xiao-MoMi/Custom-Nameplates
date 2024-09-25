@@ -119,7 +119,8 @@ public class BossBarSender implements Feature, BossBar {
 
     public void hide() {
         isShown = false;
-        CustomNameplates.getInstance().getPlatform().removeBossBar(owner, uuid);
+        Object packet = CustomNameplates.getInstance().getPlatform().removeBossBarPacket(uuid);
+        CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
     }
 
     public void show() {
@@ -127,7 +128,8 @@ public class BossBarSender implements Feature, BossBar {
         if (latestContent == null) {
             refresh();
         }
-        CustomNameplates.getInstance().getPlatform().createBossBar(owner, uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent), progress(), overlay(), color());
+        Object packet = CustomNameplates.getInstance().getPlatform().createBossBarPacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent), progress(), overlay(), color());
+        CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
     }
 
     public boolean isShown() {
@@ -163,7 +165,8 @@ public class BossBarSender implements Feature, BossBar {
 
     public void sendLatestBossBarName() {
         if (latestContent != null) {
-            CustomNameplates.getInstance().getPlatform().updateBossBarName(owner, uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
+            Object packet = CustomNameplates.getInstance().getPlatform().updateBossBarNamePacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }
     }
 }

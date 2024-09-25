@@ -61,13 +61,7 @@ public interface CNPlayer {
 
     void trackPassengers(CNPlayer another, int... passengers);
 
-    PassengerProperties trackPassenger(CNPlayer another, int passenger);
-
     void untrackPassengers(CNPlayer another, int... passengers);
-
-    Set<PassengerProperties> getTrackedPassengers(CNPlayer another);
-
-    PassengerProperties getTrackedPassenger(CNPlayer another, int entityId);
 
     Set<Integer> getTrackedPassengerIds(CNPlayer another);
 

@@ -84,7 +84,7 @@ public class TagDisplayController {
         // Update passengers
         Set<Integer> realPassengers = owner.passengers();
         for (CNPlayer nearby : playersToUpdatePassengers) {
-            updatePassengers(nearby, realPassengers);
+            updatePassengers(nearby, realPassengers, true);
         }
     }
 
@@ -119,12 +119,12 @@ public class TagDisplayController {
         }
         if (updatePassengers) {
             Set<Integer> realPassengers = owner.passengers();
-            return () -> updatePassengers(another, realPassengers);
+            return () -> updatePassengers(another, realPassengers, true);
         }
         return null;
     }
 
-    private void updatePassengers(CNPlayer another, Set<Integer> realPassengers) {
+    private Object updatePassengers(CNPlayer another, Set<Integer> realPassengers, boolean sendPacket) {
         Set<Integer> fakePassengers = another.getTrackedPassengerIds(owner);
         fakePassengers.addAll(realPassengers);
         int[] passengers = new int[fakePassengers.size()];
@@ -132,7 +132,11 @@ public class TagDisplayController {
         for (int passenger : fakePassengers) {
             passengers[index++] = passenger;
         }
-        CustomNameplates.getInstance().getPlatform().setPassengers(another, owner.entityID(), passengers);
+        Object packet = CustomNameplates.getInstance().getPlatform().setPassengersPacket(owner.entityID(), passengers);
+        if (sendPacket) {
+            CustomNameplates.getInstance().getPacketSender().sendPacket(another, packet);
+        }
+        return packet;
     }
 
     public void handleEntityDataChange(CNPlayer another, boolean isCrouching) {
@@ -141,17 +145,19 @@ public class TagDisplayController {
         // should never be null
         if (properties == null) return;
         properties.setCrouching(isCrouching);
+        ArrayList<Object> packets = new ArrayList<>();
         for (TagDisplay display : this.tags) {
             if (display.isShown()) {
                 if (display.isShown(another)) {
-                    display.respawn(another);
+                    packets.addAll(display.respawn(another, false));
                     updatePassengers = true;
                 }
             }
         }
         if (updatePassengers) {
             Set<Integer> realPassengers = owner.passengers();
-            updatePassengers(another, realPassengers);
+            packets.add(updatePassengers(another, realPassengers, false));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(another, packets);
         }
     }
 
@@ -161,17 +167,19 @@ public class TagDisplayController {
         // should never be null
         if (properties == null) return;
         properties.setScale(scale);
+        ArrayList<Object> packets = new ArrayList<>();
         for (TagDisplay display : this.tags) {
             if (display.isShown()) {
                 if (display.isShown(another)) {
-                    display.respawn(another);
+                    packets.addAll(display.respawn(another, false));
                     updatePassengers = true;
                 }
             }
         }
         if (updatePassengers) {
             Set<Integer> realPassengers = owner.passengers();
-            updatePassengers(another, realPassengers);
+            packets.add(updatePassengers(another, realPassengers, false));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(another, packets);
         }
     }
 }

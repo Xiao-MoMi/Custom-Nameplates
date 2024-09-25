@@ -222,13 +222,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public void trackPassengers(CNPlayer another, int... passengers) {
-        trackedPassengers.compute(another, (key, existingIds) -> {
-            Map<Integer, PassengerProperties> ids = existingIds != null ? existingIds : Collections.synchronizedMap(new HashMap<>());
-            for (int passenger : passengers) {
-                ids.put(passenger, new PassengerProperties(passenger));
-            }
-            return ids;
-        });
+         PassengerProperties properties = trackedPassengers.computeIfAbsent(another, k -> new PassengerProperties());
+         for (int passenger : passengers) {
+             properties.addPassengerID(passenger);
+         }
     }
 
     @Override
@@ -244,13 +241,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public Set<PassengerProperties> getTrackedPassengers(CNPlayer another) {
-        return Optional.ofNullable(trackedPassengers.get(another)).map(map -> new HashSet<>(map.values())).orElse(new HashSet<>());
-    }
-
-    @Override
     public Set<Integer> getTrackedPassengerIds(CNPlayer another) {
-        return Optional.ofNullable(trackedPassengers.get(another)).map(properties -> new HashSet<>(properties.keySet())).orElse(new HashSet<>());
+        return Optional.ofNullable(trackedPassengers.get(another)).map(properties -> new HashSet<>(properties.getPassengerIDs())).orElse(new HashSet<>());
     }
 
     @Override

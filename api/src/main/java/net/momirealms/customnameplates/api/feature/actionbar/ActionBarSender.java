@@ -134,7 +134,8 @@ public class ActionBarSender implements Feature {
     public void sendLatestActionBar() {
         if (latestContent != null) {
             updateLastUpdateTime();
-            CustomNameplates.getInstance().getPlatform().sendActionBar(owner, AdventureHelper.miniMessageToMinecraftComponent(latestContent, "np", "ab"));
+            Object packet = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(AdventureHelper.miniMessageToMinecraftComponent(latestContent, "np", "ab"));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }
     }
 

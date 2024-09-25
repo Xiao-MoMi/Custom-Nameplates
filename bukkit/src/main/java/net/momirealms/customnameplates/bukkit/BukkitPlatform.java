@@ -16,7 +16,7 @@ import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
-import net.momirealms.customnameplates.bukkit.util.TextDisplayData;
+import net.momirealms.customnameplates.bukkit.util.EntityData;
 import net.momirealms.customnameplates.common.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -160,6 +160,58 @@ public class BukkitPlatform implements Platform {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetPassengersPacket", e);
             }
         }, "PacketPlayOutMount", "ClientboundSetPassengersPacket");
+
+        registerPacketConsumer((player, event, packet) -> {
+            if (!VersionHelper.isVersionNewerThan1_20_5()) return;
+            try {
+                int entityID = (int) Reflections.field$ClientboundUpdateAttributesPacket$id.get(packet);
+                CNPlayer another = CustomNameplates.getInstance().getPlayer(entityID);
+                if (another != null) {
+                    @SuppressWarnings("unchecked")
+                    List<Object> attributes = (List<Object>) Reflections.field$ClientboundUpdateAttributesPacket$attributes.get(packet);
+                    for (Object attributeSnapshot : attributes) {
+                        Object attributeHolder = Reflections.field$ClientboundUpdateAttributesPacket$AttributeSnapshot$attribute.get(attributeSnapshot);
+                        Object attribute = Reflections.method$Holder$value.invoke(attributeHolder);
+                        String id = (String) Reflections.field$Attribute$id.get(attribute);
+                        if (id.equals("attribute.name.generic.scale")) {
+                            double baseValue = (double) Reflections.field$ClientboundUpdateAttributesPacket$AttributeSnapshot$base.get(attributeSnapshot);
+                            @SuppressWarnings("unchecked")
+                            Collection<Object> modifiers = (Collection<Object>) Reflections.field$ClientboundUpdateAttributesPacket$AttributeSnapshot$modifiers.get(attributeSnapshot);
+                            for (Object modifier : modifiers) {
+                                double amount = (double) Reflections.field$AttributeModifier$amount.get(modifier);
+                                baseValue += amount;
+                            }
+                            CustomNameplates.getInstance().getUnlimitedTagManager().onPlayerAttributeSet(another, player, baseValue);
+                            return;
+                        }
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundUpdateAttributesPacket", e);
+            }
+        }, "ClientboundUpdateAttributesPacket", "PacketPlayOutUpdateAttributes");
+
+        registerPacketConsumer((player, event, packet) -> {
+            try {
+                int entityID = (int) Reflections.field$ClientboundSetEntityDataPacket$id.get(packet);
+                CNPlayer another = CustomNameplates.getInstance().getPlayer(entityID);
+                if (another != null) {
+                    @SuppressWarnings("unchecked")
+                    List<Object> dataValues = (List<Object>) Reflections.field$ClientboundSetEntityDataPacket$packedItems.get(packet);
+                    for (Object dataValue : dataValues) {
+                        int id = (int) Reflections.field$SynchedEntityData$DataValue$id.get(dataValue);
+                        if (id == 0) {
+                            byte value = (byte) Reflections.field$SynchedEntityData$DataValue$value.get(dataValue);
+                            boolean isCrouching = EntityData.isCrouching(value);
+                            CustomNameplates.getInstance().getUnlimitedTagManager().onPlayerDataSet(another, player, isCrouching);
+                            return;
+                        }
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetEntityDataPacket", e);
+            }
+        }, "ClientboundSetEntityDataPacket", "PacketPlayOutEntityMetadata");
     }
 
     public BukkitPlatform(CustomNameplates plugin) {
@@ -223,16 +275,16 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public void sendActionBar(CNPlayer player, Object component) {
+    public Object setActionBarTextPacket(Object component) {
         try {
-            plugin.getPacketSender().sendPacket(player, Reflections.constructor$ClientboundSetActionBarTextPacket.newInstance(component));
+            return Reflections.constructor$ClientboundSetActionBarTextPacket.newInstance(component);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void createBossBar(CNPlayer player, UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color) {
+    public Object createBossBarPacket(UUID uuid, Object component, float progress, BossBar.Overlay overlay, BossBar.Color color) {
         try {
             Object barColor = Reflections.method$BossEvent$BossBarColor$valueOf.invoke(null, color.name());
             Object barOverlay = Reflections.method$BossEvent$BossBarOverlay$valueOf.invoke(null, overlay.name());
@@ -244,36 +296,33 @@ public class BukkitPlatform implements Platform {
             Reflections.field$ClientboundBossEventPacket$AddOperation$darkenScreen.set(operationInstance, false);
             Reflections.field$ClientboundBossEventPacket$AddOperation$playMusic.set(operationInstance, false);
             Reflections.field$ClientboundBossEventPacket$AddOperation$createWorldFog.set(operationInstance, false);
-            Object packet = Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, operationInstance);
-            plugin.getPacketSender().sendPacket(player, packet);
+            return Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, operationInstance);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void removeBossBar(CNPlayer player, UUID uuid) {
+    public Object removeBossBarPacket(UUID uuid) {
         try {
-            plugin.getPacketSender().sendPacket(player, Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, Reflections.instance$ClientboundBossEventPacket$REMOVE_OPERATION));
+            return Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, Reflections.instance$ClientboundBossEventPacket$REMOVE_OPERATION);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void updateBossBarName(CNPlayer player, UUID uuid, Object component) {
+    public Object updateBossBarNamePacket(UUID uuid, Object component) {
         try {
             Object operation = Reflections.constructor$ClientboundBossEventPacket$UpdateNameOperation.newInstance(component);
-            Object packet = Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, operation);
-            plugin.getPacketSender().sendPacket(player, packet);
+            return Reflections.constructor$ClientboundBossEventPacket.newInstance(uuid, operation);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void createTextDisplay(
-            CNPlayer player,
+    public List<Object> createTextDisplayPacket(
             int entityID, UUID uuid,
             Vector3 position, float pitch, float yaw, double headYaw,
             Object component, int backgroundColor, byte opacity,
@@ -289,22 +338,21 @@ public class BukkitPlatform implements Platform {
 
             // It's shit
             ArrayList<Object> values = new ArrayList<>();
-            TextDisplayData.BillboardConstraints.addEntityDataIfNotDefaultValue((byte) 3,              values);
-            TextDisplayData.BackgroundColor.addEntityDataIfNotDefaultValue(     backgroundColor,       values);
-            TextDisplayData.Text.addEntityDataIfNotDefaultValue(                component,             values);
-            TextDisplayData.TextOpacity.addEntityDataIfNotDefaultValue(         opacity,               values);
-            TextDisplayData.ViewRange.addEntityDataIfNotDefaultValue(           viewRange,             values);
-            TextDisplayData.ShadowRadius.addEntityDataIfNotDefaultValue(        shadowRadius,          values);
-            TextDisplayData.ShadowStrength.addEntityDataIfNotDefaultValue(      shadowStrength,        values);
-            TextDisplayData.LineWidth.addEntityDataIfNotDefaultValue(           lineWidth,             values);
-            TextDisplayData.Scale.addEntityDataIfNotDefaultValue(               scale.toVec3(),        values);
-            TextDisplayData.Translation.addEntityDataIfNotDefaultValue(         translation.toVec3(),  values);
-            TextDisplayData.TextDisplayMasks.addEntityDataIfNotDefaultValue(TextDisplayData.encodeMask(hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment.getId()), values);
-            TextDisplayData.EntityMasks.addEntityDataIfNotDefaultValue(TextDisplayData.encodeMask(false, isCrouching, false, false, false, false, false, false), values);
+            EntityData.BillboardConstraints.addEntityDataIfNotDefaultValue((byte) 3,                     values);
+            EntityData.BackgroundColor.addEntityDataIfNotDefaultValue(     backgroundColor,              values);
+            EntityData.Text.addEntityDataIfNotDefaultValue(                component,                    values);
+            EntityData.TextOpacity.addEntityDataIfNotDefaultValue(         isCrouching ? 64 : opacity,   values);
+            EntityData.ViewRange.addEntityDataIfNotDefaultValue(           viewRange,                    values);
+            EntityData.ShadowRadius.addEntityDataIfNotDefaultValue(        shadowRadius,                 values);
+            EntityData.ShadowStrength.addEntityDataIfNotDefaultValue(      shadowStrength,               values);
+            EntityData.LineWidth.addEntityDataIfNotDefaultValue(           lineWidth,                    values);
+            EntityData.Scale.addEntityDataIfNotDefaultValue(               scale.toVec3(),               values);
+            EntityData.Translation.addEntityDataIfNotDefaultValue(         translation.toVec3(),         values);
+            EntityData.TextDisplayMasks.addEntityDataIfNotDefaultValue(EntityData.encodeMask(hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment.getId()), values);
 
             Object setDataPacket = Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
 
-            plugin.getPacketSender().sendPacket(player, List.of(addEntityPacket, setDataPacket));
+            return List.of(addEntityPacket, setDataPacket);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -312,40 +360,38 @@ public class BukkitPlatform implements Platform {
 
     @Override
     public Consumer<List<Object>> createTextComponentModifier(Object component) {
-        return (values) -> TextDisplayData.Text.addEntityDataIfNotDefaultValue(component, values);
+        return (values) -> EntityData.Text.addEntityDataIfNotDefaultValue(component, values);
     }
 
     @Override
-    public void updateTextDisplay(CNPlayer player, int entityID, List<Consumer<List<Object>>> modifiers) {
+    public Object updateTextDisplayPacket(CNPlayer player, int entityID, List<Consumer<List<Object>>> modifiers) {
         try {
             ArrayList<Object> values = new ArrayList<>();
             for (Consumer<List<Object>> modifier : modifiers) {
                 modifier.accept(values);
             }
-            Object setDataPacket = Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
-            plugin.getPacketSender().sendPacket(player, setDataPacket);
+            return Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void setPassengers(CNPlayer player, int vehicle, int[] passengers) {
+    public Object setPassengersPacket(int vehicle, int[] passengers) {
         try {
             Object packet = Reflections.allocateClientboundSetPassengersPacketInstance();
             Reflections.field$ClientboundSetPassengersPacket$passengers.set(packet, passengers);
             Reflections.field$ClientboundSetPassengersPacket$vehicle.set(packet, vehicle);
-            plugin.getPacketSender().sendPacket(player, packet);
+            return packet;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void removeEntity(CNPlayer player, int... entityID) {
+    public Object removeEntityPacket(int... entityID) {
         try {
-            Object packet = Reflections.constructor$ClientboundRemoveEntitiesPacket.newInstance((Object) entityID);
-            plugin.getPacketSender().sendPacket(player, packet);
+            return Reflections.constructor$ClientboundRemoveEntitiesPacket.newInstance((Object) entityID);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }

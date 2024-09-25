@@ -32,6 +32,10 @@ unlimited:
       self-disguised: false
     # Conditions applicable for viewers (currently empty).
     viewer-conditions: { }
+    # Should the tag be affected by crouching and has vanilla behaviors
+    affected-by-crouching: true
+    # Should the tag be scaled by the scale attribute
+    affected-by-scale-attribute: true
     # view-range: 1.0
     # shadow-radius: 0.0
     # shadow-strength: 1.0

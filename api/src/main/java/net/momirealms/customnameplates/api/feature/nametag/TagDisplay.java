@@ -114,7 +114,8 @@ public class TagDisplay implements RelationalFeature {
         if (!isShown()) throw new IllegalStateException("This tag is currently hidden");
         viewers.remove(viewer);
         resetViewerArray();
-        CustomNameplates.getInstance().getPlatform().removeEntity(viewer, entityID);
+        viewer.untrackPassengers(owner, entityID);
+        CustomNameplates.getInstance().getPlatform().removeEntityPacket(entityID);
     }
 
     public void show(CNPlayer viewer) {
@@ -125,9 +126,9 @@ public class TagDisplay implements RelationalFeature {
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
         PassengerProperties properties = viewer.getTrackedProperties(owner);
-        CustomNameplates.getInstance().getPlatform().createTextDisplay(
-                viewer, entityID, uuid,
-                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0)) * (config.affectedByScale() ? properties.getScale() : 1),0),
+        List<Object> packets = CustomNameplates.getInstance().getPlatform().createTextDisplayPacket(
+                entityID, uuid,
+                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0) + controller.hatOffset()) * (config.affectedByScale() ? properties.getScale() : 1),0),
                 0f, 0f, 0d, component,
                 config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
                 config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
@@ -136,6 +137,7 @@ public class TagDisplay implements RelationalFeature {
                 config.lineWidth(),
                 (config.affectedByCrouching() && properties.isCrouching())
        );
+        CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packets);
     }
 
     private void resetViewerArray() {
@@ -167,27 +169,23 @@ public class TagDisplay implements RelationalFeature {
     public void refresh(CNPlayer viewer) {
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
-        CustomNameplates.getInstance().getPlatform().updateTextDisplay(
+        Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(
                 viewer, entityID, List.of(
                         CustomNameplates.getInstance().getPlatform().createTextComponentModifier(component)
                 )
         );
+        CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }
 
-    public void respawn() {
-        for (CNPlayer viewer : viewerArray) {
-            respawn(viewer);
-        }
-    }
-
-    public void respawn(CNPlayer viewer) {
+    public List<Object> respawn(CNPlayer viewer, boolean sendPackets) {
+        ArrayList<Object> packets = new ArrayList<>();
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
-        CustomNameplates.getInstance().getPlatform().removeEntity(viewer, entityID);
         PassengerProperties properties = viewer.getTrackedProperties(owner);
-        CustomNameplates.getInstance().getPlatform().createTextDisplay(
-                viewer, entityID, uuid,
-                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0)) * (config.affectedByScale() ? properties.getScale() : 1),0),
+        packets.add(CustomNameplates.getInstance().getPlatform().removeEntityPacket(entityID));
+        packets.addAll(CustomNameplates.getInstance().getPlatform().createTextDisplayPacket(
+                entityID, uuid,
+                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0) + controller.hatOffset()) * (config.affectedByScale() ? properties.getScale() : 1),0),
                 0f, 0f, 0d, component,
                 config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
                 config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
@@ -195,7 +193,11 @@ public class TagDisplay implements RelationalFeature {
                 (config.affectedByScale() ? config.translation().multiply(properties.getScale()) : config.translation()),
                 config.lineWidth(),
                 (config.affectedByCrouching() && properties.isCrouching())
-        );
+        ));
+        if (sendPackets) {
+            CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packets);
+        }
+        return packets;
     }
 
     public boolean isShown() {
