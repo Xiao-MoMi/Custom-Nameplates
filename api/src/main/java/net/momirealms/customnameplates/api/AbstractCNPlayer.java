@@ -76,7 +76,6 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         activeFeatures.clear();
         placeholder2Features.clear();
         feature2Placeholders.clear();
-        trackedPassengers.clear();
     }
 
     @Override
@@ -229,15 +228,22 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
+    public void trackPassengers(CNPlayer another) {
+        trackedPassengers.computeIfAbsent(another, k -> new PassengerProperties());
+    }
+
+    @Override
     public void untrackPassengers(CNPlayer another, int... passengers) {
         Optional.ofNullable(trackedPassengers.get(another)).ifPresent(properties -> {
             for (int passenger : passengers) {
                 properties.removePassengerID(passenger);
             }
-            if (properties.isEmpty()) {
-                trackedPassengers.remove(another);
-            }
         });
+    }
+
+    @Override
+    public void untrackPassengers(CNPlayer another) {
+        trackedPassengers.remove(another);
     }
 
     @Override

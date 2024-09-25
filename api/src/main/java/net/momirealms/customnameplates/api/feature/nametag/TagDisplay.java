@@ -115,7 +115,8 @@ public class TagDisplay implements RelationalFeature {
         viewers.remove(viewer);
         resetViewerArray();
         viewer.untrackPassengers(owner, entityID);
-        CustomNameplates.getInstance().getPlatform().removeEntityPacket(entityID);
+        Object packet = CustomNameplates.getInstance().getPlatform().removeEntityPacket(entityID);
+        CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }
 
     public void show(CNPlayer viewer) {

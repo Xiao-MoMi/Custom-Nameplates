@@ -95,6 +95,7 @@ public class BukkitPlatform implements Platform {
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
                     added.addPlayerToTracker(player);
+                    added.trackPassengers(player);
                     Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                     if (delayed != null) {
                         event.addDelayedTask(delayed);
@@ -113,6 +114,7 @@ public class BukkitPlatform implements Platform {
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
                     added.addPlayerToTracker(player);
+                    added.trackPassengers(player);
                     Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                     if (delayed != null) {
                         event.addDelayedTask(delayed);
@@ -130,6 +132,7 @@ public class BukkitPlatform implements Platform {
                     CNPlayer removed = CustomNameplates.getInstance().getPlayer(i);
                     if (removed != null) {
                         removed.removePlayerFromTracker(player);
+                        removed.untrackPassengers(player);
                         CustomNameplates.getInstance().getUnlimitedTagManager().onRemovePlayer(removed, player);
                     }
                 }
