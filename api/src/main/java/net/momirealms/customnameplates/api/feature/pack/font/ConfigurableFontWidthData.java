@@ -1,5 +1,7 @@
 package net.momirealms.customnameplates.api.feature.pack.font;
 
+import java.util.List;
+
 public interface ConfigurableFontWidthData {
 
     int defaultWidth();
@@ -20,7 +22,7 @@ public interface ConfigurableFontWidthData {
 
         Builder width(int codePoint, int width);
 
-        Builder parentFont(CharacterFontWidthData... font);
+        Builder parentFont(List<CharacterFontWidthData> font);
 
         ConfigurableFontWidthData build();
     }

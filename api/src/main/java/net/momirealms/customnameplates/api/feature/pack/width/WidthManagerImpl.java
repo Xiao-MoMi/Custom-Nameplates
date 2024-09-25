@@ -1,12 +1,28 @@
 package net.momirealms.customnameplates.api.feature.pack.width;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
+import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.pack.font.CharacterFontWidthData;
 import net.momirealms.customnameplates.api.feature.pack.font.ConfigurableFontWidthData;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.api.placeholder.Placeholder;
+import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
+import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
+import net.momirealms.customnameplates.common.util.Tuple;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,14 +30,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static java.util.Objects.requireNonNull;
+
 public class WidthManagerImpl implements WidthManager {
+
+    private static final Key MINECRAFT_DEFAULT_FONT = Key.key("minecraft", "default");
 
     private final HashMap<String, BiConsumer<String, String>> templateConfigConsumersMap = new HashMap<>();
 
@@ -29,18 +48,17 @@ public class WidthManagerImpl implements WidthManager {
     private final HashMap<String, CharacterFontWidthData> charFontWidthDataMap = new HashMap<>();
     private final HashMap<String, ConfigurableFontWidthData> configFontWidthDataMap = new HashMap<>();
 
+    private final Cache<String, Integer> textWidthCache;
+
+    private boolean templatesLoaded = false;
+
     public WidthManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
+        this.textWidthCache =
+                Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .build();
         this.init();
-
-        plugin.getConfigManager().saveResource("font" + File.separator + "ascii.png");
-        plugin.getConfigManager().saveResource("font" + File.separator + "ascii_sga.png");
-        plugin.getConfigManager().saveResource("font" + File.separator + "asciillager.png");
-        plugin.getConfigManager().saveResource("font" + File.separator + "accented.png");
-        plugin.getConfigManager().saveResource("font" + File.separator + "nonlatin_european.png");
-        for (int a = 0; a < 256; a++) {
-            plugin.getConfigManager().saveResource("font" + File.separator + "unicode_page_" + String.format("%02x", a) + ".png");
-        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -62,6 +80,7 @@ public class WidthManagerImpl implements WidthManager {
                         ZipEntry entry = entries.nextElement();
                         if (entry.getName().endsWith(".hex") && !entry.isDirectory()) {
                             try (BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)))) {
+                                unifontCache.getParentFile().mkdirs();
                                 unifontCache.createNewFile();
                                 YamlDocument yml = plugin.getConfigManager().loadData(unifontCache);
                                 String line;
@@ -173,7 +192,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("ascii", (id, path) -> {
             File asciiCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
             if (!asciiCache.exists()) {
-                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path + ".png");
+                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (path.equals("ascii.png")) {
                     plugin.getConfigManager().saveResource("font" + File.separator + "ascii.png");
                 }
@@ -183,6 +202,7 @@ public class WidthManagerImpl implements WidthManager {
                 }
                 try {
                     BufferedImage bufferedImage = ImageIO.read(png);
+                    asciiCache.getParentFile().mkdirs();
                     asciiCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(asciiCache);
                     int i;
@@ -244,7 +264,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("ascii-sga", (id, path) -> {
             File asciiSgaCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
             if (!asciiSgaCache.exists()) {
-                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path + ".png");
+                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (path.equals("ascii_sga.png")) {
                     plugin.getConfigManager().saveResource("font" + File.separator + "ascii_sga.png");
                 }
@@ -254,6 +274,7 @@ public class WidthManagerImpl implements WidthManager {
                 }
                 try {
                     BufferedImage bufferedImage = ImageIO.read(png);
+                    asciiSgaCache.getParentFile().mkdirs();
                     asciiSgaCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(asciiSgaCache);
                     int i;
@@ -314,7 +335,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("asciillager", (id, path) -> {
             File asciillagerCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
             if (!asciillagerCache.exists()) {
-                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path + ".png");
+                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (path.equals("asciillager.png")) {
                     plugin.getConfigManager().saveResource("font" + File.separator + "asciillager.png");
                 }
@@ -324,6 +345,7 @@ public class WidthManagerImpl implements WidthManager {
                 }
                 try {
                     BufferedImage bufferedImage = ImageIO.read(png);
+                    asciillagerCache.getParentFile().mkdirs();
                     asciillagerCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(asciillagerCache);
                     int i;
@@ -374,7 +396,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("accented", (id, path) -> {
             File accentedCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
             if (!accentedCache.exists()) {
-                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path + ".png");
+                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (path.equals("accented.png")) {
                     plugin.getConfigManager().saveResource("font" + File.separator + "accented.png");
                 }
@@ -384,6 +406,7 @@ public class WidthManagerImpl implements WidthManager {
                 }
                 try {
                     BufferedImage bufferedImage = ImageIO.read(png);
+                    accentedCache.getParentFile().mkdirs();
                     accentedCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(accentedCache);
                     int i;
@@ -504,7 +527,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("nonlatin-european", (id, path) -> {
             File nonlatinEuropeanCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
             if (!nonlatinEuropeanCache.exists()) {
-                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path + ".png");
+                File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (path.equals("nonlatin_european.png")) {
                     plugin.getConfigManager().saveResource("font" + File.separator + "nonlatin_european.png");
                 }
@@ -514,6 +537,7 @@ public class WidthManagerImpl implements WidthManager {
                 }
                 try {
                     BufferedImage bufferedImage = ImageIO.read(png);
+                    nonlatinEuropeanCache.getParentFile().mkdirs();
                     nonlatinEuropeanCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(nonlatinEuropeanCache);
                     int i;
@@ -643,11 +667,14 @@ public class WidthManagerImpl implements WidthManager {
                     }
                 }
                 try {
+                    unicodeCache.getParentFile().mkdirs();
                     unicodeCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(unicodeCache);
                     for (int a = 0; a < 256; a++) {
                         File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + String.format(path, a));
-                        if (!png.exists()) continue;
+                        if (!png.exists()) {
+                            continue;
+                        }
                         String unicodeStr = String.format("%02x", a);
                         BufferedImage bufferedImage = ImageIO.read(png);
                         int width = bufferedImage.getWidth();
@@ -674,6 +701,9 @@ public class WidthManagerImpl implements WidthManager {
                             }
                         }
                     }
+                    yml.set("\\u0020", 3);
+                    yml.set("\\u0000", 0);
+                    yml.save(unicodeCache);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -705,18 +735,28 @@ public class WidthManagerImpl implements WidthManager {
 
     @Override
     public void load() {
-        this.loadConfig();
+        if (!this.templatesLoaded) {
+            this.loadTemplates();
+            this.templatesLoaded = true;
+        }
+        this.loadFontData();
     }
 
     @Override
     public void unload() {
-        this.charFontWidthDataMap.clear();
         this.configFontWidthDataMap.clear();
     }
 
-    private void loadConfig() {
-        YamlDocument config = ConfigManager.getMainConfig();
-        Section section = config.getSection("other-settings.font-templates");
+    @Override
+    public void disable() {
+        this.unload();
+        this.charFontWidthDataMap.clear();
+    }
+
+    @Override
+    public void loadTemplates() {
+        YamlDocument mainConfig = ConfigManager.getMainConfig();
+        Section section = mainConfig.getSection("other-settings.font-templates");
         if (section != null) {
             for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
                 if (entry.getValue() instanceof Section inner) {
@@ -732,6 +772,126 @@ public class WidthManagerImpl implements WidthManager {
                         plugin.getPluginLogger().warn("Unsupported template: " + template);
                     }
                 }
+            }
+        }
+    }
+
+    private void loadFontData() {
+        plugin.getConfigManager().saveResource("configs" + File.separator + "font-width-data.yml");
+        YamlDocument fontConfig = plugin.getConfigManager().loadData(new File(plugin.getDataDirectory().toFile(), "configs" + File.separator + "font-width-data.yml"));
+        for (Map.Entry<String, Object> entry : fontConfig.getStringRouteMappedValues(false).entrySet()) {
+            if (entry.getValue() instanceof Section section) {
+                int defaultWidth = section.getInt("default", 0);
+
+                ArrayList<CharacterFontWidthData> widthDataArrayList = new ArrayList<>();
+                for (String template : section.getStringList("template-loading-sequence")) {
+                    CharacterFontWidthData fontWidthData = charFontWidthDataMap.get(template);
+                    if (fontWidthData != null) {
+                        widthDataArrayList.add(fontWidthData);
+                    }
+                }
+
+                ConfigurableFontWidthData.Builder builder = ConfigurableFontWidthData.builder()
+                        .id(entry.getKey())
+                        .defaultWidth(defaultWidth)
+                        .parentFont(widthDataArrayList);
+                Section valuesSection = section.getSection("values");
+                if (valuesSection != null) {
+                    for (Map.Entry<String, Object> innerEntry : valuesSection.getStringRouteMappedValues(false).entrySet()) {
+                        String character = innerEntry.getKey();
+                        if (character.startsWith("%") && character.endsWith("%")) {
+                            Placeholder placeholder = plugin.getPlatform().registerPlatformPlaceholder(character);
+                            String value = null;
+                            if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
+                                value = sharedPlaceholder.request();
+                            } else if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
+                                value = playerPlaceholder.request(null);
+                            }
+                            if (value != null) {
+                                String finalText = AdventureHelper.stripTags(AdventureHelper.legacyToMiniMessage(value));
+                                if (finalText.length() != 1) {
+                                    plugin.getPluginLogger().warn(character + " is not a supported placeholder");
+                                } else {
+                                    builder.width(finalText.charAt(0), (int) innerEntry.getValue());
+                                }
+                            }
+                        } else if (character.length() == 1) {
+                            builder.width(character.charAt(0), (int) innerEntry.getValue());
+                        } else {
+                            plugin.getPluginLogger().warn(character + " is not a supported character");
+                        }
+                    }
+                }
+
+                configFontWidthDataMap.put(entry.getKey(), builder.build());
+            }
+        }
+    }
+
+    @Override
+    @Nullable
+    public ConfigurableFontWidthData getFontData(String id) {
+        return configFontWidthDataMap.get(id);
+    }
+
+    @Override
+    public int getTextWidth(String text) {
+        requireNonNull(text);
+        return textWidthCache.get(text, this::calculateTextWidth);
+    }
+
+    private int calculateTextWidth(String text) {
+        if (AdventureHelper.legacySupport) text = AdventureHelper.legacyToMiniMessage(text);
+        ElementNode node = (ElementNode) AdventureHelper.miniMessage().deserializeToTree(text);
+        ArrayList<Tuple<String, Key, Boolean>> iterableTexts = new ArrayList<>();
+        nodeToIterableTexts(node, iterableTexts, MINECRAFT_DEFAULT_FONT, false);
+        int totalLength = 0;
+        for (Tuple<String, Key, Boolean> element : iterableTexts) {
+            ConfigurableFontWidthData data = getFontData(element.mid().asString());
+            if (data == null) {
+                plugin.getPluginLogger().warn("Detected unknown font: " + element.mid() + ". Please register it in font-width-data.yml");
+                continue;
+            }
+            char[] chars = element.left().toCharArray();
+            for (int j = 0; j < chars.length; j++) {
+                int width;
+                if (Character.isHighSurrogate(chars[j])) {
+                    width = data.getWidth(Character.toCodePoint(chars[j], chars[++j]));
+                } else {
+                    width = data.getWidth(chars[j]);
+                }
+                totalLength += (width + (element.right() ? 2 : 1));
+            }
+        }
+        return totalLength;
+    }
+
+    private void nodeToIterableTexts(ElementNode node, List<Tuple<String, Key, Boolean>> list, Key font, boolean bold) {
+        if (node instanceof ValueNode valueNode) {
+            String text = valueNode.value();
+            if (!text.isEmpty())
+                list.add(Tuple.of(text, font, bold));
+        } else if (node instanceof TagNode tagNode) {
+            if (tagNode.tag() instanceof Inserting inserting) {
+                Component component = inserting.value();
+                switch (component.decoration(TextDecoration.BOLD)) {
+                    case TRUE -> bold = true;
+                    case FALSE -> bold = false;
+                    case NOT_SET -> {}
+                }
+                Key key = component.font();
+                if (key != null)
+                    font = key;
+                if (component instanceof TextComponent textComponent) {
+                    String text = textComponent.content();
+                    if (!text.isEmpty())
+                        list.add(Tuple.of(text, font, bold));
+                }
+            }
+        }
+        if (!node.unsafeChildren().isEmpty()) {
+            for (ElementNode child : node.unsafeChildren()) {
+                this.nodeToIterableTexts(child, list, font, bold);
             }
         }
     }

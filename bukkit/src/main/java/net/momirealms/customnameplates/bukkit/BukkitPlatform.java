@@ -272,7 +272,7 @@ public class BukkitPlatform implements Platform {
                     () -> PlaceholderAPI.setPlaceholders(null, sub));
         } else {
             placeholder = plugin.getPlaceholderManager().registerPlayerPlaceholder(id, refreshInterval,
-                    (p) -> PlaceholderAPI.setPlaceholders((OfflinePlayer) p.player(), id));
+                    (p) -> p == null ? PlaceholderAPI.setPlaceholders(null, id) : PlaceholderAPI.setPlaceholders((OfflinePlayer) p.player(), id));
         }
         return placeholder;
     }

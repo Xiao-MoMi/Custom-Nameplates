@@ -129,6 +129,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.actionBarManager.disable();
         this.bossBarManager.disable();
         this.unlimitedTagManager.disable();
+        this.widthManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -149,6 +150,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.bossBarManager.reload();
         this.unlimitedTagManager.reload();
         this.requirementManager.reload();
+        this.widthManager.reload();
     }
 
     @Override

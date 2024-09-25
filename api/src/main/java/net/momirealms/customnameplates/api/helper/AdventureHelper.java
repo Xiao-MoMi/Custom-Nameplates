@@ -246,6 +246,16 @@ public class AdventureHelper {
     }
 
     /**
+     * Strips the minimessage tags
+     *
+     * @param text text
+     * @return the stripped texts
+     */
+    public static String stripTags(String text) {
+        return getInstance().miniMessage.stripTags(text);
+    }
+
+    /**
      * Converts a legacy color code string to a MiniMessage string.
      *
      * @param legacy the legacy color code string

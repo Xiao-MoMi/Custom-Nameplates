@@ -1,7 +1,6 @@
 package net.momirealms.customnameplates.bukkit;
 
 import net.momirealms.customnameplates.api.ConfigManager;
-import net.momirealms.customnameplates.api.CustomNameplates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

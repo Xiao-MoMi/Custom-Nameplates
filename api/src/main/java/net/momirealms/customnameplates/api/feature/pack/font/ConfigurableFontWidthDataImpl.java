@@ -1,6 +1,9 @@
 package net.momirealms.customnameplates.api.feature.pack.font;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,8 +45,9 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
                     return width;
                 }
             }
+            return defaultWidth;
         }
-        return defaultWidth;
+        return width;
     }
 
     @Override
@@ -77,8 +81,8 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
         }
 
         @Override
-        public Builder parentFont(CharacterFontWidthData... font) {
-            this.parents.addAll(Arrays.asList(font));
+        public Builder parentFont(List<CharacterFontWidthData> font) {
+            this.parents.addAll(font);
             return this;
         }
 

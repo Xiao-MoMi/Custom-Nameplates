@@ -24,3 +24,12 @@ debug_performance:
   usage:
     - /customnameplates debug performance
     - /nameplates debug performance
+
+# A command to debug the width
+# Usage: [COMMAND]
+debug_width:
+  enable: true
+  permission: customnameplates.command.debug.width
+  usage:
+    - /customnameplates debug width
+    - /nameplates debug width
