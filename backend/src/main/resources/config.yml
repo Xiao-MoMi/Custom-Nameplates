@@ -24,14 +24,6 @@ integrations:
     ItemsAdder: false
     ItemsAdder-old-method: false
     Oraxen: false
-  # Should Nameplates utilize team management from these plugins?
-  # Note: You can only enable one due to Minecraft's limitation of players belonging to only one team at a time.
-  # This may lead to compatibility issues with plugins that also rely on teams.
-  team:
-    unknown: false
-    TAB: false
-    CMI: false
-    Velocitab: false # Requires CustomNameplates on Velocity as well
   # Some chats, such as staff chats or menu inputs, may need to be excluded from capture.
   # Supported chat plugins are listed below, which allow blacklist channels and /ignore functionality to work correctly.
   chat:
@@ -100,3 +92,22 @@ other-settings:
   placeholder-refresh-interval:
     "%player_name%": 10
     "%vault_prefix%": 10
+  # CustomNameplates provides some templates for reading the default Minecraft fonts
+  # You can replace the files under /font or add new configuration to let the plugin get these templates.
+  # Templates can be used in font-width-data.yml
+  font-templates:
+    unifont:
+      unifont: unifont.zip
+    nonlatin-european:
+      nonlatin_european: nonlatin_european.png
+    accented:
+      accented: accented.png
+    ascii:
+      ascii: ascii.png
+    ascii-sga:
+      ascii_sga: ascii_sga.png
+    asciillager:
+      asciillager: asciillager.png
+    unicode:
+      unicode: unicode_page_%s.png
+    ttf: {}

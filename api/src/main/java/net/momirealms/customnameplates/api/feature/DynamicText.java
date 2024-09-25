@@ -10,13 +10,11 @@ import java.util.function.Function;
 
 public class DynamicText {
 
-    private final CNPlayer owner;
     private final String text;
     private final List<Function<CNPlayer, String>> texts = new ArrayList<>();
     private final Set<Placeholder> placeholders;
 
-    public DynamicText(CNPlayer owner, String text, List<Function<CNPlayer, String>> texts, Set<Placeholder> placeholders) {
-        this.owner = owner;
+    public DynamicText(String text, List<Function<CNPlayer, String>> texts, Set<Placeholder> placeholders) {
         this.text = text;
         this.texts.addAll(texts);
         this.placeholders = placeholders;

@@ -52,15 +52,6 @@ public interface ConfigLoader {
     YamlDocument loadData(File file);
 
     /**
-     * Loads a YAML data file with a custom route separator.
-     *
-     * @param file           the {@link File} object representing the data file
-     * @param routeSeparator the custom route separator character
-     * @return the loaded {@link YamlDocument}
-     */
-    YamlDocument loadData(File file, char routeSeparator);
-
-    /**
      * Saves a resource file from the plugin's jar to the specified file path.
      *
      * @param filePath the path where the resource file will be saved

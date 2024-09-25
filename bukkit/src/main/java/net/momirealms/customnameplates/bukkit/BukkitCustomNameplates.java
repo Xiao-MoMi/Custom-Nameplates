@@ -7,6 +7,7 @@ import net.momirealms.customnameplates.api.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
+import net.momirealms.customnameplates.api.feature.pack.width.WidthManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
@@ -103,6 +104,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.placeholderManager = new PlaceholderManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.bossBarManager = new BossBarManagerImpl(this);
+        this.widthManager = new WidthManagerImpl(this);
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
 

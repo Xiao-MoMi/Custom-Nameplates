@@ -3,6 +3,7 @@ package net.momirealms.customnameplates.api;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManager;
+import net.momirealms.customnameplates.api.feature.pack.width.WidthManager;
 import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
@@ -41,6 +42,7 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected SchedulerTask scheduledMainTask;
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
     protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();
+    protected WidthManager widthManager;
 
     protected CustomNameplates() {
         instance = this;
@@ -96,6 +98,10 @@ public abstract class CustomNameplates implements CustomPlugin {
 
     public UnlimitedTagManager getUnlimitedTagManager() {
         return unlimitedTagManager;
+    }
+
+    public WidthManager getWidthManager() {
+        return widthManager;
     }
 
     public Platform getPlatform() {

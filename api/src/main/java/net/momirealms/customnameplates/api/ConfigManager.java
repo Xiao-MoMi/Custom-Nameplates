@@ -191,18 +191,6 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         }
     }
 
-    @Override
-    public YamlDocument loadData(File file, char routeSeparator) {
-        try (InputStream inputStream = new FileInputStream(file)) {
-            return YamlDocument.create(inputStream, GeneralSettings.builder()
-                    .setRouteSeparator(routeSeparator)
-                    .build());
-        } catch (IOException e) {
-            plugin.getPluginLogger().severe("Failed to load config " + file, e);
-            throw new RuntimeException(e);
-        }
-    }
-
     protected Path resolveConfig(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");

@@ -64,7 +64,6 @@ public class PreParsedDynamicText {
             functions.add(textFunction.apply(player));
         }
         return new DynamicText(
-                player,
                 text,
                 functions,
                 set
