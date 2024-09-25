@@ -104,6 +104,22 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
         }
     }
 
+    @Override
+    public void onPlayerDataSet(CNPlayer owner, CNPlayer viewer, boolean isCrouching) {
+        TagDisplayController controller = tagControllers.get(owner.uuid());
+        if (controller != null) {
+            controller.handleEntityDataChange(viewer, isCrouching);
+        }
+    }
+
+    @Override
+    public void onPlayerAttributeSet(CNPlayer owner, CNPlayer viewer, double scale) {
+        TagDisplayController controller = tagControllers.get(owner.uuid());
+        if (controller != null) {
+            controller.handleAttributeChange(viewer, scale);
+        }
+    }
+
     private void loadConfig() {
         plugin.getConfigManager().saveResource("configs" + File.separator + "nameplate.yml");
         YamlDocument document = plugin.getConfigManager().loadData(new File(plugin.getDataDirectory().toFile(), "configs" + File.separator + "nameplate.yml"));
@@ -129,6 +145,8 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                             .opacity(section.getByte("opacity", (byte) -1))
                             .useDefaultBackgroundColor(section.getBoolean("use-default-background-color", false))
                             .backgroundColor(ConfigUtils.argb(section.getString("background-color", "64,0,0,0")))
+                            .affectedByCrouching(section.getBoolean("affected-by-crouching", true))
+                            .affectedByScale(section.getBoolean("affected-by-scale-attribute", true))
                             .carouselText(
                                     section.contains("text") ?
                                             new CarouselText[]{new CarouselText(-1, new Requirement[0], section.getString("text"), false)} :

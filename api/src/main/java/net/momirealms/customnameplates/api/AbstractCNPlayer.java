@@ -1,6 +1,7 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.Feature;
+import net.momirealms.customnameplates.api.network.PassengerProperties;
 import net.momirealms.customnameplates.api.placeholder.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 
@@ -42,7 +43,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new HashMap<>();
     private final Map<Feature, Set<Placeholder>> feature2Placeholders = new HashMap<>();
 
-    private final Map<CNPlayer, Set<Integer>> trackedPassengers = Collections.synchronizedMap(new WeakHashMap<>());
+    private final Map<CNPlayer, PassengerProperties> trackedPassengers = Collections.synchronizedMap(new WeakHashMap<>());
 
     protected AbstractCNPlayer(CustomNameplates plugin, Object player) {
         this.plugin = plugin;
@@ -222,9 +223,9 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     @Override
     public void trackPassengers(CNPlayer another, int... passengers) {
         trackedPassengers.compute(another, (key, existingIds) -> {
-            Set<Integer> ids = existingIds != null ? existingIds : Collections.synchronizedSet(new HashSet<>());
+            Map<Integer, PassengerProperties> ids = existingIds != null ? existingIds : Collections.synchronizedMap(new HashMap<>());
             for (int passenger : passengers) {
-                ids.add(passenger);
+                ids.put(passenger, new PassengerProperties(passenger));
             }
             return ids;
         });
@@ -232,18 +233,28 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public void untrackPassengers(CNPlayer another, int... passengers) {
-        Optional.ofNullable(trackedPassengers.get(another)).ifPresent(existingIds -> {
+        Optional.ofNullable(trackedPassengers.get(another)).ifPresent(properties -> {
             for (int passenger : passengers) {
-                existingIds.remove(passenger);
+                properties.removePassengerID(passenger);
             }
-            if (existingIds.isEmpty()) {
+            if (properties.isEmpty()) {
                 trackedPassengers.remove(another);
             }
         });
     }
 
     @Override
-    public Set<Integer> getTrackedPassengers(CNPlayer another) {
-        return Optional.ofNullable(trackedPassengers.get(another)).map(HashSet::new).orElse(new HashSet<>());
+    public Set<PassengerProperties> getTrackedPassengers(CNPlayer another) {
+        return Optional.ofNullable(trackedPassengers.get(another)).map(map -> new HashSet<>(map.values())).orElse(new HashSet<>());
+    }
+
+    @Override
+    public Set<Integer> getTrackedPassengerIds(CNPlayer another) {
+        return Optional.ofNullable(trackedPassengers.get(another)).map(properties -> new HashSet<>(properties.keySet())).orElse(new HashSet<>());
+    }
+
+    @Override
+    public PassengerProperties getTrackedProperties(CNPlayer another) {
+        return trackedPassengers.get(another);
     }
 }

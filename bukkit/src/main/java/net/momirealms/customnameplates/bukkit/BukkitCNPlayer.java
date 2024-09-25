@@ -2,16 +2,24 @@ package net.momirealms.customnameplates.bukkit;
 
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.util.Vector3;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BukkitCNPlayer extends AbstractCNPlayer {
+
+    private static final Attribute scaleAttribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.scale"));
 
     private final Player player;
 
@@ -52,7 +60,7 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
     }
 
     @Override
-    public boolean isCrouching() {
-        return player.isSneaking();
+    public boolean isFlying() {
+        return player.isFlying();
     }
 }

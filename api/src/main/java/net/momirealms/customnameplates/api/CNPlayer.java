@@ -1,6 +1,7 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.Feature;
+import net.momirealms.customnameplates.api.network.PassengerProperties;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderUpdateTask;
 import net.momirealms.customnameplates.api.requirement.Requirement;
@@ -60,11 +61,19 @@ public interface CNPlayer {
 
     void trackPassengers(CNPlayer another, int... passengers);
 
+    PassengerProperties trackPassenger(CNPlayer another, int passenger);
+
     void untrackPassengers(CNPlayer another, int... passengers);
 
-    Set<Integer> getTrackedPassengers(CNPlayer another);
+    Set<PassengerProperties> getTrackedPassengers(CNPlayer another);
+
+    PassengerProperties getTrackedPassenger(CNPlayer another, int entityId);
+
+    Set<Integer> getTrackedPassengerIds(CNPlayer another);
 
     Set<Integer> passengers();
 
-    boolean isCrouching();
+    boolean isFlying();
+
+    PassengerProperties getTrackedProperties(CNPlayer another);
 }

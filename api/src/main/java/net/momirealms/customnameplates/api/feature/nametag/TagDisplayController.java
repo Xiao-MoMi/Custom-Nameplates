@@ -2,6 +2,7 @@ package net.momirealms.customnameplates.api.feature.nametag;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.network.PassengerProperties;
 
 import java.util.*;
 
@@ -10,17 +11,26 @@ public class TagDisplayController {
     private final CNPlayer owner;
     private final UnlimitedTagManager manager;
     private final TagDisplay[] tags;
+    private double hatOffset;
 
     public TagDisplayController(UnlimitedTagManager manager, CNPlayer owner) {
         this.owner = owner;
         this.manager = manager;
         List<TagDisplay> senderList = new ArrayList<>();
         for (TagConfig config : manager.allConfigs()) {
-            TagDisplay sender = new TagDisplay(owner, config);
+            TagDisplay sender = new TagDisplay(owner, config, this);
             senderList.add(sender);
             this.owner.addFeature(sender);
         }
         this.tags = senderList.toArray(new TagDisplay[0]);
+    }
+
+    public double hatOffset() {
+        return hatOffset;
+    }
+
+    public void setHatOffset(double hatOffset) {
+        this.hatOffset = hatOffset;
     }
 
     public void onTick() {
@@ -115,7 +125,7 @@ public class TagDisplayController {
     }
 
     private void updatePassengers(CNPlayer another, Set<Integer> realPassengers) {
-        Set<Integer> fakePassengers = another.getTrackedPassengers(owner);
+        Set<Integer> fakePassengers = another.getTrackedPassengerIds(owner);
         fakePassengers.addAll(realPassengers);
         int[] passengers = new int[fakePassengers.size()];
         int index = 0;
@@ -123,5 +133,45 @@ public class TagDisplayController {
             passengers[index++] = passenger;
         }
         CustomNameplates.getInstance().getPlatform().setPassengers(another, owner.entityID(), passengers);
+    }
+
+    public void handleEntityDataChange(CNPlayer another, boolean isCrouching) {
+        boolean updatePassengers = false;
+        PassengerProperties properties = another.getTrackedProperties(owner);
+        // should never be null
+        if (properties == null) return;
+        properties.setCrouching(isCrouching);
+        for (TagDisplay display : this.tags) {
+            if (display.isShown()) {
+                if (display.isShown(another)) {
+                    display.respawn(another);
+                    updatePassengers = true;
+                }
+            }
+        }
+        if (updatePassengers) {
+            Set<Integer> realPassengers = owner.passengers();
+            updatePassengers(another, realPassengers);
+        }
+    }
+
+    public void handleAttributeChange(CNPlayer another, double scale) {
+        boolean updatePassengers = false;
+        PassengerProperties properties = another.getTrackedProperties(owner);
+        // should never be null
+        if (properties == null) return;
+        properties.setScale(scale);
+        for (TagDisplay display : this.tags) {
+            if (display.isShown()) {
+                if (display.isShown(another)) {
+                    display.respawn(another);
+                    updatePassengers = true;
+                }
+            }
+        }
+        if (updatePassengers) {
+            Set<Integer> realPassengers = owner.passengers();
+            updatePassengers(another, realPassengers);
+        }
     }
 }

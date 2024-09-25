@@ -14,4 +14,8 @@ public interface UnlimitedTagManager extends Reloadable {
     Runnable onAddPlayer(CNPlayer owner, CNPlayer added);
 
     void onRemovePlayer(CNPlayer owner, CNPlayer removed);
+
+    void onPlayerDataSet(CNPlayer owner, CNPlayer viewer, boolean isCrouching);
+
+    void onPlayerAttributeSet(CNPlayer owner, CNPlayer viewer, double scale);
 }

@@ -23,8 +23,10 @@ public class TagConfigImpl implements TagConfig {
     private final float shadowStrength;
     private final Vector3 scale;
     private final Vector3 translation;
+    private final boolean affectedByCrouching;
+    private final boolean affectedByScale;
 
-    public TagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation) {
+    public TagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale) {
         this.id = id;
         this.ownerRequirements = ownerRequirements;
         this.viewerRequirements = viewerRequirements;
@@ -41,6 +43,8 @@ public class TagConfigImpl implements TagConfig {
         this.scale = scale;
         this.translation = translation;
         this.lineWidth = lineWidth;
+        this.affectedByCrouching = affectedByCrouching;
+        this.affectedByScale = affectedByScale;
     }
 
     @Override
@@ -86,6 +90,16 @@ public class TagConfigImpl implements TagConfig {
     @Override
     public boolean useDefaultBackgroundColor() {
         return useDefaultBackgroundColor;
+    }
+
+    @Override
+    public boolean affectedByCrouching() {
+        return affectedByCrouching;
+    }
+
+    @Override
+    public boolean affectedByScale() {
+        return affectedByScale;
     }
 
     @Override
@@ -140,6 +154,8 @@ public class TagConfigImpl implements TagConfig {
         private float shadowStrength;
         private Vector3 scale;
         private Vector3 translation;
+        private boolean affectedByCrouching;
+        private boolean affectedByScale;
 
         @Override
         public Builder id(String id) {
@@ -239,8 +255,20 @@ public class TagConfigImpl implements TagConfig {
         }
 
         @Override
+        public Builder affectedByCrouching(boolean affectedByCrouching) {
+            this.affectedByCrouching = affectedByCrouching;
+            return this;
+        }
+
+        @Override
+        public Builder affectedByScale(boolean affectedByScale) {
+            this.affectedByScale = affectedByScale;
+            return this;
+        }
+
+        @Override
         public TagConfig build() {
-            return new TagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, viewRange, shadowRadius, shadowStrength, scale, translation);
+            return new TagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, viewRange, shadowRadius, shadowStrength, scale, translation, affectedByCrouching, affectedByScale);
         }
     }
 }

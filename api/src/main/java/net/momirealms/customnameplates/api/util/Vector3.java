@@ -11,4 +11,8 @@ public record Vector3(double x, double y, double z) {
     public Vector3 add(double x, double y, double z) {
         return new Vector3(this.x + x, this.y + y, this.z + z);
     }
+
+    public Vector3 multiply(double value) {
+        return new Vector3(this.x * value, this.y * value, this.z * value);
+    }
 }

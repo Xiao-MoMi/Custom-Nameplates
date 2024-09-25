@@ -6,6 +6,7 @@ import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.feature.DynamicText;
 import net.momirealms.customnameplates.api.feature.RelationalFeature;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.api.network.PassengerProperties;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.SelfIncreaseEntityID;
 
@@ -17,6 +18,7 @@ public class TagDisplay implements RelationalFeature {
     private final TagConfig config;
     private final UUID uuid = UUID.randomUUID();
     private final int entityID = SelfIncreaseEntityID.getAndIncrease();
+    private final TagDisplayController controller;
 
     private boolean isShown = false;
 
@@ -27,9 +29,10 @@ public class TagDisplay implements RelationalFeature {
     private final Vector<CNPlayer> viewers = new Vector<>();
     private CNPlayer[] viewerArray = new CNPlayer[0];
 
-    public TagDisplay(CNPlayer owner, TagConfig config) {
+    public TagDisplay(CNPlayer owner, TagConfig config, TagDisplayController controller) {
         this.owner = owner;
         this.config = config;
+        this.controller = controller;
     }
 
     @Override
@@ -121,11 +124,17 @@ public class TagDisplay implements RelationalFeature {
         viewer.trackPassengers(owner, entityID);
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
+        PassengerProperties properties = viewer.getTrackedProperties(owner);
         CustomNameplates.getInstance().getPlatform().createTextDisplay(
-                viewer, entityID, uuid, owner.position().add(0,1.8,0), 0f, 0f, 0d, component,
+                viewer, entityID, uuid,
+                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0)) * (config.affectedByScale() ? properties.getScale() : 1),0),
+                0f, 0f, 0d, component,
                 config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
-                config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(), config.scale(), config.translation(),
-                config.lineWidth(), owner.isCrouching()
+                config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
+                (config.affectedByScale() ? config.scale().multiply(properties.getScale()) : config.scale()),
+                (config.affectedByScale() ? config.translation().multiply(properties.getScale()) : config.translation()),
+                config.lineWidth(),
+                (config.affectedByCrouching() && properties.isCrouching())
        );
     }
 
@@ -162,6 +171,30 @@ public class TagDisplay implements RelationalFeature {
                 viewer, entityID, List.of(
                         CustomNameplates.getInstance().getPlatform().createTextComponentModifier(component)
                 )
+        );
+    }
+
+    public void respawn() {
+        for (CNPlayer viewer : viewerArray) {
+            respawn(viewer);
+        }
+    }
+
+    public void respawn(CNPlayer viewer) {
+        String newName = currentText.render(viewer);
+        Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
+        CustomNameplates.getInstance().getPlatform().removeEntity(viewer, entityID);
+        PassengerProperties properties = viewer.getTrackedProperties(owner);
+        CustomNameplates.getInstance().getPlatform().createTextDisplay(
+                viewer, entityID, uuid,
+                owner.position().add(0,(1.8 + (config.affectedByCrouching() && properties.isCrouching() && !owner.isFlying() ? -0.3 : 0)) * (config.affectedByScale() ? properties.getScale() : 1),0),
+                0f, 0f, 0d, component,
+                config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
+                config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
+                (config.affectedByScale() ? config.scale().multiply(properties.getScale()) : config.scale()),
+                (config.affectedByScale() ? config.translation().multiply(properties.getScale()) : config.translation()),
+                config.lineWidth(),
+                (config.affectedByCrouching() && properties.isCrouching())
         );
     }
 

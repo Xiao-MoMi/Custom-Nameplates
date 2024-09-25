@@ -83,7 +83,8 @@ public class TextDisplayData<T> {
     private static final int HAS_SHADOW = 0x01; // 1
     private static final int IS_SEE_THROUGH = 0x02; // 2
     private static final int USE_DEFAULT_BACKGROUND = 0x04; // 4
-    private static final int ALIGNMENT_MASK = 0x08; // 8
+    private static final int LEFT_ALIGNMENT = 0x08; // 8
+    private static final int RIGHT_ALIGNMENT = 0x10; // 16
 
     public static byte encodeMask(boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackground, int alignment) {
         int bitMask = 0;
@@ -102,11 +103,10 @@ public class TextDisplayData<T> {
             case 0: // CENTER
                 break;
             case 1: // LEFT
-            case 3: // LEFT
-                bitMask |= ALIGNMENT_MASK;
+                bitMask |= LEFT_ALIGNMENT;
                 break;
             case 2: // RIGHT
-                bitMask |= (ALIGNMENT_MASK | 0x04);
+                bitMask |= RIGHT_ALIGNMENT;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid alignment value");

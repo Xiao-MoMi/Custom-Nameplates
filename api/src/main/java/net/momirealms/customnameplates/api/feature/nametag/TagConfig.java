@@ -25,6 +25,10 @@ public interface TagConfig {
 
     boolean useDefaultBackgroundColor();
 
+    boolean affectedByCrouching();
+
+    boolean affectedByScale();
+
     Alignment alignment();
 
     float viewRange();
@@ -76,6 +80,10 @@ public interface TagConfig {
         Builder scale(Vector3 scale);
 
         Builder translation(Vector3 translation);
+
+        Builder affectedByCrouching(boolean affectedByCrouching);
+
+        Builder affectedByScale(boolean affectedByScale);
 
         TagConfig build();
     }

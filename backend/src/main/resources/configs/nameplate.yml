@@ -17,19 +17,6 @@ nameplate:
   # The suffix here will become part of the nameplate
   suffix: ''
 
-# Configuration for Team tags.
-team:
-  # Prefix to display before the player's name.
-  prefix: '%nameplates_prefix%'
-  # Suffix to display after the player's name.
-  suffix: '%nameplates_suffix%'
-  # Option to hide the player's name (true/false).
-  hide-name: false
-  # Placeholder for glow color; set if using other glow plugins.
-  glow-color: ''
-  # Disable this option if using a custom Tab plugin.
-  fix-Tab: false
-
 # Configuration for Unlimited tags.
 unlimited:
   tag_1:

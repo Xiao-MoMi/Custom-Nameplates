@@ -46,10 +46,10 @@ public class ConfigUtils {
     }
 
     public static int argb(String[] args) {
-        int alpha = args.length > 1 ? Integer.parseInt(args[0]) : 64;
-        int red = args.length > 2 ? Integer.parseInt(args[1]) : 0;
-        int green = args.length > 3 ? Integer.parseInt(args[2]) : 0;
-        int blue = args.length > 4 ? Integer.parseInt(args[3]) : 0;
+        int alpha = args.length >= 1 ? Integer.parseInt(args[0]) : 64;
+        int red = args.length >= 2 ? Integer.parseInt(args[1]) : 0;
+        int green = args.length >= 3 ? Integer.parseInt(args[2]) : 0;
+        int blue = args.length >= 4 ? Integer.parseInt(args[3]) : 0;
         return argb(alpha, red, green, blue);
     }
 
@@ -62,9 +62,9 @@ public class ConfigUtils {
     }
 
     public static Vector3 vector3(String[] args) {
-        float x = args.length > 1 ? Float.parseFloat(args[0]) : 0f;
-        float y = args.length > 2 ? Float.parseFloat(args[1]) : 0f;
-        float z = args.length > 3 ? Float.parseFloat(args[2]) : 0f;
+        float x = args.length >= 1 ? Float.parseFloat(args[0]) : 0f;
+        float y = args.length >= 2 ? Float.parseFloat(args[1]) : 0f;
+        float z = args.length >= 3 ? Float.parseFloat(args[2]) : 0f;
         return vector3(x, y, z);
     }
 
