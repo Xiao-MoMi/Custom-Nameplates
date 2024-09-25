@@ -88,8 +88,8 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
     }
 
     @Override
-    public Runnable onAddPlayer(CNPlayer player, CNPlayer added) {
-        TagDisplayController controller = tagControllers.get(player.uuid());
+    public Runnable onAddPlayer(CNPlayer owner, CNPlayer added) {
+        TagDisplayController controller = tagControllers.get(owner.uuid());
         if (controller != null) {
             return controller.handlePlayerAdd(added);
         }
@@ -97,8 +97,8 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
     }
 
     @Override
-    public void onRemovePlayer(CNPlayer player, CNPlayer removed) {
-        TagDisplayController controller = tagControllers.get(player.uuid());
+    public void onRemovePlayer(CNPlayer owner, CNPlayer removed) {
+        TagDisplayController controller = tagControllers.get(owner.uuid());
         if (controller != null) {
             controller.handlePlayerRemove(removed);
         }

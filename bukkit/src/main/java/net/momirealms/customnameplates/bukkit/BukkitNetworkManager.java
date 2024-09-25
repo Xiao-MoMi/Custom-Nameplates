@@ -106,6 +106,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 PacketEvent event = new PacketEvent(packet);
                 plugin.getPlatform().onPacketSend(player, event);
                 if (event.isCancelled()) return;
+                super.write(context, packet, channelPromise);
                 channelPromise.addListener((p) -> {
                     for (Runnable task : event.getDelayedTasks()) {
                         task.run();
@@ -113,11 +114,6 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 });
             } catch (Throwable e) {
                 plugin.getPluginLogger().severe("An error occurred when reading packets", e);
-            }
-            try {
-                super.write(context, packet, channelPromise);
-            } catch (Throwable e) {
-                plugin.getPluginLogger().severe("An error occurred when forwarding packets", e);
             }
         }
     }

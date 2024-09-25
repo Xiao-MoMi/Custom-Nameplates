@@ -94,8 +94,8 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$ClientboundAddEntityPacket$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    player.addPlayerToTracker(added);
-                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                    added.addPlayerToTracker(player);
+                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                     if (delayed != null) {
                         event.addDelayedTask(delayed);
                     }
@@ -112,8 +112,8 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$PacketPlayOutNamedEntitySpawn$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    player.addPlayerToTracker(added);
-                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, added);
+                    added.addPlayerToTracker(player);
+                    Runnable delayed = CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                     if (delayed != null) {
                         event.addDelayedTask(delayed);
                     }
@@ -129,8 +129,8 @@ public class BukkitPlatform implements Platform {
                 for (int i : intList) {
                     CNPlayer removed = CustomNameplates.getInstance().getPlayer(i);
                     if (removed != null) {
-                        player.removePlayerFromTracker(removed);
-                        CustomNameplates.getInstance().getUnlimitedTagManager().onRemovePlayer(player, removed);
+                        removed.removePlayerFromTracker(player);
+                        CustomNameplates.getInstance().getUnlimitedTagManager().onRemovePlayer(removed, player);
                     }
                 }
             } catch (ReflectiveOperationException e) {

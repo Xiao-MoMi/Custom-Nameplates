@@ -11,7 +11,7 @@ public interface UnlimitedTagManager extends Reloadable {
 
     TagConfig[] allConfigs();
 
-    Runnable onAddPlayer(CNPlayer player, CNPlayer added);
+    Runnable onAddPlayer(CNPlayer owner, CNPlayer added);
 
-    void onRemovePlayer(CNPlayer player, CNPlayer removed);
+    void onRemovePlayer(CNPlayer owner, CNPlayer removed);
 }

@@ -122,7 +122,6 @@ public class TagDisplayController {
         for (int passenger : fakePassengers) {
             passengers[index++] = passenger;
         }
-        System.out.println("更新" + another.name() + Arrays.toString(passengers));
         CustomNameplates.getInstance().getPlatform().setPassengers(another, owner.entityID(), passengers);
     }
 }
