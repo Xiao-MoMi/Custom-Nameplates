@@ -109,5 +109,5 @@ other-settings:
     asciillager:
       asciillager: asciillager.png
     unicode:
-      unicode: unicode_page_%s.png
+      unicode: unicode_page_%02x.png
     ttf: {}
