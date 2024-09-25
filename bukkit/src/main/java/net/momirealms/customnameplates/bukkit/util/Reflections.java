@@ -432,18 +432,15 @@ public class Reflections {
     public static final Field field$EntityType$TEXT_DISPLAY;
 
     static {
-        System.out.println(VersionHelper.version());
         if (VersionHelper.isVersionNewerThan1_20_5()) {
             field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
                     clazz$EntityType,
                     "TEXT_DISPLAY", "bb");
         } else if (VersionHelper.isVersionNewerThan1_20_4()) {
-            System.out.println("Niubility");
             field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
                     clazz$EntityType,
                     "TEXT_DISPLAY", "aY");
         } else {
-            System.out.println("sb");
             field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
                     clazz$EntityType,
                     "TEXT_DISPLAY", "aX");
