@@ -27,7 +27,6 @@ package net.momirealms.customnameplates.common.dependency;
 
 import net.momirealms.customnameplates.common.dependency.relocation.Relocation;
 import net.momirealms.customnameplates.common.plugin.CustomNameplatesProperties;
-import net.momirealms.customnameplates.common.util.OSUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.MessageDigest;
@@ -270,35 +269,21 @@ public enum Dependency {
             "maven",
             "slf4j"
     ),
-    LWJGL(
-            "org{}lwjgl",
-            "lwjgl",
+    FONT_BOX(
+            "org{}apache{}fontbox",
+            "fontbox",
             "maven",
-            "lwjgl"
+            "fontbox",
+            Relocation.of("fontbox", "org{}apache{}fontbox"),
+            Relocation.of("pdfbox", "org{}apache{}pdfbox")
     ),
-    LWJGL_NATIVE(
-            "org{}lwjgl",
-            "lwjgl",
+    PDF_BOX(
+            "org{}apache{}pdfbox",
+            "pdfbox-io",
             "maven",
-            "lwjgl-natives-" + OSUtils.getOSName(),
-            "-natives-" + OSUtils.getOSName()
-    ) {
-        @Override
-        public String getVersion() {
-            return Dependency.LWJGL.getVersion();
-        }
-    },
-    LWJGL_FREETYPE(
-            "org{}lwjgl",
-            "lwjgl-freetype",
-            "maven",
-            "lwjgl-freetype"
-    ) {
-        @Override
-        public String getVersion() {
-            return Dependency.LWJGL.getVersion();
-        }
-    };
+            "pdfbox-io",
+            Relocation.of("pdfbox", "org{}apache{}pdfbox")
+    );
 
     private final List<Relocation> relocations;
     private final String repo;

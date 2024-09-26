@@ -57,7 +57,8 @@ tasks {
         relocate ("com.github.benmanes.caffeine", "net.momirealms.customnameplates.libraries.caffeine")
         relocate ("net.objecthunter.exp4j", "net.momirealms.customnameplates.libraries.exp4j")
         relocate ("redis.clients.jedis", "net.momirealms.customnameplates.libraries.jedis")
-//        relocate ("org.lwjgl", "net.momirealms.customnameplates.libraries.lwjgl")
+        relocate ("org.apache.fontbox", "net.momirealms.customnameplates.libraries.fontbox")
+        relocate ("org.apache.pdfbox", "net.momirealms.customnameplates.libraries.pdfbox")
     }
 }
 

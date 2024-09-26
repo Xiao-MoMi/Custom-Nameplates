@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.feature.pack.width;
+package net.momirealms.customnameplates.api.feature.advance;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -19,21 +19,15 @@ import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
-import net.momirealms.customnameplates.api.util.FreeTypeUtils;
 import net.momirealms.customnameplates.common.util.Tuple;
+import org.apache.fontbox.ttf.CmapSubtable;
+import org.apache.fontbox.ttf.TTFParser;
+import org.apache.fontbox.ttf.TrueTypeFont;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.util.freetype.FT_Face;
-import org.lwjgl.util.freetype.FT_GlyphSlot;
-import org.lwjgl.util.freetype.FreeType;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -42,7 +36,7 @@ import java.util.zip.ZipFile;
 
 import static java.util.Objects.requireNonNull;
 
-public class WidthManagerImpl implements WidthManager {
+public class AdvanceManagerImpl implements AdvanceManager {
 
     private static final Key MINECRAFT_DEFAULT_FONT = Key.key("minecraft", "default");
     private static final Map<String, String[]> CODE_POINTS = new HashMap<>();
@@ -173,7 +167,7 @@ public class WidthManagerImpl implements WidthManager {
                         "\\u1d8b\\u1d8c\\u1d8d\\ua7c6\\u1d8e\\u1d8f\\u1d90\\u1d92\\u1d93\\u1d94\\u1d95\\u1d96\\u1d97\\u1d98\\u1d99\\u1d9a",
                         "\\u1e9a\\u2152\\u2158\\u20a8\\u20af\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000"
         });
-        CODE_POINTS.put("nonlatin_european", new String[]{
+        CODE_POINTS.put("nonlatin_european", new String[] {
                         "\\u00a1\\u2030\\u00ad\\u00b7\\u20b4\\u2260\\u00bf\\u00d7\\u00d8\\u00de\\u04bb\\u00f0\\u00f8\\u00fe\\u0391\\u0392",
                         "\\u0393\\u0394\\u0395\\u0396\\u0397\\u0398\\u0399\\u039a\\u039b\\u039c\\u039d\\u039e\\u039f\\u03a0\\u03a1\\u03a3",
                         "\\u03a4\\u03a5\\u03a6\\u03a7\\u03a8\\u03a9\\u03b1\\u03b2\\u03b3\\u03b4\\u03b5\\u03b6\\u03b7\\u03b8\\u03b9\\u03ba",
@@ -259,20 +253,19 @@ public class WidthManagerImpl implements WidthManager {
     private final HashMap<String, BiConsumer<String, Section>> templateConfigConsumersMap = new HashMap<>();
 
     private final CustomNameplates plugin;
-    private final HashMap<String, CharacterFontWidthData> charFontWidthDataMap = new HashMap<>();
-    private final HashMap<String, ConfigurableFontWidthData> configFontWidthDataMap = new HashMap<>();
+    private final HashMap<String, CharacterFontAdvanceData> charFontWidthDataMap = new HashMap<>();
+    private final HashMap<String, ConfigurableFontAdvanceData> configFontWidthDataMap = new HashMap<>();
 
     private final Cache<String, Integer> textWidthCache;
 
     private boolean templatesLoaded = false;
 
-    public WidthManagerImpl(CustomNameplates plugin) {
+    public AdvanceManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
         this.textWidthCache =
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build();
-        FreeTypeUtils.initialize();
         this.init();
     }
 
@@ -297,12 +290,12 @@ public class WidthManagerImpl implements WidthManager {
                     data.put(codePoint, number.floatValue());
                 }
             }
-            this.charFontWidthDataMap.put(id, CharacterFontWidthData.builder().id(id).width(data).build());
+            this.charFontWidthDataMap.put(id, CharacterFontAdvanceData.builder().id(id).advance(data).build());
         });
 
         this.templateConfigConsumersMap.put("unihex", (id, section) -> {
             String path = requireNonNull(section.getString("file"));
-            File unifontCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
+            File unifontCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!unifontCache.exists()) {
                 File unihex = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
                 if (DEFAULT_UNIHEX.contains(path)) {
@@ -395,7 +388,7 @@ public class WidthManagerImpl implements WidthManager {
                                                 break;
                                             }
                                         }
-                                        yml.set(unicode, ((n - x + 1) * 4 - high - low) / 2);
+                                        yml.set(unicode, ((n - x + 1) * 4 - high - low) / 2 + 1);
                                     }
                                 }
                                 for (int i = 0x3001; i <= 0x30FF; i++) {
@@ -435,7 +428,7 @@ public class WidthManagerImpl implements WidthManager {
             String codePoints = requireNonNull(section.getString("codepoints", ""), "codepoints should be NonNull");
             int height = section.getInt("height", 8);
 
-            File bitmapCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
+            File bitmapCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!bitmapCache.exists()) {
                 File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + file);
                 if (DEFAULT_BITMAP_IMAGES.contains(file)) {
@@ -484,7 +477,7 @@ public class WidthManagerImpl implements WidthManager {
                                         }
                                     }
                                 }
-                                int width = (int) (0.5 + (double) ((float) pixels * scale));
+                                int width = (int) (0.5 + (double) ((float) pixels * scale)) + 1;
                                 char[] chars = Character.toChars(codePoint);
                                 yml.set(CharacterUtils.char2Unicode(chars), width);
                             }
@@ -502,7 +495,7 @@ public class WidthManagerImpl implements WidthManager {
         this.templateConfigConsumersMap.put("legacy_unicode", (id, section) -> {
             String path = section.getString("file");
             int height = section.getInt("height");
-            File unicodeCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
+            File unicodeCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!unicodeCache.exists()) {
                 if (path.equals("unicode_page_%02x.png")) {
                     for (int a = 0; a < 256; a++) {
@@ -543,7 +536,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                                 int pixels = x_upper - x_lower + 1;
-                                int width = (int) (0.5 + (double) ((float) pixels * scale));
+                                int width = (int) (0.5 + (double) ((float) pixels * scale)) + 1;
                                 String unicode = "\\u" + unicodeStr + String.format("%02x", i + j * 16);
                                 yml.set(unicode, width);
                             }
@@ -560,7 +553,7 @@ public class WidthManagerImpl implements WidthManager {
 
         this.templateConfigConsumersMap.put("unicode", (id, section) -> {
             String path = section.getString("file");
-            File unicodeCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
+            File unicodeCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!unicodeCache.exists()) {
                 if (path.equals("unicode_page_%02x.png")) {
                     for (int a = 0; a < 256; a++) {
@@ -607,7 +600,7 @@ public class WidthManagerImpl implements WidthManager {
                                     }
                                 }
                                 int characterWidth = x_upper - x_lower + 1;
-                                float charWidth = (float) (characterWidth * 8 / characterSize);
+                                float charWidth = (float) (characterWidth * 8 / characterSize) + 1;
                                 String unicode = "\\u" + unicodeStr + String.format("%02x", i + j * 16);
                                 yml.set(unicode, charWidth);
                             }
@@ -635,93 +628,43 @@ public class WidthManagerImpl implements WidthManager {
             char[] chars = skippedStrings.toCharArray();
             int[] skippCodePoints = CharacterUtils.toCodePoints(chars);
 
-            File ttfCache = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + "cache" + File.separator + id + ".yml");
+            File ttfCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!ttfCache.exists()) {
-                File ttf = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
-                if (!ttf.exists()) {
-                    plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " not found");
+                File ttfFile = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
+                if (!ttfFile.exists()) {
+                    plugin.getPluginLogger().warn(ttfFile.getAbsolutePath() + " not found");
                     return;
                 }
-                if (!ttf.getName().endsWith(".ttf")) {
-                    plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " is not a .ttf");
+                if (!ttfFile.getName().endsWith(".ttf")) {
+                    plugin.getPluginLogger().warn(ttfFile.getAbsolutePath() + " is not a .ttf");
                     return;
                 }
-                try (InputStream inputStream = new FileInputStream(ttf)) {
-                    ByteBuffer byteBuffer = null;
-                    FT_Face fT_Face = null;
-                    try {
-                        ttfCache.getParentFile().mkdirs();
-                        ttfCache.createNewFile();
-                        YamlDocument yml = plugin.getConfigManager().loadData(ttfCache);
-
-                        byteBuffer = FreeTypeUtils.readResource(inputStream);
-                        synchronized(FreeTypeUtils.LOCK) {
-                            MemoryStack ms1 = MemoryStack.stackPush();
-                            try {
-                                PointerBuffer pointerBuffer = ms1.mallocPointer(1);
-                                fT_Face = FT_Face.create(pointerBuffer.get());
-                            } catch (Throwable t1) {
-                                try {
-                                    ms1.close();
-                                } catch (Throwable t2) {
-                                    t1.addSuppressed(t2);
-                                }
-                                throw t1;
-                            }
-                            ms1.close();
-
-                            String string = FreeType.FT_Get_Font_Format(fT_Face);
-                            if (!"TrueType".equals(string)) {
-                                throw new IOException("Font is not in TTF format, was " + string);
-                            }
-
-                            FreeTypeUtils.checkFatalError(FreeType.FT_Select_Charmap(fT_Face, FreeType.FT_ENCODING_UNICODE), "Find unicode charmap");
-                            Set<Integer> codePoints = new HashSet<>(1_000);
-
-                            MemoryStack ms2 = MemoryStack.stackPush();
-                            try {
-                                IntBuffer intBuffer = ms2.mallocInt(1);
-                                for (long l = FreeType.FT_Get_First_Char(fT_Face, intBuffer); intBuffer.get(0) != 0; l = FreeType.FT_Get_Next_Char(fT_Face, l, intBuffer)) {
-                                    codePoints.add((int) l);
-                                }
-                            } catch (Throwable t1) {
-                                try {
-                                    ms2.close();
-                                } catch (Throwable t2) {
-                                    t1.addSuppressed(t2);
-                                }
-                                throw t1;
-                            }
-                            ms2.close();
-
-                            for (int skippedCodePoint : skippCodePoints) {
-                                codePoints.remove(skippedCodePoint);
-                            }
-
-                            for (int codePoint : codePoints) {
-                                int i = FreeType.FT_Get_Char_Index(fT_Face, codePoint);
-                                if (i != 0) {
-                                    FreeTypeUtils.checkFatalError(FreeType.FT_Load_Glyph(fT_Face, i, 4194312), "Loading glyph");
-                                    FT_GlyphSlot fT_GlyphSlot = Objects.requireNonNull(fT_Face.glyph(), "Glyph not initialized");
-                                    float f = FreeTypeUtils.getX(fT_GlyphSlot.advance());
-
-                                    char[] theCharacter = Character.toChars(codePoint);
-                                    String unicode = CharacterUtils.char2Unicode(theCharacter);
-                                    yml.set(unicode, f);
-                                }
+                try (InputStream inputStream = new FileInputStream(ttfFile)) {
+                    ttfCache.getParentFile().mkdirs();
+                    ttfCache.createNewFile();
+                    YamlDocument yml = plugin.getConfigManager().loadData(ttfCache);
+                    TTFParser parser = new TTFParser();
+                    TrueTypeFont ttf = parser.parseEmbedded(inputStream);
+                    CmapSubtable[] cMaps = ttf.getCmap().getCmaps();
+                    Set<Integer> codePoints = new HashSet<>();
+                    for (CmapSubtable cMap : cMaps) {
+                        for (int codepoint = Character.MIN_CODE_POINT; codepoint <= Character.MAX_CODE_POINT; codepoint++) {
+                            int glyphId = cMap.getGlyphId(codepoint);
+                            if (glyphId != 0) {
+                                codePoints.add(codepoint);
                             }
                         }
-
-                        yml.save(ttfCache);
-                    } catch (Exception e) {
-                        synchronized(FreeTypeUtils.LOCK) {
-                            if (fT_Face != null) {
-                                FreeType.FT_Done_Face(fT_Face);
-                            }
-                        }
-                        MemoryUtil.memFree(byteBuffer);
-                        throw e;
                     }
+                    for (int skippedCodePoint : skippCodePoints) {
+                        codePoints.remove(skippedCodePoint);
+                    }
+                    for (int codePoint : codePoints) {
+                        float advanceWidth = ttf.getAdvanceWidth(codePoint);
+                        char[] text = Character.toChars(codePoint);
+                        yml.set(CharacterUtils.char2Unicode(text), advanceWidth / 64);
+                    }
+                    ttf.close();
+                    yml.save(ttfCache);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -742,9 +685,9 @@ public class WidthManagerImpl implements WidthManager {
             }
         }
 
-        CharacterFontWidthData fontWidthData = CharacterFontWidthData.builder()
+        CharacterFontAdvanceData fontWidthData = CharacterFontAdvanceData.builder()
                 .id(id)
-                .width(dataMap)
+                .advance(dataMap)
                 .build();
         charFontWidthDataMap.put(id, fontWidthData);
     }
@@ -766,11 +709,10 @@ public class WidthManagerImpl implements WidthManager {
     @Override
     public void disable() {
         this.unload();
-        for (CharacterFontWidthData data : charFontWidthDataMap.values()) {
+        for (CharacterFontAdvanceData data : charFontWidthDataMap.values()) {
             data.close();
         }
         this.charFontWidthDataMap.clear();
-        FreeTypeUtils.release();
     }
 
     @Override
@@ -803,17 +745,17 @@ public class WidthManagerImpl implements WidthManager {
             if (entry.getValue() instanceof Section section) {
                 float defaultWidth = section.getFloat("default", 0f);
 
-                ArrayList<CharacterFontWidthData> widthDataArrayList = new ArrayList<>();
+                ArrayList<CharacterFontAdvanceData> widthDataArrayList = new ArrayList<>();
                 for (String template : section.getStringList("template-loading-sequence")) {
-                    CharacterFontWidthData fontWidthData = charFontWidthDataMap.get(template);
+                    CharacterFontAdvanceData fontWidthData = charFontWidthDataMap.get(template);
                     if (fontWidthData != null) {
                         widthDataArrayList.add(fontWidthData);
                     }
                 }
 
-                ConfigurableFontWidthData.Builder builder = ConfigurableFontWidthData.builder()
+                ConfigurableFontAdvanceData.Builder builder = ConfigurableFontAdvanceData.builder()
                         .id(entry.getKey())
-                        .defaultWidth(defaultWidth)
+                        .defaultAdvance(defaultWidth)
                         .parentFont(widthDataArrayList);
                 Section valuesSection = section.getSection("values");
                 if (valuesSection != null) {
@@ -833,11 +775,11 @@ public class WidthManagerImpl implements WidthManager {
                                     if (finalText.length() != 1) {
                                         plugin.getPluginLogger().warn(character + " is not a supported placeholder");
                                     } else {
-                                        builder.width(finalText.charAt(0), number.floatValue());
+                                        builder.advance(finalText.charAt(0), number.floatValue());
                                     }
                                 }
                             } else if (character.length() == 1) {
-                                builder.width(character.charAt(0), number.floatValue());
+                                builder.advance(character.charAt(0), number.floatValue());
                             } else {
                                 plugin.getPluginLogger().warn(character + " is not a supported character");
                             }
@@ -851,12 +793,12 @@ public class WidthManagerImpl implements WidthManager {
 
     @Override
     @Nullable
-    public ConfigurableFontWidthData getFontData(String id) {
+    public ConfigurableFontAdvanceData getFontData(String id) {
         return configFontWidthDataMap.get(id);
     }
 
     @Override
-    public int getTextWidth(String text) {
+    public int getTextAdvance(String text) {
         requireNonNull(text);
         return textWidthCache.get(text, this::calculateTextWidth);
     }
@@ -868,7 +810,7 @@ public class WidthManagerImpl implements WidthManager {
         nodeToIterableTexts(node, iterableTexts, MINECRAFT_DEFAULT_FONT, false);
         float totalLength = 0;
         for (Tuple<String, Key, Boolean> element : iterableTexts) {
-            ConfigurableFontWidthData data = getFontData(element.mid().asString());
+            ConfigurableFontAdvanceData data = getFontData(element.mid().asString());
             if (data == null) {
                 plugin.getPluginLogger().warn("Detected unknown font: " + element.mid() + ". Please register it in font-width-data.yml");
                 continue;
@@ -877,11 +819,14 @@ public class WidthManagerImpl implements WidthManager {
             for (int j = 0; j < chars.length; j++) {
                 float width;
                 if (Character.isHighSurrogate(chars[j])) {
-                    width = data.getWidth(Character.toCodePoint(chars[j], chars[++j]));
+                    width = data.getAdvance(Character.toCodePoint(chars[j], chars[++j]));
                 } else {
-                    width = data.getWidth(chars[j]);
+                    width = data.getAdvance(chars[j]);
                 }
-                totalLength += (width + (element.right() ? 2 : 1));
+                totalLength += width;
+                if (element.right()) {
+                    totalLength += 1;
+                }
             }
         }
         return (int) Math.ceil(totalLength);

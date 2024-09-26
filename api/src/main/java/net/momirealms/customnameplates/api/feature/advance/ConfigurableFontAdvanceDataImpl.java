@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.feature.pack.width;
+package net.momirealms.customnameplates.api.feature.advance;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,18 +7,18 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData {
+public class ConfigurableFontAdvanceDataImpl implements ConfigurableFontAdvanceData {
 
-    private final float defaultWidth;
+    private final float defaultAdvance;
     private final HashMap<Integer, Float> data = new HashMap<>();
-    private final List<CharacterFontWidthData> parents = new ArrayList<>();
+    private final List<CharacterFontAdvanceData> parents = new ArrayList<>();
     private final String id;
 
-    public ConfigurableFontWidthDataImpl(String id, float defaultWidth, HashMap<Integer, Float> customData, List<CharacterFontWidthData> parentFonts) {
+    public ConfigurableFontAdvanceDataImpl(String id, float defaultAdvance, HashMap<Integer, Float> customData, List<CharacterFontAdvanceData> parentFonts) {
         this.id = requireNonNull(id);
-        this.defaultWidth = defaultWidth;
+        this.defaultAdvance = defaultAdvance;
         Collections.reverse(parentFonts);
-        for (CharacterFontWidthData parent : parentFonts) {
+        for (CharacterFontAdvanceData parent : parentFonts) {
             // To optimize memory, especially for those fonts that have over 100,000 characters
             if (parent.size() > 2048) {
                 parents.add(parent);
@@ -31,21 +31,21 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
     }
 
     @Override
-    public float defaultWidth() {
-        return defaultWidth;
+    public float defaultAdvance() {
+        return defaultAdvance;
     }
 
     @Override
-    public float getWidth(int codePoint) {
+    public float getAdvance(int codePoint) {
         Float width = data.get(codePoint);
         if (width == null) {
-            for (CharacterFontWidthData parent : parents) {
-                width = parent.getWidth(codePoint);
+            for (CharacterFontAdvanceData parent : parents) {
+                width = parent.getAdvance(codePoint);
                 if (width != null) {
                     return width;
                 }
             }
-            return defaultWidth;
+            return defaultAdvance;
         }
         return width;
     }
@@ -58,8 +58,8 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
     public static class BuilderImpl implements Builder {
 
         private final HashMap<Integer, Float> customData = new HashMap<>();
-        private final List<CharacterFontWidthData> parents = new ArrayList<>();
-        private float defaultWidth = 0;
+        private final List<CharacterFontAdvanceData> parents = new ArrayList<>();
+        private float defaultAdvance = 0;
         private String id;
 
         @Override
@@ -69,26 +69,26 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
         }
 
         @Override
-        public Builder defaultWidth(float width) {
-            this.defaultWidth = width;
+        public Builder defaultAdvance(float width) {
+            this.defaultAdvance = width;
             return this;
         }
 
         @Override
-        public Builder width(int codePoint, float width) {
+        public Builder advance(int codePoint, float width) {
             this.customData.put(codePoint, width);
             return this;
         }
 
         @Override
-        public Builder parentFont(List<CharacterFontWidthData> font) {
+        public Builder parentFont(List<CharacterFontAdvanceData> font) {
             this.parents.addAll(font);
             return this;
         }
 
         @Override
-        public ConfigurableFontWidthData build() {
-            return new ConfigurableFontWidthDataImpl(id, defaultWidth, customData, parents);
+        public ConfigurableFontAdvanceData build() {
+            return new ConfigurableFontAdvanceDataImpl(id, defaultAdvance, customData, parents);
         }
     }
 }
