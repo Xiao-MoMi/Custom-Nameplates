@@ -4,8 +4,10 @@ import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.JoinQuitListener;
+import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.advance.AdvanceManagerImpl;
+import net.momirealms.customnameplates.api.feature.background.BackgroundManagerImpl;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
@@ -15,6 +17,7 @@ import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManag
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
+import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.classpath.ClassPathAppender;
 import net.momirealms.customnameplates.common.plugin.classpath.ReflectionClassPathAppender;
@@ -80,7 +83,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                         Dependency.H2_DRIVER,
                         Dependency.MONGODB_DRIVER_CORE, Dependency.MONGODB_DRIVER_SYNC, Dependency.MONGODB_DRIVER_BSON,
                         Dependency.HIKARI_CP,
-                        Dependency.FONT_BOX, Dependency.PDF_BOX
+                        Dependency.FONT_BOX, Dependency.PDF_BOX,
+                        Dependency.BYTE_BUDDY
                 )
         );
     }
@@ -106,8 +110,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.bossBarManager = new BossBarManagerImpl(this);
         this.advanceManager = new AdvanceManagerImpl(this);
+        this.backgroundManager = new BackgroundManagerImpl(this);
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
+        this.eventManager = EventManager.create(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
@@ -131,6 +137,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.bossBarManager.disable();
         this.unlimitedTagManager.disable();
         this.advanceManager.disable();
+        this.backgroundManager.disable();
+        this.requirementManager.disable();
+        this.placeholderManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -152,6 +161,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.unlimitedTagManager.reload();
         this.requirementManager.reload();
         this.advanceManager.reload();
+        this.backgroundManager.reload();
+
+        this.eventManager.dispatch(NameplatesReloadEvent.class);
     }
 
     @Override

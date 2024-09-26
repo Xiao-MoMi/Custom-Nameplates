@@ -4,14 +4,11 @@ left:
   image: hutao_left
   height: 16
   ascent: 12
-  width: 16
 middle:
   image: hutao_middle
   height: 16
   ascent: 12
-  width: 16
 right:
   image: hutao_right
   height: 16
   ascent: 12
-  width: 16

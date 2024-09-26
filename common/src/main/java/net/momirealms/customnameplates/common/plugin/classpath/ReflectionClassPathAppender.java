@@ -25,7 +25,7 @@
 
 package net.momirealms.customnameplates.common.plugin.classpath;
 
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 
 import java.net.MalformedURLException;
 import java.net.URLClassLoader;
@@ -42,7 +42,7 @@ public class ReflectionClassPathAppender implements ClassPathAppender {
         }
     }
 
-    public ReflectionClassPathAppender(CustomPlugin plugin) throws IllegalStateException {
+    public ReflectionClassPathAppender(NameplatesPlugin plugin) throws IllegalStateException {
         this(plugin.getClass().getClassLoader());
     }
 

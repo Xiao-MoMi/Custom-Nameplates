@@ -507,7 +507,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
                     unicodeCache.createNewFile();
                     YamlDocument yml = plugin.getConfigManager().loadData(unicodeCache);
                     for (int a = 0; a < 256; a++) {
-                        File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + String.format(String.valueOf(path), a));
+                        File png = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + String.format(path, a));
                         if (!png.exists()) {
                             continue;
                         }
@@ -800,15 +800,15 @@ public class AdvanceManagerImpl implements AdvanceManager {
     @Override
     public int getTextAdvance(String text) {
         requireNonNull(text);
-        return textWidthCache.get(text, this::calculateTextWidth);
+        return textWidthCache.get(text, this::calculateTextAdvance);
     }
 
-    private int calculateTextWidth(String text) {
+    private int calculateTextAdvance(String text) {
         if (AdventureHelper.legacySupport) text = AdventureHelper.legacyToMiniMessage(text);
         ElementNode node = (ElementNode) AdventureHelper.miniMessage().deserializeToTree(text);
         ArrayList<Tuple<String, Key, Boolean>> iterableTexts = new ArrayList<>();
         nodeToIterableTexts(node, iterableTexts, MINECRAFT_DEFAULT_FONT, false);
-        float totalLength = 0;
+        float totalAdvance = 0;
         for (Tuple<String, Key, Boolean> element : iterableTexts) {
             ConfigurableFontAdvanceData data = getFontData(element.mid().asString());
             if (data == null) {
@@ -817,19 +817,19 @@ public class AdvanceManagerImpl implements AdvanceManager {
             }
             char[] chars = element.left().toCharArray();
             for (int j = 0; j < chars.length; j++) {
-                float width;
+                float advance;
                 if (Character.isHighSurrogate(chars[j])) {
-                    width = data.getAdvance(Character.toCodePoint(chars[j], chars[++j]));
+                    advance = data.getAdvance(Character.toCodePoint(chars[j], chars[++j]));
                 } else {
-                    width = data.getAdvance(chars[j]);
+                    advance = data.getAdvance(chars[j]);
                 }
-                totalLength += width;
+                totalAdvance += advance;
                 if (element.right()) {
-                    totalLength += 1;
+                    totalAdvance += 1;
                 }
             }
         }
-        return (int) Math.ceil(totalLength);
+        return (int) Math.ceil(totalAdvance);
     }
 
     private void nodeToIterableTexts(ElementNode node, List<Tuple<String, Key, Boolean>> list, Key font, boolean bold) {

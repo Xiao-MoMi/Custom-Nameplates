@@ -37,7 +37,7 @@ public class DebugWidthCommand extends BukkitCommandFeature<CommandSender> {
                 .required("text", StringParser.greedyStringParser())
                 .handler(context -> {
                     String text = context.get("text");
-                    context.sender().sendMessage(String.valueOf(CustomNameplates.getInstance().getWidthManager().getTextAdvance(text)));
+                    context.sender().sendMessage(String.valueOf(CustomNameplates.getInstance().getAdvanceManager().getTextAdvance(text)));
                 });
     }
 

@@ -25,7 +25,7 @@
 
 package net.momirealms.customnameplates.common.plugin.scheduler;
 
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Arrays;
@@ -40,12 +40,12 @@ import java.util.stream.Collectors;
 public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
     private static final int PARALLELISM = 16;
 
-    private final CustomPlugin plugin;
+    private final NameplatesPlugin plugin;
 
     private final ScheduledThreadPoolExecutor scheduler;
     private final ForkJoinPool worker;
 
-    public AbstractJavaScheduler(CustomPlugin plugin) {
+    public AbstractJavaScheduler(NameplatesPlugin plugin) {
         this.plugin = plugin;
 
         this.scheduler = new ScheduledThreadPoolExecutor(4, r -> {

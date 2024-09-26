@@ -6,19 +6,15 @@ left:
   image: chat_left
   height: 13
   ascent: 9
-  width: 3
 middle:
   image: chat_middle
   height: 13
   ascent: 9
-  width: 5
 right:
   image: chat_right
   height: 13
   ascent: 9
-  width: 3
 tail:
   image: chat_tail
   height: 13
   ascent: 9
-  width: 7

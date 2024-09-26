@@ -283,6 +283,13 @@ public enum Dependency {
             "maven",
             "pdfbox-io",
             Relocation.of("pdfbox", "org{}apache{}pdfbox")
+    ),
+    BYTE_BUDDY(
+            "net{}bytebuddy",
+            "byte-buddy",
+            "maven",
+            "byte-buddy",
+            Relocation.of("bytebuddy", "net{}bytebuddy")
     );
 
     private final List<Relocation> relocations;
