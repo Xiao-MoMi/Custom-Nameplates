@@ -15,6 +15,9 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
     // Netty
     compileOnly("io.netty:netty-all:4.1.113.Final")
+    // TTF
+    compileOnly("org.lwjgl:lwjgl-freetype:${rootProject.properties["lwjgl_version"]}")
+    compileOnly("org.lwjgl:lwjgl:${rootProject.properties["lwjgl_version"]}")
 }
 
 tasks {

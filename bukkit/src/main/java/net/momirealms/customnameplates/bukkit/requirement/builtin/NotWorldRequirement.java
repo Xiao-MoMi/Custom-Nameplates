@@ -26,7 +26,7 @@ public class NotWorldRequirement extends AbstractRequirement {
 
 	@Override
 	public String type() {
-		return "world";
+		return "!world";
 	}
 
 	@Override

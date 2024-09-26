@@ -80,6 +80,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
                             .builder()
                             .setVersioning(new BasicVersioning("config-version"))
                             .addIgnoredRoute(configVersion, "other-settings.placeholder-refresh-interval", '.')
+                            .addIgnoredRoute(configVersion, "other-settings.font-templates", '.')
                             .build()
             );
             MAIN_CONFIG.save(resolveConfig("config.yml").toFile());

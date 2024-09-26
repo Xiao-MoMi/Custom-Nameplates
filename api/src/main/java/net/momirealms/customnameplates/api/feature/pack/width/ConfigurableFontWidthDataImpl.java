@@ -1,4 +1,4 @@
-package net.momirealms.customnameplates.api.feature.pack.font;
+package net.momirealms.customnameplates.api.feature.pack.width;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,12 +9,12 @@ import static java.util.Objects.requireNonNull;
 
 public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData {
 
-    private final int defaultWidth;
-    private final HashMap<Integer, Integer> data = new HashMap<>();
+    private final float defaultWidth;
+    private final HashMap<Integer, Float> data = new HashMap<>();
     private final List<CharacterFontWidthData> parents = new ArrayList<>();
     private final String id;
 
-    public ConfigurableFontWidthDataImpl(String id, int defaultWidth, HashMap<Integer, Integer> customData, List<CharacterFontWidthData> parentFonts) {
+    public ConfigurableFontWidthDataImpl(String id, float defaultWidth, HashMap<Integer, Float> customData, List<CharacterFontWidthData> parentFonts) {
         this.id = requireNonNull(id);
         this.defaultWidth = defaultWidth;
         Collections.reverse(parentFonts);
@@ -31,13 +31,13 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
     }
 
     @Override
-    public int defaultWidth() {
+    public float defaultWidth() {
         return defaultWidth;
     }
 
     @Override
-    public int getWidth(int codePoint) {
-        Integer width = data.get(codePoint);
+    public float getWidth(int codePoint) {
+        Float width = data.get(codePoint);
         if (width == null) {
             for (CharacterFontWidthData parent : parents) {
                 width = parent.getWidth(codePoint);
@@ -57,9 +57,9 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
 
     public static class BuilderImpl implements Builder {
 
-        private final HashMap<Integer, Integer> customData = new HashMap<>();
+        private final HashMap<Integer, Float> customData = new HashMap<>();
         private final List<CharacterFontWidthData> parents = new ArrayList<>();
-        private int defaultWidth = 0;
+        private float defaultWidth = 0;
         private String id;
 
         @Override
@@ -69,13 +69,13 @@ public class ConfigurableFontWidthDataImpl implements ConfigurableFontWidthData 
         }
 
         @Override
-        public Builder defaultWidth(int width) {
+        public Builder defaultWidth(float width) {
             this.defaultWidth = width;
             return this;
         }
 
         @Override
-        public Builder width(int codePoint, int width) {
+        public Builder width(int codePoint, float width) {
             this.customData.put(codePoint, width);
             return this;
         }

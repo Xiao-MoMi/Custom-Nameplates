@@ -2,8 +2,9 @@
 minecraft:default:
   # default width
   default: 8
-  # available font data template: unifont/ascii/nonlatin_european/accented/unicode(legacy)
+  # Sets the loading sequence of the templates
   template-loading-sequence:
+    - space
     - unifont
     - nonlatin_european
     - accented
@@ -15,16 +16,19 @@ minecraft:default:
 minecraft:uniform:
   default: 8
   template-loading-sequence:
+    - space
     - unifont
 
 minecraft:alt:
   default: 8
   template-loading-sequence:
+    - space
     - ascii_sga
 
 minecraft:asciillager:
   default: 8
   template-loading-sequence:
+    - space
     - asciillager
 
 customcrops:default:
