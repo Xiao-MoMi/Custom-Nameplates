@@ -1,9 +1,7 @@
 package net.momirealms.customnameplates.bukkit;
 
-import net.momirealms.customnameplates.api.AbstractCNPlayer;
-import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.JoinQuitListener;
+import me.clip.placeholderapi.metrics.bukkit.Metrics;
+import net.momirealms.customnameplates.api.*;
 import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.advance.AdvanceManagerImpl;
@@ -55,6 +53,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     private final List<JoinQuitListener> joinQuitListeners = new ArrayList<>();
 
     private boolean loaded = false;
+
+    private String buildByBit = "%%__BUILTBYBIT__%%";
+    private String polymart = "%%__POLYMART__%%";
+    private String time = "%%__TIMESTAMP__%%";
+    private String user = "%%__USER__%%";
+    private String username = "%%__USERNAME__%%";
 
     public BukkitCustomNameplates(JavaPlugin bootstrap) {
         this.bootstrap = bootstrap;
@@ -125,6 +129,29 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.reload();
 
         this.loaded = true;
+
+        if (ConfigManager.metrics()) new Metrics(getBootstrap(), 16649);
+
+        boolean downloadFromPolymart = polymart.equals("1");
+        boolean downloadFromBBB = buildByBit.equals("true");
+
+        if (ConfigManager.checkUpdate()) {
+            VersionHelper.UPDATE_CHECKER.apply(this).thenAccept(result -> {
+                String link;
+                if (downloadFromPolymart) {
+                    link = "https://polymart.org/resource/2723/";
+                } else if (downloadFromBBB) {
+                    link = "https://builtbybit.com/resources/36361/";
+                } else {
+                    link = "https://github.com/Xiao-MoMi/Custom-Fishing/";
+                }
+                if (!result) {
+                    this.getPluginLogger().info("You are using the latest version.");
+                } else {
+                    this.getPluginLogger().warn("Update is available: " + link);
+                }
+            });
+        }
     }
 
     @Override
