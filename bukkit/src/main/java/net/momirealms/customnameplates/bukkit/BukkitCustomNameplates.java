@@ -10,9 +10,11 @@ import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
+import net.momirealms.customnameplates.api.storage.StorageManager;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
+import net.momirealms.customnameplates.bukkit.storage.BukkitStorageManager;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
 import net.momirealms.customnameplates.common.event.EventManager;
@@ -118,6 +120,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
         this.eventManager = EventManager.create(this);
+        this.storageManager = new BukkitStorageManager(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
@@ -167,6 +170,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.backgroundManager.disable();
         this.requirementManager.disable();
         this.placeholderManager.disable();
+        this.storageManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -189,6 +193,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.requirementManager.reload();
         this.advanceManager.reload();
         this.backgroundManager.reload();
+        this.storageManager.reload();
 
         this.eventManager.dispatch(NameplatesReloadEvent.class);
     }

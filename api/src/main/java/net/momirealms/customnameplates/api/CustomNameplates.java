@@ -9,6 +9,7 @@ import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
+import net.momirealms.customnameplates.api.storage.StorageManager;
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
 import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
@@ -47,6 +48,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     protected AdvanceManager advanceManager;
     protected BackgroundManager backgroundManager;
     protected EventManager eventManager;
+    protected StorageManager storageManager;
 
     protected CustomNameplates() {
         instance = this;
@@ -114,6 +116,9 @@ public abstract class CustomNameplates implements NameplatesPlugin {
 
     public EventManager getEventManager() {
         return eventManager;
+    }
+    public StorageManager getStorageManager() {
+        return storageManager;
     }
 
     public Platform getPlatform() {
