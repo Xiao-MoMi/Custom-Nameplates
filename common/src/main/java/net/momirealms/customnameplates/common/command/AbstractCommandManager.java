@@ -25,7 +25,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.momirealms.customnameplates.common.locale.CustomNameplatesCaptionFormatter;
 import net.momirealms.customnameplates.common.locale.CustomNameplatesCaptionProvider;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.sender.Sender;
 import net.momirealms.customnameplates.common.util.ArrayUtils;
 import net.momirealms.customnameplates.common.util.TriConsumer;
@@ -51,13 +51,13 @@ public abstract class AbstractCommandManager<C> implements CustomNameplatesComma
     protected final HashSet<CommandComponent<C>> registeredRootCommandComponents = new HashSet<>();
     protected final HashSet<CommandFeature<C>> registeredFeatures = new HashSet<>();
     protected final CommandManager<C> commandManager;
-    protected final CustomPlugin plugin;
+    protected final NameplatesPlugin plugin;
     private final CustomNameplatesCaptionFormatter<C> captionFormatter = new CustomNameplatesCaptionFormatter<C>();
     private final MinecraftExceptionHandler.Decorator<C> decorator = (formatter, ctx, msg) -> msg;
 
     private TriConsumer<C, String, Component> feedbackConsumer;
 
-    public AbstractCommandManager(CustomPlugin plugin, CommandManager<C> commandManager) {
+    public AbstractCommandManager(NameplatesPlugin plugin, CommandManager<C> commandManager) {
         this.commandManager = commandManager;
         this.plugin = plugin;
         this.inject();

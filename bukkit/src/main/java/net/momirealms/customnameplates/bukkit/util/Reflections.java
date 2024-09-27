@@ -682,7 +682,7 @@ public class Reflections {
     public static final Field field$ClientboundUpdateAttributesPacket$AttributeSnapshot$attribute =
             ReflectionUtils.getDeclaredField(
                     clazz$ClientboundUpdateAttributesPacket$AttributeSnapshot, clazz$Holder, 0
-                    );
+            );
 
     public static final Field field$ClientboundUpdateAttributesPacket$AttributeSnapshot$base =
             ReflectionUtils.getDeclaredField(
@@ -696,7 +696,7 @@ public class Reflections {
 
     public static final Method method$Holder$value = requireNonNull(
             ReflectionUtils.getMethod(
-                    clazz$Holder, 0
+                    clazz$Holder, new String[]{"a", "value"}
             )
     );
 

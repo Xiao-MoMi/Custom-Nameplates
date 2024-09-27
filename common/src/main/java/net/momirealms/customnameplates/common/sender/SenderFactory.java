@@ -27,7 +27,7 @@ package net.momirealms.customnameplates.common.sender;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Tristate;
 
 import java.util.Objects;
@@ -39,7 +39,7 @@ import java.util.UUID;
  * @param <P> the plugin type
  * @param <T> the command sender type
  */
-public abstract class SenderFactory<P extends CustomPlugin, T> implements AutoCloseable {
+public abstract class SenderFactory<P extends NameplatesPlugin, T> implements AutoCloseable {
     private final P plugin;
 
     public SenderFactory(P plugin) {

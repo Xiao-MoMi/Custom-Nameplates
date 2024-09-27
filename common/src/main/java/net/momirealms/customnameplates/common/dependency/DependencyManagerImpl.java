@@ -28,7 +28,7 @@ package net.momirealms.customnameplates.common.dependency;
 import net.momirealms.customnameplates.common.dependency.classloader.IsolatedClassLoader;
 import net.momirealms.customnameplates.common.dependency.relocation.Relocation;
 import net.momirealms.customnameplates.common.dependency.relocation.RelocationHandler;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.plugin.classpath.ClassPathAppender;
 import net.momirealms.customnameplates.common.util.FileUtils;
 
@@ -59,9 +59,9 @@ public class DependencyManagerImpl implements DependencyManager {
     /** Cached relocation handler instance. */
     private final RelocationHandler relocationHandler;
     private final Executor loadingExecutor;
-    private final CustomPlugin plugin;
+    private final NameplatesPlugin plugin;
 
-    public DependencyManagerImpl(CustomPlugin plugin) {
+    public DependencyManagerImpl(NameplatesPlugin plugin) {
         this.plugin = plugin;
         this.registry = new DependencyRegistry();
         this.cacheDirectory = setupCacheDirectory(plugin);
@@ -193,7 +193,7 @@ public class DependencyManagerImpl implements DependencyManager {
         return remappedFile;
     }
 
-    private static Path setupCacheDirectory(CustomPlugin plugin) {
+    private static Path setupCacheDirectory(NameplatesPlugin plugin) {
         Path cacheDirectory = plugin.getDataDirectory().resolve("libs");
         try {
             FileUtils.createDirectoriesIfNotExists(cacheDirectory);

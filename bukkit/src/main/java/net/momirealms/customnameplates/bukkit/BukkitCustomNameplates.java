@@ -1,21 +1,21 @@
 package net.momirealms.customnameplates.bukkit;
 
-import net.momirealms.customnameplates.api.AbstractCNPlayer;
-import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.JoinQuitListener;
+import me.clip.placeholderapi.metrics.bukkit.Metrics;
+import net.momirealms.customnameplates.api.*;
+import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
+import net.momirealms.customnameplates.api.feature.advance.AdvanceManagerImpl;
+import net.momirealms.customnameplates.api.feature.background.BackgroundManagerImpl;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManagerImpl;
-import net.momirealms.customnameplates.api.feature.pack.width.WidthManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
-import net.momirealms.customnameplates.bukkit.storage.BukkitStorageManager;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
+import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.classpath.ClassPathAppender;
 import net.momirealms.customnameplates.common.plugin.classpath.ReflectionClassPathAppender;
@@ -54,6 +54,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     private boolean loaded = false;
 
+    private String buildByBit = "%%__BUILTBYBIT__%%";
+    private String polymart = "%%__POLYMART__%%";
+    private String time = "%%__TIMESTAMP__%%";
+    private String user = "%%__USER__%%";
+    private String username = "%%__USERNAME__%%";
+
     public BukkitCustomNameplates(JavaPlugin bootstrap) {
         this.bootstrap = bootstrap;
         VersionHelper.init(getServerVersion());
@@ -80,7 +86,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                         Dependency.SQLITE_DRIVER, Dependency.SLF4J_API, Dependency.SLF4J_SIMPLE,
                         Dependency.H2_DRIVER,
                         Dependency.MONGODB_DRIVER_CORE, Dependency.MONGODB_DRIVER_SYNC, Dependency.MONGODB_DRIVER_BSON,
-                        Dependency.HIKARI_CP
+                        Dependency.HIKARI_CP,
+                        Dependency.FONT_BOX, Dependency.PDF_BOX,
+                        Dependency.BYTE_BUDDY
                 )
         );
     }
@@ -105,10 +113,11 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.placeholderManager = new PlaceholderManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.bossBarManager = new BossBarManagerImpl(this);
-        this.widthManager = new WidthManagerImpl(this);
+        this.advanceManager = new AdvanceManagerImpl(this);
+        this.backgroundManager = new BackgroundManagerImpl(this);
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
-        this.storageManager = new BukkitStorageManager(this);
+        this.eventManager = EventManager.create(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
@@ -120,6 +129,29 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.reload();
 
         this.loaded = true;
+
+        if (ConfigManager.metrics()) new Metrics(getBootstrap(), 16649);
+
+        boolean downloadFromPolymart = polymart.equals("1");
+        boolean downloadFromBBB = buildByBit.equals("true");
+
+        if (ConfigManager.checkUpdate()) {
+            VersionHelper.UPDATE_CHECKER.apply(this).thenAccept(result -> {
+                String link;
+                if (downloadFromPolymart) {
+                    link = "https://polymart.org/resource/2723/";
+                } else if (downloadFromBBB) {
+                    link = "https://builtbybit.com/resources/36361/";
+                } else {
+                    link = "https://github.com/Xiao-MoMi/Custom-Fishing/";
+                }
+                if (!result) {
+                    this.getPluginLogger().info("You are using the latest version.");
+                } else {
+                    this.getPluginLogger().warn("Update is available: " + link);
+                }
+            });
+        }
     }
 
     @Override
@@ -131,7 +163,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.actionBarManager.disable();
         this.bossBarManager.disable();
         this.unlimitedTagManager.disable();
-        this.storageManager.disable();
+        this.advanceManager.disable();
+        this.backgroundManager.disable();
+        this.requirementManager.disable();
+        this.placeholderManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -152,7 +187,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.bossBarManager.reload();
         this.unlimitedTagManager.reload();
         this.requirementManager.reload();
-        this.storageManager.reload();
+        this.advanceManager.reload();
+        this.backgroundManager.reload();
+
+        this.eventManager.dispatch(NameplatesReloadEvent.class);
     }
 
     @Override

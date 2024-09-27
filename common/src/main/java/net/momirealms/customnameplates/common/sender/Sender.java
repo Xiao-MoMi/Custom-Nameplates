@@ -26,7 +26,7 @@
 package net.momirealms.customnameplates.common.sender;
 
 import net.kyori.adventure.text.Component;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Tristate;
 
 import java.util.UUID;
@@ -46,7 +46,7 @@ public interface Sender {
      *
      * @return the plugin
      */
-    CustomPlugin getPlugin();
+    NameplatesPlugin getPlugin();
 
     /**
      * Gets the sender's username

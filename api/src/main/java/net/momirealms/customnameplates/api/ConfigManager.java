@@ -38,6 +38,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected final CustomNameplates plugin;
 
     protected boolean debug;
+    protected boolean checkUpdate;
+    protected boolean metrics;
     protected boolean actionbarModule;
     protected boolean imageModule;
     protected boolean bossBarModule;
@@ -80,6 +82,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
                             .builder()
                             .setVersioning(new BasicVersioning("config-version"))
                             .addIgnoredRoute(configVersion, "other-settings.placeholder-refresh-interval", '.')
+                            .addIgnoredRoute(configVersion, "other-settings.font-templates", '.')
                             .build()
             );
             MAIN_CONFIG.save(resolveConfig("config.yml").toFile());
@@ -93,6 +96,11 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         YamlDocument config = MAIN_CONFIG;
         AdventureHelper.legacySupport = config.getBoolean("other-settings.legacy-color-code-support", true);
         TranslationManager.forceLocale(TranslationManager.parseLocale(config.getString("force-locale", "")));
+
+        // Basics
+        debug = config.getBoolean("debug", false);
+        metrics = config.getBoolean("metrics", false);
+        checkUpdate = config.getBoolean("update-checker", false);
 
         // Modules
         actionbarModule = config.getBoolean("modules.actionbars", true);
@@ -139,6 +147,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean debug() {
         return instance.debug;
+    }
+
+    public static boolean checkUpdate() {
+        return instance.checkUpdate;
+    }
+
+    public static boolean metrics() {
+        return instance.metrics;
     }
 
     public static int defaultRefreshInterval() {

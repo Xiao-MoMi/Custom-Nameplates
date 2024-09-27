@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 /**
  * Interface representing the main CustomFishing plugin.
  */
-public interface CustomPlugin {
+public interface NameplatesPlugin {
 
     /**
      * Retrieves an input stream for a resource file within the plugin.

@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.common.util;
 
+import java.util.Objects;
+
 /**
  * A generic class representing a tuple with three values.
  * This class provides methods for creating and accessing tuples with three values.
@@ -40,5 +42,18 @@ public record Tuple<L, M, R>(L left, M mid, R right) {
      */
     public static <L, M, R> Tuple<L, M, R> of(final L left, final M mid, final R right) {
         return new Tuple<>(left, mid, right);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Tuple<?, ?, ?> tuple = (Tuple<?, ?, ?>) object;
+        return Objects.equals(mid, tuple.mid) && Objects.equals(left, tuple.left) && Objects.equals(right, tuple.right);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, mid, right);
     }
 }

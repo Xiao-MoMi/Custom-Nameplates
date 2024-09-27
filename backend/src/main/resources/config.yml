@@ -96,18 +96,44 @@ other-settings:
   # You can replace the files under /font or add new configuration to let the plugin get these templates.
   # Templates can be used in font-width-data.yml
   font-templates:
-    unifont:
-      unifont: unifont.zip
-    nonlatin-european:
-      nonlatin_european: nonlatin_european.png
-    accented:
-      accented: accented.png
-    ascii:
-      ascii: ascii.png
-    ascii-sga:
-      ascii_sga: ascii_sga.png
-    asciillager:
-      asciillager: asciillager.png
+    unihex:
+      unifont:
+        file: unifont.zip
+    bitmap:
+      ascii:
+        codepoints: ascii
+        file: ascii.png
+        height: 8
+      ascii_sga:
+        codepoints: ascii_sga
+        file: ascii_sga.png
+        height: 8
+      asciillager:
+        codepoints: asciillager
+        file: asciillager.png
+        height: 8
+      nonlatin_european:
+        codepoints: nonlatin_european
+        file: nonlatin_european.png
+        height: 8
+      accented:
+        codepoints: accented
+        file: accented.png
+        height: 12
+    legacy_unicode:
+      legacy_unicode:
+        file: unicode_page_%02x.png
+        height: 8
     unicode:
-      unicode: unicode_page_%02x.png
-    ttf: {}
+      unicode:
+        file: unicode_page_%02x.png
+    ttf:
+      example:
+        file: example.ttf
+        size: 8.0
+        oversample: 2.0
+        skip: []
+    space:
+      space:
+        " ": 4
+        "\\u200c": 0

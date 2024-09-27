@@ -17,7 +17,7 @@
 
 package net.momirealms.customnameplates.api.helper;
 
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 public class VersionHelper {
 
     // Method to asynchronously check for plugin updates
-    public static final Function<CustomPlugin, CompletableFuture<Boolean>> UPDATE_CHECKER = (plugin) -> {
+    public static final Function<NameplatesPlugin, CompletableFuture<Boolean>> UPDATE_CHECKER = (plugin) -> {
         CompletableFuture<Boolean> updateFuture = new CompletableFuture<>();
         plugin.getScheduler().async().execute(() -> {
             try {

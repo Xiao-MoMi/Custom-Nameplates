@@ -4,14 +4,11 @@ left:
   image: egg_left
   height: 16
   ascent: 12
-  width: 16
 middle:
   image: egg_middle
   height: 16
   ascent: 12
-  width: 16
 right:
   image: egg_right
   height: 16
   ascent: 12
-  width: 16

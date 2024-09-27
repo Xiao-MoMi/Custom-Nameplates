@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.bukkit.command;
 import net.kyori.adventure.util.Index;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.feature.DebugPerformanceCommand;
+import net.momirealms.customnameplates.bukkit.command.feature.DebugWidthCommand;
 import net.momirealms.customnameplates.bukkit.command.feature.ReloadCommand;
 import net.momirealms.customnameplates.common.command.AbstractCommandManager;
 import net.momirealms.customnameplates.common.command.CommandFeature;
@@ -37,7 +38,8 @@ public class BukkitCommandManager extends AbstractCommandManager<CommandSender> 
 
     private final List<CommandFeature<CommandSender>> FEATURES = List.of(
             new ReloadCommand(this),
-            new DebugPerformanceCommand(this)
+            new DebugPerformanceCommand(this),
+            new DebugWidthCommand(this)
     );
 
     private final Index<String, CommandFeature<CommandSender>> INDEX = Index.create(CommandFeature::getFeatureID, FEATURES);

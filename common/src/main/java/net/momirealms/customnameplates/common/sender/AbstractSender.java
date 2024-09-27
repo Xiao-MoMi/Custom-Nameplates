@@ -26,7 +26,7 @@
 package net.momirealms.customnameplates.common.sender;
 
 import net.kyori.adventure.text.Component;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Tristate;
 
 import java.util.UUID;
@@ -37,7 +37,7 @@ import java.util.UUID;
  * @param <T> the command sender type
  */
 public final class AbstractSender<T> implements Sender {
-    private final CustomPlugin plugin;
+    private final NameplatesPlugin plugin;
     private final SenderFactory<?, T> factory;
     private final T sender;
 
@@ -45,7 +45,7 @@ public final class AbstractSender<T> implements Sender {
     private final String name;
     private final boolean isConsole;
 
-    AbstractSender(CustomPlugin plugin, SenderFactory<?, T> factory, T sender) {
+    AbstractSender(NameplatesPlugin plugin, SenderFactory<?, T> factory, T sender) {
         this.plugin = plugin;
         this.factory = factory;
         this.sender = sender;
@@ -55,7 +55,7 @@ public final class AbstractSender<T> implements Sender {
     }
 
     @Override
-    public CustomPlugin getPlugin() {
+    public NameplatesPlugin getPlugin() {
         return this.plugin;
     }
 

@@ -269,42 +269,62 @@ public enum Dependency {
             "maven",
             "slf4j"
     ),
-    LZ4(
-            "org{}lz4",
-            "lz4-java",
+    FONT_BOX(
+            "org{}apache{}fontbox",
+            "fontbox",
             "maven",
-            "lz4-java",
-            Relocation.of("jpountz", "net{}jpountz")
+            "fontbox",
+            Relocation.of("fontbox", "org{}apache{}fontbox"),
+            Relocation.of("pdfbox", "org{}apache{}pdfbox")
+    ),
+    PDF_BOX(
+            "org{}apache{}pdfbox",
+            "pdfbox-io",
+            "maven",
+            "pdfbox-io",
+            Relocation.of("pdfbox", "org{}apache{}pdfbox")
+    ),
+    BYTE_BUDDY(
+            "net{}bytebuddy",
+            "byte-buddy",
+            "maven",
+            "byte-buddy",
+            Relocation.of("bytebuddy", "net{}bytebuddy")
     );
 
     private final List<Relocation> relocations;
     private final String repo;
     private final String groupId;
-    private String rawArtifactId;
-    private String customArtifactID;
+    private final String artifactId;
+    private final String customArtifactID;
+    private String artifactIdSuffix;
 
     private static final String MAVEN_FORMAT = "%s/%s/%s/%s-%s.jar";
 
-    Dependency(String groupId, String rawArtifactId, String repo, String customArtifactID) {
-        this(groupId, rawArtifactId, repo, customArtifactID, new Relocation[0]);
+    Dependency(String groupId, String artifactId, String repo, String customArtifactID) {
+        this(groupId, artifactId, repo, customArtifactID, new Relocation[0]);
     }
 
-    Dependency(String groupId, String rawArtifactId, String repo, String customArtifactID, Relocation... relocations) {
-        this.rawArtifactId = rawArtifactId;
+    Dependency(String groupId, String artifactId, String repo, String customArtifactID, Relocation... relocations) {
+        this.artifactId = artifactId;
+        this.artifactIdSuffix = "";
         this.groupId = groupId;
         this.relocations = new ArrayList<>(Arrays.stream(relocations).toList());
         this.repo = repo;
         this.customArtifactID = customArtifactID;
     }
 
-    public Dependency setCustomArtifactID(String customArtifactID) {
+    Dependency(String groupId, String artifactId, String repo, String customArtifactID, String artifactIdSuffix, Relocation... relocations) {
+        this.artifactId = artifactId;
+        this.artifactIdSuffix = artifactIdSuffix;
+        this.groupId = groupId;
+        this.relocations = new ArrayList<>(Arrays.stream(relocations).toList());
+        this.repo = repo;
         this.customArtifactID = customArtifactID;
-        return this;
     }
 
-    public Dependency setRawArtifactID(String artifactId) {
-        this.rawArtifactId = artifactId;
-        return this;
+    public void setArtifactIdSuffix(String artifactIdSuffix) {
+        this.artifactIdSuffix = artifactIdSuffix;
     }
 
     public String getVersion() {
@@ -326,10 +346,10 @@ public enum Dependency {
     String getMavenRepoPath() {
         return String.format(MAVEN_FORMAT,
                 rewriteEscaping(groupId).replace(".", "/"),
-                rewriteEscaping(rawArtifactId),
+                rewriteEscaping(artifactId),
                 getVersion(),
-                rewriteEscaping(rawArtifactId),
-                getVersion()
+                rewriteEscaping(artifactId),
+                getVersion() + artifactIdSuffix
         );
     }
 

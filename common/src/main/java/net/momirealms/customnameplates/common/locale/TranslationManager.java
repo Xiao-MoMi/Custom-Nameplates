@@ -22,7 +22,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.Translator;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,12 +42,12 @@ public class TranslationManager {
     private static final List<String> locales = List.of("en", "zh_cn");
     private static TranslationManager instance;
 
-    private final CustomPlugin plugin;
+    private final NameplatesPlugin plugin;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
     private MiniMessageTranslationRegistry registry;
     private final Path translationsDirectory;
 
-    public TranslationManager(CustomPlugin plugin) {
+    public TranslationManager(NameplatesPlugin plugin) {
         this.plugin = plugin;
         this.translationsDirectory = this.plugin.getConfigDirectory().resolve("translations");
         instance = this;

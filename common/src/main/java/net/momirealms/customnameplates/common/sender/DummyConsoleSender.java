@@ -25,15 +25,15 @@
 
 package net.momirealms.customnameplates.common.sender;
 
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 
 import java.util.UUID;
 
 public abstract class DummyConsoleSender implements Sender {
 
-    private final CustomPlugin platform;
+    private final NameplatesPlugin platform;
 
-    public DummyConsoleSender(CustomPlugin plugin) {
+    public DummyConsoleSender(NameplatesPlugin plugin) {
         this.platform = plugin;
     }
 
@@ -47,7 +47,7 @@ public abstract class DummyConsoleSender implements Sender {
     }
 
     @Override
-    public CustomPlugin getPlugin() {
+    public NameplatesPlugin getPlugin() {
         return this.platform;
     }
 

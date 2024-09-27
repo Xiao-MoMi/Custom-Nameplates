@@ -1,11 +1,11 @@
 package net.momirealms.customnameplates.bukkit.requirement;
 
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.requirement.AbstractRequirementManager;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.bukkit.requirement.builtin.*;
 import net.momirealms.customnameplates.common.util.ListUtils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
@@ -110,12 +110,11 @@ public class BukkitRequirementManager extends AbstractRequirementManager {
 
     private void registerCooldown() {
         this.registerRequirement((args, interval) -> {
-            if (args instanceof ConfigurationSection section) {
+            if (args instanceof Section section) {
                 String key = section.getString("key");
                 int time = section.getInt("time");
                 return new CooldownRequirement(interval, key, time);
-            }
-            else {
+            } else {
                 return Requirement.empty();
             }
         }, "cooldown");

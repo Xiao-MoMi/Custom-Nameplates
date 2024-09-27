@@ -1,17 +1,18 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
+import net.momirealms.customnameplates.api.feature.advance.AdvanceManager;
+import net.momirealms.customnameplates.api.feature.background.BackgroundManager;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
 import net.momirealms.customnameplates.api.feature.nametag.UnlimitedTagManager;
-import net.momirealms.customnameplates.api.feature.pack.width.WidthManager;
 import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
-import net.momirealms.customnameplates.api.storage.StorageManager;
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
+import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
-import net.momirealms.customnameplates.common.plugin.CustomPlugin;
+import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 
 import java.util.Collection;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class CustomNameplates implements CustomPlugin {
+public abstract class CustomNameplates implements NameplatesPlugin {
 
     private static CustomNameplates instance;
 
@@ -43,8 +44,9 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected SchedulerTask scheduledMainTask;
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
     protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();
-    protected WidthManager widthManager;
-    protected StorageManager storageManager;
+    protected AdvanceManager advanceManager;
+    protected BackgroundManager backgroundManager;
+    protected EventManager eventManager;
 
     protected CustomNameplates() {
         instance = this;
@@ -102,12 +104,16 @@ public abstract class CustomNameplates implements CustomPlugin {
         return unlimitedTagManager;
     }
 
-    public WidthManager getWidthManager() {
-        return widthManager;
+    public AdvanceManager getAdvanceManager() {
+        return advanceManager;
     }
 
-    public StorageManager getStorageManager() {
-        return storageManager;
+    public BackgroundManager getBackgroundManager() {
+        return backgroundManager;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
     }
 
     public Platform getPlatform() {
