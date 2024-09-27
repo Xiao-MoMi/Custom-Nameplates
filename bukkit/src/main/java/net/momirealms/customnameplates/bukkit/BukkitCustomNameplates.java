@@ -13,6 +13,7 @@ import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
+import net.momirealms.customnameplates.bukkit.storage.BukkitStorageManager;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
@@ -107,6 +108,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.widthManager = new WidthManagerImpl(this);
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);
+        this.storageManager = new BukkitStorageManager(this);
 
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
@@ -129,6 +131,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.actionBarManager.disable();
         this.bossBarManager.disable();
         this.unlimitedTagManager.disable();
+        this.storageManager.disable();
 
         this.commandManager.unregisterFeatures();
         HandlerList.unregisterAll(this);
@@ -149,6 +152,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.bossBarManager.reload();
         this.unlimitedTagManager.reload();
         this.requirementManager.reload();
+        this.storageManager.reload();
     }
 
     @Override

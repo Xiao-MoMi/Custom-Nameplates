@@ -8,6 +8,7 @@ import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.api.placeholder.PlaceholderManager;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
+import net.momirealms.customnameplates.api.storage.StorageManager;
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.CustomPlugin;
@@ -43,6 +44,7 @@ public abstract class CustomNameplates implements CustomPlugin {
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
     protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();
     protected WidthManager widthManager;
+    protected StorageManager storageManager;
 
     protected CustomNameplates() {
         instance = this;
@@ -102,6 +104,10 @@ public abstract class CustomNameplates implements CustomPlugin {
 
     public WidthManager getWidthManager() {
         return widthManager;
+    }
+
+    public StorageManager getStorageManager() {
+        return storageManager;
     }
 
     public Platform getPlatform() {

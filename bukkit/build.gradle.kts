@@ -38,6 +38,16 @@ dependencies {
     compileOnly("org.incendo:cloud-paper:${rootProject.properties["cloud_paper_version"]}")
     // Netty
     compileOnly("io.netty:netty-all:4.1.113.Final")
+
+    // serialization
+    compileOnly("com.google.code.gson:gson:${rootProject.properties["gson_version"]}")
+
+    // database
+    compileOnly("org.xerial:sqlite-jdbc:${rootProject.properties["sqlite_driver_version"]}")
+    compileOnly("com.h2database:h2:${rootProject.properties["h2_driver_version"]}")
+    compileOnly("org.mongodb:mongodb-driver-sync:${rootProject.properties["mongodb_driver_version"]}")
+    compileOnly("com.zaxxer:HikariCP:${rootProject.properties["hikari_version"]}")
+    compileOnly("redis.clients:jedis:${rootProject.properties["jedis_version"]}")
 }
 
 tasks {
