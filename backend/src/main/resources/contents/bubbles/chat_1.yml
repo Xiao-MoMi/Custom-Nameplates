@@ -1,0 +1,16 @@
+left:
+  image: chat_1_left
+  height: 13
+  ascent: 9
+middle:
+  image: chat_1_middle
+  height: 13
+  ascent: 9
+right:
+  image: chat_1_right
+  height: 13
+  ascent: 9
+tail:
+  image: chat_1_tail
+  height: 13
+  ascent: 9

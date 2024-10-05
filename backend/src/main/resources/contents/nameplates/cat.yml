@@ -1,0 +1,13 @@
+display-name: Sad Cat
+left:
+  image: cat_left
+  height: 16
+  ascent: 12
+middle:
+  image: cat_middle
+  height: 16
+  ascent: 12
+right:
+  image: cat_right
+  height: 16
+  ascent: 12

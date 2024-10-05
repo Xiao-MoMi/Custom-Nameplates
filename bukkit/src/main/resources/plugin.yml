@@ -1,0 +1,36 @@
+name: CustomNameplates
+version: '${project_version}'
+main: net.momirealms.customnameplates.bukkit.BukkitBootstrap
+api-version: 1.19
+authors: [ XiaoMoMi ]
+folia-supported: true
+softdepend:
+  - PlaceholderAPI
+  - MagicCosmetics
+  - ItemsAdder
+  - Oraxen
+  - TrChat
+  - CarbonChat
+  - HuskChat
+  - AdvancedChat
+  - VentureChat
+  - EssentialsChat
+permissions:
+  nameplates.command.equip:
+    default: true
+  nameplates.command.unequip:
+    default: true
+  nameplates.command.preview:
+    default: true
+  nameplates.command.list:
+    default: true
+  bubbles.command.equip:
+    default: true
+  bubbles.command.unequip:
+    default: true
+  bubbles.command.list:
+    default: true
+  bubbles.send:
+    default: true
+  bubbles.see:
+    default: true

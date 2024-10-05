@@ -1,0 +1,125 @@
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/conditional-text
+conditional-text:
+  actionbar:
+    priority_1:
+      text: '%np_background_other_actionbar%'
+      conditions:
+        '||':
+          '!=':
+            value1: '%player_remaining_air%'
+            value2: "300"
+          '!gamemode': survival
+    priority_2:
+      text: '%np_static_money_hud%%np_offset_-180%%np_static_other_actionbar%'
+      conditions:
+        '!equals':
+          value1: '%np_actionbar%'
+          value2: ""
+    priority_3:
+      text: '%np_static_money_hud%'
+  weather:
+    priority_1:
+      text: 'Sunny'
+      conditions:
+        weather:
+          - clear
+    priority_2:
+      text: 'Rainy'
+      conditions:
+        weather:
+          - rain
+    priority_3:
+      text: 'Thunder'
+      conditions:
+        weather:
+          - thunder
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/nameplate-text
+nameplate-text:
+  halloween:
+    nameplate: halloween
+    text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-text
+background-text:
+  location:
+    background: bedrock_1
+    text: '%np_image_compass% %np_shift_location%'
+    remove-shadow: true
+  time:
+    background: bedrock_1
+    text: '%np_image_clock% %np_shift_time%'
+    remove-shadow: true
+  weather:
+    background: bedrock_1
+    text: '%np_image_weather% %np_shift_weather%'
+    remove-shadow: true
+  hello:
+    background: bedrock_1
+    text: '%np_image_bubble% %np_shift_hello%'
+    remove-shadow: true
+  update:
+    background: bedrock_1
+    text: '%np_image_bell% %np_shift_update%'
+    remove-shadow: true
+  other_actionbar:
+    background: bedrock_2
+    text: '%np_actionbar%'
+    remove-shadow: true
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
+static-text:
+  money_hud:
+    position: right
+    text: '%np_image_coin% %np_shift_money%'
+    value: 180
+  other_actionbar:
+    position: middle
+    text: "%np_background_other_actionbar%"
+    value: 180
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/descent-text
+shift-text:
+  player_name:
+    text: "%player_name%"
+    font: shift_0
+  location:
+    text: "Your Location: %np_switch_world% (%player_x%,%player_y%,%player_z%)"
+    font: shift_1
+  time:
+    text: "Time: %np_time%"
+    font: shift_1
+  weather:
+    text: "Weather: %np_conditional_weather%"
+    font: shift_1
+  update:
+    text: "A newer version of CustomNameplates is available!"
+    font: shift_1
+  money:
+    text: "%vault_eco_balance%"
+    font: shift_1
+  hello:
+    text: "Hello 여보세요 你好 こんにちは, Thanks for using CustomNameplates"
+    font: shift_1
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/switch-text
+switch-text:
+  world:
+    switch: '%player_world%'
+    case:
+      'world': "<green>Overworld</green>"
+      'world_nether': "<red>The Nether</red>"
+      'world_the_end': "<red>The End</red>"
+    default: "<gray>Unknown world</gray>"
+
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/vanilla-hud
+vanilla-hud:
+  stamina_hud:
+    reverse: true
+    images:
+      empty: stamina_0
+      half: stamina_1
+      full: stamina_2
+    placeholder:
+      value: '1.1'
+      max-value: '2'

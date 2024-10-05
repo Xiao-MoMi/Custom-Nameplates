@@ -1,0 +1,213 @@
+# Do not modify this value
+config-version: '${config_version}'
+# Enables or disables debug mode
+debug: false
+# Enables or disables metrics collection via BStats
+metrics: true
+# Enables automatic update checks
+update-checker: true
+# Forces a specific locale (e.g., zh_cn)
+force-locale: ''
+# Module Settings
+# Modifying these modules may result in distorted images. If this occurs, reinstall the newly generated resource pack.
+modules:
+  nameplates: true
+  backgrounds: true
+  bubbles: true
+  bossbars: true
+  actionbars: true
+  images: true
+# Plugin Integrations
+integrations:
+  # Should Nameplates merge resource packs with these plugins during reload?
+  resource-pack:
+    ItemsAdder: false
+    ItemsAdder-old-method: false
+    Oraxen: false
+  # Some chats, such as staff chats or menu inputs, may need to be excluded from capture.
+  # Supported chat plugins are listed below, which allow blacklist channels and /ignore functionality to work correctly.
+  chat:
+    TrChat: false
+    VentureChat: false
+    HuskChat: false
+    CarbonChat: false
+    AdvancedChat: false
+    Essentials: false
+# Resource Pack Generation Settings
+resource-pack:
+  # Disables resource pack generation at server startup
+  disable-generation-on-start: false
+  # Namespace identifier
+  namespace: "nameplates"
+  # Font selection
+  font: "default"
+  # The starting character for custom fonts
+  # This character is used, but it won't affect normal Korean characters during chat, as they belong to the "minecraft:default" font.
+  initial-char: '뀁'
+  # Specify directories for PNG file generation.
+  # This helps maintain an organized resource pack structure.
+  image-path:
+    nameplates: 'font/nameplates/'
+    backgrounds: 'font/backgrounds/'
+    images: 'font/images/'
+    bubbles: 'font/bubbles/'
+    space-split: 'font/base/'
+  # Shader Settings
+  shader:
+    # Enables shader generation
+    enable: true
+    # Hides scoreboard numbers
+    hide-scoreboard-number: false
+    # Enables support for animated text shaders
+    animated-text: false
+    # Enables ItemsAdder text effect support
+    ItemsAdder-text-effects: false
+  # Bossbar transparency settings
+  transparent-bossbar:
+    # Specify the color of the bossbar to hide
+    color: YELLOW
+    # Generate transparent bossbars for Minecraft 1.20.2+
+    "1_20_2+": true
+    # Generate transparent bossbars for Minecraft 1.17-1.20.1
+    "1_17-1_20_1": true
+  # Legacy Unicode support for Minecraft 1.20+ clients, as these images were removed in 1.20, affecting the creation of decent texts.
+  # Enabling this increases your resource pack size by approximately 900KB.
+  legacy-unicodes: true
+# Additional Settings
+other-settings:
+  # It is recommended to use the MiniMessage format. If you prefer legacy color codes using "&", enable this support.
+  # Disabling it will improve color formatting performance.
+  legacy-color-code-support: true
+  # Set a delay for actionbar/bossbar to prevent compatibility issues
+  send-delay: 0
+  # Determines whether CustomNameplates should capture actionbars from other plugins
+  catch-other-plugin-actionbar: true
+  # Should the plugin listen for chat canceled events by unknown chat plugins?
+  unsafe-chat-event: false
+  # Set the default placeholder refresh interval
+  default-placeholder-refresh-interval: 1
+  # Set the refresh interval for better performance in ticks (Especially for those heavy placeholders)
+  placeholder-refresh-interval:
+    "%player_name%": 100
+    "%vault_prefix%": 1
+  # CustomNameplates provides some templates for reading the default Minecraft fonts
+  # You can replace the files under /font or add new configuration to let the plugin get these templates.
+  # Templates can be used in advance-data.yml
+  font-templates:
+    space:
+      space:
+        " ": 4
+        "\\u200c": 0
+    unihex:
+      unifont:
+        file: unifont.zip
+        generate: false
+        size_overrides:
+          - from: "\\u3001"
+            to: "\\u30FF"
+            left: 0
+            right: 15
+          - from: "\\u3200"
+            to: "\\u9FFF"
+            left: 0
+            right: 15
+          - from: "\\u1100"
+            to: "\\u11FF"
+            left: 0
+            right: 15
+          - from: "\\u3130"
+            to: "\\u318F"
+            left: 0
+            right: 15
+          - from: "\\uA960"
+            to: "\\uA97F"
+            left: 0
+            right: 15
+          - from: "\\uD7B0"
+            to: "\\uD7FF"
+            left: 0
+            right: 15
+          - from: "\\uAC00"
+            to: "\\uD7AF"
+            left: 1
+            right: 15
+          - from: "\\uF900"
+            to: "\\uFAFF"
+            left: 0
+            right: 15
+          - from: "\\uFF01"
+            to: "\\uFF5E"
+            left: 0
+            right: 15
+      unifont_jp:
+        file: unifont_jp.zip
+        generate: false
+        filter:
+          "jp": true
+        size_overrides:
+          - from: "\\u3200"
+            to: "\\u9FFF"
+            left: 0
+            right: 15
+          - from: "\\uF900"
+            to: "\\uFAFF"
+            left: 0
+            right: 15
+    bitmap:
+      ascii:
+        codepoints: ascii
+        file: ascii.png
+        height: 8
+        custom: false  # Is this a non-default Minecraft font? If enabled, plugin will create a new font image in the generated resource pack
+      ascii_sga:
+        codepoints: ascii_sga
+        file: ascii_sga.png
+        height: 8
+        custom: false
+      asciillager:
+        codepoints: asciillager
+        file: asciillager.png
+        height: 8
+        custom: false
+      nonlatin_european:
+        codepoints: nonlatin_european
+        file: nonlatin_european.png
+        height: 8
+        custom: false
+      accented:
+        codepoints: accented
+        file: accented.png
+        height: 12
+        custom: false
+    legacy_unicode:
+      legacy_unicode:
+        file: unicode_page_%02x.png
+        height: 8
+        custom: false
+    unicode:
+      unicode:
+        file: unicode_page_%02x.png
+        sizes: glyph_sizes.bin
+    ttf:
+      example:
+        generate: false
+        file: example.ttf
+        size: 10.0
+        oversample: 8.0
+        skip: []
+  # If the font is a bitmap font, the number represents the ascent
+  # If the font is a ttf font, the number represents the Y shift
+  shift-fonts:
+    shift_0:
+      - space
+      - nonlatin_european:7
+      - accented:9
+      - ascii:7
+      - unifont_jp
+      - unifont
+    shift_1:
+      - space
+      - nonlatin_european:3
+      - accented:6
+      - ascii:3
+      - legacy_unicode:3

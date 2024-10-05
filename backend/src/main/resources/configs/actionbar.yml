@@ -1,0 +1,24 @@
+# Important: Players can only see one actionbar at any given moment, no overlap allowed!
+actionbar:
+  # Players need this permission to display the actionbar, the conditions can be customized
+  conditions:
+    condition_1:
+      type: permission
+      refresh-interval: 20  # Refresh rate, in ticks, to recheck the permission status
+      value:
+        - actionbar.show
+  text-display-order:
+    1:
+      # Duration of the text display, measured in ticks (20 ticks = 1 second)
+      # -1 means the text will stay on the screen forever!
+      duration: -1
+      # The message to be shown in the actionbar
+      text: '%np_conditional_actionbar%'
+      # Optional settings for finer control:
+      # When enabling conditions, make sure at least one valid actionbar is displayed to the player,
+      # or it may lead to an endless loop with nothing visible.
+      # If the player doesn't meet the condition, this actionbar will simply be skipped.
+      # The condition is only checked once per cycle, until the next time it comes around.
+      conditions: {}
+    #2: ...
+    #3: ...

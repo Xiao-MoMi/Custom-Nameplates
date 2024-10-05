@@ -1,0 +1,44 @@
+# Requirements for sending the bubble
+sender-requirements:
+  permission: bubbles.send
+  '!gamemode': spectator
+  potion-effect: "INVISIBILITY<0"
+
+viewer-requirements:
+  permission: bubbles.see
+
+# blacklist channels
+blacklist-channels:
+  - Private
+  - Staff
+
+# ALL: all the players can see the bubble
+# JOINED: players in the same channel can see each other's bubble
+# CAN_JOIN: players that have permission to certain channels would see the bubble in that channel
+channel-mode: ALL
+
+# Default bubble to display if player's bubble is "none"
+default-bubble: 'chat'
+
+# Y offset from the highest nameplate
+y-offset: 0.1
+
+view-range: 0.5
+
+# Bubble display time (in ticks)
+stay-duration: 150
+appear-duration: 4
+disappear-duration: 2
+
+bubble-settings:
+  chat:
+    display-name: "White Bubbles"
+    max-lines: 3
+    lines:
+      1: chat_1
+      2: chat_2
+      3: chat_3
+    line-width: 150
+    background-color: 0,0,0,0
+    text-prefix: "<black><font:nameplates:shift_0>"
+    text-suffix: "</font></black>"

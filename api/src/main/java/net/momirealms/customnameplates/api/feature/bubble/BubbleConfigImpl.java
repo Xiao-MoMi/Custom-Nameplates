@@ -1,0 +1,164 @@
+/*
+ *  Copyright (C) <2024> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package net.momirealms.customnameplates.api.feature.bubble;
+
+import net.momirealms.customnameplates.api.util.Vector3;
+
+import static java.util.Objects.requireNonNull;
+
+public class BubbleConfigImpl implements BubbleConfig {
+
+    private final String id;
+    private final int backgroundColor;
+    private final int lineWidth;
+    private final int maxLines;
+    private final Bubble[] bubbles;
+    private final String textPrefix;
+    private final String textSuffix;
+    private final String displayName;
+    private final Vector3 scale;
+
+    public BubbleConfigImpl(String id, String displayName, int backgroundColor, int lineWidth, int maxLines, Bubble[] bubbles, String textPrefix, String textSuffix, Vector3 scale) {
+        this.backgroundColor = backgroundColor;
+        this.lineWidth = lineWidth;
+        this.maxLines = maxLines;
+        this.id = id;
+        this.bubbles = requireNonNull(bubbles);
+        this.textPrefix = requireNonNull(textPrefix);
+        this.textSuffix = requireNonNull(textSuffix);
+        this.displayName = requireNonNull(displayName);
+        this.scale = requireNonNull(scale);
+    }
+
+    @Override
+    public String id() {
+        return id;
+    }
+
+    @Override
+    public int backgroundColor() {
+        return backgroundColor;
+    }
+
+    @Override
+    public int lineWidth() {
+        return lineWidth;
+    }
+
+    @Override
+    public int maxLines() {
+        return maxLines;
+    }
+
+    @Override
+    public Bubble[] bubbles() {
+        return bubbles;
+    }
+
+    @Override
+    public String textPrefix() {
+        return textPrefix;
+    }
+
+    @Override
+    public String textSuffix() {
+        return textSuffix;
+    }
+
+    @Override
+    public String displayName() {
+        return displayName;
+    }
+
+    @Override
+    public Vector3 scale() {
+        return scale;
+    }
+
+    public static class BuilderImpl implements Builder {
+
+        private int backgroundColor;
+        private int lineWidth;
+        private int maxLines;
+        private Bubble[] bubbles;
+        private String textPrefix;
+        private String textSuffix;
+        private String id;
+        private String displayName;
+        private Vector3 scale;
+
+        @Override
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        @Override
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        @Override
+        public Builder backgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        @Override
+        public Builder lineWidth(int lineWidth) {
+            this.lineWidth = lineWidth;
+            return this;
+        }
+
+        @Override
+        public Builder maxLines(int maxLines) {
+            this.maxLines = maxLines;
+            return this;
+        }
+
+        @Override
+        public Builder bubbles(Bubble[] bubbles) {
+            this.bubbles = bubbles;
+            return this;
+        }
+
+        @Override
+        public Builder textPrefix(String textPrefix) {
+            this.textPrefix = textPrefix;
+            return this;
+        }
+
+        @Override
+        public Builder textSuffix(String textSuffix) {
+            this.textSuffix = textSuffix;
+            return this;
+        }
+
+        @Override
+        public Builder scale(Vector3 scale) {
+            this.scale = scale;
+            return this;
+        }
+
+        @Override
+        public BubbleConfig build() {
+            return new BubbleConfigImpl(id, displayName, backgroundColor, lineWidth, maxLines, bubbles, textPrefix, textSuffix, scale);
+        }
+    }
+}

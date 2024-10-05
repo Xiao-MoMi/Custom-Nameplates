@@ -1,0 +1,113 @@
+/*
+ *  Copyright (C) <2024> <XiaoMoMi>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package net.momirealms.customnameplates.bukkit;
+
+import net.momirealms.customnameplates.api.AbstractCNPlayer;
+import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.util.Vector3;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+public class BukkitCNPlayer extends AbstractCNPlayer {
+
+    private static final Attribute scaleAttribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.scale"));
+
+    private final Player player;
+
+    public BukkitCNPlayer(CustomNameplates plugin, Player player) {
+        super(plugin, player);
+        this.player = player;
+    }
+
+    @Override
+    public String name() {
+        return player.getName();
+    }
+
+    @Override
+    public UUID uuid() {
+        return player.getUniqueId();
+    }
+
+    @Override
+    public int entityID() {
+        return player.getEntityId();
+    }
+
+    @Override
+    public Vector3 position() {
+        Location location = player.getLocation();
+        return new Vector3(location.x(), location.y(), location.z());
+    }
+
+    @Override
+    public String world() {
+        return player.getWorld().getName();
+    }
+
+    @Override
+    public double scale() {
+        if (scaleAttribute == null) return 1;
+        return Optional.ofNullable(player.getAttribute(scaleAttribute)).map(AttributeInstance::getValue).orElse(1d);
+    }
+
+    @Override
+    public boolean isCrouching() {
+        return player.isSneaking();
+    }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return player.hasPermission(permission);
+    }
+
+    @Override
+    public long playerTime() {
+        return player.getPlayerTime();
+    }
+
+    @Override
+    public boolean isOnline() {
+        return player.isOnline();
+    }
+
+    @Override
+    public Set<Integer> passengers() {
+        return player.getPassengers().stream().map(Entity::getEntityId).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isFlying() {
+        return player.isFlying();
+    }
+
+    @Override
+    public int remainingAir() {
+        return player.getRemainingAir();
+    }
+}

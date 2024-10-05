@@ -1,0 +1,6 @@
+image: coin
+height: 10
+ascent: -14
+shadow:
+  remove: true
+  opacity: 254

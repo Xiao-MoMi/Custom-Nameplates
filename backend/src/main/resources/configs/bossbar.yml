@@ -1,0 +1,39 @@
+# You can create as many bossbar sections as you'd like
+bossbar_1:
+  # Choose the color of the bossbar (Options: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW)
+  color: YELLOW
+  # Decide how the progress bar looks (Options: "progress", "notched_6", "notched_10", "notched_12", "notched_20")
+  overlay: PROGRESS
+  conditions:
+    condition_1:
+      type: permission
+      refresh-interval: 20  # How often, in ticks, to check if the player still has the required permission
+      value:
+        - bossbar.show
+  # The bossbar will cycle through the text in this exact order:
+  text-display-order:
+    1:
+      # Time (in ticks) this text stays on the screen (100 ticks = 5 seconds)
+      duration: 100
+      # What message to display in the bossbar
+      text: '%np_background_hello%'
+    2:
+      # Display for 10 seconds
+      duration: 200
+      text: '%np_background_time%  %np_background_location%  %np_background_weather%'
+      # How often to refresh this text, in ticks (1 tick = 1/20 of a second)
+      refresh-frequency: 1
+    3:
+      # Show for 5 seconds
+      duration: 100
+      text: '%np_background_update%'
+      # Optional extra control:
+      # Make sure at least one bossbar message is shown, or else it could result in an endless cycle with nothing visible!
+      # If the player doesn’t meet the condition, this message will be skipped.
+      # Conditions are only checked once per cycle until it comes back around.
+      conditions:
+        permission: nameplates.admin  # Only players with this permission will see this specific message
+        equals:
+          # Compare two values and act based on the result
+          value1: '%np_is-latest%'
+          value2: 'false'  # Only display if the value is "false"

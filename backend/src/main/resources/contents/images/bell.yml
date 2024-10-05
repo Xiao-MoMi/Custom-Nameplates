@@ -1,0 +1,6 @@
+image: bell
+height: 10
+ascent: 4
+shadow:
+  remove: true
+  opacity: 254

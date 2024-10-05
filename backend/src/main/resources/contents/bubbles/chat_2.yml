@@ -1,0 +1,16 @@
+left:
+  image: chat_2_left
+  height: 23
+  ascent: 19
+middle:
+  image: chat_2_middle
+  height: 23
+  ascent: 19
+right:
+  image: chat_2_right
+  height: 23
+  ascent: 19
+tail:
+  image: chat_2_tail
+  height: 23
+  ascent: 19

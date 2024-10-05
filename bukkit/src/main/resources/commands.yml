@@ -1,0 +1,136 @@
+#
+# Don't change this
+#
+config-version: "${config_version}"
+
+#
+# For safety reasons, editing this file requires a restart to apply
+#
+
+# A command to reload the plugin
+# Usage: [COMMAND]
+reload:
+  enable: true
+  permission: nameplates.command.reload
+  usage:
+    - /nameplates reload
+
+# A command to debug the load of the cpu
+# Usage: [COMMAND]
+debug_performance:
+  enable: true
+  permission: nameplates.command.debug.performance
+  usage:
+    - /nameplates debug performance
+
+# A command to debug the width
+# Usage: [COMMAND] [TEXT]
+debug_width:
+  enable: true
+  permission: nameplates.command.debug.width
+  usage:
+    - /nameplates debug width
+
+# A command to debug the lines
+# Usage: [COMMAND] [WIDTH] [TEXT]
+debug_lines:
+  enable: true
+  permission: nameplates.command.debug.lines
+  usage:
+    - /nameplates debug lines
+
+# A command to force a player to equip the specified nameplate
+# Usage: [COMMAND] [PLAYER] [NAMEPLATE]
+nameplates_force_equip:
+  enable: true
+  permission: nameplates.command.force_equip
+  usage:
+    - /nameplates force-equip
+
+# A command to force a player to unequip the current nameplate
+# Usage: [COMMAND] [PLAYER]
+nameplates_force_unequip:
+  enable: true
+  permission: nameplates.command.force_unequip
+  usage:
+    - /nameplates force-unequip
+
+# A command to force a player to preview the nameplate
+# Usage: [COMMAND] [PLAYER]
+nameplates_force_preview:
+  enable: true
+  permission: nameplates.command.force_preview
+  usage:
+    - /nameplates force-preview
+
+# A command to equip the nameplate
+# Usage: [COMMAND] [NAMEPLATE]
+nameplates_equip:
+  enable: true
+  permission: nameplates.command.equip
+  usage:
+    - /nameplates equip
+
+# A command to unequip the nameplate
+# Usage: [COMMAND]
+nameplates_unequip:
+  enable: true
+  permission: nameplates.command.unequip
+  usage:
+    - /nameplates unequip
+
+# A command to preview the nameplate
+# Usage: [COMMAND]
+nameplates_preview:
+  enable: true
+  permission: nameplates.command.preview
+  usage:
+    - /nameplates preview
+
+# A command to view the available nameplates
+# Usage: [COMMAND]
+nameplates_list:
+  enable: true
+  permission: nameplates.command.list
+  usage:
+    - /nameplates list
+
+# A command to force a player to equip the specified bubble
+# Usage: [COMMAND] [PLAYER] [BUBBLE]
+bubbles_force_equip:
+  enable: true
+  permission: bubbles.command.force_equip
+  usage:
+    - /bubbles force-equip
+
+# A command to force a player to unequip the current bubble
+# Usage: [COMMAND] [PLAYER]
+bubbles_force_unequip:
+  enable: true
+  permission: bubbles.command.force_unequip
+  usage:
+    - /bubbles force-unequip
+
+# A command to equip the bubble
+# Usage: [COMMAND] [BUBBLE]
+bubbles_equip:
+  enable: true
+  permission: bubbles.command.equip
+  usage:
+    - /bubbles equip
+
+# A command to unequip the bubble
+# Usage: [COMMAND]
+bubbles_unequip:
+  enable: true
+  permission: bubbles.command.unequip
+  usage:
+    - /bubbles unequip
+
+# A command to view the available bubbles
+# Usage: [COMMAND]
+bubbles_list:
+  enable: true
+  permission: bubbles.command.list
+  usage:
+    - /bubbles list

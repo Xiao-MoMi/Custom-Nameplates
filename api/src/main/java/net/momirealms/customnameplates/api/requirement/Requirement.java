@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) <2022> <XiaoMoMi>
+ *  Copyright (C) <2024> <XiaoMoMi>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,13 +17,19 @@
 
 package net.momirealms.customnameplates.api.requirement;
 
+import net.momirealms.customnameplates.api.CNPlayer;
+
 public interface Requirement {
 
-    /**
-     * Is condition met the requirement
-     *
-     * @param condition condition
-     * @return meet or not
-     */
-    boolean isConditionMet(Condition condition);
+    boolean isSatisfied(CNPlayer p1, CNPlayer p2);
+
+    String type();
+
+    int refreshInterval();
+
+    int hashCode();
+
+    static Requirement empty() {
+        return EmptyRequirement.instance();
+    }
 }

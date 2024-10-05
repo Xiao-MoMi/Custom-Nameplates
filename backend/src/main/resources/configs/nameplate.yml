@@ -1,0 +1,67 @@
+# Duration (in seconds) for which the nameplate preview will be displayed.
+preview-duration: 5
+
+# Default nameplate shown when a player's nameplate is set to "none."
+default-nameplate: 'none'
+
+# Whether to make the nameplate always visible to the player
+always-show: false
+
+# Configuration for nameplate behavior and appearance.
+nameplate:
+  # Prefix to be displayed before the player's name.
+  # The prefix here will become part of the nameplate
+  prefix: ''
+  # Placeholder for the player's name
+  # The default configuration uses shift to ensure that the player name not affected by the clientside `force-unicode-font` setting.
+  player-name: '%np_shift_player_name%'
+  # Suffix to be displayed after the player's name.
+  # The suffix here will become part of the nameplate
+  suffix: ''
+
+# Configuration for Unlimited tags.
+unlimited:
+  tag_1:
+    text: '%np_tag-image%'
+    translation: 0,0.2,0
+    viewer-conditions: { }
+    owner-conditions:
+      condition_potion:
+        type: potion-effect
+        value: "INVISIBILITY<0"
+        refresh-interval: 1
+      self-disguised: false
+    affected-by-crouching: true
+    affected-by-scale-attribute: true
+    line-width: 1024
+    background-color: 0,0,0,0
+  tag_2:
+    text: '%np_tag-text%'
+    translation: 0.001,0.2,0.001
+    viewer-conditions: { }
+    owner-conditions:
+      has-nameplate: true
+      condition_potion:
+        type: potion-effect
+        value: "INVISIBILITY<0"
+        refresh-interval: 1
+      self-disguised: false
+    affected-by-crouching: true
+    affected-by-scale-attribute: true
+    line-width: 1024
+    background-color: 0,0,0,0
+  tag_3:
+    text: '%np_tag-text%'
+    translation: 0,0.2,0
+    viewer-conditions: { }
+    owner-conditions:
+      has-nameplate: false
+      condition_potion:
+        type: potion-effect
+        value: "INVISIBILITY<0"
+        refresh-interval: 1
+      self-disguised: false
+    affected-by-crouching: true
+    affected-by-scale-attribute: true
+    line-width: 1024
+    background-color: 64,0,0,0
