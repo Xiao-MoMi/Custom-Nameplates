@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /**
- * Interface representing a provider for data storage.
+ * Interface representing a provider for data storage. This provider handles the retrieval and updating of player data.
  */
 public interface DataStorageProvider {
 
@@ -43,11 +43,36 @@ public interface DataStorageProvider {
 	 */
 	void disable();
 
-	StorageType getStorageType();
+	/**
+	 * Returns the type of storage used by this provider.
+	 *
+	 * @return the {@link StorageType} of the storage provider
+	 */
+	StorageType storageType();
 
+	/**
+	 * Retrieves the player data for a specific UUID.
+	 *
+	 * @param uuid     the UUID of the player
+	 * @param executor the executor to run the task asynchronously
+	 * @return a {@link CompletableFuture} containing an {@link Optional} of {@link PlayerData}
+	 */
 	CompletableFuture<Optional<PlayerData>> getPlayerData(UUID uuid, Executor executor);
 
+	/**
+	 * Updates the player data in the storage.
+	 *
+	 * @param playerData the player data to update
+	 * @param executor   the executor to run the task asynchronously
+	 * @return a {@link CompletableFuture} indicating whether the update was successful
+	 */
 	CompletableFuture<Boolean> updatePlayerData(PlayerData playerData, Executor executor);
 
+	/**
+	 * Returns a set of all unique users (UUIDs) in the storage.
+	 *
+	 * @return a set of unique user UUIDs
+	 */
 	Set<UUID> getUniqueUsers();
 }
+

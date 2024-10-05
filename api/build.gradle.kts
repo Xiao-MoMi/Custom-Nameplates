@@ -17,10 +17,6 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
     // Netty
     compileOnly("io.netty:netty-all:4.1.113.Final")
-    // FOP
-    compileOnly("org.apache.pdfbox:fontbox:${rootProject.properties["fontbox_version"]}")
-    // COMMONS IO
-    compileOnly("commons-io:commons-io:${rootProject.properties["commons_io_version"]}")
     // GSON
     compileOnly("com.google.code.gson:gson:${rootProject.properties["gson_version"]}")
 }

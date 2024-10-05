@@ -19,7 +19,16 @@ package net.momirealms.customnameplates.api.placeholder;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
+/**
+ * Represents a player-specific placeholder, which provides dynamic content based on the player.
+ */
 public interface PlayerPlaceholder extends Placeholder {
 
+    /**
+     * Requests the placeholder content for the specified player.
+     *
+     * @param player the player for whom the placeholder content is being requested
+     * @return the placeholder content as a string
+     */
     String request(CNPlayer player);
 }

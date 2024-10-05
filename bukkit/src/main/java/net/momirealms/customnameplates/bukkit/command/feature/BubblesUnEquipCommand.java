@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.bukkit.command.feature;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
-import net.momirealms.customnameplates.api.storage.data.PlayerData;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
 import net.momirealms.customnameplates.common.command.CustomNameplatesCommandManager;
@@ -54,13 +53,8 @@ public class BubblesUnEquipCommand extends BukkitCommandFeature<CommandSender> {
                         return;
                     }
                     player.equippedBubble("none");
+                    player.save();
                     handleFeedback(context, MessageConstants.COMMAND_BUBBLES_UNEQUIP_SUCCESS);
-
-                    plugin.getStorageManager().getDataSource().updatePlayerData(PlayerData.builder()
-                            .uuid(player.uuid())
-                            .nameplate(player.equippedNameplate())
-                            .bubble(player.equippedBubble())
-                            .build(), plugin.getScheduler().async());
                 });
     }
 

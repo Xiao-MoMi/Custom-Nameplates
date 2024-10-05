@@ -118,28 +118,28 @@ public abstract class AbstractTag implements Tag {
     }
 
     @Override
-    public void updateOpacity(byte opacity) {
+    public void onPlayerCrouching(boolean isCrouching) {
         for (CNPlayer viewer : viewerArray) {
-            updateOpacity(viewer, opacity);
+            onPlayerCrouching(viewer, isCrouching);
         }
     }
 
     @Override
-    public void updateOpacity(CNPlayer viewer, byte opacity) {
-        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createOpacityModifier(opacity);
+    public void onPlayerCrouching(CNPlayer viewer, boolean isCrouching) {
+        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createOpacityModifier(isCrouching ? 64 : opacity());
         Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifiers));
         CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }
 
     @Override
-    public void updateScale(double scale) {
+    public void onPlayerScaleUpdate(double scale) {
         for (CNPlayer viewer : viewerArray) {
-            updateScale(viewer, scale);
+            onPlayerScaleUpdate(viewer, scale);
         }
     }
 
     @Override
-    public void updateScale(CNPlayer viewer, double scale) {
+    public void onPlayerScaleUpdate(CNPlayer viewer, double scale) {
         Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createScaleModifier(scale(viewer).multiply(scale));
         Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation(viewer).multiply(scale));
         Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1, modifier2));

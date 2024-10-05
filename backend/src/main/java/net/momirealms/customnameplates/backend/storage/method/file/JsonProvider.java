@@ -32,7 +32,7 @@ public class JsonProvider extends AbstractStorage {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.JSON;
     }
 
@@ -61,7 +61,7 @@ public class JsonProvider extends AbstractStorage {
         if (executor == null) executor = plugin.getScheduler().async();
         executor.execute(() -> {
             try {
-                this.saveToJsonFile(playerData.toGsonData(), getPlayerDataFile(playerData.uuid()));
+                this.saveToJsonFile(playerData.toJsonData(), getPlayerDataFile(playerData.uuid()));
             } catch (Exception e) {
                 future.complete(false);
             }

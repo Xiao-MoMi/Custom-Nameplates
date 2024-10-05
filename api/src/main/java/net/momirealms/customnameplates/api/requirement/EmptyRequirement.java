@@ -19,29 +19,59 @@ package net.momirealms.customnameplates.api.requirement;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
+/**
+ * A requirement that is always satisfied, representing an "empty" or default requirement.
+ */
 public class EmptyRequirement implements Requirement {
 
     public static final EmptyRequirement INSTANCE = new EmptyRequirement();
 
+    /**
+     * Returns the singleton instance of the EmptyRequirement.
+     *
+     * @return the singleton instance of EmptyRequirement
+     */
     public static Requirement instance() {
         return INSTANCE;
     }
 
+    /**
+     * Always returns true, as this requirement is always satisfied.
+     *
+     * @param p1 the first player
+     * @param p2 the second player
+     * @return true (requirement is always satisfied)
+     */
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         return true;
     }
 
+    /**
+     * Returns the type of this requirement.
+     *
+     * @return "empty" as the type
+     */
     @Override
     public String type() {
         return "empty";
     }
 
+    /**
+     * Returns -1, indicating that this requirement does not have a refresh interval.
+     *
+     * @return -1 (no refresh interval)
+     */
     @Override
     public int refreshInterval() {
         return -1;
     }
 
+    /**
+     * Returns the hash code based on the requirement type.
+     *
+     * @return the hash code of the requirement type
+     */
     @Override
     public int hashCode() {
         return type().hashCode();

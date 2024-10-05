@@ -22,32 +22,100 @@ import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 
 public interface Nameplate extends AdaptiveImage {
 
+    /**
+     * Returns the unique ID of the nameplate configuration.
+     *
+     * @return the nameplate ID
+     */
     String id();
 
+    /**
+     * Returns the display name of the nameplate.
+     *
+     * @return the display name of the nameplate
+     */
     String displayName();
 
+    /**
+     * Returns the configured character for the left side of the nameplate.
+     *
+     * @return the left-side configured character
+     */
     ConfiguredCharacter left();
 
+    /**
+     * Returns the configured character for the middle section of the nameplate.
+     *
+     * @return the middle configured character
+     */
     ConfiguredCharacter middle();
 
+    /**
+     * Returns the configured character for the right side of the nameplate.
+     *
+     * @return the right-side configured character
+     */
     ConfiguredCharacter right();
 
+    /**
+     * Creates a new builder for constructing a Nameplate configuration.
+     *
+     * @return a new builder instance
+     */
     static Builder builder() {
         return new NameplateImpl.BuilderImpl();
     }
 
+    /**
+     * Builder for constructing Nameplate configurations.
+     */
     interface Builder {
 
+        /**
+         * Sets the unique ID for the nameplate.
+         *
+         * @param id the nameplate ID
+         * @return the builder instance
+         */
         Builder id(String id);
 
+        /**
+         * Sets the display name for the nameplate.
+         *
+         * @param displayName the display name
+         * @return the builder instance
+         */
         Builder displayName(String displayName);
 
+        /**
+         * Sets the configured character for the left side of the nameplate.
+         *
+         * @param left the left-side configured character
+         * @return the builder instance
+         */
         Builder left(ConfiguredCharacter left);
 
+        /**
+         * Sets the configured character for the middle section of the nameplate.
+         *
+         * @param middle the middle configured character
+         * @return the builder instance
+         */
         Builder middle(ConfiguredCharacter middle);
 
+        /**
+         * Sets the configured character for the right side of the nameplate.
+         *
+         * @param right the right-side configured character
+         * @return the builder instance
+         */
         Builder right(ConfiguredCharacter right);
 
+        /**
+         * Builds and returns the configured Nameplate instance.
+         *
+         * @return the constructed Nameplate
+         */
         Nameplate build();
     }
 }

@@ -17,16 +17,27 @@
 
 package net.momirealms.customnameplates.api.placeholder;
 
+/**
+ * Utility class for managing a global counter for placeholder IDs.
+ */
 public class PlaceholderCounter {
 
     private static int id = 1;
 
+    /**
+     * Returns the current ID and increments the counter by 1.
+     *
+     * @return the current ID
+     */
     public static int getAndIncrease() {
         int i = id;
         id++;
         return i;
     }
 
+    /**
+     * Resets the ID counter back to 1.
+     */
     public static void reset() {
         id = 1;
     }

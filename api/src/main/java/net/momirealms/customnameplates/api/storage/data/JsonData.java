@@ -21,26 +21,52 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
+/**
+ * Represents the JSON data format for storing a player's nameplate and bubble information.
+ */
 public class JsonData {
 
     @SerializedName("nameplate")
     private String nameplate;
+
     @SerializedName("bubble")
     private String bubble;
 
+    /**
+     * Constructs a new {@link JsonData} instance.
+     *
+     * @param nameplate the nameplate value
+     * @param bubble    the bubble value
+     */
     public JsonData(String nameplate, String bubble) {
         this.nameplate = nameplate;
         this.bubble = bubble;
     }
 
+    /**
+     * Returns the nameplate stored in this JSON data.
+     *
+     * @return the nameplate
+     */
     public String nameplate() {
         return nameplate;
     }
 
+    /**
+     * Returns the bubble stored in this JSON data.
+     *
+     * @return the bubble
+     */
     public String bubble() {
         return bubble;
     }
 
+    /**
+     * Converts this JSON data back into a {@link PlayerData} instance.
+     *
+     * @param uuid the UUID of the player
+     * @return a {@link PlayerData} instance based on the JSON data
+     */
     public PlayerData toPlayerData(UUID uuid) {
         return PlayerData.builder()
                 .uuid(uuid)
@@ -49,3 +75,4 @@ public class JsonData {
                 .build();
     }
 }
+

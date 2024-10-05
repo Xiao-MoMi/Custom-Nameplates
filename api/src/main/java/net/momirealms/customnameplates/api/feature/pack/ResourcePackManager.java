@@ -21,5 +21,8 @@ import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 
 public interface ResourcePackManager extends Reloadable {
 
+    /**
+     * Generates the resource pack.
+     */
     void generate();
 }

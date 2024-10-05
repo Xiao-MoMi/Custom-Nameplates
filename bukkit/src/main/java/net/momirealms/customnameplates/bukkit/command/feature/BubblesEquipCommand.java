@@ -22,7 +22,6 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
-import net.momirealms.customnameplates.api.storage.data.PlayerData;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
 import net.momirealms.customnameplates.common.command.CustomNameplatesCommandManager;
@@ -65,7 +64,7 @@ public class BubblesEquipCommand extends BukkitCommandFeature<CommandSender> {
                 .handler(context -> {
                     if (!ConfigManager.bubbleModule()) return;
                     String bubbleId = context.get("bubble");
-                    BubbleConfig bubble = plugin.getBubbleManager().getBubbleConfig(bubbleId);
+                    BubbleConfig bubble = plugin.getBubbleManager().bubbleConfigById(bubbleId);
                     if (bubble == null) {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_FAILURE_NOT_EXISTS, Component.text(bubbleId));
                         return;
@@ -87,13 +86,8 @@ public class BubblesEquipCommand extends BukkitCommandFeature<CommandSender> {
                         return;
                     }
                     player.equippedBubble(bubbleId);
+                    player.save();
                     handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_SUCCESS, Component.text(bubbleId), AdventureHelper.miniMessage(bubble.displayName()));
-
-                    plugin.getStorageManager().getDataSource().updatePlayerData(PlayerData.builder()
-                            .uuid(player.uuid())
-                            .nameplate(player.equippedNameplate())
-                            .bubble(player.equippedBubble())
-                            .build(), plugin.getScheduler().async());
                 });
     }
 

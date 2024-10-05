@@ -18,7 +18,9 @@
 package net.momirealms.customnameplates.api.placeholder.internal;
 
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class ShiftText {
 
     private final String font;

@@ -19,16 +19,42 @@ package net.momirealms.customnameplates.api.feature.actionbar;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
+import org.jetbrains.annotations.Nullable;
 
 public interface ActionBarManager extends Reloadable {
 
+    /**
+     * Refreshes the conditions of all ActionBars.
+     */
     void refreshConditions();
 
+    /**
+     * Checks heartbeats for any necessary updates or actions related to ActionBars.
+     */
     void checkHeartBeats();
 
-    ActionBarConfig getConfig(String name);
+    /**
+     * Retrieves the ActionBar configuration by its name.
+     *
+     * @param name the name of the ActionBar configuration
+     * @return the corresponding ActionBarConfig, or null if not found
+     */
+    @Nullable
+    ActionBarConfig configById(String name);
 
-    ActionBarConfig[] allConfigs();
+    /**
+     * Returns all available ActionBar configurations.
+     *
+     * @return an array of all ActionBarConfig instances
+     */
+    ActionBarConfig[] actionBarConfigs();
 
+    /**
+     * Gets the external ActionBar for a specific player.
+     *
+     * @param player the player
+     * @return the external ActionBar string for the player
+     */
+    @Nullable
     String getExternalActionBar(CNPlayer player);
 }

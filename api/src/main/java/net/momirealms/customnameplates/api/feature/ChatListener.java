@@ -19,7 +19,18 @@ package net.momirealms.customnameplates.api.feature;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
+/**
+ * Represents a listener for player chat events, providing a callback method
+ * when a player sends a message in a specific channel.
+ */
 public interface ChatListener {
 
+    /**
+     * Called when a player sends a chat message in a specified channel.
+     *
+     * @param player  the player who sent the message
+     * @param message the content of the message
+     * @param channel the channel where the message was sent
+     */
     void onPlayerChat(CNPlayer player, String message, String channel);
 }

@@ -21,9 +21,23 @@ import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 
 public interface BossBarManager extends Reloadable {
 
+    /**
+     * Retrieves the BossBar configuration by its id.
+     *
+     * @param id the name of the BossBar configuration
+     * @return the corresponding BossBarConfig, or null if not found
+     */
+    BossBarConfig configById(String id);
+
+    /**
+     * Returns all available BossBar configurations.
+     *
+     * @return an array of all BossBarConfig instances
+     */
+    BossBarConfig[] bossBarConfigs();
+
+    /**
+     * Called on every server tick to update the state of BossBars.
+     */
     void onTick();
-
-    BossBarConfig getConfig(String name);
-
-    BossBarConfig[] allConfigs();
 }

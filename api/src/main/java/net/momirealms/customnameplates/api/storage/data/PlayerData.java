@@ -19,40 +19,101 @@ package net.momirealms.customnameplates.api.storage.data;
 
 import java.util.UUID;
 
+/**
+ * Represents player-specific data, including the player's nameplate, bubble, and UUID.
+ */
 public interface PlayerData {
 
     String DEFAULT_NAMEPLATE = "none";
-    String DEFAULT_BUBBLE  = "none";
+    String DEFAULT_BUBBLE = "none";
 
+    /**
+     * Returns the nameplate associated with the player.
+     *
+     * @return the player's nameplate
+     */
     String nameplate();
 
+    /**
+     * Returns the bubble associated with the player.
+     *
+     * @return the player's bubble
+     */
     String bubble();
 
+    /**
+     * Returns the UUID of the player.
+     *
+     * @return the player's UUID
+     */
     UUID uuid();
 
+    /**
+     * Returns a builder for constructing {@link PlayerData} instances.
+     *
+     * @return a {@link PlayerData.Builder} instance
+     */
     static Builder builder() {
         return new PlayerDataImpl.BuilderImpl();
     }
 
+    /**
+     * Returns an empty {@link PlayerData} instance with default values for the given UUID.
+     *
+     * @param uuid the UUID of the player
+     * @return an empty {@link PlayerData} instance
+     */
     static PlayerData empty(UUID uuid) {
-        return builder().uuid(uuid)
+        return builder()
+                .uuid(uuid)
                 .nameplate(DEFAULT_NAMEPLATE)
                 .bubble(DEFAULT_BUBBLE)
                 .build();
     }
 
+    /**
+     * Builder interface for constructing {@link PlayerData} instances.
+     */
     interface Builder {
 
+        /**
+         * Sets the nameplate for the {@link PlayerData}.
+         *
+         * @param nameplate the nameplate value
+         * @return the builder instance
+         */
         Builder nameplate(String nameplate);
 
+        /**
+         * Sets the bubble for the {@link PlayerData}.
+         *
+         * @param bubble the bubble value
+         * @return the builder instance
+         */
         Builder bubble(String bubble);
 
+        /**
+         * Sets the UUID for the {@link PlayerData}.
+         *
+         * @param uuid the UUID value
+         * @return the builder instance
+         */
         Builder uuid(UUID uuid);
 
+        /**
+         * Builds and returns the {@link PlayerData} instance.
+         *
+         * @return the constructed {@link PlayerData} instance
+         */
         PlayerData build();
     }
 
-    default JsonData toGsonData() {
+    /**
+     * Converts the player data into a {@link JsonData} object for serialization.
+     *
+     * @return a {@link JsonData} object containing the nameplate and bubble data
+     */
+    default JsonData toJsonData() {
         return new JsonData(nameplate(), bubble());
     }
 }

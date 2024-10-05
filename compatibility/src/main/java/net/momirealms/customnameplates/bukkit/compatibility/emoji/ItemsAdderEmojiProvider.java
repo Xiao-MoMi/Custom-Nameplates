@@ -19,7 +19,7 @@ package net.momirealms.customnameplates.bukkit.compatibility.emoji;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.feature.bubble.emoji.EmojiProvider;
+import net.momirealms.customnameplates.api.feature.chat.emoji.EmojiProvider;
 import org.bukkit.entity.Player;
 
 public class ItemsAdderEmojiProvider implements EmojiProvider {

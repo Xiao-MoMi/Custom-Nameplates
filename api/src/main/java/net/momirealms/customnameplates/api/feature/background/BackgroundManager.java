@@ -24,8 +24,19 @@ import java.util.Collection;
 
 public interface BackgroundManager extends Reloadable {
 
+    /**
+     * Retrieves a Background configuration by its unique ID.
+     *
+     * @param id the unique ID of the background
+     * @return the corresponding Background, or null if not found
+     */
     @Nullable
-    Background getBackground(String id);
+    Background backgroundById(String id);
 
+    /**
+     * Returns a collection of all available Background configurations.
+     *
+     * @return a collection of Background instances
+     */
     Collection<Background> getBackgrounds();
 }

@@ -21,12 +21,33 @@ import java.util.UUID;
 
 public interface BossBar {
 
+    /**
+     * Returns the unique UUID of the BossBar.
+     *
+     * @return the UUID of the BossBar
+     */
     UUID uuid();
 
+    /**
+     * Returns the progress value of the BossBar.
+     * The value should be between 0.0 (empty) and 1.0 (full).
+     *
+     * @return the progress value of the BossBar
+     */
     float progress();
 
+    /**
+     * Returns the color of the BossBar.
+     *
+     * @return the color of the BossBar
+     */
     Color color();
 
+    /**
+     * Returns the overlay style of the BossBar, defining how the bar is divided.
+     *
+     * @return the overlay style of the BossBar
+     */
     Overlay overlay();
 
     enum Overlay {

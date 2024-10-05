@@ -22,6 +22,12 @@ dependencies {
     compileOnly("org.mongodb:mongodb-driver-sync:${rootProject.properties["mongodb_driver_version"]}")
     compileOnly("com.zaxxer:HikariCP:${rootProject.properties["hikari_version"]}")
     compileOnly("redis.clients:jedis:${rootProject.properties["jedis_version"]}")
+    // Cache
+    compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
+    // COMMONS IO
+    compileOnly("commons-io:commons-io:${rootProject.properties["commons_io_version"]}")
+    // FOP
+    compileOnly("org.apache.pdfbox:fontbox:${rootProject.properties["fontbox_version"]}")
 }
 
 tasks {

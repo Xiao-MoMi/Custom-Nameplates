@@ -25,22 +25,63 @@ import java.util.UUID;
 
 public interface StorageManager extends Reloadable {
 
+	/**
+	 * Returns the server ID associated with this storage manager.
+	 *
+	 * @return the server ID as a string
+	 */
 	@NotNull
-	String getServerID();
+	String serverID();
 
+	/**
+	 * Returns the current data storage provider.
+	 *
+	 * @return the {@link DataStorageProvider} instance
+	 */
 	@NotNull
-	DataStorageProvider getDataSource();
+	DataStorageProvider dataSource();
 
+	/**
+	 * Checks if Redis is enabled for the storage manager.
+	 *
+	 * @return true if Redis is enabled, false otherwise
+	 */
 	boolean isRedisEnabled();
 
+	/**
+	 * Converts player data into a byte array.
+	 *
+	 * @param data the {@link PlayerData} to convert
+	 * @return the byte array representation of the player data
+	 */
 	byte[] toBytes(@NotNull PlayerData data);
 
+	/**
+	 * Converts player data into a JSON string.
+	 *
+	 * @param data the {@link PlayerData} to convert
+	 * @return the JSON string representation of the player data
+	 */
 	@NotNull
 	String toJson(@NotNull PlayerData data);
 
+	/**
+	 * Converts a JSON string into player data.
+	 *
+	 * @param uuid the UUID of the player
+	 * @param json the JSON string containing the player data
+	 * @return the {@link PlayerData} instance created from the JSON data
+	 */
 	@NotNull
 	PlayerData fromJson(UUID uuid, String json);
 
+	/**
+	 * Converts a byte array into player data.
+	 *
+	 * @param uuid the UUID of the player
+	 * @param data the byte array containing the player data
+	 * @return the {@link PlayerData} instance created from the byte array
+	 */
 	@NotNull
 	PlayerData fromBytes(UUID uuid, byte[] data);
 }

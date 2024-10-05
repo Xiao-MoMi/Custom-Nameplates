@@ -17,8 +17,10 @@
 
 package net.momirealms.customnameplates.api.event;
 
-import net.momirealms.customnameplates.common.event.Cancellable;
 import net.momirealms.customnameplates.common.event.NameplatesEvent;
 
-public interface NameplatesReloadEvent extends NameplatesEvent, Cancellable {
+/**
+ * Represents an event that is triggered when the nameplates configuration is reloaded.
+ */
+public interface NameplatesReloadEvent extends NameplatesEvent {
 }

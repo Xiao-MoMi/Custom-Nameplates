@@ -25,7 +25,7 @@ public class YAMLProvider extends AbstractStorage {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.YAML;
     }
 

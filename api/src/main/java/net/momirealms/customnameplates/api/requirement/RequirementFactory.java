@@ -18,9 +18,16 @@
 package net.momirealms.customnameplates.api.requirement;
 
 /**
- * Interface representing a factory for creating requirements.
+ * Interface representing a factory for creating {@link Requirement} instances.
  */
 public interface RequirementFactory {
 
+    /**
+     * Processes the provided arguments and creates a new {@link Requirement} instance.
+     *
+     * @param args            the arguments needed to create the requirement
+     * @param refreshInterval the refresh interval for the requirement
+     * @return a new {@link Requirement} instance
+     */
     Requirement process(Object args, int refreshInterval);
 }

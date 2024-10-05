@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature;
 
 import net.momirealms.customnameplates.api.requirement.Requirement;
 
+/**
+ * Represents a piece of carousel text, which cycles through a series of texts with associated requirements and duration.
+ */
 public class CarouselText {
 
     private final int duration;
@@ -27,6 +30,14 @@ public class CarouselText {
     private final PreParsedDynamicText preParsedDynamicText;
     private final boolean updateOnDisplay;
 
+    /**
+     * Constructs a new CarouselText instance.
+     *
+     * @param duration        the duration (in ticks) for how long this text is displayed
+     * @param requirements    the requirements for displaying this text
+     * @param rawText         the raw text content
+     * @param updateOnDisplay whether the text should be updated when displayed
+     */
     public CarouselText(int duration, Requirement[] requirements, String rawText, boolean updateOnDisplay) {
         this.duration = duration;
         this.requirements = requirements;
@@ -36,22 +47,47 @@ public class CarouselText {
         this.updateOnDisplay = updateOnDisplay;
     }
 
+    /**
+     * Returns the duration (in ticks) for how long this text will be displayed.
+     *
+     * @return the display duration
+     */
     public int duration() {
         return duration;
     }
 
+    /**
+     * Returns the requirements that must be met to display this text.
+     *
+     * @return an array of requirements
+     */
     public Requirement[] requirements() {
         return requirements;
     }
 
+    /**
+     * Returns the raw text content.
+     *
+     * @return the raw text
+     */
     public String text() {
         return rawText;
     }
 
+    /**
+     * Returns the pre-parsed dynamic text, which processes placeholders or dynamic content.
+     *
+     * @return the pre-parsed dynamic text
+     */
     public PreParsedDynamicText preParsedDynamicText() {
         return preParsedDynamicText;
     }
 
+    /**
+     * Checks if the text should be updated each time it is displayed.
+     *
+     * @return true if the text updates on display, false otherwise
+     */
     public boolean updateOnDisplay() {
         return updateOnDisplay;
     }

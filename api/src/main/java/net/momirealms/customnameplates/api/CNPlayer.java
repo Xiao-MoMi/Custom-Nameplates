@@ -23,6 +23,8 @@ import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Vector3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -30,89 +32,342 @@ import java.util.UUID;
 
 public interface CNPlayer {
 
+    /**
+     * Returns the player's name.
+     *
+     * @return the player's name
+     */
     String name();
 
+    /**
+     * Returns the UUID of the player.
+     *
+     * @return the player's UUID
+     */
     UUID uuid();
 
-    int entityID();
-
-    Vector3 position();
-
-    String world();
-
-    void forceUpdate(Set<Placeholder> placeholders, Set<CNPlayer> another);
-
-    Set<Feature> getUsedFeatures(Placeholder placeholder);
-
+    /**
+     * Returns the underlying player object (server-side representation).
+     *
+     * @return the player object
+     */
     Object player();
 
-    double scale();
+    /**
+     * Returns the entity ID of the player.
+     *
+     * @return the entity ID
+     */
+    int entityID();
 
-    boolean isCrouching();
+    /**
+     * Returns the player's current position as a {@link Vector3}.
+     *
+     * @return the player's position
+     */
+    Vector3 position();
 
-    boolean isLoaded();
+    /**
+     * Returns the name of the world the player is in.
+     *
+     * @return the world name
+     */
+    String world();
 
-    boolean isPreviewing();
-
-    boolean hasPermission(String permission);
-
-    long playerTime();
-
-    List<Placeholder> getRefreshValueTask();
-
-    Placeholder[] activePlaceholders();
-
+    /**
+     * Checks if the player is currently online.
+     *
+     * @return true if the player is online, false otherwise
+     */
     boolean isOnline();
 
-    String getData(Placeholder placeholder);
+    /**
+     * Returns the scale of the player.
+     *
+     * @return the player's scale
+     */
+    double scale();
 
-    TickStampData<String> getValue(Placeholder placeholder);
+    /**
+     * Checks if the player is crouching.
+     *
+     * @return true if the player is crouching, false otherwise
+     */
+    boolean isCrouching();
 
-    String getRelationalData(Placeholder placeholder, CNPlayer another);
+    /**
+     * Checks if the player has been fully loaded into the system.
+     *
+     * @return true if the player is loaded, false otherwise
+     */
+    boolean isLoaded();
 
-    TickStampData<String> getRelationalValue(Placeholder placeholder, CNPlayer another);
+    /**
+     * Checks if the player is currently previewing
+     *
+     * @return true if the player is previewing, false otherwise
+     */
+    boolean isPreviewing();
 
-    void setValue(Placeholder placeholder, TickStampData<String> value);
+    /**
+     * Checks if the player has the specified permission.
+     *
+     * @param permission the permission to check
+     * @return true if the player has the permission, false otherwise
+     */
+    boolean hasPermission(String permission);
 
-    boolean setValue(Placeholder placeholder, String value);
+    /**
+     * Returns the player's current time
+     *
+     * @return the player's time
+     */
+    long playerTime();
 
-    void setRelationalValue(Placeholder placeholder, CNPlayer another, TickStampData<String> value);
-
-    boolean setRelationalValue(Placeholder placeholder, CNPlayer another, String value);
-
-    void addFeature(Feature feature);
-
-    void removeFeature(Feature feature);
-
-    boolean isMet(Requirement[] requirements);
-
-    boolean isMet(CNPlayer another, Requirement[] requirements);
-
-    Tracker addPlayerToTracker(CNPlayer another);
-
-    void removePlayerFromTracker(CNPlayer another);
-
-    Set<CNPlayer> nearbyPlayers();
-
-    void trackPassengers(CNPlayer another, int... passengers);
-
-    void untrackPassengers(CNPlayer another, int... passengers);
-
-    Set<Integer> getTrackedPassengerIds(CNPlayer another);
-
-    Set<Integer> passengers();
-
+    /**
+     * Checks if the player is flying.
+     *
+     * @return true if the player is flying, false otherwise
+     */
     boolean isFlying();
 
+    /**
+     * Returns the remaining air level for the player.
+     *
+     * @return the player's remaining air
+     */
+    int remainingAir();
+
+    /**
+     * Retrieves the set of features that are actively using the specified placeholder.
+     *
+     * @param placeholder the placeholder to check
+     * @return the set of active features using the placeholder
+     */
+    Set<Feature> activeFeatures(Placeholder placeholder);
+
+    /**
+     * Returns the placeholders that are actively used by the player's features.
+     *
+     * @return an array of active placeholders
+     */
+    Placeholder[] activePlaceholders();
+
+    /**
+     * Retrieves the list of placeholders that need to be refreshed based on their refresh intervals.
+     *
+     * @return a list of placeholders to refresh
+     */
+    List<Placeholder> activePlaceholdersToRefresh();
+
+    /**
+     * Forces an update for the specified placeholders and relational placeholders with another player.
+     *
+     * @param placeholders the placeholders to update
+     * @param another      the players related to the placeholders
+     */
+    void forceUpdate(Set<Placeholder> placeholders, Set<CNPlayer> another);
+
+    /**
+     * Retrieves the cached data for a given placeholder.
+     *
+     * @param placeholder the placeholder to retrieve data for
+     * @return the cached data as a string
+     */
+    @NotNull
+    String getData(Placeholder placeholder);
+
+    /**
+     * Retrieves the cached {@link TickStampData} for a given placeholder.
+     *
+     * @param placeholder the placeholder to retrieve data for
+     * @return the cached TickStampData, or null if none exists
+     */
+    @Nullable
+    TickStampData<String> getValue(Placeholder placeholder);
+
+    /**
+     * Retrieves the cached relational data between this player and another for a given placeholder.
+     *
+     * @param placeholder the relational placeholder
+     * @param another     the other player
+     * @return the relational data as a string
+     */
+    @NotNull
+    String getRelationalData(Placeholder placeholder, CNPlayer another);
+
+    /**
+     * Retrieves the cached relational {@link TickStampData} for a given placeholder.
+     *
+     * @param placeholder the relational placeholder
+     * @param another     the other player
+     * @return the cached relational TickStampData, or null if none exists
+     */
+    @Nullable
+    TickStampData<String> getRelationalValue(Placeholder placeholder, CNPlayer another);
+
+    /**
+     * Caches the specified {@link TickStampData} for the given placeholder.
+     *
+     * @param placeholder the placeholder to cache
+     * @param value       the value to cache
+     */
+    void setValue(Placeholder placeholder, TickStampData<String> value);
+
+    /**
+     * Caches the specified value for the given placeholder.
+     *
+     * @param placeholder the placeholder to cache
+     * @param value       the value to cache
+     * @return true if the value was changed, false otherwise
+     */
+    boolean setValue(Placeholder placeholder, String value);
+
+    /**
+     * Caches the specified relational {@link TickStampData} for a given placeholder and player.
+     *
+     * @param placeholder the relational placeholder
+     * @param another     the other player
+     * @param value       the value to cache
+     */
+    void setRelationalValue(Placeholder placeholder, CNPlayer another, TickStampData<String> value);
+
+    /**
+     * Caches the specified relational value for a given placeholder and player.
+     *
+     * @param placeholder the relational placeholder
+     * @param another     the other player
+     * @param value       the value to cache
+     * @return true if the value was changed, false otherwise
+     */
+    boolean setRelationalValue(Placeholder placeholder, CNPlayer another, String value);
+
+    /**
+     * Adds a feature to the player
+     *
+     * @param feature the feature to add
+     */
+    void addFeature(Feature feature);
+
+    /**
+     * Removes a feature from the player.
+     *
+     * @param feature the feature to remove
+     */
+    void removeFeature(Feature feature);
+
+    /**
+     * Checks if the player meets the specified requirements.
+     *
+     * @param requirements the requirements to check
+     * @return true if all requirements are met, false otherwise
+     */
+    boolean isMet(Requirement[] requirements);
+
+    /**
+     * Checks if the player meets the specified relational requirements with another player.
+     *
+     * @param another      the other player
+     * @param requirements the relational requirements to check
+     * @return true if all requirements are met, false otherwise
+     */
+    boolean isMet(CNPlayer another, Requirement[] requirements);
+
+    /**
+     * Adds a player to be track this player, creating a tracker for relational placeholders.
+     *
+     * @param another the player
+     * @return the tracker instance
+     */
+    Tracker addPlayerToTracker(CNPlayer another);
+
+    /**
+     * Removes a player from tracking this player.
+     *
+     * @param another the player to stop tracking
+     */
+    void removePlayerFromTracker(CNPlayer another);
+
+    /**
+     * Retrieves the set of nearby players tracking this player.
+     *
+     * @return the set of nearby players
+     */
+    Set<CNPlayer> nearbyPlayers();
+
+    /**
+     * Adds passenger entities to the tracker for another player.
+     *
+     * @param another    the player whose passengers to track
+     * @param passengers the IDs of the passenger entities
+     */
+    void trackPassengers(CNPlayer another, int... passengers);
+
+    /**
+     * Removes passenger entities from the tracker for another player.
+     *
+     * @param another    the player whose passengers to stop tracking
+     * @param passengers the IDs of the passenger entities
+     */
+    void untrackPassengers(CNPlayer another, int... passengers);
+
+    /**
+     * Retrieves the IDs of tracked passenger entities for another player.
+     *
+     * @param another the viewer
+     * @return the set of passenger entity IDs
+     */
+    Set<Integer> getTrackedPassengerIds(CNPlayer another);
+
+    /**
+     * Retrieves the IDs of all passenger entities currently associated with this player.
+     *
+     * @return the set of passenger entity IDs
+     */
+    Set<Integer> passengers();
+
+    /**
+     * Retrieves the tracker instance for another player.
+     *
+     * @param another the viewer
+     * @return the tracker instance, or null if none exists
+     */
     Tracker getTracker(CNPlayer another);
 
+    /**
+     * Returns the ID of the currently equipped bubble for the player.
+     *
+     * @return the ID of the equipped bubble
+     */
     String equippedBubble();
 
-    void equippedBubble(String equippedBubble);
+    /**
+     * Sets the equipped bubble for the player.
+     * Operation would fail if player is not loaded.
+     *
+     * @param equippedBubble the new bubble ID to equip
+     * @return success or not
+     */
+    boolean equippedBubble(String equippedBubble);
 
+    /**
+     * Returns the ID of the currently equipped nameplate for the player.
+     *
+     * @return the ID of the equipped nameplate
+     */
     String equippedNameplate();
 
-    void equippedNameplate(String equippedNameplate);
+    /**
+     * Sets the equipped nameplate for the player.
+     * Operation would fail if player is not loaded.
+     *
+     * @param equippedNameplate the new nameplate ID to equip
+     * @return success or not
+     */
+    boolean equippedNameplate(String equippedNameplate);
 
-    int remainingAir();
+    /**
+     * Save the player's current nameplate/bubble to database
+     */
+    void save();
 }

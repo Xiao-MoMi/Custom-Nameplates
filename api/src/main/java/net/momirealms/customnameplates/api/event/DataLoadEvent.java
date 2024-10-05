@@ -18,10 +18,20 @@
 package net.momirealms.customnameplates.api.event;
 
 import net.momirealms.customnameplates.api.storage.data.PlayerData;
+import net.momirealms.customnameplates.common.event.NameplatesEvent;
 import net.momirealms.customnameplates.common.event.Param;
 
-public interface DataLoadEvent {
+/**
+ * Represents an event that is triggered when player data is loaded.
+ * This event provides access to the {@link PlayerData} for further processing.
+ */
+public interface DataLoadEvent extends NameplatesEvent {
 
+    /**
+     * Returns the {@link PlayerData} associated with this event.
+     *
+     * @return the loaded player data
+     */
     @Param(0)
     PlayerData data();
 }

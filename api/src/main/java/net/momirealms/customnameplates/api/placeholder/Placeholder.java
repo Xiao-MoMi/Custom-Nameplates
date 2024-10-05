@@ -21,15 +21,45 @@ import java.util.Set;
 
 public interface Placeholder {
 
+    /**
+     * Adds a child placeholder to this placeholder.
+     *
+     * @param placeholder the child placeholder to add
+     */
     void addChild(Placeholder placeholder);
 
-    void addChildren(Set<Placeholder> placeholder);
+    /**
+     * Adds multiple child placeholders to this placeholder.
+     *
+     * @param placeholders the set of child placeholders to add
+     */
+    void addChildren(Set<Placeholder> placeholders);
 
+    /**
+     * Returns the set of child placeholders associated with this placeholder.
+     *
+     * @return the set of child placeholders
+     */
     Set<Placeholder> children();
 
+    /**
+     * Returns the refresh interval of this placeholder.
+     *
+     * @return the refresh interval, or -1 if no refresh is required
+     */
     int refreshInterval();
 
+    /**
+     * Returns the unique ID of this placeholder.
+     *
+     * @return the placeholder ID
+     */
     String id();
 
+    /**
+     * Returns the unique count ID for this placeholder, used for identification purposes.
+     *
+     * @return the count ID
+     */
     int countId();
 }

@@ -19,9 +19,9 @@ package net.momirealms.customnameplates.bukkit.requirement;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.requirement.AbstractRequirementManager;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
+import net.momirealms.customnameplates.backend.requirement.AbstractRequirementManager;
 import net.momirealms.customnameplates.bukkit.requirement.builtin.*;
 import net.momirealms.customnameplates.common.util.ListUtils;
 import org.bukkit.potion.PotionEffectType;

@@ -22,13 +22,37 @@ import net.momirealms.customnameplates.api.placeholder.Placeholder;
 
 import java.util.Set;
 
+/**
+ * Represents a feature that can utilize placeholders and manage updates based on player interaction.
+ */
 public interface Feature {
 
+    /**
+     * Returns the name of the feature.
+     *
+     * @return the feature name
+     */
     String name();
 
+    /**
+     * Returns the set of placeholders that are currently active within this feature.
+     *
+     * @return a set of active placeholders
+     */
     Set<Placeholder> activePlaceholders();
 
+    /**
+     * Returns the set of all placeholders that this feature can use.
+     *
+     * @return a set of all possible placeholders
+     */
     Set<Placeholder> allPlaceholders();
 
+    /**
+     * Notifies the feature that placeholders for the specified player have been updated.
+     *
+     * @param p1    the player whose placeholders have been updated
+     * @param force if true, forces an update even if no changes are detected
+     */
     void notifyPlaceholderUpdates(CNPlayer p1, boolean force);
 }

@@ -25,6 +25,8 @@ import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.RelationalPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.storage.data.PlayerData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,22 +44,12 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     private String equippedNameplate;
     private String equippedBubble;
 
-    /**
-     * 此处缓存了所有解析过的变量，Relational则是缓存了与某个玩家的关系变量，仅更新当前处于active状态的变量。
-     */
     private final Map<Integer, TickStampData<String>> cachedValues = new ConcurrentHashMap<>();
     private final Map<Integer, WeakHashMap<CNPlayer, TickStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>();
 
-    /**
-     * 此处缓存了所有解析过的条件，Relational则是缓存了与某个玩家的关系条件
-     */
     private final Map<Requirement, TickStampData<Boolean>> cachedRequirements = new ConcurrentHashMap<>();
     private final Map<Requirement, WeakHashMap<CNPlayer, TickStampData<Boolean>>> cachedRelationalRequirements = new ConcurrentHashMap<>();
 
-    /*
-     * 这里维护了一个双向的Map以方便更新对应的Feature。
-     * 插件会先获取当前处于活跃状态的变量（由Feature提供），根据变量的更新情况，判断是否需要反馈到对应的Feature以便只在必要的时刻进行更新
-     */
     private final Set<Feature> activeFeatures = new CopyOnWriteArraySet<>();
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new ConcurrentHashMap<>();
     private final Map<Feature, Set<Placeholder>> feature2Placeholders = new ConcurrentHashMap<>();
@@ -75,7 +67,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
      * @return 更新任务
      */
     @Override
-    public List<Placeholder> getRefreshValueTask() {
+    public List<Placeholder> activePlaceholdersToRefresh() {
         Placeholder[] activePlaceholders = activePlaceholders();
         List<Placeholder> placeholderWithChildren = new ArrayList<>();
         for (Placeholder placeholder : activePlaceholders) {
@@ -167,13 +159,15 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     public void reload() {
         cachedValues.clear();
         cachedRelationalValues.clear();
+        cachedRequirements.clear();
+        cachedRelationalRequirements.clear();
         activeFeatures.clear();
         placeholder2Features.clear();
         feature2Placeholders.clear();
     }
 
     @Override
-    public Set<Feature> getUsedFeatures(Placeholder placeholder) {
+    public Set<Feature> activeFeatures(Placeholder placeholder) {
         return placeholder2Features.getOrDefault(placeholder, Collections.emptySet());
     }
 
@@ -286,7 +280,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public String getData(Placeholder placeholder) {
+    public @NotNull String getData(Placeholder placeholder) {
         return Optional.ofNullable(cachedValues.get(placeholder.countId())).map(TickStampData::data).orElse(placeholder.id());
     }
 
@@ -296,10 +290,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public String getRelationalData(Placeholder placeholder, CNPlayer another) {
+    public @NotNull String getRelationalData(Placeholder placeholder, CNPlayer another) {
         WeakHashMap<CNPlayer, TickStampData<String>> map = cachedRelationalValues.get(placeholder.countId());
         if (map == null) {
-            return null;
+            return placeholder.id();
         }
         return Optional.ofNullable(map.get(another)).map(TickStampData::data).orElse(placeholder.id());
     }
@@ -442,11 +436,12 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public void equippedBubble(String equippedBubble) {
+    public boolean equippedBubble(String equippedBubble) {
+        if (!isLoaded()) return false;
         if (!equippedBubble.equals(this.equippedBubble)) {
             this.equippedBubble = equippedBubble;
-            // TODO 更新变量
         }
+        return true;
     }
 
     @Override
@@ -456,11 +451,22 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public void equippedNameplate(String equippedNameplate) {
+    public boolean equippedNameplate(String equippedNameplate) {
+        if (!isLoaded()) return false;
         if (!equippedNameplate.equals(this.equippedNameplate)) {
             this.equippedNameplate = equippedNameplate;
             // TODO 更新变量
         }
+        return true;
+    }
+
+    @Override
+    public void save() {
+        plugin.getStorageManager().dataSource().updatePlayerData(PlayerData.builder()
+                .uuid(uuid())
+                .nameplate(equippedNameplate())
+                .bubble(equippedBubble())
+                .build(), plugin.getScheduler().async());
     }
 
     @Override

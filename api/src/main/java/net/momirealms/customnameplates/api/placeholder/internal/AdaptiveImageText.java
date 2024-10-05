@@ -22,8 +22,10 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.AdaptiveImage;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@ApiStatus.Internal
 public class AdaptiveImageText<T extends AdaptiveImage> {
 
     private final String id;

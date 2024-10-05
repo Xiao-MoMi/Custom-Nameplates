@@ -57,7 +57,7 @@ public class NameplatesForcePreviewCommand extends BukkitCommandFeature<CommandS
                 .optional("nameplate", StringParser.stringComponent().suggestionProvider(new SuggestionProvider<>() {
                     @Override
                     public @NonNull CompletableFuture<? extends @NonNull Iterable<? extends @NonNull Suggestion>> suggestionsFuture(@NonNull CommandContext<Object> context, @NonNull CommandInput input) {
-                        return CompletableFuture.completedFuture(plugin.getNameplateManager().getNameplates().stream().map(it -> Suggestion.suggestion(it.id())).toList());
+                        return CompletableFuture.completedFuture(plugin.getNameplateManager().nameplates().stream().map(it -> Suggestion.suggestion(it.id())).toList());
                     }
                 }))
                 .optional("time", IntegerParser.integerParser(0))

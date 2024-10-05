@@ -31,15 +31,14 @@ public class Tracker {
 
     private final Set<Integer> passengerIDs = Collections.synchronizedSet(new HashSet<>());
 
+    /**
+     * Constructs a new Tracker for the specified player.
+     *
+     * @param tracker the player being tracked
+     */
     public Tracker(CNPlayer tracker) {
         this.isCrouching = false;
         this.scale = 1;
-        this.tracker = tracker;
-    }
-
-    public Tracker(CNPlayer tracker, boolean isCrouching, double scale) {
-        this.isCrouching = isCrouching;
-        this.scale = scale;
         this.tracker = tracker;
     }
 

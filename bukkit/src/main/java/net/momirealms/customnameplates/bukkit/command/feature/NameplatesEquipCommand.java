@@ -22,7 +22,6 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
-import net.momirealms.customnameplates.api.storage.data.PlayerData;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
 import net.momirealms.customnameplates.common.command.CustomNameplatesCommandManager;
@@ -65,7 +64,7 @@ public class NameplatesEquipCommand extends BukkitCommandFeature<CommandSender> 
                 .handler(context -> {
                     if (!ConfigManager.nameplateModule()) return;
                     String nameplateId = context.get("nameplate");
-                    Nameplate nameplate = plugin.getNameplateManager().getNameplate(nameplateId);
+                    Nameplate nameplate = plugin.getNameplateManager().nameplateById(nameplateId);
                     if (nameplate == null) {
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_FAILURE_NOT_EXISTS, Component.text(nameplateId));
                         return;
@@ -87,13 +86,8 @@ public class NameplatesEquipCommand extends BukkitCommandFeature<CommandSender> 
                         return;
                     }
                     player.equippedNameplate(nameplateId);
+                    player.save();
                     handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_SUCCESS, Component.text(nameplateId), AdventureHelper.miniMessage(nameplate.displayName()));
-
-                    plugin.getStorageManager().getDataSource().updatePlayerData(PlayerData.builder()
-                            .uuid(player.uuid())
-                            .nameplate(player.equippedNameplate())
-                            .bubble(player.equippedBubble())
-                            .build(), plugin.getScheduler().async());
                 });
     }
 

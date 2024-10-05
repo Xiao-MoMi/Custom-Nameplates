@@ -58,7 +58,7 @@ public class H2Provider extends AbstractSQLDatabase {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.H2;
     }
 

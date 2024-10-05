@@ -17,11 +17,27 @@
 
 package net.momirealms.customnameplates.api.placeholder;
 
+/**
+ * Represents a shared placeholder, which provides content that is not specific to any individual player but can be updated globally.
+ */
 public interface SharedPlaceholder extends Placeholder {
 
+    /**
+     * Requests the current placeholder content.
+     *
+     * @return the current placeholder content as a string
+     */
     String request();
 
+    /**
+     * Updates the placeholder content. This is typically called when the placeholder's value needs to be refreshed.
+     */
     void update();
 
+    /**
+     * Returns the latest value of the placeholder after the most recent update.
+     *
+     * @return the latest placeholder value as a string
+     */
     String getLatestValue();
 }

@@ -21,14 +21,14 @@ public abstract class AbstractHikariDatabase extends AbstractSQLDatabase {
 
     public AbstractHikariDatabase(CustomNameplates plugin) {
         super(plugin);
-        this.driverClass = getStorageType() == StorageType.MariaDB ? "org.mariadb.jdbc.Driver" : "com.mysql.cj.jdbc.Driver";
-        this.sqlBrand = getStorageType() == StorageType.MariaDB ? "MariaDB" : "MySQL";
+        this.driverClass = storageType() == StorageType.MariaDB ? "org.mariadb.jdbc.Driver" : "com.mysql.cj.jdbc.Driver";
+        this.sqlBrand = storageType() == StorageType.MariaDB ? "MariaDB" : "MySQL";
         try {
             Class.forName(this.driverClass);
         } catch (ClassNotFoundException e1) {
-            if (getStorageType() == StorageType.MariaDB) {
+            if (storageType() == StorageType.MariaDB) {
                 plugin.getPluginLogger().warn("No MariaDB driver is found");
-            } else if (getStorageType() == StorageType.MySQL) {
+            } else if (storageType() == StorageType.MySQL) {
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
                 } catch (ClassNotFoundException e2) {

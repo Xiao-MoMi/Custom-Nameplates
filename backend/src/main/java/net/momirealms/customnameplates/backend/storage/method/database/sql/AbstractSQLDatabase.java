@@ -37,7 +37,7 @@ public abstract class AbstractSQLDatabase extends AbstractStorage {
      */
     public void createTableIfNotExist() {
         try (Connection connection = getConnection()) {
-            final String[] databaseSchema = getSchema(getStorageType().name().toLowerCase(Locale.ENGLISH));
+            final String[] databaseSchema = getSchema(storageType().name().toLowerCase(Locale.ENGLISH));
             try (Statement statement = connection.createStatement()) {
                 for (String tableCreationStatement : databaseSchema) {
                     statement.execute(tableCreationStatement);

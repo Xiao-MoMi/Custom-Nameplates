@@ -5,6 +5,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.event.DataLoadEvent;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.api.helper.GsonHelper;
 import net.momirealms.customnameplates.api.storage.DataStorageProvider;
@@ -53,17 +54,19 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 					PlayerData data = playerData1.get();
 					handleDataLoad(player, data);
 					((AbstractCNPlayer) player).setLoaded(true);
+					plugin.getEventManager().dispatch(DataLoadEvent.class, data);
 					this.redisManager.updatePlayerData(data, async).thenAccept(result -> {
 						if (!result) {
 							plugin.getPluginLogger().warn("Failed to refresh redis player data for " + player.name());
 						}
 					});
 				} else {
-					this.getDataSource().getPlayerData(uuid, async).thenAccept(playerData2 -> {
+					this.dataSource().getPlayerData(uuid, async).thenAccept(playerData2 -> {
 						if (playerData2.isPresent()) {
 							PlayerData data = playerData2.get();
 							handleDataLoad(player, data);
 							((AbstractCNPlayer) player).setLoaded(true);
+							plugin.getEventManager().dispatch(DataLoadEvent.class, data);
 							this.redisManager.updatePlayerData(data, async).thenAccept(result -> {
 								if (!result) {
 									plugin.getPluginLogger().warn("Failed to refresh redis player data for " + player.name());
@@ -76,7 +79,7 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 				}
 			});
 		} else {
-			this.getDataSource().getPlayerData(uuid, async).thenAccept(playerData -> {
+			this.dataSource().getPlayerData(uuid, async).thenAccept(playerData -> {
 				if (playerData.isPresent()) {
 					PlayerData data = playerData.get();
 					handleDataLoad(player, data);
@@ -151,13 +154,13 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 
 	@NotNull
 	@Override
-	public String getServerID() {
+	public String serverID() {
 		return serverID;
 	}
 
 	@NotNull
 	@Override
-	public DataStorageProvider getDataSource() {
+	public DataStorageProvider dataSource() {
 		return dataSource;
 	}
 
@@ -174,7 +177,7 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 	@NotNull
 	@Override
 	public String toJson(@NotNull PlayerData data) {
-		return GsonHelper.get().toJson(data.toGsonData());
+		return GsonHelper.get().toJson(data.toJsonData());
 	}
 
 	@NotNull

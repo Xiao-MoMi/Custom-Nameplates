@@ -19,8 +19,8 @@ package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.feature.bubble.chat.AbstractChatMessageProvider;
-import net.momirealms.customnameplates.api.feature.bubble.chat.ChatManager;
+import net.momirealms.customnameplates.api.feature.chat.AbstractChatMessageProvider;
+import net.momirealms.customnameplates.api.feature.chat.ChatManager;
 import net.william278.huskchat.BukkitHuskChat;
 import net.william278.huskchat.api.BukkitHuskChatAPI;
 import net.william278.huskchat.channel.Channel;

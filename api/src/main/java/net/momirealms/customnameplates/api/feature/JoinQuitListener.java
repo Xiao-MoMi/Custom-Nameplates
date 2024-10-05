@@ -19,9 +19,22 @@ package net.momirealms.customnameplates.api.feature;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
+/**
+ * Listener for handling player join and quit events.
+ */
 public interface JoinQuitListener {
 
+    /**
+     * Called when a player joins the server.
+     *
+     * @param player the player who joined
+     */
     void onPlayerJoin(CNPlayer player);
 
+    /**
+     * Called when a player quits the server.
+     *
+     * @param player the player who quit
+     */
     void onPlayerQuit(CNPlayer player);
 }

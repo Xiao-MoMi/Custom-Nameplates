@@ -21,23 +21,72 @@ import java.util.function.Predicate;
 
 public interface TagRenderer {
 
+    /**
+     * Returns the offset applied to the tag for positioning a "hat" or similar element above the entity's head.
+     *
+     * @return the hat offset value
+     */
     double hatOffset();
 
+    /**
+     * Sets the offset applied to the tag for positioning a "hat" or similar element above the entity's head.
+     *
+     * @param hatOffset the new hat offset value
+     */
     void hatOffset(double hatOffset);
 
+    /**
+     * Called every tick to update the state of the tags managed by this renderer.
+     */
     void onTick();
 
+    /**
+     * Destroys the renderer, cleaning up any resources or tags it manages.
+     */
     void destroy();
 
+    /**
+     * Adds a new tag to be rendered.
+     *
+     * @param tag the tag to add
+     */
     void addTag(Tag tag);
 
+    /**
+     * Returns the array of tags currently managed by this renderer.
+     *
+     * @return an array of Tag instances
+     */
     Tag[] tags();
 
+    /**
+     * Removes tags that match the given predicate.
+     *
+     * @param predicate a predicate to test tags for removal
+     * @return the number of tags removed
+     */
     int removeTagIf(Predicate<Tag> predicate);
 
+    /**
+     * Returns the index of the specified tag in the renderer's tag list.
+     *
+     * @param tag the tag to check
+     * @return the index of the tag, or -1 if not found
+     */
     int tagIndex(Tag tag);
 
+    /**
+     * Adds a tag at the specified index in the renderer's tag list.
+     *
+     * @param tag   the tag to add
+     * @param index the index at which to insert the tag
+     */
     void addTag(Tag tag, int index);
 
+    /**
+     * Removes the specified tag from the renderer's tag list.
+     *
+     * @param tag the tag to remove
+     */
     void removeTag(Tag tag);
 }

@@ -25,11 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MainTask implements Runnable {
 
-    // The system would break if a server hasn't stopped for 3 years
-    private static int TICKS = 0;
+    private static int RUN_TICKS = 0;
 
-    private static final Map<Integer, Integer> TIME_1 = new ConcurrentHashMap<>(2048, 1F);
-    private static final Map<Integer, Integer> TIME_2 = new ConcurrentHashMap<>(2048, 1F);
+    private static final Map<Integer, Integer> TIME_1 = new ConcurrentHashMap<>(2048);
+    private static final Map<Integer, Integer> TIME_2 = new ConcurrentHashMap<>(2048);
     private static final Set<Integer> requestedSharedPlaceholders = Collections.synchronizedSet(new HashSet<>());
     private int timer;
 
@@ -40,18 +39,20 @@ public class MainTask implements Runnable {
     }
 
     public static int getTicks() {
-        return TICKS;
+        return RUN_TICKS;
     }
 
     public static boolean hasRequested(int countId) {
-        boolean result = requestedSharedPlaceholders.contains(countId);
-        if (!result) requestedSharedPlaceholders.add(countId);
-        return result;
+        return !requestedSharedPlaceholders.add(countId);
+    }
+
+    public static void reset() {
+        RUN_TICKS = 0;
     }
 
     @Override
     public void run() {
-        TICKS++;
+        RUN_TICKS++;
         requestedSharedPlaceholders.clear();
         long time1 = System.nanoTime();
         plugin.actionBarManager.refreshConditions();
@@ -67,20 +68,20 @@ public class MainTask implements Runnable {
         TIME_2.put(timer, diff2);
         timer++;
         if (timer >= 1200) timer = 0;
+        if (RUN_TICKS < 0) {
+            CustomNameplates.getInstance().reload();
+        }
     }
 
     public static HealthyProfile getHealthyProfile() {
-        long total1 = 0;
-        long total2 = 0;
-        for (int value : TIME_1.values()) {
-            total1 += value;
-        }
-        for (int value : TIME_2.values()) {
-            total2 += value;
-        }
+        long total1 = TIME_1.values().stream().mapToLong(Integer::longValue).sum();
+        long total2 = TIME_2.values().stream().mapToLong(Integer::longValue).sum();
+
         long total = total1 + total2;
         double size = TIME_1.size();
+
         double load = total / size / 50_000_000;
+
         return new HealthyProfile(
                 load,
                 (long) (total / size),

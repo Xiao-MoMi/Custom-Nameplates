@@ -22,7 +22,7 @@ import net.momirealms.customnameplates.api.feature.advance.AdvanceManager;
 import net.momirealms.customnameplates.api.feature.background.BackgroundManager;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBarManager;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleManager;
-import net.momirealms.customnameplates.api.feature.bubble.chat.ChatManager;
+import net.momirealms.customnameplates.api.feature.chat.ChatManager;
 import net.momirealms.customnameplates.api.feature.image.ImageManager;
 import net.momirealms.customnameplates.api.feature.nameplate.NameplateManager;
 import net.momirealms.customnameplates.api.feature.pack.ResourcePackManager;
@@ -43,10 +43,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Abstract class representing the core plugin management of CustomNameplates.
+ * Provides access to managers for various features.
+ */
 public abstract class CustomNameplates implements NameplatesPlugin {
 
     private static CustomNameplates instance;
@@ -81,110 +84,227 @@ public abstract class CustomNameplates implements NameplatesPlugin {
         instance = this;
     }
 
+    /**
+     * Reloads the plugin
+     */
     @Override
-    public void reload() {
-        if (scheduledMainTask != null)
-            scheduledMainTask.cancel();
-        scheduledMainTask = getScheduler().asyncRepeating(mainTask, 50, 50, TimeUnit.MILLISECONDS);
-    }
+    public abstract void reload();
 
+    /**
+     * Disables the plugin, canceling any scheduled tasks.
+     */
     @Override
-    public void disable() {
-        if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
-    }
+    public abstract void disable();
 
-    @Override
-    public DependencyManager getDependencyManager() {
-        return dependencyManager;
-    }
-
-    @Override
-    public TranslationManager getTranslationManager() {
-        return translationManager;
-    }
-
-    @Override
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
+    /**
+     * Logs debug messages through the provided supplier.
+     *
+     * @param supplier a supplier that provides debug messages
+     */
     @Override
     public void debug(Supplier<String> supplier) {
         this.debugger.accept(supplier);
     }
 
+    /**
+     * Returns the dependency manager for managing external dependencies.
+     *
+     * @return the {@link DependencyManager} instance
+     */
+    @Override
+    public DependencyManager getDependencyManager() {
+        return dependencyManager;
+    }
+
+    /**
+     * Returns the translation manager for managing language translations.
+     *
+     * @return the {@link TranslationManager} instance
+     */
+    @Override
+    public TranslationManager getTranslationManager() {
+        return translationManager;
+    }
+
+    /**
+     * Returns the configuration manager for managing plugin configurations.
+     *
+     * @return the {@link ConfigManager} instance
+     */
+    @Override
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    /**
+     * Returns the manager responsible for handling placeholders.
+     *
+     * @return the {@link PlaceholderManager} instance
+     */
     public PlaceholderManager getPlaceholderManager() {
         return placeholderManager;
     }
 
+    /**
+     * Returns the packet sender responsible for sending network packets to players.
+     *
+     * @return the {@link PacketSender} instance
+     */
     public PacketSender getPacketSender() {
         return packetSender;
     }
 
+    /**
+     * Returns the requirement manager responsible for managing requirements.
+     *
+     * @return the {@link RequirementManager} instance
+     */
     public RequirementManager getRequirementManager() {
         return requirementManager;
     }
 
+    /**
+     * Returns the action bar manager responsible for managing action bar displays.
+     *
+     * @return the {@link ActionBarManager} instance
+     */
     public ActionBarManager getActionBarManager() {
         return actionBarManager;
     }
 
+    /**
+     * Returns the manager responsible for handling unlimited tags.
+     *
+     * @return the {@link UnlimitedTagManager} instance
+     */
     public UnlimitedTagManager getUnlimitedTagManager() {
         return unlimitedTagManager;
     }
 
+    /**
+     * Returns the manager responsible for handling font advances.
+     *
+     * @return the {@link AdvanceManager} instance
+     */
     public AdvanceManager getAdvanceManager() {
         return advanceManager;
     }
 
+    /**
+     * Returns the background manager responsible for handling background images.
+     *
+     * @return the {@link BackgroundManager} instance
+     */
     public BackgroundManager getBackgroundManager() {
         return backgroundManager;
     }
 
+    /**
+     * Returns the event manager responsible for managing events.
+     *
+     * @return the {@link EventManager} instance
+     */
     public EventManager getEventManager() {
         return eventManager;
     }
 
+    /**
+     * Returns the storage manager responsible for handling data storage.
+     *
+     * @return the {@link StorageManager} instance
+     */
     public StorageManager getStorageManager() {
         return storageManager;
     }
 
+    /**
+     * Returns the nameplate manager responsible for managing nameplate images.
+     *
+     * @return the {@link NameplateManager} instance
+     */
     public NameplateManager getNameplateManager() {
         return nameplateManager;
     }
 
+    /**
+     * Returns the image manager responsible for handling images used within the plugin.
+     *
+     * @return the {@link ImageManager} instance
+     */
     public ImageManager getImageManager() {
         return imageManager;
     }
 
+    /**
+     * Returns the bubble manager responsible for managing chat bubbles.
+     *
+     * @return the {@link BubbleManager} instance
+     */
     public BubbleManager getBubbleManager() {
         return bubbleManager;
     }
 
+    /**
+     * Returns the chat manager responsible for managing chat-related features.
+     *
+     * @return the {@link ChatManager} instance
+     */
     public ChatManager getChatManager() {
         return chatManager;
     }
 
+    /**
+     * Returns the resource pack manager responsible for managing custom resource packs.
+     *
+     * @return the {@link ResourcePackManager} instance
+     */
     public ResourcePackManager getResourcePackManager() {
         return resourcePackManager;
     }
 
+    /**
+     * Returns the platform object for accessing platform-specific functionality.
+     *
+     * @return the {@link Platform} instance
+     */
     public Platform getPlatform() {
         return platform;
     }
 
+    /**
+     * Returns a collection of all currently online players.
+     *
+     * @return a collection of {@link CNPlayer} instances
+     */
     public Collection<CNPlayer> getOnlinePlayers() {
         return new HashSet<>(onlinePlayerMap.values());
     }
 
+    /**
+     * Retrieves a player by their UUID.
+     *
+     * @param uuid the UUID of the player
+     * @return the {@link CNPlayer} instance, or null if not found
+     */
     public CNPlayer getPlayer(UUID uuid) {
         return onlinePlayerMap.get(uuid);
     }
 
+    /**
+     * Retrieves a player by their entity ID.
+     *
+     * @param entityID the entity ID of the player
+     * @return the {@link CNPlayer} instance, or null if not found
+     */
     public CNPlayer getPlayer(int entityID) {
         return entityIDFastLookup.get(entityID);
     }
 
+    /**
+     * Returns the singleton instance of CustomNameplates.
+     *
+     * @return the {@link CustomNameplates} instance
+     */
     public static CustomNameplates getInstance() {
         return instance;
     }

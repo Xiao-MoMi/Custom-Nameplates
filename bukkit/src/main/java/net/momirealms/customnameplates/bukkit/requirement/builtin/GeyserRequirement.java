@@ -19,7 +19,7 @@ package net.momirealms.customnameplates.bukkit.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.requirement.AbstractRequirement;
+import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
 import net.momirealms.customnameplates.bukkit.BukkitPlatform;
 import net.momirealms.customnameplates.bukkit.compatibility.bedrock.GeyserUtils;
 

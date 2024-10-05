@@ -20,32 +20,96 @@ package net.momirealms.customnameplates.api.feature.tag;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public interface UnlimitedTagManager extends Reloadable {
 
+    /**
+     * Called every tick to update the state of tags.
+     */
     void onTick();
 
+    /**
+     * Checks if name tags should always be shown.
+     *
+     * @return true if name tags are always shown, false otherwise
+     */
     boolean isAlwaysShow();
 
-    NameTagConfig getConfig(String name);
+    /**
+     * Retrieves the name tag configuration by its id.
+     *
+     * @param id the id of the tag configuration
+     * @return the corresponding NameTagConfig
+     */
+    NameTagConfig configById(String id);
 
-    NameTagConfig[] allConfigs();
+    /**
+     * Returns all available name tag configurations.
+     *
+     * @return an array of all NameTagConfig instances
+     */
+    NameTagConfig[] nameTagConfigs();
 
+    /**
+     * Sets whether a player is in preview mode for tags.
+     *
+     * @param player  the player to update
+     * @param preview true to enable preview mode, false to disable
+     */
     void setPreviewing(CNPlayer player, boolean preview);
 
+    /**
+     * Returns the duration (in ticks) for which a tag preview is shown.
+     *
+     * @return the preview duration in ticks
+     */
     int previewDuration();
 
+    /**
+     * Returns the TagRenderer responsible for rendering tags for a specific owner.
+     *
+     * @param owner the owner of the tags
+     * @return the TagRenderer for the owner
+     */
+    @Nullable
     TagRenderer getTagRender(CNPlayer owner);
 
+    /**
+     * Internal method for handling when a player is added to the owner's viewer list.
+     *
+     * @param owner  the player who owns the tags
+     * @param added  the player who is added to the viewer list
+     */
     @ApiStatus.Internal
     void onAddPlayer(CNPlayer owner, CNPlayer added);
 
+    /**
+     * Internal method for handling when a player is removed from the owner's viewer list.
+     *
+     * @param owner   the player who owns the tags
+     * @param removed the player who is removed from the viewer list
+     */
     @ApiStatus.Internal
     void onRemovePlayer(CNPlayer owner, CNPlayer removed);
 
+    /**
+     * Internal method for updating a player's crouching state.
+     *
+     * @param owner      the player who owns the tags
+     * @param viewer     the player viewing the tags
+     * @param isCrouching true if the player is crouching, false otherwise
+     */
     @ApiStatus.Internal
     void onPlayerDataSet(CNPlayer owner, CNPlayer viewer, boolean isCrouching);
 
+    /**
+     * Internal method for updating a player's scale attributes.
+     *
+     * @param owner   the player who owns the tags
+     * @param viewer  the player viewing the tags
+     * @param scale   the new scale value
+     */
     @ApiStatus.Internal
     void onPlayerAttributeSet(CNPlayer owner, CNPlayer viewer, double scale);
 }

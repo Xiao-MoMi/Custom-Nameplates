@@ -25,16 +25,50 @@ import java.util.Collection;
 
 public interface NameplateManager extends Reloadable {
 
+    /**
+     * Retrieves a Nameplate by its unique ID.
+     *
+     * @param id the unique ID of the nameplate
+     * @return the Nameplate instance, or null if not found
+     */
     @Nullable
-    Nameplate getNameplate(String id);
+    Nameplate nameplateById(String id);
 
-    Collection<Nameplate> getNameplates();
+    /**
+     * Returns a collection of all available nameplates.
+     *
+     * @return a collection of Nameplate instances
+     */
+    Collection<Nameplate> nameplates();
 
+    /**
+     * Checks if a player has access to a specific nameplate by its ID.
+     *
+     * @param player the player to check
+     * @param id     the ID of the nameplate
+     * @return true if the player has access, false otherwise
+     */
     boolean hasNameplate(CNPlayer player, String id);
 
+    /**
+     * Returns a collection of nameplates available to the player.
+     *
+     * @param player the player to check
+     * @return a collection of available Nameplate instances
+     */
     Collection<Nameplate> availableNameplates(CNPlayer player);
 
+    /**
+     * Returns the ID of the default nameplate to be used when no specific nameplate is set.
+     *
+     * @return the default nameplate ID
+     */
     String defaultNameplateId();
 
+    /**
+     * Returns the player's name tag to be displayed on the nameplate.
+     *
+     * @return the player's name tag
+     */
     String playerNameTag();
 }

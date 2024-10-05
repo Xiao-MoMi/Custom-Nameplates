@@ -19,7 +19,17 @@ package net.momirealms.customnameplates.api.placeholder;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
+/**
+ * Represents a relational placeholder, which provides dynamic content based on the relationship between two players.
+ */
 public interface RelationalPlaceholder extends Placeholder {
 
+    /**
+     * Requests the placeholder content based on the relationship between two players.
+     *
+     * @param p1 the first player
+     * @param p2 the second player
+     * @return the placeholder content as a string
+     */
     String request(CNPlayer p1, CNPlayer p2);
 }

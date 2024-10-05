@@ -103,7 +103,7 @@ public class RedisManager extends AbstractStorage {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.Redis;
     }
 

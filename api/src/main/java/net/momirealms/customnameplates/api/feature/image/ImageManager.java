@@ -24,8 +24,19 @@ import java.util.Collection;
 
 public interface ImageManager extends Reloadable {
 
+    /**
+     * Retrieves an Image configuration by its unique ID.
+     *
+     * @param id the unique ID of the image
+     * @return the Image instance, or null if not found
+     */
     @Nullable
-    Image getImage(String id);
+    Image imageById(String id);
 
-    Collection<Image> getImages();
+    /**
+     * Returns a collection of all available Image configurations.
+     *
+     * @return a collection of Image instances
+     */
+    Collection<Image> images();
 }

@@ -19,9 +19,33 @@ package net.momirealms.customnameplates.api.feature;
 
 public interface AdaptiveImage {
 
+    /**
+     * Creates the prefix for the image with the specified advance and margins.
+     *
+     * @param advance the advance for the image
+     * @param leftMargin the left margin for the image
+     * @param rightMargin the right margin for the image
+     * @return the generated image prefix
+     */
     String createImagePrefix(float advance, float leftMargin, float rightMargin);
 
+    /**
+     * Creates the suffix for the image with the specified advance and margins.
+     *
+     * @param advance the advance for the image
+     * @param leftMargin the left margin for the image
+     * @param rightMargin the right margin for the image
+     * @return the generated image suffix
+     */
     String createImageSuffix(float advance, float leftMargin, float rightMargin);
 
+    /**
+     * Creates the full image string with the specified advance and margins.
+     *
+     * @param advance the advance for the image
+     * @param leftMargin the left margin for the image
+     * @param rightMargin the right margin for the image
+     * @return the generated image string
+     */
     String createImage(float advance, float leftMargin, float rightMargin);
 }

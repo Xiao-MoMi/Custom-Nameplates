@@ -22,7 +22,9 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class StaticText {
 
     private final int width;

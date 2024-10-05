@@ -10,7 +10,7 @@ public class MariaDBProvider extends AbstractHikariDatabase {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.MariaDB;
     }
 }

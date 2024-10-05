@@ -62,7 +62,7 @@ public class SQLiteProvider extends AbstractSQLDatabase {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.SQLite;
     }
 

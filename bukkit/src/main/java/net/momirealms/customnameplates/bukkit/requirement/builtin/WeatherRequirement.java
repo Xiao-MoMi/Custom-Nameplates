@@ -18,7 +18,7 @@
 package net.momirealms.customnameplates.bukkit.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.requirement.AbstractRequirement;
+import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 

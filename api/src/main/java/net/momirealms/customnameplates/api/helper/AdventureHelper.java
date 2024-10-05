@@ -127,6 +127,12 @@ public class AdventureHelper {
         );
     }
 
+    /**
+     * Converts a MiniMessage string to a Minecraft component object.
+     *
+     * @param miniMessage the MiniMessage string
+     * @return the Minecraft component object
+     */
     public static Object miniMessageToMinecraftComponent(String miniMessage) {
         AdventureHelper instance = getInstance();
         return instance.miniMessageToMinecraftComponentCache.get(miniMessage, (text) -> {
@@ -135,6 +141,14 @@ public class AdventureHelper {
         });
     }
 
+    /**
+     * Converts a MiniMessage string with a score component to a Minecraft component object.
+     *
+     * @param miniMessage the MiniMessage string
+     * @param name        the name used in the score component
+     * @param objective   the objective used in the score component
+     * @return the Minecraft component object
+     */
     public static Object miniMessageToMinecraftComponent(String miniMessage, String name, String objective) {
         AdventureHelper instance = getInstance();
         return instance.miniMessageToMinecraftComponentCache.get(miniMessage, (text) -> {
@@ -143,6 +157,12 @@ public class AdventureHelper {
         });
     }
 
+    /**
+     * Converts a Minecraft component object to a MiniMessage string.
+     *
+     * @param component the Minecraft component object
+     * @return the MiniMessage string representation
+     */
     public static String minecraftComponentToMiniMessage(Object component) {
         AdventureHelper instance = getInstance();
         return instance.minecraftComponentToMiniMessageCache.get(component, (object) -> {
@@ -169,10 +189,22 @@ public class AdventureHelper {
         return getInstance().gsonComponentSerializer;
     }
 
+    /**
+     * Surrounds the provided text with the default nameplates font.
+     *
+     * @param text the text to surround
+     * @return the text surrounded by the default nameplates font tag
+     */
     public static String surroundWithNameplatesFont(String text) {
         return surroundWithMiniMessageFont(text, ConfigManager.namespace() + ":" + ConfigManager.font());
     }
 
+    /**
+     * Removes shadow from the provided text using a specific color code trick.
+     *
+     * @param text the text to modify
+     * @return the text wrapped in a color tag to remove shadows
+     */
     public static String removeShadowTricky(String text) {
         return "<#FFFEFD>" + text + "</#FFFEFD>";
     }

@@ -17,24 +17,21 @@
 
 package net.momirealms.customnameplates.bukkit;
 
-import net.momirealms.customnameplates.api.AbstractCNPlayer;
-import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.ConfigManager;
-import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.*;
 import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
-import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManagerImpl;
-import net.momirealms.customnameplates.api.feature.advance.AdvanceManagerImpl;
-import net.momirealms.customnameplates.api.feature.background.BackgroundManagerImpl;
-import net.momirealms.customnameplates.api.feature.bossbar.BossBarManagerImpl;
-import net.momirealms.customnameplates.api.feature.bubble.BubbleManagerImpl;
-import net.momirealms.customnameplates.api.feature.image.ImageManagerImpl;
-import net.momirealms.customnameplates.api.feature.nameplate.NameplateManagerImpl;
-import net.momirealms.customnameplates.api.feature.pack.ResourcePackManagerImpl;
-import net.momirealms.customnameplates.api.feature.tag.UnlimitedTagManagerImpl;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
-import net.momirealms.customnameplates.api.placeholder.PlaceholderManagerImpl;
+import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
+import net.momirealms.customnameplates.backend.feature.advance.AdvanceManagerImpl;
+import net.momirealms.customnameplates.backend.feature.background.BackgroundManagerImpl;
+import net.momirealms.customnameplates.backend.feature.bossbar.BossBarManagerImpl;
+import net.momirealms.customnameplates.backend.feature.bubble.BubbleManagerImpl;
+import net.momirealms.customnameplates.backend.feature.image.ImageManagerImpl;
+import net.momirealms.customnameplates.backend.feature.nameplate.NameplateManagerImpl;
+import net.momirealms.customnameplates.backend.feature.pack.ResourcePackManagerImpl;
+import net.momirealms.customnameplates.backend.feature.tag.UnlimitedTagManagerImpl;
+import net.momirealms.customnameplates.backend.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.backend.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
@@ -64,6 +61,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class BukkitCustomNameplates extends CustomNameplates implements Listener {
 
@@ -204,7 +202,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     @Override
     public void disable() {
         if (!this.loaded) return;
-        super.disable();
+        if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
 
         this.configManager.disable();
         this.actionBarManager.disable();
@@ -229,7 +227,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     @Override
     public void reload() {
-        super.reload();
+        // cancel task
+        if (this.scheduledMainTask != null)
+            this.scheduledMainTask.cancel();
+        // reset ticks
+        MainTask.reset();
+        // reload players
         for (CNPlayer player : getOnlinePlayers()) {
             ((AbstractCNPlayer) player).reload();
         }
@@ -254,6 +257,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.chatManager.reload();
         // dispatch the event
         this.eventManager.dispatch(NameplatesReloadEvent.class);
+        // run task
+        this.scheduledMainTask = getScheduler().asyncRepeating(mainTask, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     @Override

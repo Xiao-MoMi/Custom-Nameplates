@@ -17,7 +17,7 @@ public class DummyStorage extends AbstractStorage {
     }
 
     @Override
-    public StorageType getStorageType() {
+    public StorageType storageType() {
         return StorageType.NONE;
     }
 

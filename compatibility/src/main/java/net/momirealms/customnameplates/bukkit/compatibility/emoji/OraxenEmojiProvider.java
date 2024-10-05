@@ -21,7 +21,7 @@ import io.th0rgal.oraxen.OraxenPlugin;
 import io.th0rgal.oraxen.font.FontManager;
 import io.th0rgal.oraxen.font.Glyph;
 import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.feature.bubble.emoji.EmojiProvider;
+import net.momirealms.customnameplates.api.feature.chat.emoji.EmojiProvider;
 import org.bukkit.entity.Player;
 
 import java.util.Map;

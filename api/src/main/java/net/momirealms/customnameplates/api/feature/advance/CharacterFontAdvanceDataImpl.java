@@ -63,11 +63,6 @@ public class CharacterFontAdvanceDataImpl implements CharacterFontAdvanceData {
         return fontProviderFunction.apply(properties);
     }
 
-    @Override
-    public void close() {
-        data.clear();
-    }
-
     public static class BuilderImpl implements Builder {
 
         private final HashMap<Integer, Float> data = new HashMap<>();

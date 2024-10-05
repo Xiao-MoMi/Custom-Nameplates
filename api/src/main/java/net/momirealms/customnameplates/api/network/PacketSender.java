@@ -22,9 +22,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Interface for sending packets to players.
+ */
 public interface PacketSender {
 
+    /**
+     * Sends a single packet to the specified player.
+     *
+     * @param player the player to send the packet to
+     * @param packet the packet to be sent
+     */
     void sendPacket(@NotNull CNPlayer player, Object packet);
 
+    /**
+     * Sends a list of packets to the specified player.
+     *
+     * @param player the player to send the packets to
+     * @param packet the list of packets to be sent
+     */
     void sendPacket(@NotNull CNPlayer player, List<Object> packet);
 }
