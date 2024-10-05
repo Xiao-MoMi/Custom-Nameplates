@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.placeholder.internal.*;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.common.util.Pair;
 
 import java.io.File;
@@ -198,6 +199,12 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             this.registerPlayerPlaceholder("%np_img_" + image.id() + "%",
                     (player) -> String.valueOf(image.character().character()));
         }
+        this.registerRelationalPlaceholder("%rel_np_distance%", (p1, p2) -> {
+            Vector3 loc1 = p1.position();
+            Vector3 loc2 = p2.position();
+            double distance = Math.sqrt(Math.pow(loc1.x() - loc2.x(), 2) + Math.pow(loc1.y() - loc2.y(), 2) + Math.pow(loc1.z() - loc2.z(), 2));
+            return String.format("%.2f", distance);
+        });
     }
 
     private void loadCustomPlaceholders() {

@@ -37,7 +37,7 @@ unlimited:
     background-color: 0,0,0,0
   tag_2:
     text: '%np_tag-text%'
-    translation: 0.001,0.2,0.001
+    translation: 0.01,0.2,0.01
     viewer-conditions: { }
     owner-conditions:
       has-nameplate: true
