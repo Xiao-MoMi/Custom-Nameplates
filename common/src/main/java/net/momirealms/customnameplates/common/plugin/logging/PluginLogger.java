@@ -26,9 +26,9 @@
 package net.momirealms.customnameplates.common.plugin.logging;
 
 /**
- * Represents the logger instance being used by CustomFishing on the platform.
+ * Represents the logger instance being used by CustomNameplates on the platform.
  *
- * <p>Messages sent using the logger are sent prefixed with the CustomFishing tag,
+ * <p>Messages sent using the logger are sent prefixed with the CustomNameplates tag,
  * and on some implementations will be colored depending on the message type.</p>
  */
 public interface PluginLogger {

@@ -37,7 +37,7 @@ public interface CommandFeature<C> {
 
     void handleFeedback(C sender, TranslatableComponent.Builder key, Component... args);
 
-    CustomNameplatesCommandManager<C> getCustomFishingCommandManager();
+    CustomNameplatesCommandManager<C> getCustomNameplatesCommandManager();
 
     CommandConfig<C> getCommandConfig();
 }

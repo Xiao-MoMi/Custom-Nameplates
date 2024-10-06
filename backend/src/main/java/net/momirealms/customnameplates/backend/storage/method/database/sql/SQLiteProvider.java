@@ -44,7 +44,7 @@ public class SQLiteProvider extends AbstractSQLDatabase {
 
         this.executor = Executors.newFixedThreadPool(1);
         this.databaseFile = new File(plugin.getDataFolder(), config.getString("SQLite.file", "data") + ".db");
-        super.tablePrefix = config.getString("SQLite.table-prefix", "customfishing");
+        super.tablePrefix = config.getString("SQLite.table-prefix", "nameplates");
         super.createTableIfNotExist();
     }
 

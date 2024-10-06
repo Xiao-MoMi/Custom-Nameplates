@@ -19,7 +19,8 @@ package net.momirealms.customnameplates.api.network;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Tracker {

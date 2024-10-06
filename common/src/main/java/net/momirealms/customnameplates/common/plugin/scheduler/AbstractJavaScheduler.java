@@ -84,8 +84,8 @@ public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
         this.scheduler.shutdown();
         try {
             if (!this.scheduler.awaitTermination(1, TimeUnit.MINUTES)) {
-                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomFishing scheduler to terminate");
-                reportRunningTasks(thread -> thread.getName().equals("customfishing-scheduler"));
+                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomNameplates scheduler to terminate");
+                reportRunningTasks(thread -> thread.getName().equals("nameplates-scheduler"));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -97,7 +97,7 @@ public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
         this.worker.shutdown();
         try {
             if (!this.worker.awaitTermination(1, TimeUnit.MINUTES)) {
-                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomFishing worker thread pool to terminate");
+                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomNameplates worker thread pool to terminate");
                 reportRunningTasks(thread -> thread.getName().startsWith("nameplates-worker-"));
             }
         } catch (InterruptedException e) {

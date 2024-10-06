@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 
 /**
- * Interface representing the main CustomFishing plugin.
+ * Interface representing the main CustomNameplates plugin.
  */
 public interface NameplatesPlugin {
 

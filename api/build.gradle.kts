@@ -1,5 +1,6 @@
 plugins {
     id("io.github.goooler.shadow") version "8.1.8"
+    id("maven-publish")
 }
 
 repositories {
@@ -23,6 +24,34 @@ dependencies {
 
 tasks {
     shadowJar {
+        archiveClassifier = ""
+        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}.jar"
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
+        relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+    dependsOn(tasks.clean)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = "net.momirealms"
+            artifactId = "CustomNameplates"
+            version = rootProject.version.toString()
+            artifact(tasks.shadowJar)
+        }
     }
 }

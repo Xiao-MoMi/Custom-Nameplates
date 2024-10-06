@@ -28,7 +28,7 @@ package net.momirealms.customnameplates.common.dependency;
 import com.google.gson.JsonElement;
 
 /**
- * Applies CustomFishing specific behaviour for {@link Dependency}s.
+ * Applies CustomNameplates specific behaviour for {@link Dependency}s.
  */
 public class DependencyRegistry {
 

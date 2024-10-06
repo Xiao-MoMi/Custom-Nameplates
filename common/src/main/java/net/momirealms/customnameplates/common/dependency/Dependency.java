@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The dependencies used by CustomFishing.
+ * The dependencies used by CustomNameplates.
  */
 public enum Dependency {
 

@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 public class MiniMessageTranslatorImpl implements MiniMessageTranslator {
 
-    private static final Key NAME = Key.key("customfishing", "main");
+    private static final Key NAME = Key.key("customnameplates", "main");
     static final MiniMessageTranslatorImpl INSTANCE = new MiniMessageTranslatorImpl();
     final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.usingTranslationSource(this);
     private final Set<Translator> sources = Collections.newSetFromMap(new ConcurrentHashMap<>());

@@ -63,7 +63,7 @@ public abstract class AbstractHikariDatabase extends AbstractSQLDatabase {
         hikariConfig.setMinimumIdle(section.getInt("Pool-Settings.min-idle", 10));
         hikariConfig.setMaxLifetime(section.getLong("Pool-Settings.max-lifetime", 180000L));
         hikariConfig.setConnectionTimeout(section.getLong("Pool-Settings.time-out", 20000L));
-        hikariConfig.setPoolName("CustomFishingHikariPool");
+        hikariConfig.setPoolName("CustomNameplatesHikariPool");
         try {
             hikariConfig.setKeepaliveTime(section.getLong("Pool-Settings.keep-alive-time", 60000L));
         } catch (NoSuchMethodError ignored) {

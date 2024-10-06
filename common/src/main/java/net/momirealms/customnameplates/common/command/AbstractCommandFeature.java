@@ -70,7 +70,7 @@ public abstract class AbstractCommandFeature<C> implements CommandFeature<C> {
     }
 
     @Override
-    public CustomNameplatesCommandManager<C> getCustomFishingCommandManager() {
+    public CustomNameplatesCommandManager<C> getCustomNameplatesCommandManager() {
         return commandManager;
     }
 
