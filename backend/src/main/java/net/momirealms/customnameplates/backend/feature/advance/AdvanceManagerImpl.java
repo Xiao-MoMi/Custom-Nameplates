@@ -787,6 +787,11 @@ public class AdvanceManagerImpl implements AdvanceManager {
                     plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " is not a .ttf");
                     return;
                 }
+                if (true) {
+                    plugin.getPluginLogger().info("We're currently unable to obtain TTF advance");
+                    plugin.getPluginLogger().info("If you have Java knowledge and are interested in this, consider contributing if you have any progress.");
+                    return;
+                }
                 try (InputStream inputStream = new FileInputStream(ttf)) {
                     ByteBuffer byteBuffer = null;
                     FT_Face fT_Face = null;
@@ -883,6 +888,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
 
                     // free resources
                     MemoryUtil.memFree(byteBuffer);
+                    FreeTypeUtils.release();
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -1025,7 +1031,6 @@ public class AdvanceManagerImpl implements AdvanceManager {
     public void disable() {
         this.unload();
         this.charFontWidthDataMap.clear();
-        FreeTypeUtils.release();
     }
 
     private void loadTemplates() {
