@@ -46,7 +46,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName = "CustomNameplates-bukkit-${rootProject.properties["project_version"]}.jar"
+        archiveFileName = "CustomNameplates-Bukkit-${rootProject.properties["project_version"]}.jar"
         destinationDirectory.set(file("$rootDir/target"))
         relocate("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("org.incendo", "net.momirealms.customnameplates.libraries")
@@ -62,7 +62,6 @@ tasks {
         relocate("com.github.benmanes.caffeine", "net.momirealms.customnameplates.libraries.caffeine")
         relocate("net.objecthunter.exp4j", "net.momirealms.customnameplates.libraries.exp4j")
         relocate("redis.clients.jedis", "net.momirealms.customnameplates.libraries.jedis")
-        relocate("org.apache.commons.io", "net.momirealms.customnameplates.libraries.commons.io")
     }
 }
 

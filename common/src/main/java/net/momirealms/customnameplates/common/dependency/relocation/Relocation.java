@@ -34,6 +34,10 @@ public final class Relocation {
         return new Relocation(pattern.replace("{}", "."), RELOCATION_PREFIX + id);
     }
 
+    public static Relocation of(String id, String pattern, String prefix) {
+        return new Relocation(pattern.replace("{}", "."), prefix.replace("{}", ".") + "." + RELOCATION_PREFIX + id);
+    }
+
     private final String pattern;
     private final String relocatedPattern;
 

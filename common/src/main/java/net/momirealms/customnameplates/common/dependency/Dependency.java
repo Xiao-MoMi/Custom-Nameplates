@@ -27,6 +27,8 @@ package net.momirealms.customnameplates.common.dependency;
 
 import net.momirealms.customnameplates.common.dependency.relocation.Relocation;
 import net.momirealms.customnameplates.common.plugin.CustomNameplatesProperties;
+import net.momirealms.customnameplates.common.util.Architecture;
+import net.momirealms.customnameplates.common.util.Platform;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.MessageDigest;
@@ -282,7 +284,48 @@ public enum Dependency {
             "maven",
             "commons-io",
             Relocation.of("commons", "org{}apache{}commons")
-    );
+    ),
+    LWJGL(
+            "org{}lwjgl",
+            "lwjgl",
+            "maven",
+            "lwjgl"
+    ),
+    LWJGL_NATIVES(
+            "org{}lwjgl",
+            "lwjgl",
+            "maven",
+            "lwjgl-natives-" + getNativesPath(),
+            "-natives-" + getNativesPath()
+    ) {
+        @Override
+        public String getVersion() {
+            return Dependency.LWJGL.getVersion();
+        }
+    },
+    LWJGL_FREETYPE(
+            "org{}lwjgl",
+            "lwjgl-freetype",
+            "maven",
+            "lwjgl-freetype"
+    ) {
+        @Override
+        public String getVersion() {
+            return Dependency.LWJGL.getVersion();
+        }
+    },
+    LWJGL_FREETYPE_NATIVES(
+            "org{}lwjgl",
+            "lwjgl-freetype",
+            "maven",
+            "lwjgl-freetype-natives-" + getNativesPath(),
+            "-natives-" + getNativesPath()
+    ) {
+        @Override
+        public String getVersion() {
+            return Dependency.LWJGL.getVersion();
+        }
+    };
 
     private final List<Relocation> relocations;
     private final String repo;
@@ -366,5 +409,13 @@ public enum Dependency {
     @Nullable
     public String getRepo() {
         return repo;
+    }
+
+    private static String getNativesPath() {
+        String base = Platform.get().getNativePath();
+        if (Architecture.get() != Architecture.X64) {
+            base += "-" + Architecture.get().getNativePath();
+        }
+        return base;
     }
 }

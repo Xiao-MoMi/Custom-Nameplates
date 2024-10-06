@@ -35,6 +35,7 @@ import net.momirealms.customnameplates.backend.placeholder.PlaceholderManagerImp
 import net.momirealms.customnameplates.backend.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
+import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
 import net.momirealms.customnameplates.common.dependency.Dependency;
@@ -116,7 +117,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                         Dependency.MONGODB_DRIVER_CORE, Dependency.MONGODB_DRIVER_SYNC, Dependency.MONGODB_DRIVER_BSON,
                         Dependency.HIKARI_CP,
                         Dependency.BYTE_BUDDY,
-                        Dependency.COMMONS_IO
+                        Dependency.COMMONS_IO,
+                        Dependency.LWJGL, Dependency.LWJGL_NATIVES, Dependency.LWJGL_FREETYPE, Dependency.LWJGL_FREETYPE_NATIVES
                 )
         );
     }
@@ -172,6 +174,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new NameplatesExpansion(this).register();
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("MagicCosmetics")) {
+            try {
+                Bukkit.getPluginManager().registerEvents(new MagicCosmeticsHook(this), this.getBootstrap());
+            } catch (Exception ignore) {
+            }
         }
 
         boolean downloadFromPolymart = polymart.equals("1");

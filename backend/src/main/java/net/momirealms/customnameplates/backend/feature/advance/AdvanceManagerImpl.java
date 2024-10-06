@@ -49,13 +49,23 @@ import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
+import net.momirealms.customnameplates.backend.util.FreeTypeUtils;
 import net.momirealms.customnameplates.common.util.Tuple;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.util.freetype.FT_Face;
+import org.lwjgl.util.freetype.FT_GlyphSlot;
+import org.lwjgl.util.freetype.FT_Vector;
+import org.lwjgl.util.freetype.FreeType;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -768,16 +778,115 @@ public class AdvanceManagerImpl implements AdvanceManager {
 
             File ttfCache = new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + id + ".tmp");
             if (!ttfCache.exists()) {
-                File ttfFile = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
-                if (!ttfFile.exists()) {
-                    plugin.getPluginLogger().warn(ttfFile.getAbsolutePath() + " not found");
+                File ttf = new File(plugin.getDataDirectory().toFile(), "font" + File.separator + path);
+                if (!ttf.exists()) {
+                    plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " not found");
                     return;
                 }
-                if (!ttfFile.getName().endsWith(".ttf")) {
-                    plugin.getPluginLogger().warn(ttfFile.getAbsolutePath() + " is not a .ttf");
+                if (!ttf.getName().endsWith(".ttf")) {
+                    plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " is not a .ttf");
                     return;
                 }
+                try (InputStream inputStream = new FileInputStream(ttf)) {
+                    ByteBuffer byteBuffer = null;
+                    FT_Face fT_Face = null;
+                    try {
+                        ttfCache.getParentFile().mkdirs();
+                        ttfCache.createNewFile();
+                        YamlDocument yml = plugin.getConfigManager().loadData(ttfCache);
+                        byteBuffer = FreeTypeUtils.readResource(inputStream);
+                        byteBuffer.flip();
+                        synchronized(FreeTypeUtils.LOCK) {
+                            MemoryStack ms1 = MemoryStack.stackPush();
+                            try {
+                                PointerBuffer pointerBuffer = ms1.mallocPointer(1);
+                                FreeTypeUtils.checkFatalError(FreeType.FT_New_Memory_Face(FreeTypeUtils.initialize(), byteBuffer, 0L, pointerBuffer), "Initializing font face");
+                                fT_Face = FT_Face.create(pointerBuffer.get());
+                            } catch (Throwable t1) {
+                                try {
+                                    ms1.close();
+                                } catch (Throwable t2) {
+                                    t1.addSuppressed(t2);
+                                }
+                                throw t1;
+                            }
+                            ms1.close();
 
+                            String string = FreeType.FT_Get_Font_Format(fT_Face);
+                            if (!"TrueType".equals(string)) {
+                                throw new IOException("Font is not in TTF format, was " + string);
+                            }
+
+                            FreeTypeUtils.checkFatalError(FreeType.FT_Select_Charmap(fT_Face, FreeType.FT_ENCODING_UNICODE), "Find unicode charmap");
+                            Set<Integer> codePoints = new HashSet<>(1_000);
+
+                            int pixelWidth = Math.round(size * oversample);
+                            int pixelHeight = Math.round(size * oversample);
+                            FreeType.FT_Set_Pixel_Sizes(fT_Face, pixelWidth, pixelHeight);
+
+                            MemoryStack ms2 = MemoryStack.stackPush();
+                            try {
+                                FT_Vector fT_Vector = FreeTypeUtils.setShift(FT_Vector.malloc(ms2), 0, 0);
+                                FreeType.FT_Set_Transform(fT_Face, null, fT_Vector);
+                            } catch (Throwable t1) {
+                                try {
+                                    ms2.close();
+                                } catch (Throwable t2) {
+                                    t1.addSuppressed(t2);
+                                }
+                                throw t1;
+                            }
+                            ms2.close();
+
+                            MemoryStack ms3 = MemoryStack.stackPush();
+                            try {
+                                IntBuffer intBuffer = ms3.mallocInt(1);
+                                for (long l = FreeType.FT_Get_First_Char(fT_Face, intBuffer); intBuffer.get(0) != 0; l = FreeType.FT_Get_Next_Char(fT_Face, l, intBuffer)) {
+                                    codePoints.add((int) l);
+                                }
+                            } catch (Throwable t1) {
+                                try {
+                                    ms3.close();
+                                } catch (Throwable t2) {
+                                    t1.addSuppressed(t2);
+                                }
+                                throw t1;
+                            }
+                            ms3.close();
+
+                            for (int skippedCodePoint : skippCodePoints) {
+                                codePoints.remove(skippedCodePoint);
+                            }
+                            for (int codePoint : codePoints) {
+                                int i = FreeType.FT_Get_Char_Index(fT_Face, codePoint);
+                                if (i != 0) {
+                                    FreeTypeUtils.checkFatalError(FreeType.FT_Load_Glyph(fT_Face, i, 4194312), "Loading glyph");
+                                    FT_GlyphSlot fT_GlyphSlot = Objects.requireNonNull(fT_Face.glyph(), "Glyph not initialized");
+                                    float advance = FreeTypeUtils.getAdvance(fT_GlyphSlot.advance());
+                                    char[] theCharacter = Character.toChars(codePoint);
+                                    String unicode = CharacterUtils.char2Unicode(theCharacter);
+                                    yml.set(unicode, (advance) / oversample);
+                                }
+                            }
+                        }
+
+                        yml.save(ttfCache);
+                    } catch (Exception e) {
+                        synchronized(FreeTypeUtils.LOCK) {
+                            if (fT_Face != null) {
+                                FreeType.FT_Done_Face(fT_Face);
+                            }
+                        }
+                        MemoryUtil.memFree(byteBuffer);
+                        throw e;
+                    }
+
+                    // free resources
+                    MemoryUtil.memFree(byteBuffer);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             registerCharacterFontData(id, ttfCache, (properties) -> {
@@ -916,6 +1025,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
     public void disable() {
         this.unload();
         this.charFontWidthDataMap.clear();
+        FreeTypeUtils.release();
     }
 
     private void loadTemplates() {

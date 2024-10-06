@@ -25,7 +25,6 @@ dependencies {
 tasks {
     shadowJar {
         archiveClassifier = ""
-        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}.jar"
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
     }

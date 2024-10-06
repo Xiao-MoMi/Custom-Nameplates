@@ -23,6 +23,7 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
     // COMMONS IO
     compileOnly("commons-io:commons-io:${rootProject.properties["commons_io_version"]}")
-    // lwjgl
-    implementation("org.lwjgl:lwjgl-freetype:3.3.4")
+    // TTF
+    compileOnly("org.lwjgl:lwjgl-freetype:${rootProject.properties["lwjgl_version"]}")
+    compileOnly("org.lwjgl:lwjgl:${rootProject.properties["lwjgl_version"]}")
 }
