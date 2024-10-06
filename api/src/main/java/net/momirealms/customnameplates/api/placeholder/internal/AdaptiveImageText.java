@@ -31,23 +31,25 @@ public class AdaptiveImageText<T extends AdaptiveImage> {
     private final String id;
     private final String text;
     private final T t;
-    private final boolean removeShadow;
+    private final boolean removeShadowOld;
+    private final boolean removeShadowNew;
     private final PreParsedDynamicText preParsedDynamicText;
     private final int leftMargin;
     private final int rightMargin;
 
-    public AdaptiveImageText(String id, String text, T t, boolean removeShadow, int leftMargin, int rightMargin) {
+    public AdaptiveImageText(String id, String text, T t, boolean removeShadowOld, boolean removeShadowNew, int rightMargin, int leftMargin) {
         this.text = text;
         this.id = id;
         this.t = t;
-        this.removeShadow = removeShadow;
+        this.removeShadowOld = removeShadowOld;
+        this.removeShadowNew = removeShadowNew;
         this.preParsedDynamicText = new PreParsedDynamicText(text);
         this.leftMargin = leftMargin;
         this.rightMargin = rightMargin;
     }
 
-    public static <T extends AdaptiveImage> AdaptiveImageText<T> create(String id, final String text, final T t, final boolean removeShadow, int leftMargin, int rightMargin) {
-        return new AdaptiveImageText<>(id, text, t, removeShadow, leftMargin, rightMargin);
+    public static <T extends AdaptiveImage> AdaptiveImageText<T> create(String id, final String text, final T t, final boolean removeShadowOld, final boolean removeShadowNew, int leftMargin, int rightMargin) {
+        return new AdaptiveImageText<>(id, text, t, removeShadowOld, removeShadowNew, rightMargin, leftMargin);
     }
 
     public PreParsedDynamicText getPreParsedDynamicText() {
@@ -71,8 +73,13 @@ public class AdaptiveImageText<T extends AdaptiveImage> {
         String suffix = t.createImageSuffix(advance, leftMargin, rightMargin);
         String prefixWithFont = AdventureHelper.surroundWithNameplatesFont(prefix);
         String suffixWithFont = AdventureHelper.surroundWithNameplatesFont(suffix);
-        if (removeShadow) prefixWithFont = AdventureHelper.removeShadowTricky(prefixWithFont);
-        if (removeShadow) suffixWithFont = AdventureHelper.removeShadowTricky(suffixWithFont);
+        if (removeShadowOld) {
+            prefixWithFont = AdventureHelper.removeShadowTricky(prefixWithFont);
+            suffixWithFont = AdventureHelper.removeShadowTricky(suffixWithFont);
+        } else if (removeShadowNew) {
+            prefixWithFont = AdventureHelper.removeShadow(prefixWithFont);
+            suffixWithFont = AdventureHelper.removeShadow(suffixWithFont);
+        }
         return prefixWithFont + parsed + suffixWithFont;
     }
 
@@ -83,7 +90,8 @@ public class AdaptiveImageText<T extends AdaptiveImage> {
         float advance = CustomNameplates.getInstance().getAdvanceManager().getLineAdvance(parsed);
         String image = t.createImage(advance, leftMargin, rightMargin);
         String imageWithFont = AdventureHelper.surroundWithNameplatesFont(image);
-        if (removeShadow) imageWithFont = AdventureHelper.removeShadowTricky(imageWithFont);
+        if (removeShadowOld) imageWithFont = AdventureHelper.removeShadowTricky(imageWithFont);
+        else if (removeShadowNew) imageWithFont = AdventureHelper.removeShadow(imageWithFont);
         return imageWithFont;
     }
 

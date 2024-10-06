@@ -20,8 +20,15 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
+    if (depthLevel == 114514.0) {
+        discard;
+    }
     if (texColor.a == 254.0/255.0) {
-        if (depthLevel == 0.00) {
+        if (depthLevel == 0.0
+         || depthLevel == 100
+         || depthLevel == 200
+         || depthLevel == 400
+        ) {
             discard;
         } else {
             color = vec4(texColor.rgb, 1.0) * vertexColor * ColorModulator;

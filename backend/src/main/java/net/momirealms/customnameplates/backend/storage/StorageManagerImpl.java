@@ -52,8 +52,8 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 			this.redisManager.getPlayerData(uuid, async).thenAccept(playerData1 -> {
 				if (playerData1.isPresent()) {
 					PlayerData data = playerData1.get();
-					handleDataLoad(player, data);
 					((AbstractCNPlayer) player).setLoaded(true);
+					handleDataLoad(player, data);
 					plugin.getEventManager().dispatch(DataLoadEvent.class, data);
 					this.redisManager.updatePlayerData(data, async).thenAccept(result -> {
 						if (!result) {
@@ -64,8 +64,8 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 					this.dataSource().getPlayerData(uuid, async).thenAccept(playerData2 -> {
 						if (playerData2.isPresent()) {
 							PlayerData data = playerData2.get();
-							handleDataLoad(player, data);
 							((AbstractCNPlayer) player).setLoaded(true);
+							handleDataLoad(player, data);
 							plugin.getEventManager().dispatch(DataLoadEvent.class, data);
 							this.redisManager.updatePlayerData(data, async).thenAccept(result -> {
 								if (!result) {
@@ -82,8 +82,8 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 			this.dataSource().getPlayerData(uuid, async).thenAccept(playerData -> {
 				if (playerData.isPresent()) {
 					PlayerData data = playerData.get();
-					handleDataLoad(player, data);
 					((AbstractCNPlayer) player).setLoaded(true);
+					handleDataLoad(player, data);
 				} else {
 					plugin.getPluginLogger().warn("Failed to load player data for " + player.name());
 				}

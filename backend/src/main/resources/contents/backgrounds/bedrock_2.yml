@@ -1,16 +1,16 @@
 left:
   image: b0
   height: 14
-  ascent: 12
+  ascent: 11
 
 right:
   image: b0
   height: 14
-  ascent: 12
+  ascent: 11
 
 middle:
   height: 14
-  ascent: 12
+  ascent: 11
   1: b1
   2: b2
   4: b4

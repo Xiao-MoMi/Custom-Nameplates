@@ -34,13 +34,11 @@ public class VanillaHud {
     private final boolean reverse;
     private final PreParsedDynamicText current;
     private final PreParsedDynamicText max;
-    private final boolean removeShadow;
 
-    public VanillaHud(Image empty, Image half, Image full, boolean reverse, String current, String max, boolean removeShadow) {
+    public VanillaHud(Image empty, Image half, Image full, boolean reverse, String current, String max) {
         this.empty = String.valueOf(empty.character().character()) + OffsetFont.NEG_2.character();
         this.half = String.valueOf(half.character().character()) + OffsetFont.NEG_2.character();
         this.full = String.valueOf(full.character().character()) + OffsetFont.NEG_2.character();
-        this.removeShadow = removeShadow;
         this.reverse = reverse;
         this.current = new PreParsedDynamicText(current);
         this.max = new PreParsedDynamicText(max);
@@ -95,7 +93,6 @@ public class VanillaHud {
                     .append(String.valueOf(half).repeat(half_amount))
                     .append(String.valueOf(empty).repeat(empty_amount));
         }
-        return removeShadow ? AdventureHelper.removeShadowTricky(AdventureHelper.surroundWithNameplatesFont(builder.toString())) :
-                AdventureHelper.surroundWithNameplatesFont(builder.toString());
+        return AdventureHelper.surroundWithNameplatesFont(builder.toString());
     }
 }

@@ -11,13 +11,13 @@ always-show: false
 nameplate:
   # Prefix to be displayed before the player's name.
   # The prefix here will become part of the nameplate
-  prefix: ''
+  prefix: '%np_switch_nameplate_color_prefix%'
   # Placeholder for the player's name
   # The default configuration uses shift to ensure that the player name not affected by the clientside `force-unicode-font` setting.
   player-name: '%np_shift_player_name%'
   # Suffix to be displayed after the player's name.
   # The suffix here will become part of the nameplate
-  suffix: ''
+  suffix: '%np_switch_nameplate_color_suffix%'
 
 # Configuration for Unlimited tags.
 unlimited:

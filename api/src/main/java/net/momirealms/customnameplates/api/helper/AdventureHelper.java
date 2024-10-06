@@ -209,6 +209,10 @@ public class AdventureHelper {
         return "<#FFFEFD>" + text + "</#FFFEFD>";
     }
 
+    public static String removeShadow(String text) {
+        return "<#F0F0F0>" + text + "</#F0F0F0>";
+    }
+
     /**
      * Surrounds text with a MiniMessage font tag.
      *

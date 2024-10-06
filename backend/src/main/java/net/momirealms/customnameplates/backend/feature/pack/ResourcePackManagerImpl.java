@@ -487,41 +487,39 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
 
         public static final String Nameplates_Shader_1_20_5 =
                         "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        vertex.y += 1;\n" +
                         "        vertex.x += 1;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
-                        "    } else if (Color.xyz == vec3(254., 254., 254.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                        "        vertex.z *= 1.001;\n" +
-                        "        vertex.x *= 1.001;\n" +
+                        "    } else if (Color.xyz == vec3(240., 240., 240.) / 255.) {\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor.rgb = texelFetch(Sampler2, UV2 / 16, 0).rgb;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
-                        "    } else if (Color.xyz == vec3(253., 254., 254.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                        "        vertex.z *= 1.001001;\n" +
-                        "        vertex.x *= 1.001001;\n" +
+                        "    } else if (Color.xyz == vec3(60., 60., 60.) / 255.) {\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        depthLevel = 114514.0;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                         "    } else {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                         "    }";
 
         public static final String Nameplates_Shader_1_20_4 =
                         "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        vertex.y += 1;\n" +
                         "        vertex.x += 1;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
-                        "    } else if (Color.xyz == vec3(254., 254., 254.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                        "        vertex.z -= 0.001;\n" +
+                        "    } else if (Color.xyz == vec3(240., 240., 240.) / 255.) {\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor.rgb = texelFetch(Sampler2, UV2 / 16, 0).rgb;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
-                        "    } else if (Color.xyz == vec3(253., 254., 254.) / 255.) {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
-                        "        vertex.z -= 0.0011;\n" +
+                        "    } else if (Color.xyz == vec3(60., 60., 60.) / 255.) {\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        depthLevel = 114514.0;\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                         "    } else {\n" +
-                        "        vertexColor = Color*texelFetch(Sampler2, UV2 / 16, 0);\n" +
+                        "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        gl_Position = ProjMat * ModelViewMat * vertex;\n" +
                         "    }";
 

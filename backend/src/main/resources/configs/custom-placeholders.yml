@@ -39,33 +39,47 @@ nameplate-text:
   halloween:
     nameplate: halloween
     text: '<gradient:#FFD700:#FFA500:#FFD700>Today is Halloween! Trick or treat!</gradient>'
+    left-margin: 1
+    right-margin: 1
 
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-text
 background-text:
   location:
     background: bedrock_1
     text: '%np_image_compass% %np_shift_location%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
   time:
     background: bedrock_1
     text: '%np_image_clock% %np_shift_time%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
   weather:
     background: bedrock_1
     text: '%np_image_weather% %np_shift_weather%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
   hello:
     background: bedrock_1
     text: '%np_image_bubble% %np_shift_hello%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
   update:
     background: bedrock_1
     text: '%np_image_bell% %np_shift_update%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
   other_actionbar:
     background: bedrock_2
     text: '%np_actionbar%'
-    remove-shadow: true
+    shadow: false
+    left-margin: 1
+    right-margin: 1
 
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
 static-text:
@@ -104,6 +118,34 @@ shift-text:
 
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/switch-text
 switch-text:
+  nameplate_color_prefix:
+    switch: "%np_equipped_nameplate%"
+    default: ""
+    case:
+      'wither': "<gradient:#FF0000:#000000:%np_gradient_3%>"
+      'halloween': "<gradient:#FF0000:#000000:%np_gradient_3%>"
+      'hutao': "<gradient:#FFFFFF:#FF4500:%np_gradient_3%>"
+      'rabbit': "<gradient:#FFFFFF:#DB7093:%np_gradient_3%>"
+      'starsky': "<gradient:#FFFFF0:#696969:%np_gradient_3%>"
+      'trident': "<gradient:#E1FFFF:#008B8B:%np_gradient_10%>"
+      'cheems': "<gradient:#C0C0C0:#F5F5F5:%np_gradient_5%>"
+      'egg': "<gradient:#FFFFFF:#FFA500:%np_gradient_5%>"
+      'cat': "<gradient:#FFFFFF:#1E90FF:%np_gradient_5%>"
+      'xmas': "<gradient:#FFFFFF:#FF4500:%np_gradient_5%>"
+  nameplate_color_suffix:
+    switch: "%np_equipped_nameplate%"
+    default: ""
+    case:
+      'wither': "</gradient>"
+      'halloween': "</gradient>"
+      'hutao': "</gradient>"
+      'rabbit': "</gradient>"
+      'starsky': "</gradient>"
+      'trident': "</gradient>"
+      'cheems': "</gradient>"
+      'egg': "</gradient>"
+      'cat': "</gradient>"
+      'xmas': "</gradient>"
   world:
     switch: '%player_world%'
     case:

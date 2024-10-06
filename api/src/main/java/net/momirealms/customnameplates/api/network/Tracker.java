@@ -19,9 +19,8 @@ package net.momirealms.customnameplates.api.network;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Tracker {
 
@@ -29,7 +28,7 @@ public class Tracker {
     private double scale;
     private final CNPlayer tracker;
 
-    private final Set<Integer> passengerIDs = Collections.synchronizedSet(new HashSet<>());
+    private final CopyOnWriteArrayList<Integer> passengerIDs = new CopyOnWriteArrayList<>();
 
     /**
      * Constructs a new Tracker for the specified player.
@@ -63,15 +62,15 @@ public class Tracker {
     }
 
     public void addPassengerID(int passengerID) {
-        passengerIDs.add(passengerID);
+        this.passengerIDs.add(passengerID);
     }
 
     public void removePassengerID(int passengerID) {
-        passengerIDs.remove(passengerID);
+        this.passengerIDs.remove((Object) passengerID);
     }
 
     public Set<Integer> getPassengerIDs() {
-        return passengerIDs;
+        return new HashSet<>(passengerIDs);
     }
 
     public boolean isEmpty() {

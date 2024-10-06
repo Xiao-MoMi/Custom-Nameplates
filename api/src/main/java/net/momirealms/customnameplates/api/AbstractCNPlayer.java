@@ -421,7 +421,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Set<Integer> getTrackedPassengerIds(CNPlayer another) {
-        return Optional.ofNullable(trackers.get(another)).map(tracker -> new HashSet<>(tracker.getPassengerIDs())).orElse(new HashSet<>());
+        return Optional.ofNullable(trackers.get(another)).map(Tracker::getPassengerIDs).orElse(new HashSet<>());
     }
 
     @Override

@@ -56,7 +56,7 @@ resource-pack:
   shader:
     # Enables shader generation
     enable: true
-    # Hides scoreboard numbers
+    # Hides scoreboard numbers (1.20.4- requires shader to remove that)
     hide-scoreboard-number: false
     # Enables support for animated text shaders
     animated-text: false

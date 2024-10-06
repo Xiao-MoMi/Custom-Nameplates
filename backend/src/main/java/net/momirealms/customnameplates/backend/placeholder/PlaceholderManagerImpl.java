@@ -179,6 +179,22 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         });
         this.registerSharedPlaceholder("%shared_np_is-latest%", () -> String.valueOf(plugin.isUpToDate()));
         this.registerPlayerPlaceholder("%np_is-latest%", (player) -> String.valueOf(plugin.isUpToDate()));
+        for (int i = 1; i <= 20; i++) {
+            int speed = i;
+            this.registerPlayerPlaceholder("%np_gradient_" + i + "%", (player) -> {
+                int currentTicks = MainTask.getTicks();
+                double progress = currentTicks * 0.01 * speed;
+                return String.format("%.2f", -1 + (progress % 2.0001));
+            });
+        }
+        for (int i = 1; i <= 20; i++) {
+            int speed = i;
+            this.registerPlayerPlaceholder("%np_gradient_" + i + "%", (player) -> {
+                int currentTicks = MainTask.getTicks();
+                double progress = currentTicks * 0.01 * speed;
+                return String.format("%.2f", -1 + (progress % 2.0001));
+            });
+        }
         this.registerPlayerPlaceholder("%np_time%", (player) -> {
             long time = player.playerTime() % 24_000;
             String ap = time >= 6000 && time < 18000 ? " PM" : " AM";
@@ -284,8 +300,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 Image full = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.full")), "image.full should not be null");
                 String currentValue = section.getString("placeholder.value", "1");
                 String maxValue = section.getString("placeholder.max-value", currentValue);
-                boolean removeShadow = section.getBoolean("remove-shadow", false);
-                VanillaHud vanillaHud = new VanillaHud(empty, half, full, reverse, currentValue, maxValue, removeShadow);
+                VanillaHud vanillaHud = new VanillaHud(empty, half, full, reverse, currentValue, maxValue);
                 List<PreParsedDynamicText> list = List.of(vanillaHud.getCurrent(), vanillaHud.getMax());
                 Placeholder placeholder1 = registerSharedPlaceholder("%shared_np_vanilla_" + id + "%", vanillaHud::create);
                 Placeholder placeholder2 = registerPlayerPlaceholder("%np_vanilla_" + id + "%", vanillaHud::create);
@@ -349,7 +364,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 Bubble bubble = plugin.getBubbleManager().bubbleById(bbID);
                 if (bubble != null) {
                     AdaptiveImageText<Bubble> adaptiveImageText = AdaptiveImageText.create(
-                            id, inner.getString("text"), bubble, inner.getBoolean("remove-shadow"),
+                            id, inner.getString("text"), bubble, inner.getBoolean("remove-shadow"), !inner.getBoolean("shadow", false),
                             inner.getInt("left-margin", 1), inner.getInt("right-margin", 1)
                     );
                     List<PreParsedDynamicText> list = new ArrayList<>();
@@ -387,7 +402,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 Nameplate nameplate = plugin.getNameplateManager().nameplateById(npID);
                 if (nameplate != null) {
                     AdaptiveImageText<Nameplate> adaptiveImageText = AdaptiveImageText.create(
-                            id, inner.getString("text"), nameplate, inner.getBoolean("remove-shadow"),
+                            id, inner.getString("text"), nameplate, inner.getBoolean("remove-shadow"), !inner.getBoolean("shadow", false),
                             inner.getInt("left-margin", 1), inner.getInt("right-margin", 1)
                     );
                     List<PreParsedDynamicText> list = new ArrayList<>();
@@ -425,8 +440,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 Background background = plugin.getBackgroundManager().backgroundById(bgID);
                 if (background != null) {
                     AdaptiveImageText<Background> adaptiveImageText = AdaptiveImageText.create(
-                            id, inner.getString("text"), background, inner.getBoolean("remove-shadow"),
-                            inner.getInt("left-margin", 2), inner.getInt("right-margin", 0)
+                            id, inner.getString("text"), background, inner.getBoolean("remove-shadow"), !inner.getBoolean("shadow", false),
+                            inner.getInt("left-margin", 1), inner.getInt("right-margin", 1)
                     );
                     List<PreParsedDynamicText> list = new ArrayList<>();
                     list.add(adaptiveImageText.getPreParsedDynamicText());
