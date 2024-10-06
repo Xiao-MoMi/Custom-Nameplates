@@ -2,9 +2,6 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.8"
 }
 
-repositories {
-}
-
 dependencies {
     compileOnly(project(":common"))
     compileOnly(project(":api"))
@@ -26,12 +23,6 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${rootProject.properties["caffeine_version"]}")
     // COMMONS IO
     compileOnly("commons-io:commons-io:${rootProject.properties["commons_io_version"]}")
-    // FOP
-    compileOnly("org.apache.pdfbox:fontbox:${rootProject.properties["fontbox_version"]}")
-}
-
-tasks {
-    shadowJar {
-        relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
-    }
+    // lwjgl
+    implementation("org.lwjgl:lwjgl-freetype:3.3.4")
 }

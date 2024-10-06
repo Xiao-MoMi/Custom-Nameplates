@@ -115,7 +115,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                         Dependency.H2_DRIVER,
                         Dependency.MONGODB_DRIVER_CORE, Dependency.MONGODB_DRIVER_SYNC, Dependency.MONGODB_DRIVER_BSON,
                         Dependency.HIKARI_CP,
-                        Dependency.FONT_BOX, Dependency.PDF_BOX,
                         Dependency.BYTE_BUDDY,
                         Dependency.COMMONS_IO
                 )
@@ -204,21 +203,21 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (!this.loaded) return;
         if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
 
-        this.configManager.disable();
-        this.actionBarManager.disable();
-        this.bossBarManager.disable();
-        this.unlimitedTagManager.disable();
-        this.advanceManager.disable();
-        this.backgroundManager.disable();
-        this.requirementManager.disable();
-        this.placeholderManager.disable();
-        this.storageManager.disable();
-        this.bubbleManager.disable();
-        this.nameplateManager.disable();
-        this.imageManager.disable();
-        this.chatManager.disable();
+        if (configManager != null) this.configManager.disable();
+        if (actionBarManager != null) this.actionBarManager.disable();
+        if (bossBarManager != null) this.bossBarManager.disable();
+        if (unlimitedTagManager != null) this.unlimitedTagManager.disable();
+        if (advanceManager != null) this.advanceManager.disable();
+        if (backgroundManager != null) this.backgroundManager.disable();
+        if (requirementManager != null) this.requirementManager.disable();
+        if (placeholderManager != null) this.placeholderManager.disable();
+        if (storageManager != null) this.storageManager.disable();
+        if (bubbleManager != null) this.bubbleManager.disable();
+        if (nameplateManager != null) this.nameplateManager.disable();
+        if (imageManager != null) this.imageManager.disable();
+        if (chatManager != null) this.chatManager.disable();
 
-        this.commandManager.unregisterFeatures();
+        if (commandManager != null) this.commandManager.unregisterFeatures();
         this.joinQuitListeners.clear();
         HandlerList.unregisterAll(this);
 

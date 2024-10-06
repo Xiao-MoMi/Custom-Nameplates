@@ -269,21 +269,6 @@ public enum Dependency {
             "maven",
             "slf4j"
     ),
-    FONT_BOX(
-            "org{}apache{}pdfbox",
-            "fontbox",
-            "maven",
-            "fontbox",
-            Relocation.of("fontbox", "org{}apache{}fontbox"),
-            Relocation.of("pdfbox", "org{}apache{}pdfbox")
-    ),
-    PDF_BOX(
-            "org{}apache{}pdfbox",
-            "pdfbox-io",
-            "maven",
-            "pdfbox-io",
-            Relocation.of("pdfbox", "org{}apache{}pdfbox")
-    ),
     BYTE_BUDDY(
             "net{}bytebuddy",
             "byte-buddy",

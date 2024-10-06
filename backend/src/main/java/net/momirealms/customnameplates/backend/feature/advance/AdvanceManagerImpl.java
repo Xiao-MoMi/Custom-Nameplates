@@ -51,9 +51,6 @@ import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
 import net.momirealms.customnameplates.common.util.Tuple;
 import org.apache.commons.io.FileUtils;
-import org.apache.fontbox.ttf.CmapSubtable;
-import org.apache.fontbox.ttf.TTFParser;
-import org.apache.fontbox.ttf.TrueTypeFont;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -780,35 +777,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
                     plugin.getPluginLogger().warn(ttfFile.getAbsolutePath() + " is not a .ttf");
                     return;
                 }
-                try (InputStream inputStream = new FileInputStream(ttfFile)) {
-                    ttfCache.getParentFile().mkdirs();
-                    ttfCache.createNewFile();
-                    YamlDocument yml = plugin.getConfigManager().loadData(ttfCache);
-                    TTFParser parser = new TTFParser();
-                    TrueTypeFont ttf = parser.parseEmbedded(inputStream);
-                    CmapSubtable[] cMaps = ttf.getCmap().getCmaps();
-                    Set<Integer> codePoints = new HashSet<>();
-                    for (CmapSubtable cMap : cMaps) {
-                        for (int codepoint = Character.MIN_CODE_POINT; codepoint <= Character.MAX_CODE_POINT; codepoint++) {
-                            int glyphId = cMap.getGlyphId(codepoint);
-                            if (glyphId != 0) {
-                                codePoints.add(codepoint);
-                            }
-                        }
-                    }
-                    for (int skippedCodePoint : skippCodePoints) {
-                        codePoints.remove(skippedCodePoint);
-                    }
-                    for (int codePoint : codePoints) {
-                        float advanceWidth = ttf.getWidth(Character.toString(codePoint));
-                        char[] text = Character.toChars(codePoint);
-                        yml.set(CharacterUtils.char2Unicode(text), ((advanceWidth) / ttf.getUnitsPerEm()) * size);
-                    }
-                    ttf.close();
-                    yml.save(ttfCache);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
             }
 
             registerCharacterFontData(id, ttfCache, (properties) -> {

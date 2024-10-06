@@ -62,8 +62,6 @@ tasks {
         relocate("com.github.benmanes.caffeine", "net.momirealms.customnameplates.libraries.caffeine")
         relocate("net.objecthunter.exp4j", "net.momirealms.customnameplates.libraries.exp4j")
         relocate("redis.clients.jedis", "net.momirealms.customnameplates.libraries.jedis")
-        relocate("org.apache.fontbox", "net.momirealms.customnameplates.libraries.fontbox")
-        relocate("org.apache.pdfbox", "net.momirealms.customnameplates.libraries.pdfbox")
         relocate("org.apache.commons.io", "net.momirealms.customnameplates.libraries.commons.io")
     }
 }
