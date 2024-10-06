@@ -50,9 +50,9 @@ public class AdventureHelper {
         this.miniMessageStrict = MiniMessage.builder().strict(true).build();
         this.gsonComponentSerializer = GsonComponentSerializer.builder().build();
 
-        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4, r -> {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, r -> {
             Thread thread = Executors.defaultThreadFactory().newThread(r);
-            thread.setName("customnameplates-scheduler");
+            thread.setName("nameplates-cache-scheduler");
             return thread;
         });
         executor.setRemoveOnCancelPolicy(true);
@@ -62,25 +62,25 @@ public class AdventureHelper {
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .executor(executor)
-                        .maximumSize(512)
+                        .maximumSize(1024)
                         .build();
         this.miniMessageToMinecraftComponentCache =
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .executor(executor)
-                        .maximumSize(512)
+                        .maximumSize(1024)
                         .build();
         this.minecraftComponentToMiniMessageCache =
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .executor(executor)
-                        .maximumSize(512)
+                        .maximumSize(256)
                         .build();
         this.jsonToMiniMessageCache =
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .executor(executor)
-                        .maximumSize(512)
+                        .maximumSize(256)
                         .build();
     }
 
