@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.bukkit;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.util.Vector3;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -94,6 +95,11 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
     @Override
     public boolean isOnline() {
         return player.isOnline();
+    }
+
+    @Override
+    public boolean isSpectator() {
+        return player.getGameMode() == GameMode.SPECTATOR;
     }
 
     @Override

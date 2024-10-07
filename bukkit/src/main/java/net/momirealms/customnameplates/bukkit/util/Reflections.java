@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -739,6 +740,108 @@ public class Reflections {
     public static final Field field$AttributeModifier$amount = requireNonNull(
             ReflectionUtils.getDeclaredField(
                     clazz$AttributeModifier, double.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundGameEventPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundGameEventPacket"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutGameStateChange")
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundGameEventPacket$Type = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundGameEventPacket$Type"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutGameStateChange$a")
+            )
+    );
+
+    public static final Field field$ClientboundGameEventPacket$event = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundGameEventPacket, clazz$ClientboundGameEventPacket$Type, 0
+            )
+    );
+
+    public static final Field field$ClientboundGameEventPacket$param = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundGameEventPacket, float.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundGameEventPacket$Type$id = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundGameEventPacket$Type, int.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundPlayerInfoUpdatePacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoUpdatePacket")
+            )
+    );
+
+    public static final Field field$ClientboundPlayerInfoUpdatePacket$actions = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundPlayerInfoUpdatePacket, EnumSet.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundPlayerInfoUpdatePacket$entries = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundPlayerInfoUpdatePacket, List.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundPlayerInfoUpdatePacket$Action = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoUpdatePacket$Action"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoUpdatePacket$a")
+            )
+    );
+
+    public static final Enum<?> enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE;
+
+
+    static {
+        Enum<?> updateGameMode;
+        try {
+            updateGameMode = Enum.valueOf((Class<Enum>) clazz$ClientboundPlayerInfoUpdatePacket$Action, "UPDATE_GAME_MODE");
+        } catch (Exception e) {
+            updateGameMode = Enum.valueOf((Class<Enum>) clazz$ClientboundPlayerInfoUpdatePacket$Action, "c");
+        }
+        enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE = updateGameMode;
+    }
+
+    public static final Class<?> clazz$ClientboundPlayerInfoUpdatePacket$Entry = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoUpdatePacket$Entry"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoUpdatePacket$b")
+            )
+    );
+
+    public static final Class<?> clazz$GameType = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.level.GameType"),
+                    BukkitReflectionUtils.assembleMCClass("world.level.EnumGamemode")
+            )
+    );
+
+    public static final Field field$ClientboundPlayerInfoUpdatePacket$Entry$gameMode = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundPlayerInfoUpdatePacket$Entry, clazz$GameType, 0
+            )
+    );
+
+    public static final Field field$ClientboundPlayerInfoUpdatePacket$Entry$profileId = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundPlayerInfoUpdatePacket$Entry, UUID.class, 0
+            )
+    );
+
+    public static final Method method$GameType$getId = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$GameType, new String[] { "getId", "a" }
             )
     );
 }

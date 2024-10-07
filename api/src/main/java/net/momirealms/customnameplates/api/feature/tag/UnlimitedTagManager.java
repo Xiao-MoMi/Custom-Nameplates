@@ -112,4 +112,14 @@ public interface UnlimitedTagManager extends Reloadable {
      */
     @ApiStatus.Internal
     void onPlayerAttributeSet(CNPlayer owner, CNPlayer viewer, double scale);
+
+    /**
+     * Internal method for updating a player's game mode
+     *
+     * @param owner   the player who owns the tags
+     * @param viewer  the player viewing the tags
+     * @param isSpectator true if the player is a spectator, false otherwise
+     */
+    @ApiStatus.Internal
+    void onPlayerGameModeChange(CNPlayer owner, CNPlayer viewer, boolean isSpectator);
 }

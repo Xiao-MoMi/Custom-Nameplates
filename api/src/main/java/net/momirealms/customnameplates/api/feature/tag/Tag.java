@@ -150,20 +150,9 @@ public interface Tag {
      */
     double getTextHeight(CNPlayer viewer);
 
-    /**
-     * Updates the tag state when the player crouches.
-     *
-     * @param isCrouching true if the player is crouching, false otherwise
-     */
-    void onPlayerCrouching(boolean isCrouching);
+    void onOpacityChange(boolean dark);
 
-    /**
-     * Updates the tag state when the player crouches for a specific viewer.
-     *
-     * @param viewer the player to update
-     * @param isCrouching true if the player is crouching, false otherwise
-     */
-    void onPlayerCrouching(CNPlayer viewer, boolean isCrouching);
+    void onOpacityChange(CNPlayer viewer, boolean dark);
 
     /**
      * Updates the tag scale when the player's scale changes.

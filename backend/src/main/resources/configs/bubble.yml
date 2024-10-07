@@ -1,7 +1,6 @@
 # Requirements for sending the bubble
 sender-requirements:
   permission: bubbles.send
-  '!gamemode': spectator
   potion-effect: "INVISIBILITY<0"
 
 viewer-requirements:

@@ -63,7 +63,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
                 owner.position().add(0,(1.8 + (affectedByCrouching() && tracker.isCrouching() && !owner.isFlying() ? -0.3 : 0) + renderer.hatOffset()) * (affectedByScaling() ? tracker.getScale() : 1),0),
                 0f, 0f, 0d,
                 0, 0, 0,
-                component, config.backgroundColor(), config.opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
+                component, config.backgroundColor(), opacity(), config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
                 config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
                 (affectedByScaling() ? scale(viewer).multiply(tracker.getScale()) : scale(viewer)),
                 (affectedByScaling() ? translation(viewer).multiply(tracker.getScale()) : translation(viewer)),
@@ -144,7 +144,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
     @Override
     public double getTextHeight(CNPlayer viewer) {
         String current = currentText.render(viewer);
-        Tracker tracker = viewer.getTracker(owner);
+        Tracker tracker = owner.getTracker(viewer);
         int lines = CustomNameplates.getInstance().getAdvanceManager().getLines(current, config.lineWidth());
         return ((lines * (9+1) + config.translation().y()) * config.scale().y() * (config.affectedByScaling() ? tracker.getScale() : 1)) / 40;
     }
@@ -194,7 +194,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
 
     @Override
     public byte opacity() {
-        return config.opacity();
+        return owner.isSpectator() || (owner.isCrouching() && affectedByCrouching()) ? 64 : config.opacity();
     }
 
     @Override

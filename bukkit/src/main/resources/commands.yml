@@ -134,3 +134,11 @@ bubbles_list:
   permission: bubbles.command.list
   usage:
     - /bubbles list
+
+# A command to test some stuffs
+# Usage: [COMMAND]
+debug_test:
+  enable: false
+  permission: nameplates.command.debug.test
+  usage:
+    - /nameplates debug test

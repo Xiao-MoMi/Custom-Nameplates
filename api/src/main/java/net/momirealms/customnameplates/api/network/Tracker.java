@@ -27,6 +27,7 @@ public class Tracker {
 
     private boolean isCrouching;
     private double scale;
+    private boolean isSpectator;
     private final CNPlayer tracker;
 
     private final CopyOnWriteArrayList<Integer> passengerIDs = new CopyOnWriteArrayList<>();
@@ -52,6 +53,14 @@ public class Tracker {
 
     public void setCrouching(boolean crouching) {
         isCrouching = crouching;
+    }
+
+    public boolean isSpectator() {
+        return isSpectator;
+    }
+
+    public void setSpectator(boolean spectator) {
+        isSpectator = spectator;
     }
 
     public double getScale() {

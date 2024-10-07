@@ -49,6 +49,7 @@ public class BukkitCommandManager extends AbstractCommandManager<CommandSender> 
                 new DebugPerformanceCommand(this, plugin),
                 new DebugWidthCommand(this, plugin),
                 new DebugLinesCommand(this, plugin),
+                new DebugTestCommand(this, plugin),
                 new NameplatesEquipCommand(this, plugin),
                 new NameplatesUnEquipCommand(this, plugin),
                 new NameplatesListCommand(this, plugin),

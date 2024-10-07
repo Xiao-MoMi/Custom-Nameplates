@@ -40,6 +40,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class BukkitPlatform implements Platform {
@@ -177,6 +178,29 @@ public class BukkitPlatform implements Platform {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundRemoveEntitiesPacket", e);
             }
         }, "PacketPlayOutEntityDestroy", "ClientboundRemoveEntitiesPacket");
+
+        registerPacketConsumer((player, event, packet) -> {
+            try {
+                EnumSet<?> enums = (EnumSet<?>) Reflections.field$ClientboundPlayerInfoUpdatePacket$actions.get(packet);
+                if (enums == null) return;
+                if (!enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE)) return;
+                List<Object> entries = (List<Object>) Reflections.field$ClientboundPlayerInfoUpdatePacket$entries.get(packet);
+                for (Object entry : entries) {
+                    UUID uuid = (UUID) Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$profileId.get(entry);
+                    if (uuid == null) continue;
+                    Object gameType = Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$gameMode.get(entry);
+                    if (gameType == null) continue;
+                    int mode = (int) Reflections.method$GameType$getId.invoke(gameType);
+                    boolean isSpectator = mode == 3;
+                    CNPlayer another = CustomNameplates.getInstance().getPlayer(uuid);
+                    if (another != null) {
+                        CustomNameplates.getInstance().getUnlimitedTagManager().onPlayerGameModeChange(another, player, isSpectator);
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundPlayerInfoUpdatePacket", e);
+            }
+        }, "ClientboundPlayerInfoUpdatePacket");
 
         // for cosmetic plugin compatibility
         registerPacketConsumer((player, event, packet) -> {

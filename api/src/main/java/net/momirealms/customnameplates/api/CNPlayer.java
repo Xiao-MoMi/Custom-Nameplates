@@ -82,6 +82,14 @@ public interface CNPlayer {
     boolean isOnline();
 
     /**
+     *
+     * Checks if the player is on spectator mode
+     *
+     * @return true if the player is on spectator mode, false otherwise
+     */
+    boolean isSpectator();
+
+    /**
      * Returns the scale of the player.
      *
      * @return the player's scale

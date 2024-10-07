@@ -104,6 +104,10 @@ public class BubbleTag extends AbstractTag {
     }
 
     @Override
+    public void onOpacityChange(CNPlayer viewer, boolean dark) {
+    }
+
+    @Override
     public boolean canShow(CNPlayer viewer) {
         if (!viewer.isMet(owner, manager.viewBubbleRequirements())) {
             return false;

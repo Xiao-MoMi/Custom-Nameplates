@@ -71,32 +71,23 @@ public class TagRendererImpl implements TagRenderer {
         HashSet<CNPlayer> playersToUpdatePassengers = new HashSet<>();
         for (Tag display : tags) {
             boolean canShow = display.canShow();
-            // 能大众显示
             if (canShow) {
-                // 当前大众显示
                 if (display.isShown()) {
                     for (CNPlayer nearby : owner.nearbyPlayers()) {
-                        // 如果已经展示了
                         if (display.isShown(nearby)) {
-                            // 不满足条件就撤掉
                             if (!display.canShow(nearby)) {
                                 display.hide(nearby);
                             }
                         } else {
-                            // 未展示，则检测条件，可以就上
                             if (display.canShow(nearby)) {
                                 display.show(nearby);
                                 playersToUpdatePassengers.add(nearby);
                             }
                         }
                     }
-                    // 更新一下文字顺序，放在后面是为了防止已经被hide的玩家多收一个包
                     display.tick();
                 } else {
-                    // 之前隐藏，现在开始大众显示
-                    // 需要重置文字顺序
                     display.init();
-                    // 更新一下文字顺序
                     display.tick();
                     display.show();
                     for (CNPlayer nearby : owner.nearbyPlayers()) {
@@ -107,8 +98,6 @@ public class TagRendererImpl implements TagRenderer {
                     }
                 }
             } else {
-                // 不能展示的情况
-                // 如果已经展示了，就咔掉所有玩家
                 if (display.isShown()) {
                     display.hide();
                 }
@@ -264,15 +253,15 @@ public class TagRendererImpl implements TagRenderer {
     }
 
     public void handleEntityDataChange(CNPlayer another, boolean isCrouching) {
-        Tracker properties = owner.getTracker(another);
+        Tracker tracker = owner.getTracker(another);
         // should never be null
-        if (properties == null) return;
-        properties.setCrouching(isCrouching);
+        if (tracker == null) return;
+        tracker.setCrouching(isCrouching);
         for (Tag display : this.tags) {
             if (display.affectedByCrouching()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {
-                        display.onPlayerCrouching(another, isCrouching);
+                        display.onOpacityChange(another, isCrouching || tracker.isSpectator());
                     }
                 }
             }
@@ -280,17 +269,30 @@ public class TagRendererImpl implements TagRenderer {
     }
 
     public void handleAttributeChange(CNPlayer another, double scale) {
-        boolean updatePassengers = false;
-        Tracker properties = owner.getTracker(another);
+        Tracker tracker = owner.getTracker(another);
         // should never be null
-        if (properties == null) return;
-        properties.setScale(scale);
+        if (tracker == null) return;
+        tracker.setScale(scale);
         for (Tag display : this.tags) {
             if (display.affectedByScaling()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {
                         display.onPlayerScaleUpdate(another, scale);
                     }
+                }
+            }
+        }
+    }
+
+    public void handleGameModeChange(CNPlayer another, boolean isSpectator) {
+        Tracker tracker = owner.getTracker(another);
+        // can be null
+        if (tracker == null) return;
+        tracker.setSpectator(isSpectator);
+        for (Tag display : this.tags) {
+            if (display.isShown()) {
+                if (display.isShown(another)) {
+                    display.onOpacityChange(another, isSpectator || tracker.isCrouching());
                 }
             }
         }

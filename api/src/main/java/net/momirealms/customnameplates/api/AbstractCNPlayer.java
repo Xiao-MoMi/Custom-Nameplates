@@ -61,11 +61,6 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         this.player = player;
     }
 
-    /**
-     * 将所有处于激活状态的变量统筹起来并返回一个更新任务
-     *
-     * @return 更新任务
-     */
     @Override
     public List<Placeholder> activePlaceholdersToRefresh() {
         Placeholder[] activePlaceholders = activePlaceholders();

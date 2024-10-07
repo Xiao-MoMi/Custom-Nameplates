@@ -118,15 +118,15 @@ public abstract class AbstractTag implements Tag {
     }
 
     @Override
-    public void onPlayerCrouching(boolean isCrouching) {
+    public void onOpacityChange(boolean dark) {
         for (CNPlayer viewer : viewerArray) {
-            onPlayerCrouching(viewer, isCrouching);
+            onOpacityChange(viewer, dark);
         }
     }
 
     @Override
-    public void onPlayerCrouching(CNPlayer viewer, boolean isCrouching) {
-        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createOpacityModifier(isCrouching ? 64 : opacity());
+    public void onOpacityChange(CNPlayer viewer, boolean dark) {
+        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createOpacityModifier(dark ? 64 : opacity());
         Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifiers));
         CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }

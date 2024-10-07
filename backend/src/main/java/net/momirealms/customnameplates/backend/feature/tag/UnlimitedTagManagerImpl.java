@@ -67,6 +67,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
             Tracker tracker = player.addPlayerToTracker(player);
             tracker.setScale(player.scale());
             tracker.setCrouching(player.isCrouching());
+            tracker.setSpectator(player.isSpectator());
             plugin.getUnlimitedTagManager().onAddPlayer(player, player);
             ((AbstractCNPlayer) player).setPreviewing(true);
         }
@@ -176,6 +177,14 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
         TagRendererImpl controller = tagRenderers.get(owner.uuid());
         if (controller != null) {
             controller.handleAttributeChange(viewer, scale);
+        }
+    }
+
+    @Override
+    public void onPlayerGameModeChange(CNPlayer owner, CNPlayer viewer, boolean isSpectator) {
+        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        if (controller != null) {
+            controller.handleGameModeChange(viewer, isSpectator);
         }
     }
 
