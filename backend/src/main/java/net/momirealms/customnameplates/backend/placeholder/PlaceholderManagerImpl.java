@@ -325,7 +325,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         if (strEntry.getValue() instanceof String string) {
                             PreParsedDynamicText preParsedDynamicText = new PreParsedDynamicText(string);
                             valueMap.put(strEntry.getKey(), preParsedDynamicText);
-                            list.add(placeholderToSwitch);
+                            list.add(preParsedDynamicText);
                         }
                     }
                 }
