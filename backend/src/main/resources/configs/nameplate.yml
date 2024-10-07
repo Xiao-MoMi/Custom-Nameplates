@@ -1,25 +1,11 @@
-# Duration (in seconds) for which the nameplate preview will be displayed.
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/config/nameplate.yml
 preview-duration: 5
-
-# Default nameplate shown when a player's nameplate is set to "none."
 default-nameplate: 'none'
-
-# Whether to make the nameplate always visible to the player
 always-show: false
-
-# Configuration for nameplate behavior and appearance.
 nameplate:
-  # Prefix to be displayed before the player's name.
-  # The prefix here will become part of the nameplate
   prefix: '%np_switch_nameplate_color_prefix%'
-  # Placeholder for the player's name
-  # The default configuration uses shift to ensure that the player name not affected by the clientside `force-unicode-font` setting.
   player-name: '%np_shift_player_name%'
-  # Suffix to be displayed after the player's name.
-  # The suffix here will become part of the nameplate
   suffix: '%np_switch_nameplate_color_suffix%'
-
-# Configuration for Unlimited tags.
 unlimited:
   tag_1:
     text: '%np_tag-image%'

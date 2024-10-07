@@ -1,15 +1,13 @@
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/config/advance-data.yml
 # namespace:font
 minecraft:default:
-  # default advance
   default: 9.0
-  # Sets the loading sequence of the templates
   template-loading-sequence:
     - unifont
     - nonlatin_european
     - accented
     - ascii
     - space
-  # The values here would override the same character in the template
   values:
     默: 9.0
 

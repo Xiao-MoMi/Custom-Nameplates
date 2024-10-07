@@ -1,34 +1,19 @@
-# Requirements for sending the bubble
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/config/bubble.yml
 sender-requirements:
   permission: bubbles.send
   potion-effect: "INVISIBILITY<0"
-
 viewer-requirements:
   permission: bubbles.see
-
-# blacklist channels
 blacklist-channels:
   - Private
   - Staff
-
-# ALL: all the players can see the bubble
-# JOINED: players in the same channel can see each other's bubble
-# CAN_JOIN: players that have permission to certain channels would see the bubble in that channel
 channel-mode: ALL
-
-# Default bubble to display if player's bubble is "none"
 default-bubble: 'chat'
-
-# Y offset from the highest nameplate
 y-offset: 0.1
-
 view-range: 0.5
-
-# Bubble display time (in ticks)
 stay-duration: 150
 appear-duration: 4
 disappear-duration: 2
-
 bubble-settings:
   chat:
     display-name: "White Bubbles"

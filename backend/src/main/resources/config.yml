@@ -8,103 +8,75 @@ metrics: true
 update-checker: true
 # Forces a specific locale (e.g., zh_cn)
 force-locale: ''
-# Module Settings
-# Modifying these modules may result in distorted images. If this occurs, reinstall the newly generated resource pack.
+
+# Module Settings: Enable or disable specific features.
 modules:
-  nameplates: true
-  backgrounds: true
-  bubbles: true
-  bossbars: true
-  actionbars: true
-  images: true
-# Plugin Integrations
+  nameplates: true           # Enable nameplate display
+  backgrounds: true          # Enable background images for nameplates
+  bubbles: true              # Enable bubble text display
+  bossbars: true             # Enable bossbars
+  actionbars: true           # Enable actionbars
+  images: true               # Enable image displays
+
+# Plugin Integrations: Integrate resource packs and chat plugins with other plugins.
 integrations:
-  # Should Nameplates merge resource packs with these plugins during reload?
   resource-pack:
-    ItemsAdder: false
-    ItemsAdder-old-method: false
-    Oraxen: false
-  # Some chats, such as staff chats or menu inputs, may need to be excluded from capture.
-  # Supported chat plugins are listed below, which allow blacklist channels and /ignore functionality to work correctly.
+    ItemsAdder: false         # Integration with ItemsAdder
+    ItemsAdder-old-method: false # Old method for ItemsAdder
+    Oraxen: false             # Integration with Oraxen
   chat:
-    TrChat: false
-    VentureChat: false
-    HuskChat: false
-    CarbonChat: false
-    AdvancedChat: false
-    Essentials: false
-# Resource Pack Generation Settings
+    TrChat: false             # Integration with TrChat
+    VentureChat: false        # Integration with VentureChat
+    HuskChat: false           # Integration with HuskChat
+    CarbonChat: false         # Integration with CarbonChat
+    AdvancedChat: false       # Integration with AdvancedChat
+    Essentials: false         # Integration with Essentials chat
+
+# Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:
-  # Disables resource pack generation at server startup
-  disable-generation-on-start: false
-  # Namespace identifier
-  namespace: "nameplates"
-  # Font selection
-  font: "default"
-  # The starting character for custom fonts
-  # This character is used, but it won't affect normal Korean characters during chat, as they belong to the "minecraft:default" font.
-  initial-char: '뀁'
-  # Specify directories for PNG file generation.
-  # This helps maintain an organized resource pack structure.
-  image-path:
-    nameplates: 'font/nameplates/'
-    backgrounds: 'font/backgrounds/'
-    images: 'font/images/'
-    bubbles: 'font/bubbles/'
-    space-split: 'font/base/'
-  # Shader Settings
+  disable-generation-on-start: false  # Allow resource pack generation at server start
+  namespace: "nameplates"             # Namespace for the resource pack
+  font: "default"                     # Default font used
+  initial-char: '뀁'                  # Starting character for custom fonts (won't affect Korean characters in chat)
+  image-path:                         # Paths for different assets
+    nameplates: 'font/nameplates/'    # Path for nameplates assets
+    backgrounds: 'font/backgrounds/'  # Path for background images
+    images: 'font/images/'            # Path for other images
+    bubbles: 'font/bubbles/'          # Path for bubble text images
+    space-split: 'font/base/'         # Path for base font images
   shader:
-    # Enables shader generation
-    enable: true
-    # Hides scoreboard numbers (1.20.4- requires shader to remove that)
-    hide-scoreboard-number: false
-    # Enables support for animated text shaders
-    animated-text: false
-    # Enables ItemsAdder text effect support
-    ItemsAdder-text-effects: false
-  # Bossbar transparency settings
+    enable: true                      # Enable shader generation
+    hide-scoreboard-number: false     # Hiding of scoreboard numbers
+    animated-text: false              # Animated text shaders
+    ItemsAdder-text-effects: false    # ItemsAdder text effects support
   transparent-bossbar:
-    # Specify the color of the bossbar to hide
-    color: YELLOW
-    # Generate transparent bossbars for Minecraft 1.20.2+
-    "1_20_2+": true
-    # Generate transparent bossbars for Minecraft 1.17-1.20.1
-    "1_17-1_20_1": true
-  # Legacy Unicode support for Minecraft 1.20+ clients, as these images were removed in 1.20, affecting the creation of decent texts.
-  # Enabling this increases your resource pack size by approximately 900KB.
-  legacy-unicodes: true
-# Additional Settings
+    color: YELLOW                     # BossBar color to remove
+    "1_20_2+": true                   # Enable transparent bossbar for Minecraft 1.20.2+
+    "1_17-1_20_1": true               # Enable transparent bossbar for Minecraft 1.17-1.20.1
+  legacy-unicodes: true               # Enable legacy Unicode support for Minecraft 1.20+ (increases resource pack size by 900KB)
+
+# Additional Settings: Extra options to control behavior and performance.
 other-settings:
-  # It is recommended to use the MiniMessage format. If you prefer legacy color codes using "&", enable this support.
-  # Disabling it will improve color formatting performance.
-  legacy-color-code-support: true
-  # Set a delay for actionbar/bossbar to prevent compatibility issues
-  send-delay: 0
-  # Determines whether CustomNameplates should capture actionbars from other plugins
-  catch-other-plugin-actionbar: true
-  # Should the plugin listen for chat canceled events by unknown chat plugins?
-  unsafe-chat-event: false
-  # Set the default condition refresh interval
-  default-condition-refresh-interval: 1
-  # Set the default placeholder refresh interval
-  default-placeholder-refresh-interval: 1
-  # Set the refresh interval for better performance (Especially for those heavy placeholders)
-  placeholder-refresh-interval:
+  legacy-color-code-support: true     # Enable support for legacy color codes using &
+  send-delay: 0                       # Set actionbar/bossbar send delay
+  catch-other-plugin-actionbar: true  # Capture actionbars from other plugins
+  unsafe-chat-event: false            # Listen for canceled(unsafe) chat events from unknown plugins
+  default-condition-refresh-interval: 1  # Set default condition refresh interval
+  default-placeholder-refresh-interval: 1  # Set default placeholder refresh interval
+  placeholder-refresh-interval:       # Custom placeholder refresh intervals for performance optimization
     "%player_name%": 100
-    "%vault_prefix%": 1
-  # CustomNameplates provides some templates for reading the default Minecraft fonts
-  # You can replace the files under /font or add new configuration to let the plugin get these templates.
-  # Templates can be used in advance-data.yml
+    "%vault_prefix%": 20
+  # Font Templates: Define different fonts and their settings.
   font-templates:
     space:
       space:
-        " ": 4
-        "\\u200c": 0
+        " ": 4                        # Define space width as 4 units
+        "\\u200c": 0                  # Define zero-width non-joiner as 0 width
     unihex:
       unifont:
-        file: unifont.zip
-        generate: false
-        size_overrides:
+        file: unifont.zip             # Load font from unifont.zip
+        generate: false               # Don't include font in the generated resource pack
+        size_overrides:               # Override size for specific Unicode ranges
           - from: "\\u3001"
             to: "\\u30FF"
             left: 0
@@ -142,10 +114,10 @@ other-settings:
             left: 0
             right: 15
       unifont_jp:
-        file: unifont_jp.zip
-        generate: false
+        file: unifont_jp.zip          # Load Japanese unifont
+        generate: false               # Don't generate in the resource pack
         filter:
-          "jp": true
+          "jp": true                  # Apply to Japanese characters only
         size_overrides:
           - from: "\\u3200"
             to: "\\u9FFF"
@@ -157,10 +129,10 @@ other-settings:
             right: 15
     bitmap:
       ascii:
-        codepoints: ascii
-        file: ascii.png
-        height: 8
-        custom: false  # Is this a non-default Minecraft font? If enabled, plugin will create a new font image in the generated resource pack
+        codepoints: ascii             # Define ASCII bitmap font
+        file: ascii.png               # Use ascii.png file for the font
+        height: 8                     # Font height is 8 units
+        custom: false                 # Not a custom font (default Minecraft)
       ascii_sga:
         codepoints: ascii_sga
         file: ascii_sga.png
@@ -183,22 +155,20 @@ other-settings:
         custom: false
     legacy_unicode:
       legacy_unicode:
-        file: unicode_page_%02x.png
-        height: 8
+        file: unicode_page_%02x.png   # Legacy Unicode characters page file
+        height: 8                     # Set height to 8 units
         custom: false
     unicode:
       unicode:
-        file: unicode_page_%02x.png
-        sizes: glyph_sizes.bin
+        file: unicode_page_%02x.png   # Default Unicode characters
+        sizes: glyph_sizes.bin        # Glyph size configuration
     ttf:
       example:
-        generate: false
-        file: example.ttf
-        size: 10.0
-        oversample: 8.0
-        skip: []
-  # If the font is a bitmap font, the number represents the ascent
-  # If the font is a ttf font, the number represents the Y shift
+        generate: false               # Should this TTF file be included in the generated pack
+        file: example.ttf             # Define the TTF file to load the font from
+        size: 10.0                    # Set font size
+        oversample: 8.0               # Oversample rate for TTF rendering
+        skip: []                      # Skipped characters in list format
   shift-fonts:
     shift_0:
       - space

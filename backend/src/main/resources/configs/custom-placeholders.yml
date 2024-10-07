@@ -34,7 +34,7 @@ conditional-text:
         weather:
           - thunder
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/bubble-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 bubble-text:
   chat:
     bubble: chat_1
@@ -42,7 +42,7 @@ bubble-text:
     left-margin: 1
     right-margin: 1
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/nameplate-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 nameplate-text:
   halloween:
     nameplate: halloween
@@ -50,7 +50,7 @@ nameplate-text:
     left-margin: 1
     right-margin: 1
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 background-text:
   location:
     background: bedrock_1
