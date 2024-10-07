@@ -378,6 +378,4 @@ public interface CNPlayer {
      * Save the player's current nameplate/bubble to database
      */
     void save();
-
-    void updateAndNotifyChanges(List<Placeholder> placeholdersToUpdate);
 }

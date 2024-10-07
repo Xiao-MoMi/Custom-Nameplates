@@ -61,6 +61,13 @@ public class TimeStampData<D> {
     }
 
     /**
+     * Consume the flag
+     */
+    public void resetChangedFlag() {
+        this.packedTicks = packedTicks & 0x7FFFFFFF;;
+    }
+
+    /**
      * Returns the stored data.
      *
      * @return the data

@@ -23,8 +23,7 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.MainTask;
-import net.momirealms.customnameplates.api.feature.OffsetFont;
-import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
+import net.momirealms.customnameplates.api.feature.*;
 import net.momirealms.customnameplates.api.feature.background.Background;
 import net.momirealms.customnameplates.api.feature.bubble.Bubble;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
@@ -54,9 +53,11 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
     private final CustomNameplates plugin;
     private final HashMap<String, Integer> refreshIntervals = new HashMap<>();
+    private final HashMap<Integer, Integer> fasterRefreshIntervals = new HashMap<>();
     private final Map<String, Placeholder> registeredPlaceholders = new HashMap<>();
     private final HashMap<Placeholder, List<PreParsedDynamicText>> childrenText = new HashMap<>();
     private final HashMap<String, Placeholder> nestedPlaceholders = new HashMap<>();
+    private final List<PreParsedDynamicText> delayedInitTexts = new ArrayList<>();
 
     public PlaceholderManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -92,6 +93,11 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             this.nestedPlaceholders.put(placeholder.id().replace("%np_", "%nameplates_").replace("%rel_np_", "%rel_nameplates_"), placeholder);
         }
         this.childrenText.clear();
+
+        for (PreParsedDynamicText preParsedText : this.delayedInitTexts) {
+            preParsedText.init();
+        }
+        this.delayedInitTexts.clear();
     }
 
     @Override
@@ -99,7 +105,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         this.refreshIntervals.clear();
         this.registeredPlaceholders.clear();
         this.childrenText.clear();
+        this.delayedInitTexts.clear();
         this.nestedPlaceholders.clear();
+        this.fasterRefreshIntervals.clear();
         PlaceholderCounter.reset();
     }
 
@@ -317,7 +325,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 PreParsedDynamicText defaultValue = new PreParsedDynamicText(inner.getString("default", ""));
                 ArrayList<PreParsedDynamicText> list = new ArrayList<>();
                 list.add(placeholderToSwitch);
-                list.add(defaultValue);
+                delayedInitTexts.add(defaultValue);
                 Map<String, PreParsedDynamicText> valueMap = new HashMap<>();
                 Section results = inner.getSection("case");
                 if (results != null) {
@@ -325,7 +333,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         if (strEntry.getValue() instanceof String string) {
                             PreParsedDynamicText preParsedDynamicText = new PreParsedDynamicText(string);
                             valueMap.put(strEntry.getKey(), preParsedDynamicText);
-                            list.add(preParsedDynamicText);
+                            delayedInitTexts.add(preParsedDynamicText);
                         }
                     }
                 }
@@ -471,7 +479,6 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
             String id = entry.getKey();
             if (entry.getValue() instanceof Section placeholderSection) {
-                List<PreParsedDynamicText> list = new ArrayList<>();
                 ArrayList<Pair<PreParsedDynamicText, Requirement[]>> orderedTexts = new ArrayList<>();
                 for (Map.Entry<String, Object> conditionEntry : placeholderSection.getStringRouteMappedValues(false).entrySet()) {
                     if (conditionEntry.getValue() instanceof Section inner) {
@@ -479,7 +486,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         Requirement[] requirements = plugin.getRequirementManager().parseRequirements(inner.getSection("conditions"));
                         PreParsedDynamicText preParsedDynamicText = new PreParsedDynamicText(text);
                         orderedTexts.add(Pair.of(preParsedDynamicText, requirements));
-                        list.add(preParsedDynamicText);
+                        delayedInitTexts.add(preParsedDynamicText);
                     }
                 }
                 Placeholder placeholder1 = this.registerSharedPlaceholder("%shared_np_conditional_" + id + "%", () -> {
@@ -516,9 +523,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     }
                     return "";
                 });
-                childrenText.put(placeholder1, list);
-                childrenText.put(placeholder2, list);
-                childrenText.put(placeholder3, list);
+                childrenText.put(placeholder1, List.of());
+                childrenText.put(placeholder2, List.of());
+                childrenText.put(placeholder3, List.of());
             }
         }
     }
@@ -527,8 +534,141 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     public void refreshPlaceholders() {
         for (CNPlayer player : plugin.getOnlinePlayers()) {
             if (!player.isOnline()) continue;
-            player.updateAndNotifyChanges(player.activePlaceholdersToRefresh());
+            Set<Feature> featuresToNotifyUpdates = new HashSet<>();
+            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new HashMap<>();
+            List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ArrayList<>();
+            for (Placeholder placeholder : player.activePlaceholdersToRefresh()) {
+                if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
+                    TimeStampData<String> previous = player.getValue(placeholder);
+                    if (previous == null) {
+                        String value = playerPlaceholder.request(player);
+                        player.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
+                        featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                    } else {
+                        if (previous.ticks() > MainTask.getTicks() - getRefreshInterval(placeholder.countId())) {
+                            if (previous.hasValueChanged()) {
+                                previous.resetChangedFlag();
+                                featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                            }
+                            continue;
+                        }
+                        String value = playerPlaceholder.request(player);
+                        if (!previous.data().equals(value)) {
+                            previous.data(value);
+                            previous.updateTicks(true);
+                            featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                        } else {
+                            previous.updateTicks(false);
+                        }
+                    }
+                } else if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+                    delayedPlaceholdersToUpdate.add(relationalPlaceholder);
+                } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
+                    TimeStampData<String> previous = player.getValue(placeholder);
+                    if (previous == null) {
+                        String value;
+                        // if the shared placeholder has been updated by other players
+                        if (MainTask.hasRequested(sharedPlaceholder.countId())) {
+                            value = sharedPlaceholder.getLatestValue();
+                        } else {
+                            value = sharedPlaceholder.request();
+                        }
+                        player.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
+                        featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                    } else {
+                        // The placeholder has been refreshed by other codes
+                        if (previous.ticks() > MainTask.getTicks() - getRefreshInterval(placeholder.countId())) {
+                            if (previous.hasValueChanged()) {
+                                previous.resetChangedFlag();
+                                featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                            }
+                            continue;
+                        }
+                        String value;
+                        // if the shared placeholder has been updated by other players
+                        if (MainTask.hasRequested(sharedPlaceholder.countId())) {
+                            value = sharedPlaceholder.getLatestValue();
+                        } else {
+                            value = sharedPlaceholder.request();
+                        }
+                        if (!previous.data().equals(value)) {
+                            previous.data(value);
+                            previous.updateTicks(true);
+                            featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
+                        } else {
+                            previous.updateTicks(false);
+                        }
+                    }
+                }
+            }
+
+            for (RelationalPlaceholder placeholder : delayedPlaceholdersToUpdate) {
+                for (CNPlayer nearby : player.nearbyPlayers()) {
+                    TimeStampData<String> previous = player.getRelationalValue(placeholder, nearby);
+                    if (previous == null) {
+                        String value = placeholder.request(player, nearby);
+                        player.setRelationalValue(placeholder, nearby, new TimeStampData<>(value, MainTask.getTicks(), true));
+                        for (Feature feature : player.activeFeatures(placeholder)) {
+                            // Filter features that will not be updated for all players
+                            if (!featuresToNotifyUpdates.contains(feature)) {
+                                List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                players.add(nearby);
+                            }
+                        }
+                    } else {
+                        if (previous.ticks() > MainTask.getTicks() - getRefreshInterval(placeholder.countId())) {
+                            if (previous.hasValueChanged()) {
+                                previous.resetChangedFlag();
+                                for (Feature feature : player.activeFeatures(placeholder)) {
+                                    // Filter features that will not be updated for all players
+                                    if (!featuresToNotifyUpdates.contains(feature)) {
+                                        List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                        players.add(nearby);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        String value = placeholder.request(player, nearby);
+                        if (!previous.data().equals(value)) {
+                            previous.data(value);
+                            previous.updateTicks(true);
+                            for (Feature feature : player.activeFeatures(placeholder)) {
+                                // Filter features that will not be updated for all players
+                                if (!featuresToNotifyUpdates.contains(feature)) {
+                                    List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                    players.add(nearby);
+                                }
+                            }
+                        } else {
+                            previous.updateTicks(false);
+                        }
+                    }
+                }
+            }
+
+            // Switch to another thread for updating
+            plugin.getScheduler().async().execute(() -> {
+                // Async task takes time and the player might have been offline
+                if (!player.isOnline()) return;
+                for (Feature feature : featuresToNotifyUpdates) {
+                    feature.notifyPlaceholderUpdates(player, false);
+                }
+                for (Map.Entry<Feature, List<CNPlayer>> innerEntry : relationalFeaturesToNotifyUpdates.entrySet()) {
+                    Feature feature = innerEntry.getKey();
+                    if (feature instanceof RelationalFeature relationalFeature) {
+                        for (CNPlayer other : innerEntry.getValue()) {
+                            relationalFeature.notifyPlaceholderUpdates(player, other, false);
+                        }
+                    }
+                }
+            });
         }
+    }
+
+    @Override
+    public int getRefreshInterval(int countId) {
+        return fasterRefreshIntervals.getOrDefault(countId, ConfigManager.defaultRefreshInterval());
     }
 
     @Override
@@ -540,9 +680,13 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     public <T extends Placeholder> T registerPlaceholder(T placeholder) {
         Placeholder nested = nestedPlaceholders.get(placeholder.id());
         if (nested != null) {
-            placeholder.addChildren(nested.children());
+            for (Placeholder child : nested.children()) {
+                placeholder.addChild(child);
+                child.addParent(placeholder);
+            }
         }
         registeredPlaceholders.put(placeholder.id(), placeholder);
+        fasterRefreshIntervals.put(placeholder.countId(), getRefreshInterval(placeholder.id()));
         return placeholder;
     }
 

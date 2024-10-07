@@ -37,7 +37,15 @@ public interface PlaceholderManager extends Reloadable {
     void refreshPlaceholders();
 
     /**
-     * Gets the refresh interval for a placeholder by its ID.
+     * Gets the refresh interval for a placeholder by its countId.
+     *
+     * @param countId the countId of the placeholder
+     * @return the refresh interval in ticks
+     */
+    int getRefreshInterval(int countId);
+
+    /**
+     * Gets the refresh interval for a placeholder by its id.
      *
      * @param id the ID of the placeholder
      * @return the refresh interval in ticks

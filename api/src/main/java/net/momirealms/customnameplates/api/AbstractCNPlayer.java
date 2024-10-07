@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.Feature;
-import net.momirealms.customnameplates.api.feature.RelationalFeature;
 import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
@@ -69,15 +68,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         for (Placeholder placeholder : activePlaceholders) {
             childrenFirstList(placeholder, placeholderWithChildren);
         }
-        placeholderWithChildren = placeholderWithChildren.stream().distinct().toList();
-        List<Placeholder> placeholdersToUpdate = new ArrayList<>();
-        for (Placeholder placeholder : placeholderWithChildren) {
-            int interval = placeholder.refreshInterval();
-            if (interval > 0 && MainTask.getTicks() % interval == 0) {
-                placeholdersToUpdate.add(placeholder);
-            }
-        }
-        return placeholdersToUpdate;
+        return placeholderWithChildren.stream().distinct().toList();
     }
 
     @Override
@@ -491,135 +482,5 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     @Override
     public int hashCode() {
         return entityID();
-    }
-
-    @Override
-    public void updateAndNotifyChanges(List<Placeholder> placeholdersToUpdate) {
-        Set<Feature> featuresToNotifyUpdates = new HashSet<>();
-        Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new HashMap<>();
-        List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ArrayList<>();
-        for (Placeholder placeholder : placeholdersToUpdate) {
-            if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-                TimeStampData<String> previous = this.getValue(placeholder);
-                if (previous == null) {
-                    String value = playerPlaceholder.request(this);
-                    this.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
-                    featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                } else {
-                    if (previous.ticks() == MainTask.getTicks()) {
-                        if (previous.hasValueChanged()) {
-                            featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                        }
-                        continue;
-                    }
-                    String value = playerPlaceholder.request(this);
-                    if (!previous.data().equals(value)) {
-                        previous.data(value);
-                        previous.updateTicks(true);
-                        featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                    } else {
-                        previous.updateTicks(false);
-                    }
-                }
-            } else if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
-                delayedPlaceholdersToUpdate.add(relationalPlaceholder);
-            } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                TimeStampData<String> previous = this.getValue(placeholder);
-                if (previous == null) {
-                    String value;
-                    // if the shared placeholder has been updated by other players
-                    if (MainTask.hasRequested(sharedPlaceholder.countId())) {
-                        value = sharedPlaceholder.getLatestValue();
-                    } else {
-                        value = sharedPlaceholder.request();
-                    }
-                    this.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
-                    featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                } else {
-                    // The placeholder has been refreshed by other codes
-                    if (previous.ticks() == MainTask.getTicks()) {
-                        if (previous.hasValueChanged()) {
-                            featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                        }
-                        continue;
-                    }
-                    String value;
-                    // if the shared placeholder has been updated by other players
-                    if (MainTask.hasRequested(sharedPlaceholder.countId())) {
-                        value = sharedPlaceholder.getLatestValue();
-                    } else {
-                        value = sharedPlaceholder.request();
-                    }
-                    if (!previous.data().equals(value)) {
-                        previous.data(value);
-                        previous.updateTicks(true);
-                        featuresToNotifyUpdates.addAll(this.activeFeatures(placeholder));
-                    } else {
-                        previous.updateTicks(false);
-                    }
-                }
-            }
-        }
-
-        for (RelationalPlaceholder placeholder : delayedPlaceholdersToUpdate) {
-            for (CNPlayer nearby : this.nearbyPlayers()) {
-                TimeStampData<String> previous = this.getRelationalValue(placeholder, nearby);
-                if (previous == null) {
-                    String value = placeholder.request(this, nearby);
-                    this.setRelationalValue(placeholder, nearby, new TimeStampData<>(value, MainTask.getTicks(), true));
-                    for (Feature feature : this.activeFeatures(placeholder)) {
-                        // Filter features that will not be updated for all players
-                        if (!featuresToNotifyUpdates.contains(feature)) {
-                            List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
-                            players.add(nearby);
-                        }
-                    }
-                } else {
-                    if (previous.ticks() == MainTask.getTicks()) {
-                        if (previous.hasValueChanged()) {
-                            for (Feature feature : this.activeFeatures(placeholder)) {
-                                // Filter features that will not be updated for all players
-                                if (!featuresToNotifyUpdates.contains(feature)) {
-                                    List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
-                                    players.add(nearby);
-                                }
-                            }
-                        }
-                        continue;
-                    }
-                    String value = placeholder.request(this, nearby);
-                    if (!previous.data().equals(value)) {
-                        previous.data(value);
-                        previous.updateTicks(true);
-                        for (Feature feature : this.activeFeatures(placeholder)) {
-                            // Filter features that will not be updated for all players
-                            if (!featuresToNotifyUpdates.contains(feature)) {
-                                List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
-                                players.add(nearby);
-                            }
-                        }
-                    } else {
-                        previous.updateTicks(false);
-                    }
-                }
-            }
-        }
-
-        // Switch to another thread for updating
-        plugin.getScheduler().async().execute(() -> {
-            // Async task takes time and the player might have been offline
-            if (!isOnline()) return;
-            for (Feature feature : featuresToNotifyUpdates) {
-                feature.notifyPlaceholderUpdates(this, false);
-            }
-            for (Map.Entry<Feature, List<CNPlayer>> innerEntry : relationalFeaturesToNotifyUpdates.entrySet()) {
-                Feature feature = innerEntry.getKey();
-                if (feature instanceof RelationalFeature relationalFeature) {
-                    for (CNPlayer other : innerEntry.getValue()) {
-                        relationalFeature.notifyPlaceholderUpdates(this, other, false);
-                    }
-                }
-            }
-        });
     }
 }
