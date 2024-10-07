@@ -26,10 +26,8 @@ unlimited:
     translation: 0,0.2,0
     viewer-conditions: { }
     owner-conditions:
-      condition_potion:
-        type: potion-effect
-        value: "INVISIBILITY<0"
-        refresh-interval: 1
+      has-nameplate: true
+      potion-effect: "INVISIBILITY<0"
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true
@@ -42,10 +40,7 @@ unlimited:
     viewer-conditions: { }
     owner-conditions:
       has-nameplate: true
-      condition_potion:
-        type: potion-effect
-        value: "INVISIBILITY<0"
-        refresh-interval: 1
+      potion-effect: "INVISIBILITY<0"
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true
@@ -58,10 +53,7 @@ unlimited:
     viewer-conditions: { }
     owner-conditions:
       has-nameplate: false
-      condition_potion:
-        type: potion-effect
-        value: "INVISIBILITY<0"
-        refresh-interval: 1
+      potion-effect: "INVISIBILITY<0"
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true

@@ -66,7 +66,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean bubbleModule;
     protected boolean nameplateModule;
     protected boolean backgroundModule;
-    protected int defaultRefreshInterval;
+    protected int defaultPlaceholderRefreshInterval;
+    protected int defaultConditionRefreshInterval;
     protected int delaySend;
     protected boolean catchOtherActionBar;
 
@@ -209,7 +210,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
         // Other settings
         delaySend = config.getInt("other-settings.send-delay", 0);
-        defaultRefreshInterval = config.getInt("other-settings.default-placeholder-refresh-interval", 10);
+        defaultPlaceholderRefreshInterval = config.getInt("other-settings.default-placeholder-refresh-interval", 1);
+        defaultConditionRefreshInterval = config.getInt("other-settings.ddefault-condition-refresh-interval", 1);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
     }
 
@@ -326,8 +328,12 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         return instance.metrics;
     }
 
-    public static int defaultRefreshInterval() {
-        return instance.defaultRefreshInterval;
+    public static int defaultPlaceholderRefreshInterval() {
+        return instance.defaultPlaceholderRefreshInterval;
+    }
+
+    public static int defaultConditionRefreshInterval() {
+        return instance.defaultConditionRefreshInterval;
     }
 
     public static boolean enableShader() {

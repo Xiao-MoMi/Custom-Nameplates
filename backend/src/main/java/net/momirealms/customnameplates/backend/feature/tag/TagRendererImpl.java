@@ -26,29 +26,30 @@ import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.feature.tag.UnlimitedTagManager;
 import net.momirealms.customnameplates.api.network.Tracker;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class TagRendererImpl implements TagRenderer {
 
     private final CNPlayer owner;
     private final UnlimitedTagManager manager;
-    private Tag[] tags;
+    private final Vector<Tag> tagVector;
+    private Tag[] tagArray;
+    private Tag[] rTagsArray;
     private double hatOffset;
 
     public TagRendererImpl(UnlimitedTagManager manager, CNPlayer owner) {
         this.owner = owner;
         this.manager = manager;
-        List<NameTag> senderList = new ArrayList<>();
+        List<NameTag> tagList = new ArrayList<>();
         for (NameTagConfig config : manager.nameTagConfigs()) {
             NameTag sender = new NameTag(owner, config, this);
-            senderList.add(sender);
+            tagList.add(sender);
             this.owner.addFeature(sender);
         }
-        this.tags = senderList.toArray(new Tag[0]);
+        this.tagVector = new Vector<>(tagList);
+        this.resetTagArray();
+        this.rTagsArray = new Tag[0];
     }
 
     @Override
@@ -60,7 +61,7 @@ public class TagRendererImpl implements TagRenderer {
     public void hatOffset(double hatOffset) {
         if (hatOffset != this.hatOffset) {
             this.hatOffset = hatOffset;
-            for (Tag tag : tags) {
+            for (Tag tag : tagArray) {
                 tag.updateTranslation();
             }
         }
@@ -69,37 +70,47 @@ public class TagRendererImpl implements TagRenderer {
     @Override
     public void onTick() {
         HashSet<CNPlayer> playersToUpdatePassengers = new HashSet<>();
-        for (Tag display : tags) {
-            boolean canShow = display.canShow();
+        HashSet<CNPlayer> tagTranslationUpdates = new HashSet<>();
+
+        for (Tag tag : tagArray) {
+            boolean canShow = tag.canShow();
             if (canShow) {
-                if (display.isShown()) {
+                if (tag.isShown()) {
                     for (CNPlayer nearby : owner.nearbyPlayers()) {
-                        if (display.isShown(nearby)) {
-                            if (!display.canShow(nearby)) {
-                                display.hide(nearby);
+                        if (tag.isShown(nearby)) {
+                            if (!tag.canShow(nearby)) {
+                                tag.hide(nearby);
+                                if (!tag.relativeTranslation())
+                                    tagTranslationUpdates.add(nearby);
                             }
                         } else {
-                            if (display.canShow(nearby)) {
-                                display.show(nearby);
+                            if (tag.canShow(nearby)) {
+                                tag.show(nearby);
                                 playersToUpdatePassengers.add(nearby);
+                                if (!tag.relativeTranslation())
+                                    tagTranslationUpdates.add(nearby);
                             }
                         }
                     }
-                    display.tick();
+                    tag.tick();
                 } else {
-                    display.init();
-                    display.tick();
-                    display.show();
+                    tag.init();
+                    tag.tick();
+                    tag.show();
                     for (CNPlayer nearby : owner.nearbyPlayers()) {
-                        if (display.canShow(nearby) && !display.isShown(nearby)) {
-                            display.show(nearby);
+                        if (tag.canShow(nearby) && !tag.isShown(nearby)) {
+                            tag.show(nearby);
                             playersToUpdatePassengers.add(nearby);
+                            if (!tag.relativeTranslation())
+                                tagTranslationUpdates.add(nearby);
                         }
                     }
                 }
             } else {
-                if (display.isShown()) {
-                    display.hide();
+                if (tag.isShown()) {
+                    tag.hide();
+                    if (!tag.relativeTranslation())
+                        tagTranslationUpdates.addAll(owner.nearbyPlayers());
                 }
             }
         }
@@ -109,11 +120,20 @@ public class TagRendererImpl implements TagRenderer {
         for (CNPlayer nearby : playersToUpdatePassengers) {
             updatePassengers(nearby, realPassengers);
         }
+
+        // Update relative translation tags
+        for (Tag tag : rTagsArray) {
+            for (CNPlayer nearby : tagTranslationUpdates) {
+                if (tag.isShown(nearby)) {
+                    tag.updateTranslation(nearby);
+                }
+            }
+        }
     }
 
     @Override
     public void destroy() {
-        for (Tag tag : this.tags) {
+        for (Tag tag : this.tagArray) {
             tag.hide();
             if (tag instanceof Feature feature) {
                 this.owner.removeFeature(feature);
@@ -122,7 +142,7 @@ public class TagRendererImpl implements TagRenderer {
     }
 
     public void handlePlayerRemove(CNPlayer another) {
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display.isShown()) {
                 if (display.isShown(another)) {
                     display.hide(another);
@@ -131,52 +151,88 @@ public class TagRendererImpl implements TagRenderer {
         }
     }
 
+    private void resetRTagArray() {
+        List<Tag> rTags = new ArrayList<>();
+        for (Tag tag : this.tagArray) {
+            if (tag.relativeTranslation()) rTags.add(tag);
+        }
+        this.rTagsArray = rTags.toArray(new Tag[0]);
+    }
+
+    private void resetTagArray() {
+        this.tagArray = tagVector.toArray(new Tag[0]);
+    }
+
     @Override
     public void addTag(Tag tag) {
-        Tag[] newTags = new Tag[this.tags.length + 1];
-        System.arraycopy(this.tags, 0, newTags, 0, this.tags.length);
-        newTags[this.tags.length] = tag;
-        this.tags = newTags;
+        if (tagVector.contains(tag)) {
+            return;
+        }
+        tagVector.add(tag);
+        resetTagArray();
         if (tag instanceof Feature feature) {
             this.owner.addFeature(feature);
+        }
+        if (tag.relativeTranslation()) {
+            resetRTagArray();
+        }
+    }
+
+    @Override
+    public void addTag(Tag tag, int index) {
+        if (index < 0 || index > this.tagArray.length) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+        tagVector.add(index, tag);
+        resetTagArray();
+        if (tag instanceof Feature feature) {
+            this.owner.addFeature(feature);
+        }
+        if (tag.relativeTranslation()) {
+            resetRTagArray();
         }
     }
 
     @Override
     public Tag[] tags() {
-        return this.tags;
+        return this.tagArray;
     }
 
     @Override
     public int removeTagIf(Predicate<Tag> predicate) {
-        Set<Integer> removedIndexes = new HashSet<>();
-        for (int i = 0; i < this.tags.length; i++) {
-            if (predicate.test(this.tags[i])) {
+        List<Integer> removedIndexes = new ArrayList<>();
+        boolean hasRTag = false;
+        for (int i = 0; i < this.tagArray.length; i++) {
+            Tag tag = this.tagArray[i];
+            if (predicate.test(tag)) {
                 removedIndexes.add(i);
-                this.tags[i].hide();
-                if (this.tags[i] instanceof Feature feature) {
+                tag.hide();
+                if (tag instanceof Feature feature) {
                     this.owner.removeFeature(feature);
+                }
+                if (tag.relativeTranslation()) {
+                    hasRTag = true;
                 }
             }
         }
         if (removedIndexes.isEmpty()) {
             return 0;
         }
-        Tag[] newTags = new Tag[this.tags.length - removedIndexes.size()];
-        int newIndex = 0;
-        for (int i = 0; i < this.tags.length; i++) {
-            if (!removedIndexes.contains(i)) {
-                newTags[newIndex++] = this.tags[i];
-            }
+        Collections.reverse(removedIndexes);
+        for (int index : removedIndexes) {
+            this.tagVector.remove(index);
         }
-        this.tags = newTags;
+        resetTagArray();
+        if (hasRTag) {
+            resetRTagArray();
+        }
         return removedIndexes.size();
     }
 
     @Override
     public int tagIndex(Tag tag) {
-        for (int i = 0; i < this.tags.length; i++) {
-            if (this.tags[i].equals(tag)) {
+        for (int i = 0; i < this.tagArray.length; i++) {
+            if (this.tagArray[i] == tag) {
                 return i;
             }
         }
@@ -184,26 +240,10 @@ public class TagRendererImpl implements TagRenderer {
     }
 
     @Override
-    public void addTag(Tag tag, int index) {
-        if (index < 0 || index > this.tags.length) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        }
-        Tag[] newTags = new Tag[this.tags.length + 1];
-        System.arraycopy(this.tags, 0, newTags, 0, index);
-        newTags[index] = tag;
-        System.arraycopy(this.tags, index, newTags, index + 1, this.tags.length - index);
-        this.tags = newTags;
-        tag.show();
-        if (tag instanceof Feature feature) {
-            this.owner.addFeature(feature);
-        }
-    }
-
-    @Override
     public void removeTag(Tag tag) {
         int i = 0;
         boolean has = false;
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display == tag) {
                 has = true;
                 break;
@@ -211,20 +251,21 @@ public class TagRendererImpl implements TagRenderer {
             i++;
         }
         if (has) {
-            Tag[] newTags = new Tag[this.tags.length - 1];
-            System.arraycopy(this.tags, 0, newTags, 0, i);
-            System.arraycopy(this.tags, i + 1, newTags, i, (this.tags.length - i) - 1);
-            this.tags = newTags;
+            this.tagVector.remove(tag);
+            resetTagArray();
             tag.hide();
             if (tag instanceof Feature feature) {
                 this.owner.removeFeature(feature);
+            }
+            if (tag.relativeTranslation()) {
+                resetRTagArray();
             }
         }
     }
 
     public void handlePlayerAdd(CNPlayer another) {
         boolean updatePassengers = false;
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display.isShown()) {
                 if (!display.isShown(another)) {
                     if (display.canShow(another)) {
@@ -257,7 +298,7 @@ public class TagRendererImpl implements TagRenderer {
         // should never be null
         if (tracker == null) return;
         tracker.setCrouching(isCrouching);
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display.affectedByCrouching()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {
@@ -273,7 +314,7 @@ public class TagRendererImpl implements TagRenderer {
         // can be null
         if (tracker == null) return;
         tracker.setSpectator(isSpectator);
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display.affectedBySpectator()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {
@@ -289,7 +330,7 @@ public class TagRendererImpl implements TagRenderer {
         // should never be null
         if (tracker == null) return;
         tracker.setScale(scale);
-        for (Tag display : this.tags) {
+        for (Tag display : this.tagArray) {
             if (display.affectedByScaling()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {

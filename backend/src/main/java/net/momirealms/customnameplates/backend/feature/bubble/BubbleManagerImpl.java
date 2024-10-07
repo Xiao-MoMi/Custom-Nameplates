@@ -282,14 +282,14 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
             advance = config.lineWidth();
         }
 
-        BubbleTag bubbleTagText = new BubbleTag(player, renderer, channel, config,
+        BubbleTag bubbleTag = new BubbleTag(player, renderer, channel, config,
                 AdventureHelper.miniMessageToMinecraftComponent(fullText),
                 bubble == null ? null : AdventureHelper.miniMessageToMinecraftComponent(AdventureHelper.surroundWithNameplatesFont(bubble.createImage(advance, 1,1))), this);
-        renderer.addTag(bubbleTagText);
+        renderer.addTag(bubbleTag);
         if (delay != 0) {
-            plugin.getScheduler().asyncLater(() -> bubbleTagText.setCanShow(true), delay * 50L, TimeUnit.MILLISECONDS);
+            plugin.getScheduler().asyncLater(() -> bubbleTag.setCanShow(true), delay * 50L, TimeUnit.MILLISECONDS);
         } else {
-            bubbleTagText.setCanShow(true);
+            bubbleTag.setCanShow(true);
         }
     }
 }

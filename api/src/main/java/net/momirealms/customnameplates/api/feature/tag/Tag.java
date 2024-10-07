@@ -188,6 +188,11 @@ public interface Tag {
     void updateTranslation();
 
     /**
+     * Updates the translation of the tag for a certain player
+     */
+    void updateTranslation(CNPlayer viewer);
+
+    /**
      * Returns the scaling vector of the tag for a specific viewer.
      *
      * @param viewer the player to check
@@ -202,4 +207,11 @@ public interface Tag {
      * @return the translation vector
      */
     Vector3 translation(CNPlayer viewer);
+
+    /**
+     * Returns if the tag has a relative translation
+     *
+     * @return has or not
+     */
+    boolean relativeTranslation();
 }

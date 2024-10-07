@@ -184,20 +184,18 @@ public class BubbleTag extends AbstractTag {
     }
 
     @Override
-    public void updateTranslation() {
-        for (CNPlayer player : viewerArray) {
-            Tracker tracker = owner.getTracker(player);
-            if (tracker != null) {
-                Vector3 translation = translation(player);
-                Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()).add(0.01,0,0.01));
-                Object packet1 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1));
-                if (background != null) {
-                    Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()));
-                    Object packet2 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(subEntityID, List.of(modifier2));
-                    CustomNameplates.getInstance().getPacketSender().sendPacket(player, List.of(packet1, packet2));
-                } else {
-                    CustomNameplates.getInstance().getPacketSender().sendPacket(player, packet1);
-                }
+    public void updateTranslation(CNPlayer viewer) {
+        Tracker tracker = owner.getTracker(viewer);
+        if (tracker != null) {
+            Vector3 translation = translation(viewer);
+            Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()).add(0.01,0,0.01));
+            Object packet1 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1));
+            if (background != null) {
+                Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()));
+                Object packet2 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(subEntityID, List.of(modifier2));
+                CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, List.of(packet1, packet2));
+            } else {
+                CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet1);
             }
         }
     }
@@ -277,6 +275,11 @@ public class BubbleTag extends AbstractTag {
     @Override
     public Vector3 translation(CNPlayer viewer) {
         return new Vector3(0, manager.verticalOffset() + maxY(viewer), 0);
+    }
+
+    @Override
+    public boolean relativeTranslation() {
+        return true;
     }
 
     public double maxY(CNPlayer viewer) {

@@ -175,6 +175,11 @@ public class NameTag extends AbstractTag implements RelationalFeature {
     }
 
     @Override
+    public boolean relativeTranslation() {
+        return false;
+    }
+
+    @Override
     public String name() {
         return "UnlimitedTag";
     }

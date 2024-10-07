@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.requirement;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
@@ -248,7 +249,7 @@ public abstract class AbstractRequirementManager implements RequirementManager {
             plugin.getPluginLogger().warn("Requirement type: " + type + " not exists");
             return Requirement.empty();
         }
-        return factory.process(section.get("value"), section.getInt("refresh-interval", 10));
+        return factory.process(section.get("value"), section.getInt("refresh-interval", ConfigManager.defaultConditionRefreshInterval()));
     }
 
     @Override
@@ -258,6 +259,6 @@ public abstract class AbstractRequirementManager implements RequirementManager {
             plugin.getPluginLogger().warn("Requirement type: " + type + " doesn't exist.");
             return Requirement.empty();
         }
-        return factory.process(value, 10);
+        return factory.process(value, ConfigManager.defaultConditionRefreshInterval());
     }
 }

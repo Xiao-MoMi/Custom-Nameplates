@@ -149,12 +149,17 @@ public abstract class AbstractTag implements Tag {
     @Override
     public void updateTranslation() {
         for (CNPlayer player : viewerArray) {
-            Tracker tracker = owner.getTracker(player);
-            if (tracker != null) {
-                Consumer<List<Object>> modifier = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation(player).multiply(tracker.getScale()));
-                Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier));
-                CustomNameplates.getInstance().getPacketSender().sendPacket(player, packet);
-            }
+            updateTranslation(player);
+        }
+    }
+
+    @Override
+    public void updateTranslation(CNPlayer viewer) {
+        Tracker tracker = owner.getTracker(viewer);
+        if (tracker != null) {
+            Consumer<List<Object>> modifier = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation(viewer).multiply(tracker.getScale()));
+            Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
         }
     }
 

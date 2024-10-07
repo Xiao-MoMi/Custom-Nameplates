@@ -120,7 +120,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             if (nameplate == null) return "";
             String tag = nameTag.fastCreate(player).render(player);
             float advance = plugin.getAdvanceManager().getLineAdvance(tag);
-            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(advance, 1, 0));
+            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(advance, 0, 0));
         }));
         Placeholder placeholder2 = this.registerRelationalPlaceholder("%rel_np_tag-image%", (p1, p2) -> {
             String equippedNameplate = p1.equippedNameplate();
@@ -129,7 +129,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             if (nameplate == null) return "";
             String tag = nameTag.fastCreate(p1).render(p2);
             float advance = plugin.getAdvanceManager().getLineAdvance(tag);
-            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(advance, 1, 0));
+            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(advance, 0, 0));
         });
         Placeholder placeholder3 = this.registerPlayerPlaceholder("%np_tag-text%", (player -> nameTag.fastCreate(player).render(player)));
         Placeholder placeholder4 = this.registerRelationalPlaceholder("%rel_np_tag-text%", (p1, p2) -> nameTag.fastCreate(p1).render(p2));
@@ -140,8 +140,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             String tag = nameTag.fastCreate(player).render(player);
             if (nameplate == null) return tag;
             float advance = plugin.getAdvanceManager().getLineAdvance(tag);
-            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImagePrefix(advance, 1, 0))
-                    + tag + AdventureHelper.surroundWithNameplatesFont(nameplate.createImageSuffix(advance, 1, 0));
+            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImagePrefix(advance, 0, 0))
+                    + tag + AdventureHelper.surroundWithNameplatesFont(nameplate.createImageSuffix(advance, 0, 0));
         }));
         Placeholder placeholder6 = this.registerRelationalPlaceholder("%rel_np_tag%", (p1, p2) -> {
             String equippedNameplate = p1.equippedNameplate();
@@ -149,8 +149,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             if (nameplate == null) return p1.name();
             String tag = nameTag.fastCreate(p1).render(p2);
             float advance = plugin.getAdvanceManager().getLineAdvance(tag);
-            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImagePrefix(advance, 1, 0))
-                    + tag + AdventureHelper.surroundWithNameplatesFont(nameplate.createImageSuffix(advance, 1, 0));
+            return AdventureHelper.surroundWithNameplatesFont(nameplate.createImagePrefix(advance, 0, 0))
+                    + tag + AdventureHelper.surroundWithNameplatesFont(nameplate.createImageSuffix(advance, 0, 0));
         });
         List<PreParsedDynamicText> list = List.of(nameTag);
         childrenText.put(placeholder1, list);
@@ -555,7 +555,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         String value = playerPlaceholder.request(player);
                         if (!previous.data().equals(value)) {
                             previous.data(value);
-                            previous.updateTicks(true);
+                            previous.updateTicks(false);
                             featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
                         } else {
                             previous.updateTicks(false);
@@ -593,7 +593,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         }
                         if (!previous.data().equals(value)) {
                             previous.data(value);
-                            previous.updateTicks(true);
+                            previous.updateTicks(false);
                             featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
                         } else {
                             previous.updateTicks(false);
@@ -632,7 +632,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         String value = placeholder.request(player, nearby);
                         if (!previous.data().equals(value)) {
                             previous.data(value);
-                            previous.updateTicks(true);
+                            previous.updateTicks(false);
                             for (Feature feature : player.activeFeatures(placeholder)) {
                                 // Filter features that will not be updated for all players
                                 if (!featuresToNotifyUpdates.contains(feature)) {
@@ -668,12 +668,12 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
     @Override
     public int getRefreshInterval(int countId) {
-        return fasterRefreshIntervals.getOrDefault(countId, ConfigManager.defaultRefreshInterval());
+        return fasterRefreshIntervals.getOrDefault(countId, ConfigManager.defaultPlaceholderRefreshInterval());
     }
 
     @Override
     public int getRefreshInterval(String id) {
-        return refreshIntervals.getOrDefault(id, ConfigManager.defaultRefreshInterval());
+        return refreshIntervals.getOrDefault(id, ConfigManager.defaultPlaceholderRefreshInterval());
     }
 
     @Override

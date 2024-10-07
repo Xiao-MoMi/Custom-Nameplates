@@ -84,6 +84,8 @@ other-settings:
   catch-other-plugin-actionbar: true
   # Should the plugin listen for chat canceled events by unknown chat plugins?
   unsafe-chat-event: false
+  # Set the default condition refresh interval
+  default-condition-refresh-interval: 1
   # Set the default placeholder refresh interval
   default-placeholder-refresh-interval: 1
   # Set the refresh interval for better performance in ticks (Especially for those heavy placeholders)
@@ -211,3 +213,6 @@ other-settings:
       - accented:6
       - ascii:3
       - legacy_unicode:3
+    shift_2:
+      - space
+      - ascii:-15

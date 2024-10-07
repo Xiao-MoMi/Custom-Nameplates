@@ -10,7 +10,7 @@ conditional-text:
             value2: "300"
           '!gamemode': survival
     priority_2:
-      text: '%np_static_money_hud%%np_offset_-180%%np_static_other_actionbar%'
+      text: '%np_static_money_hud%%np_offset_-179%%np_static_other_actionbar%'
       conditions:
         '!equals':
           value1: '%np_actionbar%'
@@ -109,12 +109,12 @@ shift-text:
   update:
     text: "A newer version of CustomNameplates is available!"
     font: shift_1
-  money:
-    text: "%vault_eco_balance%"
-    font: shift_1
   hello:
     text: "Hello 여보세요 你好 こんにちは, Thanks for using CustomNameplates"
     font: shift_1
+  money:
+    text: "%vault_eco_balance%"
+    font: shift_2
 
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/switch-text
 switch-text:
