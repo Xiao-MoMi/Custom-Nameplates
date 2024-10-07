@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -111,7 +112,7 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 			throw new RuntimeException(e);
 		}
 		// Check if storage type has changed and reinitialize if necessary
-		StorageType storageType = StorageType.valueOf(config.getString("data-storage-method", "H2"));
+		StorageType storageType = StorageType.valueOf(config.getString("data-storage-method", "H2").toUpperCase(Locale.ENGLISH));
 		if (storageType != previousType) {
 			if (this.dataSource != null) this.dataSource.disable();
 			this.previousType = storageType;
@@ -119,10 +120,10 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 				case H2 -> this.dataSource = new H2Provider(plugin);
 				case JSON -> this.dataSource = new JsonProvider(plugin);
 				case YAML -> this.dataSource = new YAMLProvider(plugin);
-				case SQLite -> this.dataSource = new SQLiteProvider(plugin);
-				case MySQL -> this.dataSource = new MySQLProvider(plugin);
-				case MariaDB -> this.dataSource = new MariaDBProvider(plugin);
-				case MongoDB -> this.dataSource = new MongoDBProvider(plugin);
+				case SQLITE -> this.dataSource = new SQLiteProvider(plugin);
+				case MYSQL -> this.dataSource = new MySQLProvider(plugin);
+				case MARIADB -> this.dataSource = new MariaDBProvider(plugin);
+				case MONGODB -> this.dataSource = new MongoDBProvider(plugin);
 				case NONE -> this.dataSource = new DummyStorage(plugin);
 			}
 			if (this.dataSource != null) this.dataSource.initialize(config);

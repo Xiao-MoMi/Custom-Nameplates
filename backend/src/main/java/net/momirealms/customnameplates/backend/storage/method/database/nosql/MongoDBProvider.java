@@ -94,7 +94,7 @@ public class MongoDBProvider extends AbstractStorage {
 
     @Override
     public StorageType storageType() {
-        return StorageType.MongoDB;
+        return StorageType.MONGODB;
     }
 
     @Override

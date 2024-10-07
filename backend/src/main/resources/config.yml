@@ -88,7 +88,7 @@ other-settings:
   default-condition-refresh-interval: 1
   # Set the default placeholder refresh interval
   default-placeholder-refresh-interval: 1
-  # Set the refresh interval for better performance in ticks (Especially for those heavy placeholders)
+  # Set the refresh interval for better performance (Especially for those heavy placeholders)
   placeholder-refresh-interval:
     "%player_name%": 100
     "%vault_prefix%": 1

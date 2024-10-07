@@ -34,6 +34,14 @@ conditional-text:
         weather:
           - thunder
 
+# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/bubble-text
+bubble-text:
+  chat:
+    bubble: chat_1
+    text: '<black>Nice to meet you!</black>'
+    left-margin: 1
+    right-margin: 1
+
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/nameplate-text
 nameplate-text:
   halloween:

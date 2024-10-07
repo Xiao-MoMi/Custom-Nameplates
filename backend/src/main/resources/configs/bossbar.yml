@@ -21,8 +21,6 @@ bossbar_1:
       # Display for 10 seconds
       duration: 200
       text: '%np_background_time%  %np_background_location%  %np_background_weather%'
-      # How often to refresh this text, in ticks (1 tick = 1/20 of a second)
-      refresh-frequency: 1
     3:
       # Show for 5 seconds
       duration: 100

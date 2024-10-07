@@ -11,6 +11,6 @@ public class MySQLProvider extends AbstractHikariDatabase {
 
     @Override
     public StorageType storageType() {
-        return StorageType.MySQL;
+        return StorageType.MYSQL;
     }
 }

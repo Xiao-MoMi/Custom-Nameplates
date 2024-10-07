@@ -303,13 +303,13 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 Image empty = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.empty")), "image.empty should not be null");
                 Image half = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.half")), "image.half should not be null");
                 Image full = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.full")), "image.full should not be null");
-                String currentValue = section.getString("placeholder.value", "1");
-                String maxValue = section.getString("placeholder.max-value", currentValue);
+                String currentValue = inner.getString("placeholder.value", "1");
+                String maxValue = inner.getString("placeholder.max-value", currentValue);
                 VanillaHud vanillaHud = new VanillaHud(empty, half, full, reverse, currentValue, maxValue);
                 List<PreParsedDynamicText> list = List.of(vanillaHud.getCurrent(), vanillaHud.getMax());
                 Placeholder placeholder1 = registerSharedPlaceholder("%shared_np_vanilla_" + id + "%", vanillaHud::create);
                 Placeholder placeholder2 = registerPlayerPlaceholder("%np_vanilla_" + id + "%", vanillaHud::create);
-                Placeholder placeholder3 = registerRelationalPlaceholder("%np_vanilla_" + id + "%", vanillaHud::create);
+                Placeholder placeholder3 = registerRelationalPlaceholder("%rel_np_vanilla_" + id + "%", vanillaHud::create);
                 childrenText.put(placeholder1, list);
                 childrenText.put(placeholder2, list);
                 childrenText.put(placeholder3, list);

@@ -21,10 +21,10 @@ public enum StorageType {
 	JSON,
 	YAML,
 	H2,
-	SQLite,
-	MySQL,
-	MariaDB,
-	MongoDB,
+	SQLITE,
+	MYSQL,
+	MARIADB,
+    MONGODB,
 	Redis,
 	NONE
 }
