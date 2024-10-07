@@ -4,6 +4,9 @@ plugins {
 }
 
 repositories {
+    maven("https://jitpack.io/")
+    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
@@ -22,14 +25,6 @@ dependencies {
     compileOnly("com.google.code.gson:gson:${rootProject.properties["gson_version"]}")
 }
 
-tasks {
-    shadowJar {
-        archiveClassifier = ""
-        relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
-        relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -42,6 +37,15 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.release.set(17)
     dependsOn(tasks.clean)
+}
+
+tasks {
+    shadowJar {
+        archiveClassifier = ""
+        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}.jar"
+        relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
+        relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
+    }
 }
 
 publishing {
