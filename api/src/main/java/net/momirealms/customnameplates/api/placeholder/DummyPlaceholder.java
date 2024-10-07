@@ -37,59 +37,42 @@ public class DummyPlaceholder implements Placeholder {
         this.id = id;
     }
 
-    /**
-     * Does nothing, as DummyPlaceholder does not support adding child placeholders.
-     *
-     * @param placeholder the child placeholder to add
-     */
     @Override
     public void addChild(Placeholder placeholder) {
     }
 
-    /**
-     * Does nothing, as DummyPlaceholder does not support adding multiple child placeholders.
-     *
-     * @param placeholders the set of child placeholders to add
-     */
     @Override
     public void addChildren(Set<Placeholder> placeholders) {
     }
 
-    /**
-     * Returns an empty set, as DummyPlaceholder does not have child placeholders.
-     *
-     * @return an empty set of child placeholders
-     */
+    @Override
+    public void addParent(Placeholder placeholder) {
+    }
+
+    @Override
+    public void addParents(Set<Placeholder> placeholders) {
+    }
+
     @Override
     public Set<Placeholder> children() {
         return Set.of();
     }
 
-    /**
-     * Returns -1, indicating that this placeholder does not have a refresh interval.
-     *
-     * @return -1, meaning no refresh is needed
-     */
+    @Override
+    public Set<Placeholder> parents() {
+        return Set.of();
+    }
+
     @Override
     public int refreshInterval() {
         return -1;
     }
 
-    /**
-     * Returns the ID of the DummyPlaceholder.
-     *
-     * @return the placeholder ID
-     */
     @Override
     public String id() {
         return id;
     }
 
-    /**
-     * Returns the unique count ID of the DummyPlaceholder.
-     *
-     * @return the count ID
-     */
     @Override
     public int countId() {
         return counterId;

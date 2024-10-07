@@ -27,6 +27,7 @@ import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
+import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.DummyPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
@@ -40,7 +41,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class BukkitPlatform implements Platform {
@@ -141,7 +141,8 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$ClientboundAddEntityPacket$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    added.addPlayerToTracker(player);
+                    Tracker tracker = added.addPlayerToTracker(player);
+                    tracker.setSpectator(added.isSpectator());
                     CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                 }
             } catch (ReflectiveOperationException e) {
@@ -156,7 +157,8 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$PacketPlayOutNamedEntitySpawn$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    added.addPlayerToTracker(player);
+                    Tracker tracker = added.addPlayerToTracker(player);
+                    tracker.setSpectator(added.isSpectator());
                     CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
                 }
             } catch (ReflectiveOperationException e) {

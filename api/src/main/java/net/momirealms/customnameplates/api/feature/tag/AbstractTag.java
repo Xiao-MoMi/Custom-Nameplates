@@ -118,14 +118,14 @@ public abstract class AbstractTag implements Tag {
     }
 
     @Override
-    public void onOpacityChange(boolean dark) {
+    public void darkTag(boolean dark) {
         for (CNPlayer viewer : viewerArray) {
-            onOpacityChange(viewer, dark);
+            darkTag(viewer, dark);
         }
     }
 
     @Override
-    public void onOpacityChange(CNPlayer viewer, boolean dark) {
+    public void darkTag(CNPlayer viewer, boolean dark) {
         Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createOpacityModifier(dark ? 64 : opacity());
         Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifiers));
         CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);

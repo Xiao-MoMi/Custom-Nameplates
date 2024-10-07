@@ -104,7 +104,7 @@ public class BubbleTag extends AbstractTag {
     }
 
     @Override
-    public void onOpacityChange(CNPlayer viewer, boolean dark) {
+    public void darkTag(CNPlayer viewer, boolean dark) {
     }
 
     @Override
@@ -305,5 +305,10 @@ public class BubbleTag extends AbstractTag {
     @Override
     public boolean affectedByScaling() {
         return true;
+    }
+
+    @Override
+    public boolean affectedBySpectator() {
+        return false;
     }
 }

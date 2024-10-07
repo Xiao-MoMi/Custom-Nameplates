@@ -289,7 +289,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     }
 
     @Override
-    public SchedulerAdapter<?> getScheduler() {
+    public SchedulerAdapter<Location> getScheduler() {
         return scheduler;
     }
 

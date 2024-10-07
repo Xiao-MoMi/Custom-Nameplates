@@ -33,6 +33,7 @@ unlimited:
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true
+    affected-by-spectator: true
     line-width: 1024
     background-color: 0,0,0,0
   tag_2:
@@ -48,6 +49,7 @@ unlimited:
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true
+    affected-by-spectator: true
     line-width: 1024
     background-color: 0,0,0,0
   tag_3:
@@ -63,5 +65,6 @@ unlimited:
       self-disguised: false
     affected-by-crouching: true
     affected-by-scale-attribute: true
+    affected-by-spectator: true
     line-width: 1024
     background-color: 64,0,0,0

@@ -59,6 +59,8 @@ public interface Tag {
      */
     boolean affectedByScaling();
 
+    boolean affectedBySpectator();
+
     /**
      * Hides the tag for all viewers.
      */
@@ -150,9 +152,20 @@ public interface Tag {
      */
     double getTextHeight(CNPlayer viewer);
 
-    void onOpacityChange(boolean dark);
+    /**
+     * Sets the dark mode for the tag.
+     *
+     * @param dark whether the tag should be dark
+     */
+    void darkTag(boolean dark);
 
-    void onOpacityChange(CNPlayer viewer, boolean dark);
+    /**
+     * Sets the dark mode for the tag for a specific viewer.
+     *
+     * @param viewer the player for whom the dark mode should be applied
+     * @param dark whether the tag should be dark for the specific viewer
+     */
+    void darkTag(CNPlayer viewer, boolean dark);
 
     /**
      * Updates the tag scale when the player's scale changes.

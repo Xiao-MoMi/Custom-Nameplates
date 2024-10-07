@@ -217,6 +217,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                             .useDefaultBackgroundColor(section.getBoolean("use-default-background-color", false))
                             .backgroundColor(ConfigUtils.argb(section.getString("background-color", "64,0,0,0")))
                             .affectedByCrouching(section.getBoolean("affected-by-crouching", true))
+                            .affectedBySpectator(section.getBoolean("affected-by-spectator", true))
                             .affectedByScaling(section.getBoolean("affected-by-scale-attribute", true))
                             .carouselText(
                                     section.contains("text") ?

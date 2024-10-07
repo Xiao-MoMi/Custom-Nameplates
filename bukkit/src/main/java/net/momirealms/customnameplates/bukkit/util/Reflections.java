@@ -25,10 +25,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -351,6 +348,19 @@ public class Reflections {
             BukkitReflectionUtils.assembleMCClass("server.network.PlayerConnection")
     ));
 
+    public static final Class<?> clazz$NetworkManager = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.Connection"),
+                    BukkitReflectionUtils.assembleMCClass("network.NetworkManager")
+            )
+    );
+
+    public static final Class<?> clazz$PacketSendListener = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.PacketSendListener")
+            )
+    );
+
     public static final Class<?> clazz$CraftPlayer = requireNonNull(ReflectionUtils.getClazz(
             BukkitReflectionUtils.assembleCBClass("entity.CraftPlayer")
     ));
@@ -360,18 +370,16 @@ public class Reflections {
     );
 
     public static final Field field$PlayerConnection = requireNonNull(
-            ReflectionUtils.getDeclaredField(clazz$ServerPlayer, clazz$PlayerConnection, 0)
+            ReflectionUtils.getInstanceDeclaredField(clazz$ServerPlayer, clazz$PlayerConnection, 0)
     );
 
     public static final Method method$SendPacket = requireNonNull(
             ReflectionUtils.getMethods(clazz$PlayerConnection, void.class, clazz$Packet).get(0)
     );
 
-    public static final Class<?> clazz$NetworkManager = requireNonNull(
-            ReflectionUtils.getClazz(
-                    BukkitReflectionUtils.assembleMCClass("network.Connection"),
-                    BukkitReflectionUtils.assembleMCClass("network.NetworkManager")
-            )
+    public static final Method method$SendPacketImmediately = requireNonNull(
+            Optional.ofNullable(ReflectionUtils.getMethod(clazz$NetworkManager, void.class, clazz$Packet, clazz$PacketSendListener, boolean.class))
+                    .orElse(ReflectionUtils.getMethod(clazz$NetworkManager, void.class, clazz$Packet, clazz$PacketSendListener, Boolean.class))
     );
 
     public static final Field field$NetworkManager = requireNonNull(

@@ -261,7 +261,23 @@ public class TagRendererImpl implements TagRenderer {
             if (display.affectedByCrouching()) {
                 if (display.isShown()) {
                     if (display.isShown(another)) {
-                        display.onOpacityChange(another, isCrouching || tracker.isSpectator());
+                        display.darkTag(another, isCrouching || (display.affectedBySpectator() && tracker.isSpectator()));
+                    }
+                }
+            }
+        }
+    }
+
+    public void handleGameModeChange(CNPlayer another, boolean isSpectator) {
+        Tracker tracker = owner.getTracker(another);
+        // can be null
+        if (tracker == null) return;
+        tracker.setSpectator(isSpectator);
+        for (Tag display : this.tags) {
+            if (display.affectedBySpectator()) {
+                if (display.isShown()) {
+                    if (display.isShown(another)) {
+                        display.darkTag(another, isSpectator || (display.affectedByCrouching() && tracker.isCrouching()));
                     }
                 }
             }
@@ -279,20 +295,6 @@ public class TagRendererImpl implements TagRenderer {
                     if (display.isShown(another)) {
                         display.onPlayerScaleUpdate(another, scale);
                     }
-                }
-            }
-        }
-    }
-
-    public void handleGameModeChange(CNPlayer another, boolean isSpectator) {
-        Tracker tracker = owner.getTracker(another);
-        // can be null
-        if (tracker == null) return;
-        tracker.setSpectator(isSpectator);
-        for (Tag display : this.tags) {
-            if (display.isShown()) {
-                if (display.isShown(another)) {
-                    display.onOpacityChange(another, isSpectator || tracker.isCrouching());
                 }
             }
         }

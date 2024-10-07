@@ -102,6 +102,13 @@ public interface NameTagConfig {
     boolean affectedByScaling();
 
     /**
+     * Checks if the name tag is affected by spectator mode.
+     *
+     * @return true if affected by spectator mode, false otherwise
+     */
+    boolean affectedBySpectator();
+
+    /**
      * Returns the alignment of the name tag.
      *
      * @return the alignment of the name tag
@@ -299,6 +306,14 @@ public interface NameTagConfig {
          * @return the builder instance
          */
         Builder affectedByCrouching(boolean affectedByCrouching);
+
+        /**
+         * Sets whether the name tag is affected by spectator mode.
+         *
+         * @param affectedBySpectator true if the name tag is affected by spectator mode, false otherwise
+         * @return the builder instance
+         */
+        Builder affectedBySpectator(boolean affectedBySpectator);
 
         /**
          * Sets whether the name tag is affected by scaling.

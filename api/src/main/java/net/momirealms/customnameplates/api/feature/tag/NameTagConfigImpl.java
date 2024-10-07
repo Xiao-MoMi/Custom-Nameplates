@@ -42,8 +42,9 @@ public class NameTagConfigImpl implements NameTagConfig {
     private final Vector3 translation;
     private final boolean affectedByCrouching;
     private final boolean affectedByScale;
+    private final boolean affectedBySpectator;
 
-    public NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale) {
+    public NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale, boolean affectedBySpectator) {
         this.id = id;
         this.ownerRequirements = ownerRequirements;
         this.viewerRequirements = viewerRequirements;
@@ -62,6 +63,7 @@ public class NameTagConfigImpl implements NameTagConfig {
         this.lineWidth = lineWidth;
         this.affectedByCrouching = affectedByCrouching;
         this.affectedByScale = affectedByScale;
+        this.affectedBySpectator = affectedBySpectator;
     }
 
     @Override
@@ -120,6 +122,11 @@ public class NameTagConfigImpl implements NameTagConfig {
     }
 
     @Override
+    public boolean affectedBySpectator() {
+        return affectedBySpectator;
+    }
+
+    @Override
     public Alignment alignment() {
         return alignment;
     }
@@ -173,6 +180,7 @@ public class NameTagConfigImpl implements NameTagConfig {
         private Vector3 translation;
         private boolean affectedByCrouching;
         private boolean affectedByScale;
+        private boolean affectedBySpectator;
 
         @Override
         public Builder id(String id) {
@@ -277,6 +285,12 @@ public class NameTagConfigImpl implements NameTagConfig {
         }
 
         @Override
+        public Builder affectedBySpectator(boolean affectedBySpectator) {
+            this.affectedBySpectator = affectedBySpectator;
+            return this;
+        }
+
+        @Override
         public Builder affectedByScaling(boolean affectedByScale) {
             this.affectedByScale = affectedByScale;
             return this;
@@ -284,7 +298,7 @@ public class NameTagConfigImpl implements NameTagConfig {
 
         @Override
         public NameTagConfig build() {
-            return new NameTagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, viewRange, shadowRadius, shadowStrength, scale, translation, affectedByCrouching, affectedByScale);
+            return new NameTagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, viewRange, shadowRadius, shadowStrength, scale, translation, affectedByCrouching, affectedByScale, affectedBySpectator);
         }
     }
 }

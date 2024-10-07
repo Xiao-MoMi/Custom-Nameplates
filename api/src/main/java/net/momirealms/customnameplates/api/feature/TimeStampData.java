@@ -25,7 +25,7 @@ import net.momirealms.customnameplates.api.MainTask;
  *
  * @param <D> the type of data being stored
  */
-public class TickStampData<D> {
+public class TimeStampData<D> {
 
     private D data;
     private int packedTicks;
@@ -37,7 +37,7 @@ public class TickStampData<D> {
      * @param ticks   the number of ticks to store
      * @param changed whether the value has changed
      */
-    public TickStampData(D data, int ticks, boolean changed) {
+    public TimeStampData(D data, int ticks, boolean changed) {
         this.data = data;
         this.packedTicks = packBooleanAndTicks(changed, ticks);
     }

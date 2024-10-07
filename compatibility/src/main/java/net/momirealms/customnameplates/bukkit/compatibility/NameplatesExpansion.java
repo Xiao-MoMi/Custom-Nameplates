@@ -21,7 +21,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.feature.TickStampData;
+import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
 import org.bukkit.OfflinePlayer;
@@ -70,7 +70,7 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
                 return playerPlaceholder.request(cnPlayer);
             }
             if (cnPlayer != null) {
-                cnPlayer.forceUpdate(Set.of(placeholder), Collections.emptySet());
+                cnPlayer.forceUpdatePlaceholders(Set.of(placeholder), Collections.emptySet());
                 return cnPlayer.getData(placeholder);
             } else {
                 try {
@@ -92,8 +92,8 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
         }
         Placeholder placeholder = plugin.getPlaceholderManager().getRegisteredPlaceholder("%rel_np_" + params + "%");
         if (placeholder != null) {
-            cnPlayer1.forceUpdate(Set.of(placeholder), Set.of(cnPlayer2));
-            return Optional.ofNullable(cnPlayer1.getRelationalValue(placeholder, cnPlayer2)).map(TickStampData::data).orElse(placeholder.id());
+            cnPlayer1.forceUpdatePlaceholders(Set.of(placeholder), Set.of(cnPlayer2));
+            return Optional.ofNullable(cnPlayer1.getRelationalValue(placeholder, cnPlayer2)).map(TimeStampData::data).orElse(placeholder.id());
         }
         return null;
     }

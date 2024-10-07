@@ -37,8 +37,8 @@ public abstract class PlaceholdersRequirement extends AbstractRequirement {
 
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
-        p1.forceUpdate(t1.placeholders(), Set.of(p2));
-        p1.forceUpdate(t2.placeholders(), Set.of(p2));
+        p1.forceUpdatePlaceholders(t1.placeholders(), Set.of(p2));
+        p1.forceUpdatePlaceholders(t2.placeholders(), Set.of(p2));
         String a1 = t1.fastCreate(p1).render(p2);
         String a2 = t2.fastCreate(p1).render(p2);
         return checkArgument(a1, a2);

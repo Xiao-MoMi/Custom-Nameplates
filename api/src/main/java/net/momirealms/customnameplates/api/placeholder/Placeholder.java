@@ -36,11 +36,32 @@ public interface Placeholder {
     void addChildren(Set<Placeholder> placeholders);
 
     /**
+     * Adds a parent placeholder to this placeholder.
+     *
+     * @param placeholder the parent placeholder to add
+     */
+    void addParent(Placeholder placeholder);
+
+    /**
+     * Adds multiple parent placeholders to this placeholder.
+     *
+     * @param placeholders the set of parent placeholders to add
+     */
+    void addParents(Set<Placeholder> placeholders);
+
+    /**
      * Returns the set of child placeholders associated with this placeholder.
      *
      * @return the set of child placeholders
      */
     Set<Placeholder> children();
+
+    /**
+     * Returns the set of parent placeholders associated with this placeholder.
+     *
+     * @return the set of parent placeholders
+     */
+    Set<Placeholder> parents();
 
     /**
      * Returns the refresh interval of this placeholder.

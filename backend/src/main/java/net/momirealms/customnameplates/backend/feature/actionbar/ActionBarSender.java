@@ -127,7 +127,7 @@ public class ActionBarSender implements Feature {
                 currentActionBar = carouselText.preParsedDynamicText().fastCreate(owner);
 
                 if (carouselText.updateOnDisplay()) {
-                    owner.forceUpdate(currentActionBar.placeholders(), Collections.emptySet());
+                    owner.forceUpdatePlaceholders(currentActionBar.placeholders(), Collections.emptySet());
                 }
                 textChangeFlag = true;
             }

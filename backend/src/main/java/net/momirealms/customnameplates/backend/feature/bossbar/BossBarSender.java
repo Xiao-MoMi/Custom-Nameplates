@@ -126,7 +126,7 @@ public class BossBarSender implements Feature, BossBar {
             currentBossBar = carouselText.preParsedDynamicText().fastCreate(owner);
 
             if (carouselText.updateOnDisplay()) {
-                owner.forceUpdate(currentBossBar.placeholders(), Collections.emptySet());
+                owner.forceUpdatePlaceholders(currentBossBar.placeholders(), Collections.emptySet());
             }
 
             refresh();
@@ -183,7 +183,7 @@ public class BossBarSender implements Feature, BossBar {
     }
 
     public void sendLatestBossBarName() {
-        if (latestContent != null) {
+        if (latestContent != null && isShown()) {
             Object packet = CustomNameplates.getInstance().getPlatform().updateBossBarNamePacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
             CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }
