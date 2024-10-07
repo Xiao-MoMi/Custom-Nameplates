@@ -51,7 +51,7 @@ public class PotionEffectRequirement extends AbstractRequirement {
 			case ">" -> {
 				if (level > required) result = true;
 			}
-			case "==" -> {
+			case "==", "=" -> {
 				if (level == required) result = true;
 			}
 			case "!=" -> {

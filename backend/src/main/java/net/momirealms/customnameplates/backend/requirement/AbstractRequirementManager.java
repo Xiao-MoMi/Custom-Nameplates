@@ -138,7 +138,7 @@ public abstract class AbstractRequirementManager implements RequirementManager {
             PreParsedDynamicText dynamicText1 = new PreParsedDynamicText(section.getString("value1", ""), true);
             PreParsedDynamicText dynamicText2 = new PreParsedDynamicText(section.getString("value2", ""), true);
             return new NumberEqualsRequirement(interval, dynamicText1, dynamicText2);
-        }, "=");
+        }, "=", "==");
         this.registerRequirement((args, interval) -> {
             Section section = ConfigUtils.safeCast(args, Section.class);
             if (section == null) return Requirement.empty();

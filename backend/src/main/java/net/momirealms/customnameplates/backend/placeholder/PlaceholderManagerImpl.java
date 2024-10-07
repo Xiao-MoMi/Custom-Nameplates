@@ -194,7 +194,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         }
         for (int i = 1; i <= 20; i++) {
             int speed = i;
-            this.registerPlayerPlaceholder("%np_gradient_" + i + "%", (player) -> {
+            this.registerSharedPlaceholder("%shared_np_gradient_" + i + "%", () -> {
                 int currentTicks = MainTask.getTicks();
                 double progress = currentTicks * 0.01 * speed;
                 return String.format("%.2f", -1 + (progress % 2.0001));
@@ -209,6 +209,25 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             while (hours >= 12) hours -= 12;
             if (minutes < 10) return hours + ":0" + minutes + ap;
             else return hours + ":" + minutes + ap;
+        });
+        this.registerPlayerPlaceholder("%np_time_12%", (player) -> {
+            long time = player.playerTime() % 24_000;
+            String ap = time >= 6000 && time < 18000 ? " PM" : " AM";
+            int hours = (int) (time / 1000) ;
+            int minutes = (int) ((time - hours * 1000 ) * 0.06);
+            hours += 6;
+            while (hours >= 12) hours -= 12;
+            if (minutes < 10) return hours + ":0" + minutes + ap;
+            else return hours + ":" + minutes + ap;
+        });
+        this.registerPlayerPlaceholder("%np_time_24%", (player) -> {
+            long time = player.playerTime() % 24_000;
+            int hours = (int) (time / 1000);
+            int minutes = (int) ((time - hours * 1000) * 0.06);
+            hours += 6;
+            if (hours >= 24) hours -= 24;
+            String minuteStr = (minutes < 10) ? "0" + minutes : String.valueOf(minutes);
+            return hours + ":" + minuteStr;
         });
         this.registerPlayerPlaceholder("%np_actionbar%", (player) -> Optional.ofNullable(plugin.getActionBarManager().getExternalActionBar(player)).orElse(""));
         for (Image image : plugin.getImageManager().images()) {

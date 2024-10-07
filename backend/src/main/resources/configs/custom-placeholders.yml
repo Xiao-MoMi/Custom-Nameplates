@@ -109,7 +109,7 @@ shift-text:
     text: "Your Location: %np_switch_world% (%player_x%,%player_y%,%player_z%)"
     font: shift_1
   time:
-    text: "Time: %np_time%"
+    text: "Time: %np_time_12%"
     font: shift_1
   weather:
     text: "Weather: %np_conditional_weather%"
