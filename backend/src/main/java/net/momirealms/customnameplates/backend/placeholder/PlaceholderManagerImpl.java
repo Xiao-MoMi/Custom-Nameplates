@@ -315,13 +315,18 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     private void loadVanillaHud(Section section) {
+        if (!ConfigManager.imageModule()) return;
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
             String id = entry.getKey();
             if (entry.getValue() instanceof Section inner) {
                 boolean reverse = inner.getBoolean("reverse", true);
-                Image empty = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.empty")), "image.empty should not be null");
-                Image half = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.half")), "image.half should not be null");
-                Image full = requireNonNull(plugin.getImageManager().imageById(inner.getString("images.full")), "image.full should not be null");
+                Image empty = plugin.getImageManager().imageById(inner.getString("images.empty"));
+                Image half = plugin.getImageManager().imageById(inner.getString("images.half"));
+                Image full = plugin.getImageManager().imageById(inner.getString("images.full"));
+                if (empty == null || half == null || full == null) {
+                    plugin.getPluginLogger().warn("Empty/Half/Full image not found in vanilla hud");
+                    continue;
+                }
                 String currentValue = inner.getString("placeholder.value", "1");
                 String maxValue = inner.getString("placeholder.max-value", currentValue);
                 VanillaHud vanillaHud = new VanillaHud(empty, half, full, reverse, currentValue, maxValue);
