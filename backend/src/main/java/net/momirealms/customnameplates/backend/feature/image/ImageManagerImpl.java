@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.feature.image;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 import net.momirealms.customnameplates.api.feature.image.Image;
@@ -47,6 +48,7 @@ public class ImageManagerImpl implements ImageManager {
 
     @Override
     public void load() {
+        if (!ConfigManager.imageModule()) return;
         this.loadConfigs();
     }
 

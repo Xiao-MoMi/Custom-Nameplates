@@ -141,7 +141,6 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void load() {
-        if (!ConfigManager.nameplateModule()) return;
         this.loadConfig();
         this.resetArray();
         for (CNPlayer online : plugin.getOnlinePlayers()) {
