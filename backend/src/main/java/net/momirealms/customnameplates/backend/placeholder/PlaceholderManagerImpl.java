@@ -381,6 +381,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     private void loadBubbleTextSection(Section section) {
+        if (!ConfigManager.bubbleModule()) return;
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
             String id = entry.getKey();
             if (entry.getValue() instanceof Section inner) {
@@ -412,13 +413,14 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     childrenText.put(placeholder8, list);
                     childrenText.put(placeholder9, list);
                 } else {
-                    plugin.getPluginLogger().warn("Nameplate [" + bbID + "] not exists");
+                    plugin.getPluginLogger().warn("Bubble [" + bbID + "] not exists");
                 }
             }
         }
     }
 
     private void loadNameplateTextSection(Section section) {
+        if (!ConfigManager.nameplateModule()) return;
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
             String id = entry.getKey();
             if (entry.getValue() instanceof Section inner) {
@@ -457,6 +459,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     private void loadBackgroundTextSection(Section section) {
+        if (!ConfigManager.backgroundModule()) return;
         for (Map.Entry<String, Object> entry : section.getStringRouteMappedValues(false).entrySet()) {
             String id = entry.getKey();
             if (entry.getValue() instanceof Section inner) {
