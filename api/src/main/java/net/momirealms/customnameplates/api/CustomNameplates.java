@@ -79,6 +79,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     protected ImageManager imageManager;
     protected NameplateManager nameplateManager;
     protected ResourcePackManager resourcePackManager;
+    protected CustomNameplatesAPI api;
 
     protected CustomNameplates() {
         instance = this;
@@ -260,6 +261,15 @@ public abstract class CustomNameplates implements NameplatesPlugin {
      */
     public ResourcePackManager getResourcePackManager() {
         return resourcePackManager;
+    }
+
+    /**
+     * Get the API class
+     *
+     * @return api
+     */
+    public CustomNameplatesAPI getAPI() {
+        return api;
     }
 
     /**

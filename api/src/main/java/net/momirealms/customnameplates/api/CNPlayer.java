@@ -115,7 +115,14 @@ public interface CNPlayer {
      *
      * @return true if the player is previewing, false otherwise
      */
-    boolean isPreviewing();
+    boolean isTempPreviewing();
+
+    /**
+     * Checks if the player has turned their nameplate on
+     *
+     * @return true if the player has turned their nameplate on, false otherwise
+     */
+    boolean isToggleablePreviewing();
 
     /**
      * Checks if the player has the specified permission.

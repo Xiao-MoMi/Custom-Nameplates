@@ -87,6 +87,16 @@ nameplates_preview:
   usage:
     - /nameplates preview
 
+# A command to toggle the nameplate previewing
+# This command conflicts with `/nameplates preview`
+# You should never enable both of them at the same time
+# Usage: [COMMAND]
+nameplates_toggle:
+  enable: false
+  permission: nameplates.command.toggle
+  usage:
+    - /nameplates toggle
+
 # A command to view the available nameplates
 # Usage: [COMMAND]
 nameplates_list:

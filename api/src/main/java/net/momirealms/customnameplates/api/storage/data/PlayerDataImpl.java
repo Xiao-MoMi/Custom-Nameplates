@@ -28,11 +28,13 @@ public class PlayerDataImpl implements PlayerData {
 	protected UUID uuid;
 	protected String nameplate;
 	protected String bubble;
+	protected boolean previewTags;
 
-	public PlayerDataImpl(UUID uuid, String nameplate, String bubble) {
+	public PlayerDataImpl(UUID uuid, String nameplate, String bubble, boolean previewTags) {
 		this.uuid = uuid;
 		this.nameplate = nameplate;
 		this.bubble = bubble;
+		this.previewTags = previewTags;
 	}
 
 	@Override
@@ -43,6 +45,11 @@ public class PlayerDataImpl implements PlayerData {
 	@Override
 	public String bubble() {
 		return bubble;
+	}
+
+	@Override
+	public boolean previewTags() {
+		return previewTags;
 	}
 
 	@Override
@@ -57,6 +64,7 @@ public class PlayerDataImpl implements PlayerData {
 
 		private String nameplate;
 		private String bubble;
+		private boolean previewTags;
 		private UUID uuid;
 
 		@Override
@@ -78,8 +86,14 @@ public class PlayerDataImpl implements PlayerData {
 		}
 
 		@Override
+		public Builder previewTags(boolean previewTags) {
+			this.previewTags = previewTags;
+			return this;
+		}
+
+		@Override
 		public PlayerData build() {
-			return new PlayerDataImpl(uuid, nameplate, bubble);
+			return new PlayerDataImpl(uuid, nameplate, bubble, previewTags);
 		}
 	}
 }

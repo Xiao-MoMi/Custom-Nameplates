@@ -57,7 +57,15 @@ public interface UnlimitedTagManager extends Reloadable {
      * @param player  the player to update
      * @param preview true to enable preview mode, false to disable
      */
-    void setPreviewing(CNPlayer player, boolean preview);
+    void setTempPreviewing(CNPlayer player, boolean preview);
+
+    /**
+     * Sets whether a player can always see their tags
+     *
+     * @param player  the player to update
+     * @param preview true to enable preview mode, false to disable
+     */
+    void togglePreviewing(CNPlayer player, boolean preview);
 
     /**
      * Returns the duration (in ticks) for which a tag preview is shown.

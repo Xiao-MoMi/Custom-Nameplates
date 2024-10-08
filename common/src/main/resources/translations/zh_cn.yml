@@ -60,6 +60,8 @@ command.nameplates.force_equip.failure.not_exists: "<red>由于 <arg:1> 不存�
 command.nameplates.force_equip.success: "<white>强制 <arg:0> 佩戴了铭牌 <arg:1></white>"
 command.nameplates.force_unequip.success: "<white>移除了 <arg:0> 的铭牌</white>"
 command.nameplates.force_preview.success: "<white>强制 <arg:0> 预览他的铭牌</white>"
+command.nameplates.toggle.on: "<white>你正在显示你的铭牌 (前往第三人称查看)</white>"
+command.nameplates.toggle.off: "<white>你关闭了铭牌显示</white>"
 command.bubbles.equip.failure.not_exists: "<red>气泡 <arg:0> 不存在</red>"
 command.bubbles.equip.failure.permission: "<red>你尚未解锁这个气泡</red>"
 command.bubbles.equip.failure.no_change: "<red>你已经应用这个气泡了</red>"

@@ -39,7 +39,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private boolean isLoaded = false;
 
-    private boolean isPreviewing = false;
+    private boolean tempPreviewing = false;
+    private boolean toggleablePreviewing = false;
 
     private String equippedNameplate;
     private String equippedBubble;
@@ -179,13 +180,22 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         isLoaded = loaded;
     }
 
-    public void setPreviewing(boolean previewing) {
-        isPreviewing = previewing;
+    public void setTempPreviewing(boolean previewing) {
+        this.tempPreviewing = previewing;
     }
 
     @Override
-    public boolean isPreviewing() {
-        return isPreviewing;
+    public boolean isTempPreviewing() {
+        return tempPreviewing;
+    }
+
+    public void setToggleablePreviewing(boolean previewing) {
+        this.toggleablePreviewing = previewing;
+    }
+
+    @Override
+    public boolean isToggleablePreviewing() {
+        return toggleablePreviewing;
     }
 
     @Override
@@ -468,6 +478,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
                 .uuid(uuid())
                 .nameplate(equippedNameplate())
                 .bubble(equippedBubble())
+                .previewTags(isToggleablePreviewing())
                 .build(), plugin.getScheduler().async());
     }
 

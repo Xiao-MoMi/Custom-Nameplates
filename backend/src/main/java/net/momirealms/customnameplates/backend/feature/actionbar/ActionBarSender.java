@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.feature.actionbar;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.feature.DynamicText;
@@ -146,6 +147,10 @@ public class ActionBarSender implements Feature {
     }
 
     public void refresh() {
+        if (currentActionBar == null) {
+            latestContent = "";
+            return;
+        }
         latestContent = this.currentActionBar.render(owner);
         textChangeFlag = false;
     }
@@ -181,8 +186,11 @@ public class ActionBarSender implements Feature {
 
     @Override
     public void notifyPlaceholderUpdates(CNPlayer player, boolean force) {
-        refresh();
-        sendLatestActionBar();
+        // The actionbar should be visible before updating
+        if (currentActionBar != null) {
+            refresh();
+            sendLatestActionBar();
+        }
     }
 
     public void updateLastUpdateTime() {
@@ -204,6 +212,6 @@ public class ActionBarSender implements Feature {
     public void externalActionBar(@NotNull String externalActionBar) {
         requireNonNull(externalActionBar);
         this.externalActionBar = externalActionBar;
-        this.externalExpireTime = System.currentTimeMillis() + 3000;
+        this.externalExpireTime = System.currentTimeMillis() + ConfigManager.otherActionBarStayTime();
     }
 }

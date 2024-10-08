@@ -69,19 +69,21 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         // save unicodes
         this.saveLegacyUnicodes();
 
-        if (!VersionHelper.isVersionNewerThan1_20_5()) {
-            this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, false);
-            this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-        } else {
-            this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-            try {
-                FileUtils.copyDirectory(
-                        new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"),
-                        new File(plugin.getDataFolder(), "ResourcePack")
-                );
-                FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if (ConfigManager.enableShader()) {
+            if (!VersionHelper.isVersionNewerThan1_20_5()) {
+                this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, false);
+                this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
+            } else {
+                this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
+                try {
+                    FileUtils.copyDirectory(
+                            new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"),
+                            new File(plugin.getDataFolder(), "ResourcePack")
+                    );
+                    FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -433,7 +435,6 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     }
 
     private void generateShaders(String path, boolean v1_20_5) {
-        if (!ConfigManager.enableShader()) return;
 
         plugin.getConfigManager().saveResource(path + "rendertype_text.fsh");
         plugin.getConfigManager().saveResource(path + "rendertype_text.json");

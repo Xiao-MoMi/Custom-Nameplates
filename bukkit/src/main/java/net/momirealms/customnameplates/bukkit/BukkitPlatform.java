@@ -211,7 +211,7 @@ public class BukkitPlatform implements Platform {
                 int vehicle = (int) Reflections.field$ClientboundSetPassengersPacket$vehicle.get(packet);
                 CNPlayer another = CustomNameplates.getInstance().getPlayer(vehicle);
                 if (another != null) {
-                    Set<Integer> otherEntities = player.getTrackedPassengerIds(another);
+                    Set<Integer> otherEntities = another.getTrackedPassengerIds(player);
                     for (int passenger : passengers) {
                         otherEntities.add(passenger);
                     }

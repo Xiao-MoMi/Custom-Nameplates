@@ -38,6 +38,8 @@ public interface MessageConstants {
     TranslatableComponent.Builder COMMAND_NAMEPLATES_LIST_FAILURE_NONE = Component.translatable().key("command.nameplates.list.failure.none");
     TranslatableComponent.Builder COMMAND_NAMEPLATES_LIST_SUCCESS = Component.translatable().key("command.nameplates.list.success");
     TranslatableComponent.Builder COMMAND_NAMEPLATES_LIST_DELIMITER = Component.translatable().key("command.nameplates.list.delimiter");
+    TranslatableComponent.Builder COMMAND_NAMEPLATES_TOGGLE_ON = Component.translatable().key("command.nameplates.toggle.on");
+    TranslatableComponent.Builder COMMAND_NAMEPLATES_TOGGLE_OFF = Component.translatable().key("command.nameplates.toggle.off");
 
     TranslatableComponent.Builder COMMAND_NAMEPLATES_FORCE_EQUIP_SUCCESS = Component.translatable().key("command.nameplates.force_equip.success");
     TranslatableComponent.Builder COMMAND_NAMEPLATES_FORCE_EQUIP_FAILURE_NOT_EXISTS = Component.translatable().key("command.nameplates.force_equip.failure.not_exists");

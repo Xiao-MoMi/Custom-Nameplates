@@ -70,6 +70,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected int defaultConditionRefreshInterval;
     protected int delaySend;
     protected boolean catchOtherActionBar;
+    protected int otherActionBarStayTime;
 
     protected String namespace;
     protected String font;
@@ -213,6 +214,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         defaultPlaceholderRefreshInterval = config.getInt("other-settings.default-placeholder-refresh-interval", 1);
         defaultConditionRefreshInterval = config.getInt("other-settings.ddefault-condition-refresh-interval", 1);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
+        otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
     }
 
     @Override
@@ -334,6 +336,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static int defaultConditionRefreshInterval() {
         return instance.defaultConditionRefreshInterval;
+    }
+
+    public static int otherActionBarStayTime() {
+        return instance.otherActionBarStayTime;
     }
 
     public static boolean enableShader() {

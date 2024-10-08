@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.api.placeholder.internal;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
@@ -62,23 +63,6 @@ public class StaticText {
     }
 
     public String create(String text) {
-        float parsedWidth = CustomNameplates.getInstance().getAdvanceManager().getLineAdvance(text);
-        switch (position) {
-            case LEFT -> {
-                return text + AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(width - parsedWidth));
-            }
-            case RIGHT -> {
-                return AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(width - parsedWidth)) + text;
-            }
-            case MIDDLE -> {
-                int half = (int) ((width - parsedWidth) / 2);
-                String left = AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(half));
-                String right = AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(width - parsedWidth - half));
-                return left + text + right;
-            }
-            default -> {
-                return "";
-            }
-        }
+        return CustomNameplatesAPI.getInstance().createStaticText(text, width, position);
     }
 }

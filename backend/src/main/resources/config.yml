@@ -58,8 +58,9 @@ resource-pack:
 # Additional Settings: Extra options to control behavior and performance.
 other-settings:
   legacy-color-code-support: true     # Enable support for legacy color codes using &
-  send-delay: 0                       # Set actionbar/bossbar send delay
+  send-delay: 20                      # Set actionbar/bossbar send delay (ticks)
   catch-other-plugin-actionbar: true  # Capture actionbars from other plugins
+  other-actionbar-stay-time: 3000     # How long does other actionsbars stay (ms)
   unsafe-chat-event: false            # Listen for canceled(unsafe) chat events from unknown plugins
   default-condition-refresh-interval: 1  # Set default condition refresh interval
   default-placeholder-refresh-interval: 1  # Set default placeholder refresh interval

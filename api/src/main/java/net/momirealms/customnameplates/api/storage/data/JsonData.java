@@ -32,6 +32,9 @@ public class JsonData {
     @SerializedName("bubble")
     private String bubble;
 
+    @SerializedName("flags")
+    private int flags;
+
     /**
      * Constructs a new {@link JsonData} instance.
      *
@@ -41,6 +44,27 @@ public class JsonData {
     public JsonData(String nameplate, String bubble) {
         this.nameplate = nameplate;
         this.bubble = bubble;
+        this.flags = 0;
+    }
+
+    public JsonData(String nameplate, String bubble, int flags) {
+        this.nameplate = nameplate;
+        this.bubble = bubble;
+        this.flags = flags;
+    }
+
+    public JsonData(String nameplate, String bubble, boolean previewState) {
+        this.nameplate = nameplate;
+        this.bubble = bubble;
+        this.flags = encodeFlags(previewState);
+    }
+
+    public static int encodeFlags(boolean previewState) {
+        return previewState ? 1 : 0;
+    }
+
+    public static boolean decodePreviewState(int flags) {
+        return (flags & 1) == 1;
     }
 
     /**
@@ -62,6 +86,15 @@ public class JsonData {
     }
 
     /**
+     * Returns the flags
+     *
+     * @return flags
+     */
+    public int getFlags() {
+        return flags;
+    }
+
+    /**
      * Converts this JSON data back into a {@link PlayerData} instance.
      *
      * @param uuid the UUID of the player
@@ -72,6 +105,7 @@ public class JsonData {
                 .uuid(uuid)
                 .nameplate(nameplate)
                 .bubble(bubble)
+                .previewTags(decodePreviewState(flags))
                 .build();
     }
 }

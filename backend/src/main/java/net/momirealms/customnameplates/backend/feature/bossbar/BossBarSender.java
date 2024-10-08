@@ -143,12 +143,12 @@ public class BossBarSender implements Feature, BossBar {
     }
 
     public void show() {
-        isShown = true;
-        if (latestContent == null) {
-            refresh();
+        if (this.latestContent == null) {
+            this.refresh();
         }
-        Object packet = CustomNameplates.getInstance().getPlatform().createBossBarPacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent), progress(), overlay(), color());
+        Object packet = CustomNameplates.getInstance().getPlatform().createBossBarPacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(this.latestContent), progress(), overlay(), color());
         CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
+        isShown = true;
     }
 
     public boolean isShown() {
@@ -172,18 +172,22 @@ public class BossBarSender implements Feature, BossBar {
 
     @Override
     public void notifyPlaceholderUpdates(CNPlayer p1, boolean force) {
-        refresh();
         if (isShown()) {
+            refresh();
             sendLatestBossBarName();
         }
     }
 
     public void refresh() {
-        latestContent = this.currentBossBar.render(owner);
+        if (this.currentBossBar == null) {
+            this.latestContent = "";
+            return;
+        }
+        this.latestContent = this.currentBossBar.render(owner);
     }
 
     public void sendLatestBossBarName() {
-        if (latestContent != null && isShown()) {
+        if (this.latestContent != null && isShown()) {
             Object packet = CustomNameplates.getInstance().getPlatform().updateBossBarNamePacket(uuid, AdventureHelper.miniMessageToMinecraftComponent(latestContent));
             CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }

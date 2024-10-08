@@ -131,16 +131,19 @@ public class NameTag extends AbstractTag implements RelationalFeature {
     }
 
     public void refresh() {
+        if (!isShown()) return;
         for (CNPlayer viewer : viewerArray) {
             refresh(viewer);
         }
     }
 
     public void refresh(CNPlayer viewer) {
-        String newName = currentText.render(viewer);
-        Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
-        Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(CustomNameplates.getInstance().getPlatform().createTextComponentModifier(component)));
-        CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
+        if (isShown(viewer)) {
+            String newName = currentText.render(viewer);
+            Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
+            Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(CustomNameplates.getInstance().getPlatform().createTextComponentModifier(component)));
+            CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
+        }
     }
 
     @Override

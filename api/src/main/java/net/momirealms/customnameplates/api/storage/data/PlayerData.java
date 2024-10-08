@@ -42,6 +42,13 @@ public interface PlayerData {
     String bubble();
 
     /**
+     * Returns if the tag should always be shown to the owner
+     *
+     * @return if the tag should always be shown to the owner
+     */
+    boolean previewTags();
+
+    /**
      * Returns the UUID of the player.
      *
      * @return the player's UUID
@@ -101,6 +108,14 @@ public interface PlayerData {
         Builder uuid(UUID uuid);
 
         /**
+         * Sets whether to preview state for the {@link PlayerData}.
+         *
+         * @param previewTags the state
+         * @return the builder instance
+         */
+        Builder previewTags(boolean previewTags);
+
+        /**
          * Builds and returns the {@link PlayerData} instance.
          *
          * @return the constructed {@link PlayerData} instance
@@ -114,6 +129,6 @@ public interface PlayerData {
      * @return a {@link JsonData} object containing the nameplate and bubble data
      */
     default JsonData toJsonData() {
-        return new JsonData(nameplate(), bubble());
+        return new JsonData(nameplate(), bubble(), previewTags());
     }
 }

@@ -95,6 +95,7 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 	private void handleDataLoad(CNPlayer player, PlayerData data) {
 		player.equippedBubble(data.bubble());
 		player.equippedNameplate(data.nameplate());
+		plugin.getUnlimitedTagManager().togglePreviewing(player, data.previewTags());
 	}
 
 	@Override
