@@ -205,6 +205,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
      *
      * @return the {@link EventManager} instance
      */
+    @Override
     public EventManager getEventManager() {
         return eventManager;
     }

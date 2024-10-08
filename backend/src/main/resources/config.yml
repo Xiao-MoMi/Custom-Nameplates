@@ -176,7 +176,7 @@ other-settings:
       - nonlatin_european:7
       - accented:9
       - ascii:7
-      - unifont_jp
+      #- unifont_jp
       - unifont
     shift_1:
       - space

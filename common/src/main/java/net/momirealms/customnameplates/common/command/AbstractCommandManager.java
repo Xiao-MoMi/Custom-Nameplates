@@ -22,6 +22,9 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.momirealms.customnameplates.common.event.Cancellable;
+import net.momirealms.customnameplates.common.event.CommandFeedbackEvent;
+import net.momirealms.customnameplates.common.event.NameplatesEvent;
 import net.momirealms.customnameplates.common.locale.CustomNameplatesCaptionFormatter;
 import net.momirealms.customnameplates.common.locale.CustomNameplatesCaptionProvider;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
@@ -72,6 +75,11 @@ public abstract class AbstractCommandManager<C> implements CustomNameplatesComma
     @Override
     public TriConsumer<C, String, Component> defaultFeedbackConsumer() {
         return ((sender, node, component) -> {
+            NameplatesEvent event = plugin.getEventManager().dispatch(CommandFeedbackEvent.class, sender, node, component);
+            if (event instanceof Cancellable cancellable) {
+                if (cancellable.cancelled())
+                    return;
+            }
             wrapSender(sender).sendMessage(
                 component, true
             );

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.common.plugin;
 
 import net.momirealms.customnameplates.common.dependency.DependencyManager;
+import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.classpath.ClassPathAppender;
 import net.momirealms.customnameplates.common.plugin.config.ConfigLoader;
@@ -78,6 +79,10 @@ public interface NameplatesPlugin {
      */
     default Path getConfigDirectory() {
         return getDataDirectory();
+    }
+
+    default File getDataFolder() {
+        return getDataDirectory().toFile();
     }
 
     /**
@@ -145,9 +150,17 @@ public interface NameplatesPlugin {
      */
     void debug(Supplier<String> supplier);
 
+    /**
+     * Check if the plugin is the latest
+     *
+     * @return is latest or not
+     */
     boolean isUpToDate();
 
-    default File getDataFolder() {
-        return getDataDirectory().toFile();
-    }
+    /**
+     * Gets the event manager
+     *
+     * @return the event manager
+     */
+    EventManager getEventManager();
 }

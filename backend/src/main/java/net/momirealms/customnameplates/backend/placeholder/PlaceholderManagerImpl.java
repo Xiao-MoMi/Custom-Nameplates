@@ -713,7 +713,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             }
         }
         registeredPlaceholders.put(placeholder.id(), placeholder);
-        fasterRefreshIntervals.put(placeholder.countId(), getRefreshInterval(placeholder.id()));
+        fasterRefreshIntervals.put(placeholder.countId(), placeholder.refreshInterval());
         return placeholder;
     }
 
