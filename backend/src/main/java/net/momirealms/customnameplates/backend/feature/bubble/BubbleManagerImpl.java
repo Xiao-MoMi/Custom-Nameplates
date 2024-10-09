@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
+import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.bubble.Bubble;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleManager;
@@ -304,6 +305,9 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
         String fullText = config.textPrefix() + AdventureHelper.stripTags(message.replace("\\", "\\\\")) + config.textSuffix();
         int lines = plugin.getAdvanceManager().getLines(fullText, config.lineWidth());
         if (lines > config.maxLines()) return;
+        int space = (int) plugin.getAdvanceManager().getLineAdvance(" ");
+        String fakeSpace = AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(space));
+        fullText = fullText.replace(" ", fakeSpace);
 
         TagRenderer renderer = plugin.getUnlimitedTagManager().getTagRender(player);
         if (renderer == null) return;

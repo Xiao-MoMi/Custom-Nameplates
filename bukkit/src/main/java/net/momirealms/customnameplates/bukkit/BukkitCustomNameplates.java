@@ -148,13 +148,13 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.senderFactory = new BukkitSenderFactory(this);
         this.configManager = new BukkitConfigManager(this);
         this.translationManager = new TranslationManager(this);
-        this.placeholderManager = new PlaceholderManagerImpl(this);
         this.actionBarManager = new ActionBarManagerImpl(this);
         this.bossBarManager = new BossBarManagerImpl(this);
         this.advanceManager = new AdvanceManagerImpl(this);
         this.backgroundManager = new BackgroundManagerImpl(this);
         this.bubbleManager = new BubbleManagerImpl(this);
         this.nameplateManager = new NameplateManagerImpl(this);
+        this.placeholderManager = new PlaceholderManagerImpl(this);
         this.imageManager = new ImageManagerImpl(this);
         this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
         this.requirementManager = new BukkitRequirementManager(this);

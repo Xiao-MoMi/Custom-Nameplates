@@ -32,11 +32,11 @@ public class PreParsedDynamicText {
     private boolean init = false;
 
     public PreParsedDynamicText(String text) {
-        this.text = text;
+        this.text = Objects.requireNonNull(text);
     }
 
     public PreParsedDynamicText(String text, boolean init) {
-        this.text = Optional.ofNullable(text).orElse("");
+        this.text = Objects.requireNonNull(text);
         if (init) init();
     }
 
