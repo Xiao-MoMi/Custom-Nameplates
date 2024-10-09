@@ -19,6 +19,14 @@ package net.momirealms.customnameplates.backend.feature.bubble;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.libs.org.snakeyaml.engine.v2.common.ScalarStyle;
+import dev.dejvokep.boostedyaml.libs.org.snakeyaml.engine.v2.nodes.Tag;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import dev.dejvokep.boostedyaml.utils.format.NodeRole;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -35,6 +43,7 @@ import net.momirealms.customnameplates.api.util.ConfigUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -162,8 +171,38 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
     }
 
     private void loadConfig() {
-        plugin.getConfigManager().saveResource("configs" + File.separator + "bubble.yml");
-        YamlDocument document = plugin.getConfigManager().loadData(new File(plugin.getDataDirectory().toFile(), "configs" + File.separator + "bubble.yml"));
+        YamlDocument document = plugin.getConfigManager().loadConfig("configs" + File.separator + "bubble.yml",
+                GeneralSettings.builder()
+                        .setRouteSeparator('.')
+                        .setUseDefaults(false)
+                        .build(),
+                LoaderSettings
+                        .builder()
+                        .setAutoUpdate(true)
+                        .build(),
+                DumperSettings.builder()
+                        .setEscapeUnprintable(false)
+                        .setScalarFormatter((tag, value, role, def) -> {
+                            if (role == NodeRole.KEY) {
+                                return ScalarStyle.PLAIN;
+                            } else {
+                                return tag == Tag.STR ? ScalarStyle.DOUBLE_QUOTED : ScalarStyle.PLAIN;
+                            }
+                        })
+                        .build(),
+                UpdaterSettings
+                        .builder()
+                        .setVersioning(new BasicVersioning("config-version"))
+                        .addIgnoredRoute(ConfigManager.configVersion(), "sender-requirements", '.')
+                        .addIgnoredRoute(ConfigManager.configVersion(), "viewer-requirements", '.')
+                        .addIgnoredRoute(ConfigManager.configVersion(), "bubble-settings", '.')
+                        .build());
+        try {
+            document.save(plugin.getConfigManager().resolveConfig("configs" + File.separator + "bubble.yml").toFile());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         sendBubbleRequirements = plugin.getRequirementManager().parseRequirements(document.getSection("sender-requirements"));
         viewBubbleRequirements = plugin.getRequirementManager().parseRequirements(document.getSection("viewer-requirements"));
         defaultBubbleId = document.getString("default-bubble", "chat");

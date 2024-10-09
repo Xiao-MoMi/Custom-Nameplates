@@ -1025,6 +1025,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
     @Override
     public void unload() {
         this.configFontWidthDataMap.clear();
+        this.textWidthCache.cleanUp();
     }
 
     @Override

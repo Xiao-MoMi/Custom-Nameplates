@@ -420,14 +420,14 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         if (ConfigManager.legacyUnicodes()) {
             for (int i = 0; i < 256; i++) {
                 var path = "font" + File.separator + "unicode_page_" + String.format("%02x", i) + ".png";
-                var destination = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "font" + File.separator + "unicode_page_" + String.format("%02x", i) + ".png";
+                var destination = "ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "font";
                 File imageFile = new File(plugin.getDataFolder(), path);
-                File destinationFile = new File(plugin.getDataFolder(), destination);
+                File destinationFolder = new File(plugin.getDataFolder(), destination);
                 if (imageFile.exists()) {
                     try {
-                        FileUtils.copyFile(imageFile, destinationFile);
+                        FileUtils.copyFileToDirectory(imageFile, destinationFolder);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -487,7 +487,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
     public static class ShaderConstants {
 
         public static final String Nameplates_Shader_1_20_5 =
-                        "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
+                        "if (Color.xyz == vec3(255., 254., 253.) / 255. && (Position.z == 50.03 || Position.z == 200.03 || Position.z == 400.03 || Position.z == 1000.03 || Position.z == 2000 || Position.z == 2200.03 || Position.z == 2400.06 || Position.z == 2400.12 || Position.z == 2650.03 || Position.z == 2800.03)) {\n" +
                         "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        vertex.y += 1;\n" +
                         "        vertex.x += 1;\n" +
@@ -506,7 +506,7 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                         "    }";
 
         public static final String Nameplates_Shader_1_20_4 =
-                        "if (Color.xyz == vec3(255., 254., 253.) / 255.) {\n" +
+                        "if (Color.xyz == vec3(255., 254., 253.) / 255. && (Position.z == 0.03 || Position.z == 0.06 || Position.z == 0.12 || Position.z == 100.03 || Position.z == 200.03 || Position.z == 400.03)) {\n" +
                         "        vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);\n" +
                         "        vertex.y += 1;\n" +
                         "        vertex.x += 1;\n" +

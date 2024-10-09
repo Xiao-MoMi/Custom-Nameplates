@@ -1,3 +1,5 @@
+# Do not modify this value
+config-version: '${config_version}'
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/config/bubble.yml
 sender-requirements:
   permission: bubbles.send

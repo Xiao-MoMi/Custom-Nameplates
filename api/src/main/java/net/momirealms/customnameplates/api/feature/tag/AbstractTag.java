@@ -95,7 +95,8 @@ public abstract class AbstractTag implements Tag {
     @Override
     public void hide(CNPlayer viewer) {
         if (!isShown()) return;
-        viewers.remove(viewer);
+        boolean removed = viewers.remove(viewer);
+        if (!removed) return;
         resetViewerArray();
         owner.untrackPassengers(viewer, entityID);
         Object packet = CustomNameplates.getInstance().getPlatform().removeEntityPacket(entityID);

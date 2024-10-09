@@ -231,7 +231,8 @@ public class BubbleTag extends AbstractTag {
     @Override
     public void hide(CNPlayer viewer) {
         if (!isShown()) return;
-        viewers.remove(viewer);
+        boolean removed = viewers.remove(viewer);
+        if (!removed) return;
         resetViewerArray();
         if (background != null) {
             owner.untrackPassengers(viewer, entityID, subEntityID);

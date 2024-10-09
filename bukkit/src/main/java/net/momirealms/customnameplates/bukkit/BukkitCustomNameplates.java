@@ -23,6 +23,7 @@ import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.RespawnListener;
 import net.momirealms.customnameplates.api.feature.WorldChangeListener;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.backend.feature.advance.AdvanceManagerImpl;
@@ -138,6 +139,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         }
 
         BukkitNetworkManager networkManager = new BukkitNetworkManager(this);
+        this.mainTask = new MainTask(this);
         this.packetSender = networkManager;
         this.pipelineInjector = networkManager;
         this.commandManager = new BukkitCommandManager(this);
@@ -238,11 +240,14 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.joinQuitListeners.clear();
         HandlerList.unregisterAll(this);
 
+        AdventureHelper.clearCache();
+
         this.loaded = false;
     }
 
     @Override
     public void reload() {
+        AdventureHelper.clearCache();
         // cancel task
         if (this.scheduledMainTask != null)
             this.scheduledMainTask.cancel();

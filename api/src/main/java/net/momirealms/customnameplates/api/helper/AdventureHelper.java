@@ -84,6 +84,14 @@ public class AdventureHelper {
                         .build();
     }
 
+    public static void clearCache() {
+        AdventureHelper instance = getInstance();
+        instance.miniMessageToMinecraftComponentCache.cleanUp();
+        instance.miniMessageToComponentCache.cleanUp();
+        instance.jsonToMiniMessageCache.cleanUp();
+        instance.minecraftComponentToMiniMessageCache.cleanUp();
+    }
+
     private static class SingletonHolder {
         private static final AdventureHelper INSTANCE = new AdventureHelper();
     }

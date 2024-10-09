@@ -44,8 +44,6 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Objects.requireNonNull;
-
 @SuppressWarnings("DuplicatedCode")
 public class PlaceholderManagerImpl implements PlaceholderManager {
 

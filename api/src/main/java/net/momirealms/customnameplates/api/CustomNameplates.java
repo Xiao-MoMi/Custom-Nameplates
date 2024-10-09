@@ -66,7 +66,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     protected BossBarManager bossBarManager;
     protected UnlimitedTagManager unlimitedTagManager;
     protected Platform platform;
-    protected MainTask mainTask = new MainTask(this);
+    protected MainTask mainTask;
     protected SchedulerTask scheduledMainTask;
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
     protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();

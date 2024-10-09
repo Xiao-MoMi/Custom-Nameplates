@@ -19,6 +19,14 @@ package net.momirealms.customnameplates.backend.feature.tag;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.libs.org.snakeyaml.engine.v2.common.ScalarStyle;
+import dev.dejvokep.boostedyaml.libs.org.snakeyaml.engine.v2.nodes.Tag;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import dev.dejvokep.boostedyaml.utils.format.NodeRole;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
@@ -38,6 +46,7 @@ import net.momirealms.customnameplates.api.util.ConfigUtils;
 import net.momirealms.customnameplates.api.util.Vector3;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -230,8 +239,35 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
     }
 
     private void loadConfig() {
-        plugin.getConfigManager().saveResource("configs" + File.separator + "nameplate.yml");
-        YamlDocument document = plugin.getConfigManager().loadData(new File(plugin.getDataDirectory().toFile(), "configs" + File.separator + "nameplate.yml"));
+        YamlDocument document = plugin.getConfigManager().loadConfig("configs" + File.separator + "nameplate.yml",
+                GeneralSettings.builder()
+                        .setRouteSeparator('.')
+                        .setUseDefaults(false)
+                        .build(),
+                LoaderSettings
+                        .builder()
+                        .setAutoUpdate(true)
+                        .build(),
+                DumperSettings.builder()
+                        .setEscapeUnprintable(false)
+                        .setScalarFormatter((tag, value, role, def) -> {
+                            if (role == NodeRole.KEY) {
+                                return ScalarStyle.PLAIN;
+                            } else {
+                                return tag == Tag.STR ? ScalarStyle.DOUBLE_QUOTED : ScalarStyle.PLAIN;
+                            }
+                        })
+                        .build(),
+                UpdaterSettings
+                        .builder()
+                        .setVersioning(new BasicVersioning("config-version"))
+                        .addIgnoredRoute(ConfigManager.configVersion(), "unlimited", '.')
+                        .build());
+        try {
+            document.save(plugin.getConfigManager().resolveConfig("configs" + File.separator + "nameplate.yml").toFile());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         previewDuration = document.getInt("preview-duration", 5);
         alwaysShow = document.getBoolean("always-show", false);
         Section unlimitedSection = document.getSection("unlimited");
