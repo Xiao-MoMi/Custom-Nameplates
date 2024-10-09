@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
 
@@ -33,6 +34,7 @@ public class HasNameplateRequirement extends AbstractRequirement {
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         String nameplate = p1.equippedNameplate();
+        if (!ConfigManager.nameplateModule()) return false;
         if (nameplate.equals("none")) nameplate = CustomNameplates.getInstance().getNameplateManager().defaultNameplateId();
         if (has) {
             return !nameplate.equals("none");
