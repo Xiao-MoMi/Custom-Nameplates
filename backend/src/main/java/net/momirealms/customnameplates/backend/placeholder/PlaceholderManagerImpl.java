@@ -171,8 +171,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             String characters = OffsetFont.createOffsets(i);
             this.registerPlayerPlaceholder("%np_offset_" + i + "%", (p) -> AdventureHelper.surroundWithNameplatesFont(characters));
         }
-        this.registerPlayerPlaceholder("%np_equipped_nameplate%", CNPlayer::equippedNameplate);
         if (ConfigManager.nameplateModule()) {
+            this.registerPlayerPlaceholder("%np_equipped_nameplate%", CNPlayer::equippedNameplate);
             this.registerPlayerPlaceholder("%np_equipped_nameplate-name%", (player) -> {
                 Nameplate nameplate = plugin.getNameplateManager().nameplateById(player.equippedNameplate());
                 return Optional.ofNullable(nameplate).map(Nameplate::displayName).orElse("");

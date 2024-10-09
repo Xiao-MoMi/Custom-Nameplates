@@ -206,13 +206,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     @Override
     public void addFeature(Feature feature) {
         activeFeatures.add(feature);
-        Set<Placeholder> allPlaceholdersUsedInFeature = feature.allPlaceholders();
-        feature2Placeholders.put(feature, allPlaceholdersUsedInFeature);
-        for (Placeholder placeholder : allPlaceholdersUsedInFeature) {
-            Set<Feature> featureSet = placeholder2Features.computeIfAbsent(placeholder, k -> {
-                forceUpdatePlaceholders(Set.of(placeholder), nearbyPlayers());
-                return new HashSet<>();
-            });
+        Set<Placeholder> allPlaceholders = feature.allPlaceholders();
+        feature2Placeholders.put(feature, allPlaceholders);
+        for (Placeholder placeholder : allPlaceholders) {
+            Set<Feature> featureSet = placeholder2Features.computeIfAbsent(placeholder, k -> new HashSet<>());
             featureSet.add(feature);
         }
     }
