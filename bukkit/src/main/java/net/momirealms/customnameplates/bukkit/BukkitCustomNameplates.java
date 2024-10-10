@@ -21,8 +21,7 @@ import net.momirealms.customnameplates.api.*;
 import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
-import net.momirealms.customnameplates.api.feature.RespawnListener;
-import net.momirealms.customnameplates.api.feature.WorldChangeListener;
+import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
@@ -57,10 +56,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
@@ -83,8 +79,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     private final JavaPlugin bootstrap;
 
     private final List<JoinQuitListener> joinQuitListeners = new ArrayList<>();
-    private final List<WorldChangeListener> worldChangeListeners = new ArrayList<>();
-    private final List<RespawnListener> respawnListeners = new ArrayList<>();
+    private final List<PlayerListener> playerListeners = new ArrayList<>();
 
     private boolean loaded = false;
 
@@ -168,8 +163,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.joinQuitListeners.add((JoinQuitListener) actionBarManager);
         this.joinQuitListeners.add((JoinQuitListener) bossBarManager);
         this.joinQuitListeners.add((JoinQuitListener) unlimitedTagManager);
-        this.worldChangeListeners.add((WorldChangeListener) unlimitedTagManager);
-        this.respawnListeners.add((RespawnListener) unlimitedTagManager);
+        this.playerListeners.add((PlayerListener) unlimitedTagManager);
         this.chatManager.registerListener((ChatListener) bubbleManager);
 
         Bukkit.getPluginManager().registerEvents(this, getBootstrap());
@@ -367,7 +361,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     public void onChangeWorld(PlayerChangedWorldEvent event) {
         CNPlayer cnPlayer = getPlayer(event.getPlayer().getUniqueId());
         if (cnPlayer != null) {
-            for (WorldChangeListener listener : worldChangeListeners) {
+            for (PlayerListener listener : playerListeners) {
                 listener.onChangeWorld(cnPlayer);
             }
         }
@@ -377,8 +371,18 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     public void onRespawn(PlayerRespawnEvent event) {
         CNPlayer cnPlayer = getPlayer(event.getPlayer().getUniqueId());
         if (cnPlayer != null) {
-            for (RespawnListener listener : respawnListeners) {
+            for (PlayerListener listener : playerListeners) {
                 listener.onRespawn(cnPlayer);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        CNPlayer cnPlayer = getPlayer(event.getPlayer().getUniqueId());
+        if (cnPlayer != null) {
+            for (PlayerListener listener : playerListeners) {
+                listener.onTeleport(cnPlayer);
             }
         }
     }

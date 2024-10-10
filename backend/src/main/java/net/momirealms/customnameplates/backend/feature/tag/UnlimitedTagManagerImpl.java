@@ -33,8 +33,7 @@ import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
-import net.momirealms.customnameplates.api.feature.RespawnListener;
-import net.momirealms.customnameplates.api.feature.WorldChangeListener;
+import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.feature.tag.UnlimitedTagManager;
@@ -53,7 +52,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitListener, WorldChangeListener, RespawnListener {
+public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitListener, PlayerListener {
 
     private final CustomNameplates plugin;
     private final LinkedHashMap<String, NameTagConfig> configs = new LinkedHashMap<>();
@@ -106,14 +105,26 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onChangeWorld(CNPlayer player) {
-        if (player.isTempPreviewing() || player.isToggleablePreviewing()) {
-            onRemovePlayer(player, player);
-            onAddPlayer(player, player);
-        }
+        plugin.getScheduler().async().execute(() -> {
+            if (player.isOnline() && (player.isTempPreviewing() || player.isToggleablePreviewing())) {
+                onRemovePlayer(player, player);
+                onAddPlayer(player, player);
+            }
+        });
     }
 
     @Override
     public void onRespawn(CNPlayer player) {
+        plugin.getScheduler().asyncLater(() -> {
+            if (player.isOnline() && (player.isTempPreviewing() || player.isToggleablePreviewing())) {
+                onRemovePlayer(player, player);
+                onAddPlayer(player, player);
+            }
+        }, 50, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void onTeleport(CNPlayer player) {
         plugin.getScheduler().asyncLater(() -> {
             if (player.isOnline() && (player.isTempPreviewing() || player.isToggleablePreviewing())) {
                 onRemovePlayer(player, player);

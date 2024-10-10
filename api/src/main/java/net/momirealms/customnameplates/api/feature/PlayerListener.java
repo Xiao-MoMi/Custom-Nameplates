@@ -22,7 +22,7 @@ import net.momirealms.customnameplates.api.CNPlayer;
 /**
  * Listener for handling player change worlds
  */
-public interface WorldChangeListener {
+public interface PlayerListener {
 
     /**
      * Called when a player changes the world
@@ -30,4 +30,18 @@ public interface WorldChangeListener {
      * @param player the player who changes the world
      */
     void onChangeWorld(CNPlayer player);
+
+    /**
+     * Called when a player respawns
+     *
+     * @param player the player who respawns
+     */
+    void onRespawn(CNPlayer player);
+
+    /**
+     * Called when a player teleports
+     *
+     * @param player the player who respawns
+     */
+    void onTeleport(CNPlayer player);
 }
