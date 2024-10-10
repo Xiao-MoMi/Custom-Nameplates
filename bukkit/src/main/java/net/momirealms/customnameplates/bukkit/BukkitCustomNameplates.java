@@ -54,6 +54,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
@@ -325,7 +326,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         return instance;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         CNPlayer cnPlayer = new BukkitCNPlayer(this, event.getPlayer());
         CNPlayer previous = onlinePlayerMap.put(cnPlayer.uuid(), cnPlayer);

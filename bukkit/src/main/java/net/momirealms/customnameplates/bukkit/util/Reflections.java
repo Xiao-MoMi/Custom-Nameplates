@@ -23,10 +23,7 @@ import net.momirealms.customnameplates.common.util.ReflectionUtils;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.*;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -988,4 +985,42 @@ public class Reflections {
             throw new RuntimeException(e);
         }
     }
+
+    public static final Class<?> clazz$ClientboundSetPlayerTeamPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundSetPlayerTeamPacket"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutScoreboardTeam")
+            )
+    );
+
+    public static final Field field$ClientboundSetPlayerTeamPacket$method = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundSetPlayerTeamPacket, int.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundSetPlayerTeamPacket$players = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundSetPlayerTeamPacket, Collection.class, 0
+            )
+    );
+
+    public static final Field field$ClientboundSetPlayerTeamPacket$parameters = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundSetPlayerTeamPacket, Optional.class, 0
+            )
+    );
+
+    public static final Class<?> clazz$ClientboundSetPlayerTeamPacket$Parameters = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundSetPlayerTeamPacket$Parameters"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.PacketPlayOutScoreboardTeam$b")
+            )
+    );
+
+    public static final Field field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundSetPlayerTeamPacket$Parameters, String.class, 0
+            )
+    );
 }

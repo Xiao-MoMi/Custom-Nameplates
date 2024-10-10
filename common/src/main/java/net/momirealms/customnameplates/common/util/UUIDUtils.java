@@ -40,6 +40,21 @@ public class UUIDUtils {
     }
 
     /**
+     * Check if the id is a UUID
+     *
+     * @param id id
+     * @return true if it's a UUID
+     */
+    public static boolean isUUID(String id) {
+        try {
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
      * Converts a {@link UUID} object to a string without dashes.
      *
      * @param uuid the {@link UUID} object

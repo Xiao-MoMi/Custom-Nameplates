@@ -67,6 +67,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean bubbleModule;
     protected boolean nameplateModule;
     protected boolean backgroundModule;
+    protected boolean hideTeamNames;
     protected int defaultPlaceholderRefreshInterval;
     protected int defaultConditionRefreshInterval;
     protected int delaySend;
@@ -216,6 +217,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         defaultConditionRefreshInterval = config.getInt("other-settings.ddefault-condition-refresh-interval", 1);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
         otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
+        hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
     }
 
     @Override
@@ -265,6 +267,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static char initialChar() {
         return instance.initialChar;
+    }
+
+    public static boolean hideTeamNames() {
+        return instance.hideTeamNames;
     }
 
     public static boolean actionbarModule() {

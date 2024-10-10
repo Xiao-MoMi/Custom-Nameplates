@@ -280,6 +280,34 @@ public class BukkitPlatform implements Platform {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetEntityDataPacket", e);
             }
         }, "ClientboundSetEntityDataPacket", "PacketPlayOutEntityMetadata");
+
+        registerPacketConsumer((player, event, packet) -> {
+            if (!ConfigManager.nametagModule()) return;
+            if (!ConfigManager.hideTeamNames()) return;
+            try {
+                int method = (int) Reflections.field$ClientboundSetPlayerTeamPacket$method.get(packet);
+                if (method == 0 || method == 2) {
+// How to handle mixed entity team packs
+//                    @SuppressWarnings("unchecked")
+//                    Collection<String> entities = (Collection<String>) Reflections.field$ClientboundSetPlayerTeamPacket$players.get(packet);
+//                    outer: {
+//                        for (String entity : entities) {
+//                            if (!UUIDUtils.isUUID(entity)) {
+//                                break outer;
+//                            }
+//                        }
+//                    }
+                    @SuppressWarnings("unchecked")
+                    Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
+                    if (optionalParameters.isPresent()) {
+                        Object parameters = optionalParameters.get();
+                        Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, "never");
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetPlayerTeamPacket", e);
+            }
+        }, "ClientboundSetPlayerTeamPacket", "PacketPlayOutScoreboardTeam");
     }
 
     @Override
@@ -512,25 +540,29 @@ public class BukkitPlatform implements Platform {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onPacketSend(CNPlayer player, PacketEvent event) {
         try {
             Object packet = event.getPacket();
-            if (Reflections.clazz$ClientboundBundlePacket.isInstance(packet)) {
-                Iterable<Object> packets = (Iterable<Object>) Reflections.field$BundlePacket$packets.get(packet);
-                for (Object p : packets) {
-                    handlePacket(player, event, p);
-                }
-            } else {
-                handlePacket(player, event, packet);
-            }
+            onPacketSend(player, event, packet);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void handlePacket(CNPlayer player, PacketEvent event, Object packet) throws ReflectiveOperationException {
+    @SuppressWarnings("unchecked")
+    private void onPacketSend(CNPlayer player, PacketEvent event, Object packet) throws ReflectiveOperationException {
+        if (Reflections.clazz$ClientboundBundlePacket.isInstance(packet)) {
+            Iterable<Object> packets = (Iterable<Object>) Reflections.field$BundlePacket$packets.get(packet);
+            for (Object p : packets) {
+                onPacketSend(player, event, p);
+            }
+        } else {
+            handlePacket(player, event, packet);
+        }
+    }
+
+    private void handlePacket(CNPlayer player, PacketEvent event, Object packet) {
         Optional.ofNullable(packetFunctions.get(packet.getClass().getSimpleName()))
                 .ifPresent(function -> function.accept(player, event, packet));
     }
