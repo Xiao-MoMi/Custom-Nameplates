@@ -20,7 +20,7 @@ package net.momirealms.customnameplates.api.feature;
 import net.momirealms.customnameplates.api.CNPlayer;
 
 /**
- * Listener for handling player change worlds
+ * Listener for handling player actions
  */
 public interface PlayerListener {
 
