@@ -35,8 +35,6 @@ public interface PacketSender {
      */
     void sendPacket(@NotNull CNPlayer player, Object packet);
 
-    void sendPacket(@NotNull CNPlayer player, Object packet, boolean immediately);
-
     /**
      * Sends a list of packets to the specified player.
      *
@@ -44,6 +42,4 @@ public interface PacketSender {
      * @param packet the list of packets to be sent
      */
     void sendPacket(@NotNull CNPlayer player, List<Object> packet);
-
-    void sendPacket(@NotNull CNPlayer player, List<Object> packet, boolean immediately);
 }

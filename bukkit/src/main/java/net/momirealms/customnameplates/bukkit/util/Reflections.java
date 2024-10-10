@@ -22,10 +22,11 @@ import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.common.util.ReflectionUtils;
 import sun.misc.Unsafe;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.lang.reflect.*;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -375,11 +376,6 @@ public class Reflections {
 
     public static final Method method$SendPacket = requireNonNull(
             ReflectionUtils.getMethods(clazz$PlayerConnection, void.class, clazz$Packet).get(0)
-    );
-
-    public static final Method method$SendPacketImmediately = requireNonNull(
-            Optional.ofNullable(ReflectionUtils.getMethod(clazz$NetworkManager, void.class, clazz$Packet, clazz$PacketSendListener, boolean.class))
-                    .orElse(ReflectionUtils.getMethod(clazz$NetworkManager, void.class, clazz$Packet, clazz$PacketSendListener, Boolean.class))
     );
 
     public static final Field field$NetworkManager = requireNonNull(
@@ -852,4 +848,144 @@ public class Reflections {
                     clazz$GameType, new String[] { "getId", "a" }
             )
     );
+
+    public static final Class<?> clazz$Biome = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.level.biome.Biome"),
+                    BukkitReflectionUtils.assembleMCClass("world.level.biome.BiomeBase")
+            )
+    );
+
+    public static final Class<?> clazz$CraftWorld = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleCBClass("CraftWorld")
+            )
+    );
+
+    public static final Class<?> clazz$ServerLevel = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("server.level.ServerLevel"),
+                    BukkitReflectionUtils.assembleMCClass("server.level.WorldServer")
+            )
+    );
+
+    public static final Field field$CraftWorld$ServerLevel = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$CraftWorld, clazz$ServerLevel, 0
+            )
+    );
+
+    public static final Method method$ServerLevel$getNoiseBiome = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$ServerLevel, clazz$Holder, int.class, int.class, int.class
+            )
+    );
+
+    public static final Class<?> clazz$ResourceLocation = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("resources.ResourceLocation"),
+                    BukkitReflectionUtils.assembleMCClass("resources.MinecraftKey")
+            )
+    );
+
+    public static final Class<?> clazz$ResourceKey = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("resources.ResourceKey")
+            )
+    );
+
+    public static final Class<?> clazz$MinecraftServer = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("server.MinecraftServer")
+            )
+    );
+
+    public static final Method method$MinecraftServer$getServer = requireNonNull(
+            ReflectionUtils.getMethod(clazz$MinecraftServer, new String[] { "getServer" })
+    );
+
+    public static final Class<?> clazz$LayeredRegistryAccess = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.LayeredRegistryAccess")
+            )
+    );
+
+    public static final Field field$MinecraftServer$registries = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$MinecraftServer, clazz$LayeredRegistryAccess, 0
+            )
+    );
+
+    public static final Class<?> clazz$RegistryAccess$Frozen = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.RegistryAccess$Frozen"),
+                    BukkitReflectionUtils.assembleMCClass("core.IRegistryCustom$Dimension")
+            )
+    );
+
+    public static final Class<?> clazz$RegistryAccess = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.RegistryAccess"),
+                    BukkitReflectionUtils.assembleMCClass("core.IRegistryCustom")
+            )
+    );
+
+    public static final Field field$LayeredRegistryAccess$composite = requireNonNull(
+            ReflectionUtils.getDeclaredField(
+                    clazz$LayeredRegistryAccess, clazz$RegistryAccess$Frozen, 0
+            )
+    );
+
+    public static final Class<?> clazz$Registry = requireNonNull(
+            requireNonNull(ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.WritableRegistry"),
+                    BukkitReflectionUtils.assembleMCClass("core.IRegistryWritable")
+            )).getInterfaces()[0]
+    );
+
+    public static final Method method$RegistryAccess$registryOrThrow = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$RegistryAccess, clazz$Registry, clazz$ResourceKey
+            )
+    );
+
+    public static final Class<?> clazz$Registries = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("core.registries.Registries")
+            )
+    );
+
+    public static final Method method$Registry$getKey = requireNonNull(
+            ReflectionUtils.getMethod(clazz$Registry, clazz$ResourceLocation, Object.class)
+    );
+
+    public static final Object instance$BiomeRegistry;
+
+    static {
+        Field[] fields = clazz$Registries.getDeclaredFields();
+        try {
+            Object field$Registries$Biome = null;
+            for (Field field : fields) {
+                Type fieldType = field.getGenericType();
+                if (fieldType instanceof ParameterizedType paramType) {
+                    if (paramType.getRawType() == clazz$ResourceKey) {
+                        Type[] actualTypeArguments = paramType.getActualTypeArguments();
+                        if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof ParameterizedType registryType) {
+                            if (registryType.getActualTypeArguments()[0] == clazz$Biome) {
+                                field$Registries$Biome = field.get(null);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            requireNonNull(field$Registries$Biome);
+            Object server = method$MinecraftServer$getServer.invoke(null);
+            Object registries = field$MinecraftServer$registries.get(server);
+            Object compositeAccess = field$LayeredRegistryAccess$composite.get(registries);
+            instance$BiomeRegistry = method$RegistryAccess$registryOrThrow.invoke(compositeAccess, field$Registries$Biome);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

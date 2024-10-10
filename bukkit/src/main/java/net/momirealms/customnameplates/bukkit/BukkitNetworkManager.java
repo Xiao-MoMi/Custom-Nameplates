@@ -24,24 +24,24 @@ import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
-import net.momirealms.customnameplates.common.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
 
 public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
-    private final TriConsumer<CNPlayer, List<Object>, Boolean> packetsConsumer;
+    private final BiConsumer<CNPlayer, List<Object>> packetsConsumer;
     private final CustomNameplates plugin;
 
     public BukkitNetworkManager(CustomNameplates plugin) {
         this.plugin = plugin;
-        this.packetsConsumer = ((player, objects, immediate) -> {
+        this.packetsConsumer = ((player, objects) -> {
             try {
                 Object bundle = Reflections.constructor$ClientboundBundlePacket.newInstance(objects);
-                sendPacket(player, bundle, immediate);
+                sendPacket(player, bundle);
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }
@@ -50,41 +50,19 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
     @Override
     public void sendPacket(@NotNull CNPlayer player, Object packet) {
-        sendPacket(player, packet, false);
-    }
-
-    @Override
-    public void sendPacket(@NotNull CNPlayer player, final Object packet, final boolean immediately) {
-        if (!player.isOnline()) return;
-        if (immediately) {
-            try {
-                Reflections.method$SendPacketImmediately.invoke(
-                        Reflections.field$NetworkManager.get(Reflections.field$PlayerConnection.get(
-                                Reflections.method$CraftPlayer$getHandle.invoke(player.player()))), packet, null, true);
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            try {
-                Reflections.method$SendPacket.invoke(
-                        Reflections.field$PlayerConnection.get(
-                                Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            Reflections.method$SendPacket.invoke(
+                    Reflections.field$PlayerConnection.get(
+                            Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void sendPacket(@NotNull CNPlayer player, final List<Object> packet) {
         if (!player.isOnline()) return;
-        sendPacket(player, packet, false);
-    }
-
-    @Override
-    public void sendPacket(@NotNull CNPlayer player, final List<Object> packet, boolean immediately) {
-        if (!player.isOnline()) return;
-        packetsConsumer.accept(player, packet, immediately);
+        packetsConsumer.accept(player, packet);
     }
 
     @Override

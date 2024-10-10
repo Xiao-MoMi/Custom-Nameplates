@@ -33,10 +33,12 @@ import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
+import net.momirealms.customnameplates.bukkit.util.BiomeUtils;
 import net.momirealms.customnameplates.bukkit.util.EntityData;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.util.TriConsumer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -493,6 +495,12 @@ public class BukkitPlatform implements Platform {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String getBiome(String world, int x, int y, int z) {
+        Location location = new Location(Bukkit.getWorld(world), x, y, z);
+        return BiomeUtils.getBiome(location);
     }
 
     @Override

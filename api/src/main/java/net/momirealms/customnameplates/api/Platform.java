@@ -222,4 +222,15 @@ public interface Platform {
      * @return the remove entity packet object
      */
     Object removeEntityPacket(int... entityID);
+
+    /**
+     * Gets the biome based on location
+     *
+     * @param world world
+     * @param x x
+     * @param y y
+     * @param z z
+     * @return the biome key
+     */
+    String getBiome(String world, int x, int y, int z);
 }

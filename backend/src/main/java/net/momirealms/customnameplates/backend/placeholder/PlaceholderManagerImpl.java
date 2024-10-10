@@ -165,6 +165,14 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         this.registerPlayerPlaceholder("%player_x%", (player -> String.valueOf((int) Math.floor(player.position().x()))));
         this.registerPlayerPlaceholder("%player_y%", (player -> String.valueOf((int) Math.floor(player.position().y()))));
         this.registerPlayerPlaceholder("%player_z%", (player -> String.valueOf((int) Math.floor(player.position().z()))));
+        this.registerPlayerPlaceholder("%np_biome%", (player -> {
+            Vector3 vector3 = player.position();
+            return plugin.getPlatform().getBiome(player.world(), (int) Math.floor(vector3.x()), (int) Math.floor(vector3.y()), (int) Math.floor(vector3.z()));
+        }));
+        this.registerRelationalPlaceholder("%rel_np_biome%", (p1,p2) -> {
+            Vector3 vector3 = p1.position();
+            return plugin.getPlatform().getBiome(p1.world(), (int) Math.floor(vector3.x()), (int) Math.floor(vector3.y()), (int) Math.floor(vector3.z()));
+        });
         this.registerPlayerPlaceholder("%player_world%", (CNPlayer::world));
         this.registerPlayerPlaceholder("%player_remaining_air%", (player -> String.valueOf(player.remainingAir())));
         for (int i = -256; i <= 256; i++) {

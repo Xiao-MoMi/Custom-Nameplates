@@ -18,8 +18,11 @@
 package net.momirealms.customnameplates.bukkit.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
-import org.bukkit.entity.Player;
+import net.momirealms.customnameplates.bukkit.util.BiomeUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +40,9 @@ public class BiomeRequirement extends AbstractRequirement {
 
 	@Override
 	public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
-		String currentBiome = ((Player) p1.player()).getLocation().getBlock().getBiome().toString();
-		return biomes.contains(currentBiome);
+		Vector3 vector3 = p1.position();
+		Location location = new Location(Bukkit.getWorld(p1.world()), vector3.x(), vector3.y(), vector3.z());
+		return biomes.contains(BiomeUtils.getBiome(location));
 	}
 
 	@Override

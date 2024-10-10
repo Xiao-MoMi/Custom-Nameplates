@@ -201,6 +201,20 @@ public class ReflectionUtils {
     }
 
     @Nullable
+    public static Method getMethod(final Class<?> clazz, Class<?> returnType, int index) {
+        int i = 0;
+        for (Method method : clazz.getMethods()) {
+            if (returnType.isAssignableFrom(method.getReturnType())) {
+                if (i == index) {
+                    return setAccessible(method);
+                }
+                i++;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     public static Method getStaticMethod(final Class<?> clazz, Class<?> returnType, final Class<?>... parameterTypes) {
         outer:
         for (Method method : clazz.getMethods()) {
@@ -216,7 +230,8 @@ public class ReflectionUtils {
                     continue outer;
                 }
             }
-            if (returnType.isAssignableFrom(method.getReturnType())) return method;
+            if (returnType.isAssignableFrom(method.getReturnType()))
+                return setAccessible(method);
         }
         return null;
     }
