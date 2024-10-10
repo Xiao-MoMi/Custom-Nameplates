@@ -271,7 +271,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
         previewDuration = document.getInt("preview-duration", 5);
         alwaysShow = document.getBoolean("always-show", false);
         Section unlimitedSection = document.getSection("unlimited");
-        if (unlimitedSection == null) return;
+        if (!ConfigManager.nametagModule() || unlimitedSection == null) return;
         for (Map.Entry<String, Object> entry : unlimitedSection.getStringRouteMappedValues(false).entrySet()) {
             if (!(entry.getValue() instanceof Section section))
                 return;

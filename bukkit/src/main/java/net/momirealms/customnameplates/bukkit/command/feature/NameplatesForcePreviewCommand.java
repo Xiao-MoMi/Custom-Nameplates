@@ -62,7 +62,7 @@ public class NameplatesForcePreviewCommand extends BukkitCommandFeature<CommandS
                 }))
                 .optional("time", IntegerParser.integerParser(0))
                 .handler(context -> {
-                    if (!ConfigManager.nameplateModule()) return;
+                    if (!ConfigManager.nametagModule()) return;
                     Player bukkitPlayer = context.get("player");
                     CNPlayer player = plugin.getPlayer(bukkitPlayer.getUniqueId());
                     if (player == null || !player.isLoaded()) {

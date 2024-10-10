@@ -39,7 +39,7 @@ public class NameplatesToggleCommand extends BukkitCommandFeature<CommandSender>
         return builder
                 .senderType(Player.class)
                 .handler(context -> {
-                    if (!ConfigManager.nameplateModule()) return;
+                    if (!ConfigManager.nametagModule()) return;
                     CNPlayer player = plugin.getPlayer(context.sender().getUniqueId());
                     if (player == null || !player.isLoaded()) return;
                     boolean isPreviewing = player.isToggleablePreviewing();

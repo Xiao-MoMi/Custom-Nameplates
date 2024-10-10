@@ -11,7 +11,8 @@ force-locale: ''
 
 # Module Settings: Enable or disable specific features.
 modules:
-  nameplates: true           # Enable nameplate display
+  nametags: true             # Enable name tags
+  nameplates: true           # Enable nameplates
   backgrounds: true          # Enable background images for nameplates
   bubbles: true              # Enable bubble text display
   bossbars: true             # Enable bossbars

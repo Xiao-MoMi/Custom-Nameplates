@@ -60,6 +60,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean debug;
     protected boolean checkUpdate;
     protected boolean metrics;
+    protected boolean nametagModule;
     protected boolean actionbarModule;
     protected boolean imageModule;
     protected boolean bossBarModule;
@@ -163,6 +164,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         checkUpdate = config.getBoolean("update-checker", false);
 
         // Modules
+        nametagModule = config.getBoolean("modules.nametags", true);
         actionbarModule = config.getBoolean("modules.actionbars", true);
         imageModule = config.getBoolean("modules.images", true);
         bossBarModule = config.getBoolean("modules.bossbars", true);
@@ -267,6 +269,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean actionbarModule() {
         return instance.actionbarModule;
+    }
+
+    public static boolean nametagModule() {
+        return instance.nametagModule;
     }
 
     public static boolean catchOtherActionBar() {

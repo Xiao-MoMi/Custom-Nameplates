@@ -48,8 +48,8 @@ public class NameplateManagerImpl implements NameplateManager {
 
     @Override
     public void load() {
-        if (!ConfigManager.nameplateModule()) return;
         this.loadConfig();
+        if (!ConfigManager.nameplateModule()) return;
         this.loadConfigs();
     }
 

@@ -44,7 +44,7 @@ public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender
         return builder
                 .senderType(Player.class)
                 .handler(context -> {
-                    if (!ConfigManager.nameplateModule()) return;
+                    if (!ConfigManager.nametagModule()) return;
                     CNPlayer player = plugin.getPlayer(context.sender().getUniqueId());
                     if (player == null) {
                         throw new RuntimeException("Player should not be null");
