@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
 
@@ -32,6 +33,7 @@ public class HasBubbleRequirement extends AbstractRequirement {
 
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
+        if (!ConfigManager.bubbleModule()) return false;
         String bubble = p1.equippedBubble();
         if (bubble.equals("none")) bubble = CustomNameplates.getInstance().getBubbleManager().defaultBubbleId();
         if (has) {
