@@ -224,7 +224,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     public void disable() {
         if (!this.loaded) return;
         if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
-
         if (configManager != null) this.configManager.disable();
         if (actionBarManager != null) this.actionBarManager.disable();
         if (bossBarManager != null) this.bossBarManager.disable();
@@ -238,14 +237,14 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (nameplateManager != null) this.nameplateManager.disable();
         if (imageManager != null) this.imageManager.disable();
         if (chatManager != null) this.chatManager.disable();
-        this.networkManager.shutdown();
-
         if (commandManager != null) this.commandManager.unregisterFeatures();
         this.joinQuitListeners.clear();
+        this.playerListeners.clear();
+        this.networkManager.shutdown();
         HandlerList.unregisterAll(this);
-
         AdventureHelper.clearCache();
-
+        this.onlinePlayerMap.clear();
+        this.entityIDFastLookup.clear();
         this.loaded = false;
     }
 
