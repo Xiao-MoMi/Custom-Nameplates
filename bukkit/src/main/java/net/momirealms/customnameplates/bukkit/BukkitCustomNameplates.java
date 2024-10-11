@@ -53,8 +53,8 @@ import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerAdapter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
@@ -76,6 +76,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     private BukkitSenderFactory senderFactory;
     private BukkitCommandManager commandManager;
+    private BukkitNetworkManager networkManager;
 
     private final JavaPlugin bootstrap;
 
@@ -134,10 +135,17 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             return;
         }
 
-        BukkitNetworkManager networkManager = new BukkitNetworkManager(this);
         this.mainTask = new MainTask(this);
+
+        this.networkManager = new BukkitNetworkManager(this);
         this.packetSender = networkManager;
         this.pipelineInjector = networkManager;
+        try {
+            this.networkManager.init();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+
         this.commandManager = new BukkitCommandManager(this);
         this.senderFactory = new BukkitSenderFactory(this);
         this.platform = new BukkitPlatform(this);
@@ -230,6 +238,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (nameplateManager != null) this.nameplateManager.disable();
         if (imageManager != null) this.imageManager.disable();
         if (chatManager != null) this.chatManager.disable();
+        this.networkManager.shutdown();
 
         if (commandManager != null) this.commandManager.unregisterFeatures();
         this.joinQuitListeners.clear();
@@ -326,19 +335,26 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         return instance;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        CNPlayer cnPlayer = new BukkitCNPlayer(this, event.getPlayer());
-        CNPlayer previous = onlinePlayerMap.put(cnPlayer.uuid(), cnPlayer);
-        if (previous != null) {
-            getPluginLogger().severe("Player " + event.getPlayer().getName() + " is duplicated");
+        Player player = event.getPlayer();
+        handleJoin(player);
+    }
+
+    public void handleJoin(Player player) {
+        CNPlayer user = pipelineInjector.getUser(player);
+        if (user == null) {
+            getPluginLogger().severe("Player " + player.getName() + " has not been injected yet");
+            return;
         }
-
-        entityIDFastLookup.put(cnPlayer.entityID(), cnPlayer);
-        pipelineInjector.inject(cnPlayer);
-
+        ((BukkitCNPlayer) user).setPlayer(player);
+        CNPlayer previous = onlinePlayerMap.put(player.getUniqueId(), user);
+        if (previous != null) {
+            getPluginLogger().severe("Player " + player.getName() + " is duplicated");
+        }
+        entityIDFastLookup.put(user.entityID(), user);
         for (JoinQuitListener listener : joinQuitListeners) {
-            listener.onPlayerJoin(cnPlayer);
+            listener.onPlayerJoin(user);
         }
     }
 
@@ -349,13 +365,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             getPluginLogger().severe("Player " + event.getPlayer().getName() + " is not recorded by CustomNameplates");
             return;
         }
-
-        entityIDFastLookup.remove(cnPlayer.entityID());
-        pipelineInjector.uninject(cnPlayer);
-
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerQuit(cnPlayer);
         }
+        entityIDFastLookup.remove(cnPlayer.entityID());
     }
 
     @EventHandler(ignoreCancelled = true)

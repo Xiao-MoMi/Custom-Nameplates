@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.bukkit;
 
+import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.util.Vector3;
@@ -38,10 +39,14 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
 
     private static final Attribute scaleAttribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.scale"));
 
-    private final Player player;
+    private Player player;
 
-    public BukkitCNPlayer(CustomNameplates plugin, Player player) {
-        super(plugin, player);
+    public BukkitCNPlayer(CustomNameplates plugin, Channel channel) {
+        super(plugin, channel);
+    }
+
+    public void setPlayer(Player player) {
+        super.setPlayer(player);
         this.player = player;
     }
 

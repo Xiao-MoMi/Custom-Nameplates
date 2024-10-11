@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.api;
 
+import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.network.Tracker;
@@ -52,6 +53,13 @@ public interface CNPlayer {
      * @return the player object
      */
     Object player();
+
+    /**
+     * Returns the channel of the player
+     *
+     * @return the channel
+     */
+    Channel channel();
 
     /**
      * Returns the entity ID of the player.

@@ -18,23 +18,36 @@
 package net.momirealms.customnameplates.bukkit;
 
 import io.netty.channel.*;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
+import net.momirealms.customnameplates.bukkit.util.ListMonitor;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
     private final BiConsumer<CNPlayer, List<Object>> packetsConsumer;
     private final CustomNameplates plugin;
+    private static final String NAMEPLATES_CONNECTION_HANDLER_NAME = "nameplates_connection_handler";
+    private static final String NAMEPLATES_SERVER_CHANNEL_HANDLER_NAME = "nameplates_server_channel_handler";
+    private static final String NAMEPLATES_PACKET_HANDLER_NAME = "nameplates_packet_handler";
+    private final ConcurrentHashMap<Object, CNPlayer> users = new ConcurrentHashMap<>();
+    private final HashSet<Channel> injectedChannels = new HashSet<>();
+    private boolean active;
+    private boolean init;
 
     public BukkitNetworkManager(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -46,6 +59,89 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 throw new RuntimeException(e);
             }
         });
+        this.active = true;
+    }
+
+    public void shutdown() {
+        for (Channel channel : injectedChannels) {
+            uninjectServerChannel(channel);
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            handleDisconnection(getChannel(player));
+        }
+        injectedChannels.clear();
+        active = false;
+    }
+
+    @Override
+    public void setUser(Channel channel, CNPlayer user) {
+        ChannelPipeline pipeline = channel.pipeline();
+        users.put(pipeline, user);
+    }
+
+    @Override
+    public CNPlayer getUser(Channel channel) {
+        ChannelPipeline pipeline = channel.pipeline();
+        return users.get(pipeline);
+    }
+
+    @Override
+    public CNPlayer removeUser(Channel channel) {
+        ChannelPipeline pipeline = channel.pipeline();
+        return users.remove(pipeline);
+    }
+
+    @Override
+    public CNPlayer getUser(Object player) {
+        return getUser(getChannel(player));
+    }
+
+    public void init() throws ReflectiveOperationException {
+        if (init) return;
+        Object server = Reflections.method$MinecraftServer$getServer.invoke(null);
+        Object serverConnection = Reflections.field$MinecraftServer$connection.get(server);
+        @SuppressWarnings("unchecked")
+        List<ChannelFuture> channels = (List<ChannelFuture>) Reflections.field$ServerConnectionListener$channels.get(serverConnection);
+        ListMonitor<ChannelFuture> monitor = new ListMonitor<>(channels, (future) -> {
+            if (!active) return;
+            Channel channel = future.channel();
+            injectServerChannel(channel);
+            injectedChannels.add(channel);
+        }, (object) -> {});
+        Reflections.field$ServerConnectionListener$channels.set(serverConnection, monitor);
+        init = true;
+    }
+
+    private void injectServerChannel(Channel serverChannel) {
+        ChannelPipeline pipeline = serverChannel.pipeline();
+        ChannelHandler connectionHandler = pipeline.get(NAMEPLATES_CONNECTION_HANDLER_NAME);
+        if (connectionHandler != null) {
+            pipeline.remove(NAMEPLATES_CONNECTION_HANDLER_NAME);
+        }
+        if (pipeline.get("SpigotNettyServerChannelHandler#0") != null) {
+            pipeline.addAfter("SpigotNettyServerChannelHandler#0", NAMEPLATES_CONNECTION_HANDLER_NAME, new ServerChannelHandler());
+        } else if (pipeline.get("floodgate-init") != null) {
+            pipeline.addAfter("floodgate-init", NAMEPLATES_CONNECTION_HANDLER_NAME, new ServerChannelHandler());
+        } else if (pipeline.get("MinecraftPipeline#0") != null) {
+            pipeline.addAfter("MinecraftPipeline#0", NAMEPLATES_CONNECTION_HANDLER_NAME, new ServerChannelHandler());
+        } else {
+            pipeline.addFirst(NAMEPLATES_CONNECTION_HANDLER_NAME, new ServerChannelHandler());
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Channel channel = getChannel(player);
+            CNPlayer user = getUser(player);
+            if (user == null) {
+                BukkitCNPlayer cnPlayer = new BukkitCNPlayer(plugin, channel);
+                cnPlayer.setPlayer(player);
+                injectChannel(channel, ConnectionState.PLAY);
+                ((BukkitCustomNameplates) plugin).handleJoin(player);
+            }
+        }
+    }
+
+    private void uninjectServerChannel(Channel channel) {
+        channel.pipeline().remove(NAMEPLATES_CONNECTION_HANDLER_NAME);
     }
 
     @Override
@@ -66,12 +162,12 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     @Override
-    public Channel getChannel(CNPlayer player) {
+    public Channel getChannel(Object player) {
         try {
             return (Channel) Reflections.field$Channel.get(
                     Reflections.field$NetworkManager.get(
                             Reflections.field$PlayerConnection.get(
-                                    Reflections.method$CraftPlayer$getHandle.invoke(player.player())
+                                    Reflections.method$CraftPlayer$getHandle.invoke(player)
                             )
                     )
             );
@@ -85,29 +181,77 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
         return new CNChannelHandler(player);
     }
 
-    @Override
-    public void inject(CNPlayer player) {
-        Channel channel = getChannel(player);
-        try {
-            ChannelPipeline pipeline = channel.pipeline();
-            for (Map.Entry<String, ChannelHandler> entry : pipeline.toMap().entrySet()) {
-                if (Reflections.clazz$NetworkManager.isAssignableFrom(entry.getValue().getClass())) {
-                    pipeline.addBefore(entry.getKey(), "nameplates_packet_handler", createHandler(player));
-                    break;
-                }
+    public enum ConnectionState {
+        HANDSHAKING, STATUS, LOGIN, PLAY, CONFIGURATION;
+    }
+
+    public void handleDisconnection(Channel channel) {
+        CNPlayer user = removeUser(channel);
+        if (user == null) return;
+        channel.eventLoop().submit(() -> {
+            channel.pipeline().remove(NAMEPLATES_PACKET_HANDLER_NAME);
+            return null;
+        });
+    }
+
+    public void injectChannel(Channel channel, ConnectionState connectionState) {
+        if (isFakeChannel(channel)) {
+            return;
+        }
+
+        CNPlayer user = new BukkitCNPlayer(plugin, channel);
+        if (channel.pipeline().get("splitter") == null) {
+            channel.close();
+            return;
+        }
+
+        ChannelPipeline pipeline = channel.pipeline();
+        pipeline.remove(NAMEPLATES_PACKET_HANDLER_NAME);
+        for (Map.Entry<String, ChannelHandler> entry : pipeline.toMap().entrySet()) {
+            if (Reflections.clazz$NetworkManager.isAssignableFrom(entry.getValue().getClass())) {
+                pipeline.addBefore(entry.getKey(), NAMEPLATES_PACKET_HANDLER_NAME, createHandler(user));
+                break;
             }
-        } catch (NoSuchElementException | IllegalArgumentException e) {
-            throw new RuntimeException(e);
+        }
+
+        channel.closeFuture().addListener((ChannelFutureListener) future -> handleDisconnection(user.channel()));
+        setUser(channel, user);
+    }
+
+    public class ServerChannelHandler extends ChannelInboundHandlerAdapter {
+
+        @Override
+        public void channelRead(@NotNull ChannelHandlerContext context, @NotNull Object c) throws Exception {
+            Channel channel = (Channel) c;
+            channel.pipeline().addLast(NAMEPLATES_SERVER_CHANNEL_HANDLER_NAME, new PreChannelInitializer());
+            super.channelRead(context, c);
         }
     }
 
-    @Override
-    public void uninject(CNPlayer player) {
-        Channel channel = getChannel(player);
-        channel.eventLoop().submit(() -> {
-            channel.pipeline().remove("nameplates_packet_handler");
-            return null;
-        });
+    public class PreChannelInitializer extends ChannelInboundHandlerAdapter {
+
+        private static final InternalLogger logger = InternalLoggerFactory.getInstance(io.netty.channel.ChannelInitializer.class);
+
+        @Override
+        public void channelRegistered(ChannelHandlerContext context) {
+            try {
+                injectChannel(context.channel(), ConnectionState.HANDSHAKING);
+            } catch (Throwable t) {
+                exceptionCaught(context, t);
+            } finally {
+                ChannelPipeline pipeline = context.pipeline();
+                if (pipeline.context(this) != null) {
+                    pipeline.remove(this);
+                }
+            }
+            context.pipeline().fireChannelRegistered();
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext context, Throwable t) {
+            PreChannelInitializer.logger.warn("Failed to inject channel: " + context.channel(), t);
+            context.close();
+        }
     }
 
     public class CNChannelHandler extends ChannelDuplexHandler {
@@ -135,5 +279,10 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 super.write(context, packet, channelPromise);
             }
         }
+    }
+
+    public static boolean isFakeChannel(Object channel) {
+        return channel.getClass().getSimpleName().equals("FakeChannel")
+                || channel.getClass().getSimpleName().equals("SpoofedChannel");
     }
 }

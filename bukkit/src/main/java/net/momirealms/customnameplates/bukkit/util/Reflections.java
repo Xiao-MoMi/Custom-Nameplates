@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.bukkit.util;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.common.util.ReflectionUtils;
 import sun.misc.Unsafe;
@@ -1023,4 +1024,35 @@ public class Reflections {
                     clazz$ClientboundSetPlayerTeamPacket$Parameters, String.class, 0
             )
     );
+
+    public static final Class<?> clazz$ServerConnectionListener = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("server.network.ServerConnectionListener"),
+                    BukkitReflectionUtils.assembleMCClass("server.network.ServerConnection")
+            )
+    );
+
+    public static final Field field$MinecraftServer$connection = requireNonNull(
+            ReflectionUtils.getDeclaredField(clazz$MinecraftServer, clazz$ServerConnectionListener, 0)
+    );
+
+    public static final Field field$ServerConnectionListener$channels;
+
+    static {
+        Field[] fields = clazz$ServerConnectionListener.getDeclaredFields();
+        Field f = null;
+        for (Field field : fields) {
+            if (List.class.isAssignableFrom(field.getType())) {
+                Type genericType = field.getGenericType();
+                if (genericType instanceof ParameterizedType paramType) {
+                    Type[] actualTypeArguments = paramType.getActualTypeArguments();
+                    if (actualTypeArguments.length > 0 && actualTypeArguments[0] == ChannelFuture.class) {
+                        f = ReflectionUtils.setAccessible(field);
+                        break;
+                    }
+                }
+            }
+        }
+        field$ServerConnectionListener$channels = requireNonNull(f);
+    }
 }
