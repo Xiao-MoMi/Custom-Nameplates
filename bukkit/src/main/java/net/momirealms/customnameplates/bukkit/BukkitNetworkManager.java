@@ -141,7 +141,9 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     private void uninjectServerChannel(Channel channel) {
-        channel.pipeline().remove(NAMEPLATES_CONNECTION_HANDLER_NAME);
+        if (channel.pipeline().get(NAMEPLATES_CONNECTION_HANDLER_NAME) != null) {
+            channel.pipeline().remove(NAMEPLATES_CONNECTION_HANDLER_NAME);
+        }
     }
 
     @Override
@@ -189,7 +191,9 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
         CNPlayer user = removeUser(channel);
         if (user == null) return;
         channel.eventLoop().submit(() -> {
-            channel.pipeline().remove(NAMEPLATES_PACKET_HANDLER_NAME);
+            if (channel.pipeline().get(NAMEPLATES_PACKET_HANDLER_NAME) != null) {
+                channel.pipeline().remove(NAMEPLATES_PACKET_HANDLER_NAME);
+            }
             return null;
         });
     }
@@ -206,7 +210,9 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
         }
 
         ChannelPipeline pipeline = channel.pipeline();
-        pipeline.remove(NAMEPLATES_PACKET_HANDLER_NAME);
+        if (pipeline.get(NAMEPLATES_PACKET_HANDLER_NAME) != null) {
+            pipeline.remove(NAMEPLATES_PACKET_HANDLER_NAME);
+        }
         for (Map.Entry<String, ChannelHandler> entry : pipeline.toMap().entrySet()) {
             if (Reflections.clazz$NetworkManager.isAssignableFrom(entry.getValue().getClass())) {
                 pipeline.addBefore(entry.getKey(), NAMEPLATES_PACKET_HANDLER_NAME, createHandler(user));
