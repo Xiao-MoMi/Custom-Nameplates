@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.Translator;
+import net.momirealms.customnameplates.common.plugin.CustomNameplatesProperties;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,6 @@ public class TranslationManager {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     private static Locale FORCE_LOCALE = null;
-    private static final List<String> locales = List.of("en", "zh_cn");
     private static TranslationManager instance;
 
     private final NameplatesPlugin plugin;
@@ -63,7 +63,9 @@ public class TranslationManager {
             MiniMessageTranslator.translator().removeSource(this.registry);
             this.installed.clear();
         }
-        for (String lang : locales) {
+
+        String supportedLocales = CustomNameplatesProperties.getValue("lang");
+        for (String lang : supportedLocales.split(",")) {
             this.plugin.getConfigManager().saveResource("translations/" + lang + ".yml");
         }
 
