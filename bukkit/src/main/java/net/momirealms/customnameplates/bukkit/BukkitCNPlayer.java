@@ -30,6 +30,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
 
     private static final Attribute scaleAttribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.scale"));
 
-    private Player player;
+    private Reference<Player> player;
 
     public BukkitCNPlayer(CustomNameplates plugin, Channel channel) {
         super(plugin, channel);
@@ -47,78 +49,83 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
 
     public void setPlayer(Player player) {
         super.setPlayer(player);
-        this.player = player;
+        this.player = new WeakReference<>(player);
+    }
+
+    @Override
+    public Player player() {
+        return player.get();
     }
 
     @Override
     public String name() {
-        return player.getName();
+        return player().getName();
     }
 
     @Override
     public UUID uuid() {
-        return player.getUniqueId();
+        return player().getUniqueId();
     }
 
     @Override
     public int entityID() {
-        return player.getEntityId();
+        return player().getEntityId();
     }
 
     @Override
     public Vector3 position() {
-        Location location = player.getLocation();
+        Location location = player().getLocation();
         return new Vector3(location.x(), location.y(), location.z());
     }
 
     @Override
     public String world() {
-        return player.getWorld().getName();
+        return player().getWorld().getName();
     }
 
     @Override
     public double scale() {
         if (scaleAttribute == null) return 1;
-        return Optional.ofNullable(player.getAttribute(scaleAttribute)).map(AttributeInstance::getValue).orElse(1d);
+        return Optional.ofNullable(player().getAttribute(scaleAttribute)).map(AttributeInstance::getValue).orElse(1d);
     }
 
     @Override
     public boolean isCrouching() {
-        return player.isSneaking();
+        return player().isSneaking();
     }
 
     @Override
     public boolean hasPermission(String permission) {
-        return player.hasPermission(permission);
+        return player().hasPermission(permission);
     }
 
     @Override
     public long playerTime() {
-        return player.getPlayerTime();
+        return player().getPlayerTime();
     }
 
     @Override
     public boolean isOnline() {
-        return player.isOnline();
+        return player().isOnline();
     }
 
     @Override
     public boolean isSpectator() {
-        return player.getGameMode() == GameMode.SPECTATOR;
+        return player().getGameMode() == GameMode.SPECTATOR;
     }
 
     @Override
     public Set<Integer> passengers() {
-        return player.getPassengers().stream().map(Entity::getEntityId).collect(Collectors.toSet());
+        return player().getPassengers().stream().map(Entity::getEntityId).collect(Collectors.toSet());
     }
 
     @Override
     public boolean isFlying() {
-        return player.isFlying();
+        return player().isFlying();
     }
 
     @Override
     public int remainingAir() {
-        return player.getRemainingAir();
+        return player().getRemainingAir();
     }
 }
