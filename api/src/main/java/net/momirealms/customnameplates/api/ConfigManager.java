@@ -72,6 +72,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected int defaultConditionRefreshInterval;
     protected int delaySend;
     protected boolean catchOtherActionBar;
+    protected boolean displaySystemChat;
     protected int otherActionBarStayTime;
 
     protected String namespace;
@@ -217,6 +218,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         defaultConditionRefreshInterval = config.getInt("other-settings.ddefault-condition-refresh-interval", 1);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
         otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
+        displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);
         hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
     }
 
@@ -283,6 +285,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean catchOtherActionBar() {
         return instance.catchOtherActionBar;
+    }
+
+    public static boolean displaySystemChat() {
+        return instance.displaySystemChat;
     }
 
     public static boolean packItemsAdder() {

@@ -119,47 +119,48 @@ public class BackgroundImpl implements Background {
     }
 
     @Override
-    public String createImagePrefix(float n, float leftMargin, float rightMargin) {
-        String offset1 = OffsetFont.shortestNegChars(n + rightMargin + right.advance());
-        n = leftMargin + n + rightMargin;
+    public String createImagePrefix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
+        String offset1 = OffsetFont.shortestNegChars(advance + rightMargin + right.advance());
+        advance = leftMargin + advance + rightMargin;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(left.character());
-        while (n >= 128) {
+        while (advance >= 128) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_128.character());
-            n -= 128;
+            advance -= 128;
         }
-        if (n - 64 >= 0) {
+        if (advance - 64 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_64.character());
-            n -= 64;
+            advance -= 64;
         }
-        if (n - 32 >= 0) {
+        if (advance - 32 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_32.character());
-            n -= 32;
+            advance -= 32;
         }
-        if (n - 16 >= 0) {
+        if (advance - 16 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_16.character());
-            n -= 16;
+            advance -= 16;
         }
-        if (n - 8 >= 0) {
+        if (advance - 8 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_8.character());
-            n -= 8;
+            advance -= 8;
         }
-        if (n - 4 >= 0) {
+        if (advance - 4 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_4.character());
-            n -= 4;
+            advance -= 4;
         }
-        if (n - 2 >= 0) {
+        if (advance - 2 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_2.character());
-            n -= 2;
+            advance -= 2;
         }
-        if (n - 1 >= 0) {
+        if (advance - 1 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_1.character());
         }
@@ -171,50 +172,52 @@ public class BackgroundImpl implements Background {
 
     @Override
     public String createImageSuffix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         return OffsetFont.shortestPosChars(rightMargin + right.advance());
     }
 
     @Override
-    public String createImage(float n, float leftMargin, float rightMargin) {
-        n = n + leftMargin + rightMargin + 2;
+    public String createImage(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
+        advance = advance + leftMargin + rightMargin + 2;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(left.character());
-        while (n >= 128) {
+        while (advance >= 128) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_128.character());
-            n -= 128;
+            advance -= 128;
         }
-        if (n - 64 >= 0) {
+        if (advance - 64 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_64.character());
-            n -= 64;
+            advance -= 64;
         }
-        if (n - 32 >= 0) {
+        if (advance - 32 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_32.character());
-            n -= 32;
+            advance -= 32;
         }
-        if (n - 16 >= 0) {
+        if (advance - 16 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_16.character());
-            n -= 16;
+            advance -= 16;
         }
-        if (n - 8 >= 0) {
+        if (advance - 8 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_8.character());
-            n -= 8;
+            advance -= 8;
         }
-        if (n - 4 >= 0) {
+        if (advance - 4 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_4.character());
-            n -= 4;
+            advance -= 4;
         }
-        if (n - 2 >= 0) {
+        if (advance - 2 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_2.character());
-            n -= 2;
+            advance -= 2;
         }
-        if (n - 1 >= 0) {
+        if (advance - 1 >= 0) {
             stringBuilder.append(OffsetFont.NEG_1.character());
             stringBuilder.append(width_1.character());
         }

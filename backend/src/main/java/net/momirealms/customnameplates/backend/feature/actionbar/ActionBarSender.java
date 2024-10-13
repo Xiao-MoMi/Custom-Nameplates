@@ -49,6 +49,7 @@ public class ActionBarSender implements Feature {
 
     private String externalActionBar;
     private long externalExpireTime;
+    private long temporaryHiddenTime;
 
     private String latestContent;
 
@@ -156,6 +157,7 @@ public class ActionBarSender implements Feature {
     }
 
     public void sendLatestActionBar() {
+        if (isTemporarilyHidden()) return;
         if (latestContent != null) {
             updateLastUpdateTime();
             Object packet = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(AdventureHelper.miniMessageToMinecraftComponent(latestContent, "np", "ab"));
@@ -213,5 +215,14 @@ public class ActionBarSender implements Feature {
         requireNonNull(externalActionBar);
         this.externalActionBar = externalActionBar;
         this.externalExpireTime = System.currentTimeMillis() + ConfigManager.otherActionBarStayTime();
+    }
+
+    public void temporarilyHide() {
+        this.temporaryHiddenTime = System.currentTimeMillis() + 3000;
+    }
+
+    public boolean isTemporarilyHidden() {
+        if (!ConfigManager.displaySystemChat()) return false;
+        return temporaryHiddenTime > System.currentTimeMillis();
     }
 }

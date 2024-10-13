@@ -44,8 +44,11 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class BukkitPlatform implements Platform {
+
+    private static final Pattern LANG_PATTERN = Pattern.compile("<lang:[a-zA-Z0-9._/]+>");
 
     private final CustomNameplates plugin;
     private final boolean placeholderAPI;
@@ -114,17 +117,29 @@ public class BukkitPlatform implements Platform {
                 if (actionBar) {
                     CustomNameplates.getInstance().getScheduler().async().execute(() -> {
                         try {
+                            String miniMessage;
                             if (VersionHelper.isVersionNewerThan1_20_4()) {
                                 // 1.20.4+
                                 Object component = Reflections.field$ClientboundSystemChatPacket$component.get(packet);
                                 if (component == null) return;
-                                ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                                miniMessage = AdventureHelper.minecraftComponentToMiniMessage(component);
                             } else {
                                 // 1.20.4-
                                 String json = (String) Reflections.field$ClientboundSystemChatPacket$text.get(packet);
                                 if (json == null) return;
-                                ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
+                                miniMessage = AdventureHelper.jsonToMiniMessage(json);
                             }
+                            if (LANG_PATTERN.matcher(miniMessage).find()) {
+                                if (ConfigManager.displaySystemChat()) {
+                                    ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).temporarilyHideCustomActionBar(player);
+                                    Object com = AdventureHelper.miniMessageToMinecraftComponent(miniMessage, "np", "ab");
+                                    Object pkt = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(com);
+                                    CustomNameplates.getInstance().getPacketSender().sendPacket(player, pkt);
+                                }
+                                event.cancelled(true);
+                                return;
+                            }
+                            ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, miniMessage);
                         } catch (ReflectiveOperationException e) {
                             throw new RuntimeException(e);
                         }

@@ -79,6 +79,7 @@ public class NameplateImpl implements Nameplate {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public String createImagePrefix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(left.character());
         sb.append(OffsetFont.NEG_1.character());
@@ -97,6 +98,7 @@ public class NameplateImpl implements Nameplate {
 
     @Override
     public String createImageSuffix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         int mid_amount = (int) Math.ceil((advance + leftMargin + rightMargin) / (middle.advance() - 1));
         float exceed = mid_amount * (middle.advance() - 1) - advance - leftMargin - rightMargin;
         return OffsetFont.shortestPosChars((float) Math.ceil(exceed / 2) + rightMargin + right.advance());
@@ -105,6 +107,7 @@ public class NameplateImpl implements Nameplate {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public String createImage(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(left.character());
         sb.append(OffsetFont.NEG_1.character());

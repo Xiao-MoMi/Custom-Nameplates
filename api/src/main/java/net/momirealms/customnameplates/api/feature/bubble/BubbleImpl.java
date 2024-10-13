@@ -79,6 +79,7 @@ public class BubbleImpl implements Bubble {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public String createImagePrefix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(left.character());
         sb.append(OffsetFont.NEG_1.character());
@@ -110,6 +111,7 @@ public class BubbleImpl implements Bubble {
 
     @Override
     public String createImageSuffix(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         int mid_amount = (int) Math.ceil((advance + leftMargin + rightMargin - (tail.advance() - 1)) / (middle.advance() - 1));
         float actualMiddleWidth = 0;
         actualMiddleWidth += (tail.advance() - 1);
@@ -122,6 +124,7 @@ public class BubbleImpl implements Bubble {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public String createImage(float advance, float leftMargin, float rightMargin) {
+        if (advance <= 0) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(left.character());
         sb.append(OffsetFont.NEG_1.character());
