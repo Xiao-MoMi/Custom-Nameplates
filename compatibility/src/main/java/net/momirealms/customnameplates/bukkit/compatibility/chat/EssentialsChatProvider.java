@@ -17,7 +17,10 @@
 
 package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
+import net.essentialsx.api.v2.ChatType;
 import net.essentialsx.api.v2.events.chat.ChatEvent;
+import net.essentialsx.api.v2.events.chat.GlobalChatEvent;
+import net.essentialsx.api.v2.events.chat.LocalChatEvent;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.chat.AbstractChatMessageProvider;
@@ -27,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEvent;
 
 import java.util.Objects;
 
@@ -52,15 +56,24 @@ public class EssentialsChatProvider extends AbstractChatMessageProvider implemen
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onEssChat(ChatEvent event) {
-        String channel = event.getChatType().key();
-        Player player = Bukkit.getPlayer(event.getPlayer().getUniqueId());
+    public void onEssChat(LocalChatEvent event) {
+        onChat(event.getChatType(), event.getPlayer(), event.getMessage());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEssChat(GlobalChatEvent event) {
+        onChat(event.getChatType(), event.getPlayer(), event.getMessage());
+    }
+
+    private void onChat(ChatType chatType, Player player2, String message) {
+        String channel = chatType.key();
+        Player player = Bukkit.getPlayer(player2.getUniqueId());
         if (player == null || !player.isOnline())
             return;
         CNPlayer cnPlayer = plugin.getPlayer(player.getUniqueId());
         if (cnPlayer == null)
             return;
-        plugin.getScheduler().async().execute(() -> manager.onChat(cnPlayer, event.getMessage(), channel));
+        plugin.getScheduler().async().execute(() -> manager.onChat(cnPlayer, message, channel));
     }
 
     @Override

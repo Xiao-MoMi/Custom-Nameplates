@@ -22,25 +22,30 @@ import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.network.PacketSender;
 import net.momirealms.customnameplates.api.network.PipelineInjector;
+import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.bukkit.util.ListMonitor;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
     private final BiConsumer<CNPlayer, List<Object>> packetsConsumer;
-    private final CustomNameplates plugin;
+    private final BiConsumer<CNPlayer, Object> packetConsumer;
+    private final BukkitCustomNameplates plugin;
     private static final String NAMEPLATES_CONNECTION_HANDLER_NAME = "nameplates_connection_handler";
     private static final String NAMEPLATES_SERVER_CHANNEL_HANDLER_NAME = "nameplates_server_channel_handler";
     private static final String NAMEPLATES_PACKET_HANDLER_NAME = "nameplates_packet_handler";
@@ -49,7 +54,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     private boolean active;
     private boolean init;
 
-    public BukkitNetworkManager(CustomNameplates plugin) {
+    public BukkitNetworkManager(BukkitCustomNameplates plugin) {
         this.plugin = plugin;
         this.packetsConsumer = ((player, objects) -> {
             try {
@@ -59,6 +64,31 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 throw new RuntimeException(e);
             }
         });
+        if (!VersionHelper.isFolia()) {
+            packetConsumer = (player, packet) -> {
+                try {
+                    Reflections.method$SendPacket.invoke(
+                            Reflections.field$PlayerConnection.get(
+                                    Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        } else {
+            packetConsumer = (player, packet) -> {
+                Vector3 vector3 = player.position();
+                Location location = new Location(Bukkit.getWorld(player.world()), vector3.x(), vector3.y(), vector3.z());
+                plugin.getScheduler().executeSync(() -> {
+                    try {
+                        Reflections.method$SendPacket.invoke(
+                                Reflections.field$PlayerConnection.get(
+                                        Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
+                    } catch (ReflectiveOperationException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, location);
+            };
+        }
         this.active = true;
     }
 
@@ -148,13 +178,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
     @Override
     public void sendPacket(@NotNull CNPlayer player, Object packet) {
-        try {
-            Reflections.method$SendPacket.invoke(
-                    Reflections.field$PlayerConnection.get(
-                            Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        packetConsumer.accept(player, packet);
     }
 
     @Override
