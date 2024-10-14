@@ -21,7 +21,6 @@ import io.netty.channel.*;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import net.momirealms.customnameplates.api.CNPlayer;
-import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.network.PacketSender;
@@ -37,7 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 

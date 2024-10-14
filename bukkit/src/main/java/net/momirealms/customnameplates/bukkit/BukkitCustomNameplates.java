@@ -50,6 +50,7 @@ import net.momirealms.customnameplates.common.plugin.logging.JavaPluginLogger;
 import net.momirealms.customnameplates.common.plugin.logging.PluginLogger;
 import net.momirealms.customnameplates.common.plugin.scheduler.AbstractJavaScheduler;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerAdapter;
+import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,6 +65,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class BukkitCustomNameplates extends CustomNameplates implements Listener {
@@ -82,6 +84,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     private final List<JoinQuitListener> joinQuitListeners = new ArrayList<>();
     private final List<PlayerListener> playerListeners = new ArrayList<>();
+
+    private final ConcurrentHashMap<String, String> foliaWorldRecorder = new ConcurrentHashMap<>();
+    private SchedulerTask foliaWorldTask;
 
     private boolean loaded = false;
 
@@ -218,12 +223,31 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                 }
             });
         }
+
+        if (VersionHelper.isFolia()) {
+            this.foliaWorldTask = getScheduler().asyncRepeating(() -> {
+                for (CNPlayer player : getOnlinePlayers()) {
+                    String name = player.name();
+                    String previousWorld = this.foliaWorldRecorder.get(name);
+                    if (previousWorld != null) {
+                        String currentWorld = player.world();
+                        if (!currentWorld.equals(previousWorld)) {
+                            this.foliaWorldRecorder.put(name, currentWorld);
+                            for (PlayerListener listener : this.playerListeners) {
+                                listener.onChangeWorld(player);
+                            }
+                        }
+                    }
+                }
+            }, 100, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
     public void disable() {
         if (!this.loaded) return;
         if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
+        if (foliaWorldTask != null) foliaWorldTask.cancel();
         if (configManager != null) this.configManager.disable();
         if (actionBarManager != null) this.actionBarManager.disable();
         if (bossBarManager != null) this.bossBarManager.disable();
@@ -355,23 +379,31 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerJoin(user);
         }
+        if (VersionHelper.isFolia()) {
+            foliaWorldRecorder.put(player.getName(), player.getWorld().getName());
+        }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        CNPlayer cnPlayer = onlinePlayerMap.remove(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+        CNPlayer cnPlayer = onlinePlayerMap.remove(player.getUniqueId());
         if (cnPlayer == null) {
-            getPluginLogger().severe("Player " + event.getPlayer().getName() + " is not recorded by CustomNameplates");
+            getPluginLogger().severe("Player " + player.getName() + " is not recorded by CustomNameplates");
             return;
         }
         for (JoinQuitListener listener : joinQuitListeners) {
             listener.onPlayerQuit(cnPlayer);
         }
         entityIDFastLookup.remove(cnPlayer.entityID());
+        if (VersionHelper.isFolia()) {
+            foliaWorldRecorder.remove(player.getName());
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onChangeWorld(PlayerChangedWorldEvent event) {
+        if (VersionHelper.isFolia()) return;
         CNPlayer cnPlayer = getPlayer(event.getPlayer().getUniqueId());
         if (cnPlayer != null) {
             for (PlayerListener listener : playerListeners) {

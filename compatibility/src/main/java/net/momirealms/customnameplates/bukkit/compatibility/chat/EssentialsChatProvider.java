@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
 import net.essentialsx.api.v2.ChatType;
-import net.essentialsx.api.v2.events.chat.ChatEvent;
 import net.essentialsx.api.v2.events.chat.GlobalChatEvent;
 import net.essentialsx.api.v2.events.chat.LocalChatEvent;
 import net.momirealms.customnameplates.api.CNPlayer;
@@ -30,7 +29,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEvent;
 
 import java.util.Objects;
 
