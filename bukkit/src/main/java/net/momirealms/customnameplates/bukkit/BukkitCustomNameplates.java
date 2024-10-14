@@ -24,6 +24,7 @@ import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
+import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.backend.feature.advance.AdvanceManagerImpl;
 import net.momirealms.customnameplates.backend.feature.background.BackgroundManagerImpl;
@@ -40,6 +41,7 @@ import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
+import net.momirealms.customnameplates.bukkit.util.SimpleLocation;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
 import net.momirealms.customnameplates.common.event.EventManager;
@@ -51,6 +53,7 @@ import net.momirealms.customnameplates.common.plugin.logging.PluginLogger;
 import net.momirealms.customnameplates.common.plugin.scheduler.AbstractJavaScheduler;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerAdapter;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
+import net.momirealms.customnameplates.common.util.Pair;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -85,8 +88,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     private final List<JoinQuitListener> joinQuitListeners = new ArrayList<>();
     private final List<PlayerListener> playerListeners = new ArrayList<>();
 
-    private final ConcurrentHashMap<String, String> foliaWorldRecorder = new ConcurrentHashMap<>();
-    private SchedulerTask foliaWorldTask;
+    private final ConcurrentHashMap<String, SimpleLocation> foliaLocationTracker = new ConcurrentHashMap<>();
+    private SchedulerTask foliaTrackerTask;
 
     private boolean loaded = false;
 
@@ -225,21 +228,33 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         }
 
         if (VersionHelper.isFolia()) {
-            this.foliaWorldTask = getScheduler().asyncRepeating(() -> {
+            this.foliaTrackerTask = getScheduler().asyncRepeating(() -> {
                 for (CNPlayer player : getOnlinePlayers()) {
                     String name = player.name();
-                    String previousWorld = this.foliaWorldRecorder.get(name);
-                    if (previousWorld != null) {
+                    SimpleLocation previousLocation = this.foliaLocationTracker.get(name);
+                    if (previousLocation != null) {
                         String currentWorld = player.world();
-                        if (!currentWorld.equals(previousWorld)) {
-                            this.foliaWorldRecorder.put(name, currentWorld);
+                        if (!currentWorld.equals(previousLocation.world())) {
+                            previousLocation.world(currentWorld);
+                            previousLocation.position(player.position());
                             for (PlayerListener listener : this.playerListeners) {
                                 listener.onChangeWorld(player);
+                            }
+                            continue;
+                        }
+                        Vector3 previousPos = previousLocation.position();
+                        Vector3 currentPos = player.position();
+                        previousLocation.world(currentWorld);
+                        previousLocation.position(currentPos);
+                        double distance = Math.sqrt(Math.pow((currentPos.x() - previousPos.x()), 2) + Math.pow((currentPos.y() - previousPos.y()), 2) + Math.pow(currentPos.z() - previousPos.z(), 2));
+                        if (distance > 64) {
+                            for (PlayerListener listener : this.playerListeners) {
+                                listener.onTeleport(player);
                             }
                         }
                     }
                 }
-            }, 100, 100, TimeUnit.MILLISECONDS);
+            }, 200, 200, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -247,7 +262,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     public void disable() {
         if (!this.loaded) return;
         if (this.scheduledMainTask != null) this.scheduledMainTask.cancel();
-        if (foliaWorldTask != null) foliaWorldTask.cancel();
+        if (foliaTrackerTask != null) foliaTrackerTask.cancel();
         if (configManager != null) this.configManager.disable();
         if (actionBarManager != null) this.actionBarManager.disable();
         if (bossBarManager != null) this.bossBarManager.disable();
@@ -380,7 +395,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             listener.onPlayerJoin(user);
         }
         if (VersionHelper.isFolia()) {
-            foliaWorldRecorder.put(player.getName(), player.getWorld().getName());
+            foliaLocationTracker.put(player.getName(), new SimpleLocation(user.world(), user.position()));
         }
     }
 
@@ -397,7 +412,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         }
         entityIDFastLookup.remove(cnPlayer.entityID());
         if (VersionHelper.isFolia()) {
-            foliaWorldRecorder.remove(player.getName());
+            foliaLocationTracker.remove(player.getName());
         }
     }
 

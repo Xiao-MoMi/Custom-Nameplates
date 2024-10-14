@@ -110,7 +110,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                 onRemovePlayer(player, player);
                 onAddPlayer(player, player);
             }
-        }, 100, TimeUnit.MILLISECONDS);
+        }, VersionHelper.isFolia() ? 500 : 50, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                 onRemovePlayer(player, player);
                 onAddPlayer(player, player);
             }
-        }, 100, TimeUnit.MILLISECONDS);
+        }, VersionHelper.isFolia() ? 500 : 50, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
                 onRemovePlayer(player, player);
                 onAddPlayer(player, player);
             }
-        }, 100, TimeUnit.MILLISECONDS);
+        }, VersionHelper.isFolia() ? 500 : 50, TimeUnit.MILLISECONDS);
     }
 
     @Override
