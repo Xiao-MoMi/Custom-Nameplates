@@ -163,7 +163,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
                 BukkitCNPlayer cnPlayer = new BukkitCNPlayer(plugin, channel);
                 cnPlayer.setPlayer(player);
                 injectChannel(channel, ConnectionState.PLAY);
-                ((BukkitCustomNameplates) plugin).handleJoin(player);
+                plugin.handleJoin(player);
             }
         }
     }

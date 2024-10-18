@@ -17,13 +17,17 @@
 
 package net.momirealms.customnameplates.bukkit;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.api.*;
 import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
+import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
+import net.momirealms.customnameplates.api.placeholder.internal.StaticPosition;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.backend.feature.advance.AdvanceManagerImpl;
@@ -284,6 +288,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         AdventureHelper.clearCache();
         this.onlinePlayerMap.clear();
         this.entityIDFastLookup.clear();
+        this.scheduler.shutdownScheduler();
+        this.scheduler.shutdownExecutor();
         this.loaded = false;
     }
 

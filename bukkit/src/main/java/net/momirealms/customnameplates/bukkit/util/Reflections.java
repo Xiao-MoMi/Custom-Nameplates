@@ -287,7 +287,7 @@ public class Reflections {
     public static final Object instance$MinecraftRegistry;
 
     static {
-        if (VersionHelper.isVersionNewerThan1_20()) {
+        if (VersionHelper.isVersionNewerThan1_20_5()) {
             try {
                 Method method = requireNonNull(ReflectionUtils.getMethod(clazz$CraftRegistry, new String[]{"getMinecraftRegistry"}));
                 instance$MinecraftRegistry = method.invoke(null);
