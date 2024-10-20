@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.api;
 import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.feature.TimeStampData;
+import net.momirealms.customnameplates.api.feature.tag.TeamView;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
@@ -47,6 +48,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private String equippedNameplate;
     private String equippedBubble;
+
+    private final TeamView teamView = new TeamView();
 
     private final Map<Integer, TimeStampData<String>> cachedValues = new ConcurrentHashMap<>();
     private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>();
@@ -489,6 +492,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
                 .bubble(equippedBubble())
                 .previewTags(isToggleablePreviewing())
                 .build(), plugin.getScheduler().async());
+    }
+
+    @Override
+    public TeamView teamView() {
+        return teamView;
     }
 
     @Override

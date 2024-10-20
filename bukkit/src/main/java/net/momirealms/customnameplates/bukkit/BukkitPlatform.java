@@ -37,6 +37,7 @@ import net.momirealms.customnameplates.bukkit.util.BiomeUtils;
 import net.momirealms.customnameplates.bukkit.util.EntityData;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.util.TriConsumer;
+import net.momirealms.customnameplates.common.util.UUIDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -296,27 +297,77 @@ public class BukkitPlatform implements Platform {
             }
         }, "ClientboundSetEntityDataPacket", "PacketPlayOutEntityMetadata");
 
+        // not a perfect solution but would work in most cases
         registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.nametagModule()) return;
             if (!ConfigManager.hideTeamNames()) return;
             try {
                 int method = (int) Reflections.field$ClientboundSetPlayerTeamPacket$method.get(packet);
-                if (method == 0 || method == 2) {
-// How to handle mixed entity team packs
-//                    @SuppressWarnings("unchecked")
-//                    Collection<String> entities = (Collection<String>) Reflections.field$ClientboundSetPlayerTeamPacket$players.get(packet);
-//                    outer: {
-//                        for (String entity : entities) {
-//                            if (!UUIDUtils.isUUID(entity)) {
-//                                break outer;
-//                            }
-//                        }
-//                    }
-                    @SuppressWarnings("unchecked")
-                    Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
-                    if (optionalParameters.isPresent()) {
-                        Object parameters = optionalParameters.get();
-                        Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, "never");
+                String teamName = (String) Reflections.field$ClientboundSetPlayerTeamPacket$name.get(packet);
+                switch (method) {
+                    // create
+                    case 0 -> {
+                        @SuppressWarnings("unchecked")
+                        Collection<String> entities = (Collection<String>) Reflections.field$ClientboundSetPlayerTeamPacket$players.get(packet);
+                        player.teamView().addTeamMembers(teamName, entities);
+                        // additional check for those teams with only one member
+                        if (entities.size() <= 1) {
+                            for (String entity : entities) {
+                                // is a player
+                                if (!UUIDUtils.isUUID(entity)) {
+                                    Player p = Bukkit.getPlayer(entity);
+                                    // it's a fake player
+                                    if (p == null) {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        @SuppressWarnings("unchecked")
+                        Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
+                        if (optionalParameters.isPresent()) {
+                            Object parameters = optionalParameters.get();
+                            Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, "never");
+                        }
+                    }
+                    // remove
+                    case 1 -> {
+                        player.teamView().removeTeam(teamName);
+                    }
+                    // update
+                    case 2 -> {
+                        Set<String> members = player.teamView().getTeamMembers(teamName);
+                        if (members == null) return;
+                        if (members.size() <= 1) {
+                            for (String entity : members) {
+                                // is a player
+                                if (!UUIDUtils.isUUID(entity)) {
+                                    Player p = Bukkit.getPlayer(entity);
+                                    // it's a fake player
+                                    if (p == null) {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        @SuppressWarnings("unchecked")
+                        Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
+                        if (optionalParameters.isPresent()) {
+                            Object parameters = optionalParameters.get();
+                            Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, "never");
+                        }
+                    }
+                    // add members
+                    case 3 -> {
+                        @SuppressWarnings("unchecked")
+                        Collection<String> entities = (Collection<String>) Reflections.field$ClientboundSetPlayerTeamPacket$players.get(packet);
+                        player.teamView().addTeamMembers(teamName, entities);
+                    }
+                    // remove members
+                    case 4 -> {
+                        @SuppressWarnings("unchecked")
+                        Collection<String> entities = (Collection<String>) Reflections.field$ClientboundSetPlayerTeamPacket$players.get(packet);
+                        player.teamView().removeTeamMembers(teamName, entities);
                     }
                 }
             } catch (ReflectiveOperationException e) {

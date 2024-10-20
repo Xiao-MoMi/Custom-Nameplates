@@ -1006,6 +1006,12 @@ public class Reflections {
             )
     );
 
+    public static final Field field$ClientboundSetPlayerTeamPacket$name = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundSetPlayerTeamPacket, String.class, 0
+            )
+    );
+
     public static final Field field$ClientboundSetPlayerTeamPacket$parameters = requireNonNull(
             ReflectionUtils.getInstanceDeclaredField(
                     clazz$ClientboundSetPlayerTeamPacket, Optional.class, 0

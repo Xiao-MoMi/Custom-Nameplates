@@ -17,17 +17,13 @@
 
 package net.momirealms.customnameplates.bukkit;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.customnameplates.api.*;
 import net.momirealms.customnameplates.api.event.NameplatesReloadEvent;
 import net.momirealms.customnameplates.api.feature.ChatListener;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
-import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
-import net.momirealms.customnameplates.api.placeholder.internal.StaticPosition;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.backend.feature.advance.AdvanceManagerImpl;
@@ -42,6 +38,7 @@ import net.momirealms.customnameplates.backend.placeholder.PlaceholderManagerImp
 import net.momirealms.customnameplates.backend.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
+import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExtraExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
@@ -57,7 +54,6 @@ import net.momirealms.customnameplates.common.plugin.logging.PluginLogger;
 import net.momirealms.customnameplates.common.plugin.scheduler.AbstractJavaScheduler;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerAdapter;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
-import net.momirealms.customnameplates.common.util.Pair;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -200,6 +196,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new NameplatesExpansion(this).register();
+            new NameplatesExtraExpansion(this).register();
         }
         if (Bukkit.getPluginManager().isPluginEnabled("MagicCosmetics")) {
             try {

@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.api;
 import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.feature.TimeStampData;
+import net.momirealms.customnameplates.api.feature.tag.TeamView;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
@@ -393,4 +394,11 @@ public interface CNPlayer {
      * Save the player's current nameplate/bubble to database
      */
     void save();
+
+    /**
+     * Get the player's team view
+     *
+     * @return team view
+     */
+    TeamView teamView();
 }
