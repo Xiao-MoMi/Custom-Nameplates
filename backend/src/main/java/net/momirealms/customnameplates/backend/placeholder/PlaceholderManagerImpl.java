@@ -212,6 +212,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 return String.format("%.2f", -1 + (progress % 2.0001));
             });
         }
+        this.registerPlayerPlaceholder("%np_is_showing%", (player) -> String.valueOf(player.isToggleablePreviewing()));
+        this.registerPlayerPlaceholder("%np_is_previewing%", (player) -> String.valueOf(player.isTempPreviewing()));
         this.registerPlayerPlaceholder("%np_time%", (player) -> {
             long time = player.playerTime() % 24_000;
             String ap = time >= 6000 && time < 18000 ? " PM" : " AM";

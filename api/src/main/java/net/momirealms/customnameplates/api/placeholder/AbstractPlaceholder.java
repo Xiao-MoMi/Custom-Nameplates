@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.api.placeholder;
 
+import net.momirealms.customnameplates.api.CustomNameplates;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -54,21 +56,37 @@ public abstract class AbstractPlaceholder implements Placeholder {
 
     @Override
     public void addChild(Placeholder placeholder) {
+        if (placeholder == this) {
+            CustomNameplates.getInstance().getPluginLogger().warn(String.format("There may be something wrong with your configuration. Placeholder relationship level loops. Placeholder %s becomes its own child Placeholder", id));
+            return;
+        }
         children.add(placeholder);
     }
 
     @Override
     public void addChildren(Set<Placeholder> placeholders) {
+        if (placeholders.contains(this)) {
+            CustomNameplates.getInstance().getPluginLogger().warn(String.format("There may be something wrong with your configuration. Placeholder relationship level loops. Placeholder %s becomes its own child Placeholder", id));
+            return;
+        }
         children.addAll(placeholders);
     }
 
     @Override
     public void addParent(Placeholder placeholder) {
+        if (placeholder == this) {
+            CustomNameplates.getInstance().getPluginLogger().warn(String.format("There may be something wrong with your configuration. Placeholder relationship level loops. Placeholder %s becomes its own parent Placeholder", id));
+            return;
+        }
         parents.add(placeholder);
     }
 
     @Override
     public void addParents(Set<Placeholder> placeholders) {
+        if (placeholders.contains(this)) {
+            CustomNameplates.getInstance().getPluginLogger().warn(String.format("There may be something wrong with your configuration. Placeholder relationship level loops. Placeholder %s becomes its own parent Placeholder", id));
+            return;
+        }
         parents.addAll(placeholders);
     }
 

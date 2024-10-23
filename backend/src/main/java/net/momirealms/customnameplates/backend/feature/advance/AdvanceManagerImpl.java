@@ -787,11 +787,6 @@ public class AdvanceManagerImpl implements AdvanceManager {
                     plugin.getPluginLogger().warn(ttf.getAbsolutePath() + " is not a .ttf");
                     return;
                 }
-                if (true) {
-                    plugin.getPluginLogger().info("We're currently unable to obtain TTF advance");
-                    plugin.getPluginLogger().info("If you have Java knowledge and are interested in this, consider contributing if you have any progress.");
-                    return;
-                }
                 try (InputStream inputStream = new FileInputStream(ttf)) {
                     ByteBuffer byteBuffer = null;
                     FT_Face fT_Face = null;
