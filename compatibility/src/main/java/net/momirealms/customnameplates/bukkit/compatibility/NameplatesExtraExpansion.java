@@ -23,6 +23,8 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.background.Background;
+import net.momirealms.customnameplates.api.feature.bubble.Bubble;
+import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.common.util.MoonPhase;
 import org.bukkit.Bukkit;
@@ -101,6 +103,60 @@ public class NameplatesExtraExpansion extends PlaceholderExpansion {
                 float finalAdvance = advance;
                 return optional.map(background ->
                                 AdventureHelper.surroundWithNameplatesFont(background.createImage(finalAdvance, Float.parseFloat(subSplit[1]), Float.parseFloat(subSplit[2]))))
+                        .orElse(null);
+            }
+            case "nameplate" -> {
+                if (split.length != 2) {
+                    return null;
+                }
+                String subParams = split[1];
+                String[] subSplit = subParams.split(":", 4);
+                // 0      1    2     3
+                // config:left:right:advance
+                Optional<Nameplate> optional = CustomNameplatesAPI.getInstance().getNameplate(subSplit[0]);
+                float advance;
+                try {
+                    advance = Float.parseFloat(subSplit[3]);
+                } catch (NumberFormatException e) {
+                    String text;
+                    if (subSplit[3].startsWith("{") && subSplit[3].endsWith("}")) {
+                        String before = "%" + subSplit[3].substring(1, subSplit[3].length() - 1) + "%";
+                        text = PlaceholderAPI.setPlaceholders(player, before);
+                        advance = Float.parseFloat(text);
+                    } else {
+                        return null;
+                    }
+                }
+                float finalAdvance = advance;
+                return optional.map(nameplate ->
+                                AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(finalAdvance, Float.parseFloat(subSplit[1]), Float.parseFloat(subSplit[2]))))
+                        .orElse(null);
+            }
+            case "bubble" -> {
+                if (split.length != 2) {
+                    return null;
+                }
+                String subParams = split[1];
+                String[] subSplit = subParams.split(":", 4);
+                // 0      1    2     3
+                // config:left:right:advance
+                Optional<Bubble> optional = CustomNameplatesAPI.getInstance().getBubble(subSplit[0]);
+                float advance;
+                try {
+                    advance = Float.parseFloat(subSplit[3]);
+                } catch (NumberFormatException e) {
+                    String text;
+                    if (subSplit[3].startsWith("{") && subSplit[3].endsWith("}")) {
+                        String before = "%" + subSplit[3].substring(1, subSplit[3].length() - 1) + "%";
+                        text = PlaceholderAPI.setPlaceholders(player, before);
+                        advance = Float.parseFloat(text);
+                    } else {
+                        return null;
+                    }
+                }
+                float finalAdvance = advance;
+                return optional.map(bubble ->
+                                AdventureHelper.surroundWithNameplatesFont(bubble.createImage(finalAdvance, Float.parseFloat(subSplit[1]), Float.parseFloat(subSplit[2]))))
                         .orElse(null);
             }
             case "lunarphase" -> {
