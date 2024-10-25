@@ -102,6 +102,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean packItemsAdder;
     protected boolean packItemsAdderLegacy;
     protected boolean packOraxen;
+    protected boolean packCreativeCentral;
 
     protected boolean chatUnsafe;
     protected boolean chatTR;
@@ -179,6 +180,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         packItemsAdderLegacy = config.getBoolean("integrations.resource-pack.ItemsAdder-old-method", false);
         if (packItemsAdder) packItemsAdderLegacy = false;
         packOraxen = config.getBoolean("integrations.resource-pack.Oraxen", false);
+        packCreativeCentral = config.getBoolean("integrations.resource-pack.Creative-Central");
 
         chatUnsafe = config.getBoolean("other-settings.unsafe-chat-event", false);
         chatEss = config.getBoolean("integrations.chat.Essentials", false);
@@ -302,6 +304,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     public static boolean packOraxen() {
         return instance.packOraxen;
     }
+
+    public static boolean packCreativeCentral() { return instance.packCreativeCentral; }
 
     public static boolean hideScoreBoardNumber() {
         return instance.hideScoreBoardNumber;

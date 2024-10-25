@@ -25,6 +25,7 @@ integrations:
     ItemsAdder: false         # Integration with ItemsAdder
     ItemsAdder-old-method: false # Old method for ItemsAdder
     Oraxen: false             # Integration with Oraxen
+    Creative-Central: false   # Integration with Creative-Central
   chat:
     TrChat: false             # Integration with TrChat
     VentureChat: false        # Integration with VentureChat

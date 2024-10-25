@@ -218,6 +218,13 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 plugin.getPluginLogger().warn("Failed to copy files to Oraxen", e);
             }
         }
+        if(ConfigManager.packCreativeCentral()) {
+            try {
+                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(pluginsFolder, "creative-central" + File.separator + "resources" + File.separator + "assets"));
+            } catch (IOException e){
+                plugin.getPluginLogger().warn("Failed to copy files to Creative-Central", e);
+            }
+        }
     }
 
     private List<JsonObject> getBubbles(File texturesFolder) {
