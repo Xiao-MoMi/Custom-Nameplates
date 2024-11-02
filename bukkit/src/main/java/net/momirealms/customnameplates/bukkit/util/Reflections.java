@@ -49,6 +49,14 @@ public class Reflections {
             ).get(0)
     );
 
+    public static final Class<?> clazz$Either = ReflectionUtils.getClazz(
+            "com.mojang.datafixers.util.Either"
+    );
+
+    public static final Method method$Either$right = Optional.ofNullable(clazz$Either)
+            .map(it -> ReflectionUtils.getMethod(it, new String[]{"right"}))
+            .orElse(null);
+
     public static final Class<?> clazz$ScoreContents = requireNonNull(
             ReflectionUtils.getClazz(
                     BukkitReflectionUtils.assembleMCClass("network.chat.contents.ScoreContents")
@@ -56,12 +64,20 @@ public class Reflections {
     );
 
     public static final Field field$ScoreContents$name = requireNonNull(
+            VersionHelper.isVersionNewerThan1_21_2() ?
+                    ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ScoreContents, clazz$Either, 0
+            ) :
             ReflectionUtils.getInstanceDeclaredField(
                     clazz$ScoreContents, String.class, 0
             )
     );
 
     public static final Field field$ScoreContents$objective = requireNonNull(
+            VersionHelper.isVersionNewerThan1_21_2() ?
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ScoreContents, String.class, 0
+            ) :
             ReflectionUtils.getInstanceDeclaredField(
                     clazz$ScoreContents, String.class, 1
             )

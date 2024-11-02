@@ -160,7 +160,7 @@ public class ActionBarSender implements Feature {
         if (isTemporarilyHidden()) return;
         if (latestContent != null) {
             updateLastUpdateTime();
-            Object packet = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(AdventureHelper.miniMessageToMinecraftComponent(latestContent, "np", "ab"));
+            Object packet = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(AdventureHelper.miniMessageToMinecraftComponent(latestContent, "nameplates", "actionbar"));
             CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }
     }

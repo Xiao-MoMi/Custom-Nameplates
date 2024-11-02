@@ -90,6 +90,11 @@ public class BukkitPlatform implements Platform {
     }
 
     static {
+//        ThrowableFunction<Object, String> scoreContentNameFunction = VersionHelper.isVersionNewerThan1_21_2() ? (o -> {
+//            @SuppressWarnings("unchecked")
+//            Optional<String> optional = (Optional<String>) Reflections.method$Either$right.invoke(o);
+//            return optional.orElse(null);
+//        }) : (o -> (String) o);
         registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
@@ -97,9 +102,9 @@ public class BukkitPlatform implements Platform {
                 Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
                 Object contents = Reflections.method$Component$getContents.invoke(component);
                 if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
-                    String name = (String) Reflections.field$ScoreContents$name.get(contents);
+                    //String name = scoreContentNameFunction.apply(Reflections.field$ScoreContents$name.get(contents));
                     String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
-                    if (name.equals("np") && objective.equals("ab")) return;
+                    if ("actionbar".equals(objective)) return;
                 }
                 CustomNameplates.getInstance().getScheduler().async().execute(() -> {
                     ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
@@ -133,7 +138,7 @@ public class BukkitPlatform implements Platform {
                             if (LANG_PATTERN.matcher(miniMessage).find()) {
                                 if (ConfigManager.displaySystemChat()) {
                                     ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).temporarilyHideCustomActionBar(player);
-                                    Object com = AdventureHelper.miniMessageToMinecraftComponent(miniMessage, "np", "ab");
+                                    Object com = AdventureHelper.miniMessageToMinecraftComponent(miniMessage, "nameplates", "actionbar");
                                     Object pkt = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(com);
                                     CustomNameplates.getInstance().getPacketSender().sendPacket(player, pkt);
                                 }
