@@ -201,7 +201,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             this.registerPlayerPlaceholder("%np_gradient_" + i + "%", (player) -> {
                 int currentTicks = MainTask.getTicks();
                 double progress = currentTicks * 0.01 * speed;
-                return String.format("%.2f", -1 + (progress % 2.0001));
+                return String.format(Locale.US, "%.2f", -1 + (progress % 2.0001));
             });
         }
         for (int i = 1; i <= 20; i++) {
@@ -209,7 +209,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             this.registerSharedPlaceholder("%shared_np_gradient_" + i + "%", () -> {
                 int currentTicks = MainTask.getTicks();
                 double progress = currentTicks * 0.01 * speed;
-                return String.format("%.2f", -1 + (progress % 2.0001));
+                return String.format(Locale.US, "%.2f", -1 + (progress % 2.0001));
             });
         }
         this.registerPlayerPlaceholder("%np_is_showing%", (player) -> String.valueOf(player.isToggleablePreviewing()));
