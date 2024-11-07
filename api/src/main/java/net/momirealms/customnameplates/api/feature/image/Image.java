@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api.feature.image;
 
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
+import org.jetbrains.annotations.Nullable;
 
 public interface Image {
 
@@ -33,15 +34,15 @@ public interface Image {
      *
      * @return true if the image has a shadow, false otherwise
      */
-    boolean hasShadow();
+    boolean removeShadow();
 
     /**
-     * Returns the opacity level of the image.
-     * The value should typically range from 0 (fully transparent) to 255 (fully opaque).
+     * Get the animation of the image
      *
-     * @return the opacity value of the image
+     * @return the animated image
      */
-    int opacity();
+    @Nullable
+    Animation animation();
 
     /**
      * Returns the configured character associated with this image.
@@ -73,20 +74,20 @@ public interface Image {
         Builder id(String id);
 
         /**
-         * Sets whether the image has a shadow effect.
+         * Sets whether to remove the shadow of the image
          *
-         * @param has true if the image should have a shadow, false otherwise
+         * @param remove true if to remove the shadow
          * @return the builder instance
          */
-        Builder hasShadow(boolean has);
+        Builder removeShadow(boolean remove);
 
         /**
-         * Sets the opacity level of the image.
+         * Sets the animation of the image
          *
-         * @param opacity the opacity value, typically from 0 to 255
+         * @param animation animation
          * @return the builder instance
          */
-        Builder opacity(int opacity);
+        Builder animation(@Nullable Animation animation);
 
         /**
          * Sets the configured character associated with this image.
