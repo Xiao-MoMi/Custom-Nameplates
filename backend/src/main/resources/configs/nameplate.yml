@@ -9,33 +9,7 @@ nameplate:
   player-name: '%np_shift_player_name%'
   suffix: '%np_switch_nameplate_color_suffix%'
 unlimited:
-  tag_1:
-    text: '%np_tag-image%'
-    translation: 0,0.2,0
-    viewer-conditions: { }
-    owner-conditions:
-      has-nameplate: true
-      potion-effect: "INVISIBILITY<0"
-      self-disguised: false
-    affected-by-crouching: true
-    affected-by-scale-attribute: true
-    affected-by-spectator: true
-    line-width: 1024
-    background-color: 0,0,0,0
-  tag_2:
-    text: '%np_tag-text%'
-    translation: 0.01,0.2,0.01
-    viewer-conditions: { }
-    owner-conditions:
-      has-nameplate: true
-      potion-effect: "INVISIBILITY<0"
-      self-disguised: false
-    affected-by-crouching: true
-    affected-by-scale-attribute: true
-    affected-by-spectator: true
-    line-width: 1024
-    background-color: 0,0,0,0
-  tag_3:
+  tag_normal:
     text: '%np_tag-text%'
     translation: 0,0.2,0
     viewer-conditions: { }
@@ -48,3 +22,29 @@ unlimited:
     affected-by-spectator: true
     line-width: 1024
     background-color: 64,0,0,0
+  tag_image_part:
+    text: '%np_tag-image%'
+    translation: 0,0.2,0
+    viewer-conditions: { }
+    owner-conditions:
+      has-nameplate: true
+      potion-effect: "INVISIBILITY<0"
+      self-disguised: false
+    affected-by-crouching: true
+    affected-by-scale-attribute: true
+    affected-by-spectator: true
+    line-width: 1024
+    background-color: 0,0,0,0
+  tag_text_part:
+    text: '%np_tag-text%'
+    translation: 0.01,0.2,0.01
+    viewer-conditions: { }
+    owner-conditions:
+      has-nameplate: true
+      potion-effect: "INVISIBILITY<0"
+      self-disguised: false
+    affected-by-crouching: true
+    affected-by-scale-attribute: true
+    affected-by-spectator: true
+    line-width: 1024
+    background-color: 0,0,0,0

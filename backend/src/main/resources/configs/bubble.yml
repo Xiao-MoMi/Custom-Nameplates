@@ -26,5 +26,5 @@ bubble-settings:
       3: chat_3
     line-width: 150
     background-color: 0,0,0,0
-    text-prefix: "<black><font:nameplates:shift_0>"
+    text-prefix: "<black><font:{namespace}:shift_0>" # {namespace} would be replaced by the namespace set in config.yml
     text-suffix: "</font></black>"

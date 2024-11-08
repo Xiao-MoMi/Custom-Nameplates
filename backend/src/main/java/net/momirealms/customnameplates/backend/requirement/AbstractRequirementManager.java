@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.api.requirement.RequirementFactory;
 import net.momirealms.customnameplates.api.requirement.RequirementManager;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 import net.momirealms.customnameplates.backend.requirement.builtin.*;
+import net.momirealms.customnameplates.common.util.ListUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -178,6 +179,10 @@ public abstract class AbstractRequirementManager implements RequirementManager {
             boolean has = (boolean) args;
             return new HasBubbleRequirement(interval, has);
         }, "has-bubble");
+        this.registerRequirement((args, interval) -> new NameplateRequirement(interval, new HashSet<>(ListUtils.toList(args))), "nameplate");
+        this.registerRequirement((args, interval) -> new NotNameplateRequirement(interval, new HashSet<>(ListUtils.toList(args))), "!nameplate");
+        this.registerRequirement((args, interval) -> new BubbleRequirement(interval, new HashSet<>(ListUtils.toList(args))), "bubble");
+        this.registerRequirement((args, interval) -> new NotBubbleRequirement(interval, new HashSet<>(ListUtils.toList(args))), "!bubble");
     }
 
     protected abstract void registerPlatformRequirements();

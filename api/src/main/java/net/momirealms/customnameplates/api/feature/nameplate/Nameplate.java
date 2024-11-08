@@ -58,6 +58,13 @@ public interface Nameplate extends AdaptiveImage {
     ConfiguredCharacter right();
 
     /**
+     * Gets the min width of the nameplate
+     *
+     * @return the min width of the nameplate
+     */
+    int minWidth();
+
+    /**
      * Creates a new builder for constructing a Nameplate configuration.
      *
      * @return a new builder instance
@@ -86,6 +93,14 @@ public interface Nameplate extends AdaptiveImage {
          * @return the builder instance
          */
         Builder displayName(String displayName);
+
+        /**
+         * Sets the min width for the nameplate
+         *
+         * @param minWidth min width
+         * @return the builder instance
+         */
+        Builder minWidth(int minWidth);
 
         /**
          * Sets the configured character for the left side of the nameplate.

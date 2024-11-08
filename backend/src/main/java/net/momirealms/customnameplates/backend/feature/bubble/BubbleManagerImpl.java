@@ -231,7 +231,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
                             .displayName(inner.getString("display-name", key))
                             .lineWidth(inner.getInt("line-width", 100))
                             .backgroundColor(ConfigUtils.argb(inner.getString("background-color", "0,0,0,0")))
-                            .textPrefix(inner.getString("text-prefix", ""))
+                            .textPrefix(inner.getString("text-prefix", "").replace("{namespace}", ConfigManager.namespace()))
                             .textSuffix(inner.getString("text-suffix", ""))
                             .scale(ConfigUtils.vector3(inner.getString("scale", "1,1,1")))
                             .build());
@@ -305,6 +305,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
         String fullText = config.textPrefix() + AdventureHelper.stripTags(message.replace("\\", "\\\\")) + config.textSuffix();
         int lines = plugin.getAdvanceManager().getLines(fullText, config.lineWidth());
         if (lines > config.maxLines()) return;
+        if (lines <= 0) return;
         int space = (int) plugin.getAdvanceManager().getLineAdvance(" ");
         String fakeSpace = AdventureHelper.surroundWithNameplatesFont(OffsetFont.createOffsets(space));
         fullText = fullText.replace(" ", fakeSpace);

@@ -115,6 +115,7 @@ public class NameplateManagerImpl implements NameplateManager {
             Nameplate nameplate = Nameplate.builder()
                     .id(id)
                     .displayName(config.getString("display-name", id))
+                    .minWidth(config.getInt("min-width", 0))
                     .left(ConfiguredCharacter.create(
                             ConfigUtils.getFileInTheSameFolder(configFile, config.getString("left.image") + ".png"),
                             config.getInt("left.ascent", 12),
