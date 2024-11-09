@@ -24,14 +24,24 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.feature.chat.emoji.EmojiProvider;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class OraxenEmojiProvider implements EmojiProvider {
 
     private final FontManager fontManager;
 
-    public OraxenEmojiProvider() {
-        this.fontManager = OraxenPlugin.get().getFontManager();
+    public OraxenEmojiProvider(int version) {
+        if (version == 1) {
+            this.fontManager = OraxenPlugin.get().getFontManager();
+        } else {
+            try {
+                Method fm = OraxenPlugin.class.getMethod("fontManager");
+                this.fontManager = (FontManager) fm.invoke(OraxenPlugin.get());
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override

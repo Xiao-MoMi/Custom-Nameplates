@@ -148,6 +148,8 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
         }
         if (isAlwaysShow()) {
             setTempPreviewing(player, isAlwaysShow());
+        } else if (player.isLoaded() && player.isTempPreviewing()) {
+            setTempPreviewing(player, false);
         }
     }
 

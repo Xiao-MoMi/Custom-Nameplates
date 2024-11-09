@@ -429,6 +429,18 @@ public class Reflections {
             )
     );
 
+    public static final Class<?> clazz$ClientboundPlayerInfoRemovePacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.game.ClientboundPlayerInfoRemovePacket")
+            )
+    );
+
+    public static final Field field$ClientboundPlayerInfoRemovePacket$profileIds = requireNonNull(
+            ReflectionUtils.getInstanceDeclaredField(
+                    clazz$ClientboundPlayerInfoRemovePacket, 0
+            )
+    );
+
     public static final Field field$ClientboundRemoveEntitiesPacket$entityIds = requireNonNull(
             ReflectionUtils.getInstanceDeclaredField(
                     clazz$ClientboundRemoveEntitiesPacket, 0
@@ -819,7 +831,7 @@ public class Reflections {
     );
 
     public static final Enum<?> enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE;
-
+    public static final Enum<?> enum$ClientboundPlayerInfoUpdatePacket$Action$ADD_PLAYER;
 
     static {
         Enum<?> updateGameMode;
@@ -829,6 +841,14 @@ public class Reflections {
             updateGameMode = Enum.valueOf((Class<Enum>) clazz$ClientboundPlayerInfoUpdatePacket$Action, "c");
         }
         enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE = updateGameMode;
+
+        Enum<?> addPlayer;
+        try {
+            addPlayer = Enum.valueOf((Class<Enum>) clazz$ClientboundPlayerInfoUpdatePacket$Action, "ADD_PLAYER");
+        } catch (Exception e) {
+            addPlayer = Enum.valueOf((Class<Enum>) clazz$ClientboundPlayerInfoUpdatePacket$Action, "a");
+        }
+        enum$ClientboundPlayerInfoUpdatePacket$Action$ADD_PLAYER = addPlayer;
     }
 
     public static final Class<?> clazz$ClientboundPlayerInfoUpdatePacket$Entry = requireNonNull(

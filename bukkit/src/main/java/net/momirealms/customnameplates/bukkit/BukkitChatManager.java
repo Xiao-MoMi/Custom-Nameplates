@@ -63,7 +63,7 @@ public class BukkitChatManager extends AbstractChatManager {
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
             try {
-                this.emojiProviders.add(new OraxenEmojiProvider());
+                this.emojiProviders.add(new OraxenEmojiProvider(Bukkit.getPluginManager().getPlugin("Oraxen").getDescription().getVersion().startsWith("1") ? 1 : 2));
             } catch (Exception ignore) {
             }
         }

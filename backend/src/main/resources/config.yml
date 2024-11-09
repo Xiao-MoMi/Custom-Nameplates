@@ -167,13 +167,14 @@ other-settings:
       unicode:
         file: unicode_page_%02x.png   # Default Unicode characters
         sizes: glyph_sizes.bin        # Glyph size configuration
-    ttf:
-      example:
-        generate: false               # Should this TTF file be included in the generated pack
-        file: example.ttf             # Define the TTF file to load the font from
-        size: 10.0                    # Set font size
-        oversample: 8.0               # Oversample rate for TTF rendering
-        skip: []                      # Skipped characters in list format
+    ttf: {}
+#    ttf:
+#      example:
+#        generate: false               # Should this TTF file be included in the generated pack
+#        file: example.ttf             # Define the TTF file to load the font from
+#        size: 10.0                    # Set font size
+#        oversample: 8.0               # Oversample rate for TTF rendering
+#        skip: []                      # Skipped characters in list format
   shift-fonts:
     shift_0:
       - space

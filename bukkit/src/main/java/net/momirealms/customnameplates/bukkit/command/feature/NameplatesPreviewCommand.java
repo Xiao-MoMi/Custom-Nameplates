@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit.command.feature;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
+import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
@@ -45,6 +46,7 @@ public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender
                 .senderType(Player.class)
                 .handler(context -> {
                     if (!ConfigManager.nametagModule()) return;
+                    if (CustomNameplates.getInstance().getUnlimitedTagManager().isAlwaysShow()) return;
                     CNPlayer player = plugin.getPlayer(context.sender().getUniqueId());
                     if (player == null) {
                         throw new RuntimeException("Player should not be null");

@@ -40,6 +40,7 @@ import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExtraExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
+import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
 import net.momirealms.customnameplates.bukkit.util.SimpleLocation;
@@ -201,6 +202,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (Bukkit.getPluginManager().isPluginEnabled("MagicCosmetics")) {
             try {
                 Bukkit.getPluginManager().registerEvents(new MagicCosmeticsHook(this), this.getBootstrap());
+            } catch (Exception ignore) {
+            }
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+            try {
+                WorldGuardRegion.register();
             } catch (Exception ignore) {
             }
         }

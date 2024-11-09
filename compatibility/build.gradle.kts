@@ -11,11 +11,16 @@ repositories {
     maven("https://repo.essentialsx.net/releases/") // ess
     maven("https://repo.md-5.net/content/groups/public/") // disguise
     maven("https://repo.opencollab.dev/main/") // geyser
+    maven("https://maven.enginehub.org/repo/") // worldguard worldedit
 }
 
 dependencies {
     compileOnly(project(":api"))
     compileOnly(project(":common"))
+    compileOnly(project(":backend"))
+    compileOnly("dev.dejvokep:boosted-yaml:${rootProject.properties["boosted_yaml_version"]}")
+    // WorldGuard
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9")
     // Platform
     compileOnly("dev.folia:folia-api:${rootProject.properties["paper_version"]}-R0.1-SNAPSHOT")
     // Chat

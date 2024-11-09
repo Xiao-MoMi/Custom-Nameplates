@@ -204,22 +204,61 @@ public class BukkitPlatform implements Platform {
             }
         }, "PacketPlayOutEntityDestroy", "ClientboundRemoveEntitiesPacket");
 
+        // for skin plugin compatibility
+        registerPacketConsumer((player, event, packet) -> {
+            try {
+                UUID pUUID = player.uuid();
+                @SuppressWarnings("unchecked")
+                List<UUID> uuids = (List<UUID>) Reflections.field$ClientboundPlayerInfoRemovePacket$profileIds.get(packet);
+                for (UUID uuid : uuids) {
+                    if (uuid.equals(pUUID)) {
+                        CNPlayer removed = CustomNameplates.getInstance().getPlayer(uuid);
+                        if (removed != null) {
+                            removed.removePlayerFromTracker(player);
+                            CustomNameplates.getInstance().getUnlimitedTagManager().onRemovePlayer(removed, player);
+                        }
+                    }
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundPlayerInfoRemovePacket", e);
+            }
+        }, "ClientboundPlayerInfoRemovePacket");
+
         registerPacketConsumer((player, event, packet) -> {
             try {
                 EnumSet<?> enums = (EnumSet<?>) Reflections.field$ClientboundPlayerInfoUpdatePacket$actions.get(packet);
                 if (enums == null) return;
-                if (!enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE)) return;
-                List<Object> entries = (List<Object>) Reflections.field$ClientboundPlayerInfoUpdatePacket$entries.get(packet);
-                for (Object entry : entries) {
-                    UUID uuid = (UUID) Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$profileId.get(entry);
-                    if (uuid == null) continue;
-                    Object gameType = Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$gameMode.get(entry);
-                    if (gameType == null) continue;
-                    int mode = (int) Reflections.method$GameType$getId.invoke(gameType);
-                    boolean isSpectator = mode == 3;
-                    CNPlayer another = CustomNameplates.getInstance().getPlayer(uuid);
-                    if (another != null) {
-                        CustomNameplates.getInstance().getUnlimitedTagManager().onPlayerGameModeChange(another, player, isSpectator);
+                UUID pUUID = player.uuid();
+                boolean add_player = enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$ADD_PLAYER);
+                boolean update_gamemode = enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE);
+                if (add_player || update_gamemode) {
+                    @SuppressWarnings("unchecked")
+                    List<Object> entries = (List<Object>) Reflections.field$ClientboundPlayerInfoUpdatePacket$entries.get(packet);
+                    for (Object entry : entries) {
+                        UUID uuid = (UUID) Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$profileId.get(entry);
+                        if (uuid == null) continue;
+
+                        // for skin plugin compatibility
+                        if (add_player && uuid.equals(pUUID)) {
+                            if (player.isTempPreviewing() || player.isToggleablePreviewing() || CustomNameplates.getInstance().getUnlimitedTagManager().isAlwaysShow()) {
+                                Tracker tracker = player.addPlayerToTracker(player);
+                                tracker.setScale(player.scale());
+                                tracker.setCrouching(player.isCrouching());
+                                tracker.setSpectator(player.isSpectator());
+                                CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(player, player);
+                            }
+                        }
+
+                        CNPlayer another = CustomNameplates.getInstance().getPlayer(uuid);
+                        if (update_gamemode) {
+                            Object gameType = Reflections.field$ClientboundPlayerInfoUpdatePacket$Entry$gameMode.get(entry);
+                            if (gameType == null) continue;
+                            int mode = (int) Reflections.method$GameType$getId.invoke(gameType);
+                            boolean isSpectator = mode == 3;
+                            if (another != null) {
+                                CustomNameplates.getInstance().getUnlimitedTagManager().onPlayerGameModeChange(another, player, isSpectator);
+                            }
+                        }
                     }
                 }
             } catch (ReflectiveOperationException e) {
