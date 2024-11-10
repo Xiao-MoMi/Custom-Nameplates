@@ -28,7 +28,10 @@ import net.momirealms.customnameplates.api.util.ConfigUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BackgroundManagerImpl implements BackgroundManager {
 

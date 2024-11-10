@@ -11,7 +11,7 @@
 ![bStats Players](https://img.shields.io/bstats/players/16649)
 ![GitHub](https://img.shields.io/github/license/Xiao-MoMi/Custom-Nameplates)
 
-## How to build
+## How to Build
 
 #### Command Line
 Install JDK 17 & 21. \
@@ -22,7 +22,13 @@ Execute ".\gradlew build" and get the artifact under /target folder
 Import the project and execute gradle build action. \
 Get the artifact under /target folder
 
-## Support the developer
+## How to Contribute
+
+#### Translations
+Clone this project and create a new language file in the /common/src/main/resources/translations directory. \
+Once your changes are ready, open a pull request for review. We appreciate your works!
+
+## Support the Developer
 
 Polymart: https://polymart.org/resource/customnameplates.2543 \
 Afdian: https://afdian.com/@xiaomomi

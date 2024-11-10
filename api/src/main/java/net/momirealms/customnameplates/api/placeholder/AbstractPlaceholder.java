@@ -20,7 +20,6 @@ package net.momirealms.customnameplates.api.placeholder;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CustomNameplates;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 

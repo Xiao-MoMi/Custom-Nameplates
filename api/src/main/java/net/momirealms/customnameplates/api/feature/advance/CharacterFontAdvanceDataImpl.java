@@ -20,7 +20,6 @@ package net.momirealms.customnameplates.api.feature.advance;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

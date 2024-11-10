@@ -20,7 +20,6 @@ package net.momirealms.customnameplates.api;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
