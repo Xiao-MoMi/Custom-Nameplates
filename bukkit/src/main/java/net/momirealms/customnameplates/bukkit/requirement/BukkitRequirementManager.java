@@ -52,6 +52,14 @@ public class BukkitRequirementManager extends AbstractRequirementManager {
         this.registerGameMode();
         this.registerBedrock();
         this.registerDisguise();
+        this.registerPassenger();
+    }
+
+    private void registerPassenger() {
+        this.registerRequirement((args, interval) -> {
+            boolean is = (boolean) args;
+            return new PassengerRequirement(interval, is);
+        }, "is-passenger");
     }
 
     private void registerDisguise() {
