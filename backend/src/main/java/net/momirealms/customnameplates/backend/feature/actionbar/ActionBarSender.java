@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.backend.feature.actionbar;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -177,7 +178,7 @@ public class ActionBarSender implements Feature {
 
     @Override
     public Set<Placeholder> allPlaceholders() {
-        HashSet<Placeholder> placeholders = new HashSet<>();
+        Set<Placeholder> placeholders = new ObjectOpenHashSet<>();
         for (ActionBarConfig config : manager.actionBarConfigs()) {
             for (CarouselText text : config.carouselTexts()) {
                 placeholders.addAll(text.preParsedDynamicText().placeholders());

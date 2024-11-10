@@ -27,6 +27,8 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import dev.dejvokep.boostedyaml.utils.format.NodeRole;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -51,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 public class BubbleManagerImpl implements BubbleManager, ChatListener {
 
     private final CustomNameplates plugin;
-    private final Map<String, Bubble> bubbles = new HashMap<>();
+    private final Map<String, Bubble> bubbles = new Object2ObjectOpenHashMap<>();
     private Requirement[] sendBubbleRequirements;
     private Requirement[] viewBubbleRequirements;
     private String defaultBubbleId;
@@ -62,7 +64,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
     private float viewRange;
     private Set<String> blacklistChannels;
     private ChannelMode channelMode;
-    private final HashMap<String, BubbleConfig> bubbleConfigs = new HashMap<>();
+    private final Map<String, BubbleConfig> bubbleConfigs = new Object2ObjectOpenHashMap<>();
 
     public BubbleManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -94,12 +96,12 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
 
     @Override
     public Collection<Bubble> bubbles() {
-        return new HashSet<>(bubbles.values());
+        return new ObjectArrayList<>(bubbles.values());
     }
 
     @Override
     public Collection<BubbleConfig> bubbleConfigs() {
-        return new HashSet<>(bubbleConfigs.values());
+        return new ObjectArrayList<>(bubbleConfigs.values());
     }
 
     @Override

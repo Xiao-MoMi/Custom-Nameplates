@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.backend.feature.tag;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.Feature;
@@ -69,14 +70,15 @@ public class TagRendererImpl implements TagRenderer {
 
     @Override
     public void onTick() {
-        HashSet<CNPlayer> playersToUpdatePassengers = new HashSet<>();
-        HashSet<CNPlayer> tagTranslationUpdates = new HashSet<>();
+        Set<CNPlayer> playersToUpdatePassengers = new ObjectOpenHashSet<>();
+        Set<CNPlayer> tagTranslationUpdates = new ObjectOpenHashSet<>();
 
+        Collection<CNPlayer> nearbyPlayers = owner.nearbyPlayers();
         for (Tag tag : tagArray) {
             boolean canShow = tag.canShow();
             if (canShow) {
                 if (tag.isShown()) {
-                    for (CNPlayer nearby : owner.nearbyPlayers()) {
+                    for (CNPlayer nearby : nearbyPlayers) {
                         if (tag.isShown(nearby)) {
                             if (!tag.canShow(nearby)) {
                                 tag.hide(nearby);
@@ -97,7 +99,7 @@ public class TagRendererImpl implements TagRenderer {
                     tag.init();
                     tag.tick();
                     tag.show();
-                    for (CNPlayer nearby : owner.nearbyPlayers()) {
+                    for (CNPlayer nearby : nearbyPlayers) {
                         if (tag.canShow(nearby) && !tag.isShown(nearby)) {
                             tag.show(nearby);
                             playersToUpdatePassengers.add(nearby);
@@ -110,7 +112,7 @@ public class TagRendererImpl implements TagRenderer {
                 if (tag.isShown()) {
                     tag.hide();
                     if (!tag.relativeTranslation())
-                        tagTranslationUpdates.addAll(owner.nearbyPlayers());
+                        tagTranslationUpdates.addAll(nearbyPlayers);
                 }
             }
         }

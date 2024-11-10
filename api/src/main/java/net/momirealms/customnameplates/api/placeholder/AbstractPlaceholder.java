@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.api.placeholder;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CustomNameplates;
 
 import java.util.HashSet;
@@ -29,8 +30,8 @@ public abstract class AbstractPlaceholder implements Placeholder {
     protected int countId = PlaceholderCounter.getAndIncrease();
     protected int refreshInterval;
     protected PlaceholderManager manager;
-    protected Set<Placeholder> children = new HashSet<>();
-    protected Set<Placeholder> parents = new HashSet<>();
+    protected Set<Placeholder> children = new ObjectOpenHashSet<>();
+    protected Set<Placeholder> parents = new ObjectOpenHashSet<>();
 
     protected AbstractPlaceholder(PlaceholderManager manager, String id, int refreshInterval) {
         if (refreshInterval == 0) {

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.feature.nameplate;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -61,7 +62,7 @@ public class NameplateManagerImpl implements NameplateManager {
 
     @Override
     public Collection<Nameplate> nameplates() {
-        return new HashSet<>(nameplates.values());
+        return new ObjectArrayList<>(nameplates.values());
     }
 
     @Override

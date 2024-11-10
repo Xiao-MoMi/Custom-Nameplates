@@ -41,6 +41,13 @@ public interface Requirement {
     String type();
 
     /**
+     * Returns the int id for faster lookup
+     *
+     * @return count id
+     */
+    int countId();
+
+    /**
      * Returns the refresh interval of the requirement.
      *
      * @return the refresh interval in ticks

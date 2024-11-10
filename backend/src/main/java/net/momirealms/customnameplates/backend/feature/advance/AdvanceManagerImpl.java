@@ -25,6 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -292,8 +294,8 @@ public class AdvanceManagerImpl implements AdvanceManager {
     private final HashMap<String, BiConsumer<String, Section>> templateConfigConsumersMap = new HashMap<>();
 
     private final CustomNameplates plugin;
-    private final HashMap<String, CharacterFontAdvanceData> charFontWidthDataMap = new HashMap<>();
-    private final HashMap<String, ConfigurableFontAdvanceData> configFontWidthDataMap = new HashMap<>();
+    private final Object2ObjectOpenHashMap<String, CharacterFontAdvanceData> charFontWidthDataMap = new Object2ObjectOpenHashMap<>();
+    private final Object2ObjectOpenHashMap<String, ConfigurableFontAdvanceData> configFontWidthDataMap = new Object2ObjectOpenHashMap<>();
 
     private final Cache<String, Float> textWidthCache;
 
@@ -1220,7 +1222,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
     public List<Tuple<String, Key, Boolean>> miniMessageToIterable(String text) {
         if (AdventureHelper.legacySupport) text = AdventureHelper.legacyToMiniMessage(text);
         ElementNode node = (ElementNode) AdventureHelper.miniMessage().deserializeToTree(text);
-        ArrayList<Tuple<String, Key, Boolean>> iterableTexts = new ArrayList<>();
+        List<Tuple<String, Key, Boolean>> iterableTexts = new ObjectArrayList<>();
         nodeToIterableTexts(node, iterableTexts, MINECRAFT_DEFAULT_FONT, false);
         return iterableTexts;
     }

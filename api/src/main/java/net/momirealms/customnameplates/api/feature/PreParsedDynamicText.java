@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.api.feature;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.placeholder.*;
@@ -27,8 +29,8 @@ import java.util.function.Function;
 public class PreParsedDynamicText {
 
     private final String text;
-    private final List<Function<CNPlayer, Function<CNPlayer, String>>> textFunctions = new ArrayList<>();
-    private final Set<Placeholder> set = new HashSet<>();
+    private final List<Function<CNPlayer, Function<CNPlayer, String>>> textFunctions = new ObjectArrayList<>();
+    private final Set<Placeholder> set = new ObjectOpenHashSet<>();
     private boolean init = false;
 
     public PreParsedDynamicText(String text) {
@@ -86,12 +88,12 @@ public class PreParsedDynamicText {
             String remaining = original0.substring(lastIndex);
             textFunctions.add((owner) -> (viewer) -> remaining);
         }
-        // To optimize the tree height, call new HashSet twice here
-        set.addAll(new HashSet<>(placeholders));
+        // To optimize the tree height
+        set.addAll(new ObjectArrayList<>(placeholders));
     }
 
     public DynamicText fastCreate(CNPlayer player) {
-        List<Function<CNPlayer, String>> functions = new ArrayList<>();
+        List<Function<CNPlayer, String>> functions = new ObjectArrayList<>();
         for (Function<CNPlayer, Function<CNPlayer, String>> textFunction : textFunctions) {
             functions.add(textFunction.apply(player));
         }

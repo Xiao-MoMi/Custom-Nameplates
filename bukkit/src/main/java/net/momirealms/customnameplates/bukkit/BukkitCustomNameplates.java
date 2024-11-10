@@ -309,6 +309,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         for (CNPlayer player : getOnlinePlayers()) {
             ((AbstractCNPlayer) player).reload();
         }
+        // clear requirement ids
+        this.requirementManager.reload();
         // load basics
         this.configManager.reload();
         this.storageManager.reload();
@@ -321,8 +323,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.advanceManager.reload();
         // set up placeholders
         this.placeholderManager.reload();
-        // set up requirements
-        this.requirementManager.reload();
         // use the placeholders
         this.actionBarManager.reload();
         this.bossBarManager.reload();

@@ -17,16 +17,15 @@
 
 package net.momirealms.customnameplates.api.feature.tag;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class TeamView {
 
-    private final HashMap<String, Set<String>> teamMembers = new HashMap<>();
+    private final Map<String, Set<String>> teamMembers = new Object2ObjectOpenHashMap<>();
 
     @Nullable
     public Set<String> getTeamMembers(String team) {
@@ -34,7 +33,7 @@ public class TeamView {
     }
 
     public void addTeamMembers(String team, Collection<String> members) {
-        teamMembers.computeIfAbsent(team, k -> new HashSet<>(members));
+        teamMembers.computeIfAbsent(team, k -> new ObjectOpenHashSet<>(members));
     }
 
     public void removeTeamMembers(String team, Collection<String> members) {

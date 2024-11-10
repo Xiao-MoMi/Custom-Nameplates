@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api.feature.advance;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +29,11 @@ import static java.util.Objects.requireNonNull;
 
 public class CharacterFontAdvanceDataImpl implements CharacterFontAdvanceData {
 
-    private final HashMap<Integer, Float> data;
+    private final Map<Integer, Float> data;
     private final String id;
     private final Function<Map<String, Object>, List<JsonObject>> fontProviderFunction;
 
-    public CharacterFontAdvanceDataImpl(String id, HashMap<Integer, Float> data, Function<Map<String, Object>, List<JsonObject>> fontProviderFunction) {
+    public CharacterFontAdvanceDataImpl(String id, Map<Integer, Float> data, Function<Map<String, Object>, List<JsonObject>> fontProviderFunction) {
         this.data = data;
         this.id = requireNonNull(id);
         this.fontProviderFunction = requireNonNull(fontProviderFunction);
@@ -65,7 +66,7 @@ public class CharacterFontAdvanceDataImpl implements CharacterFontAdvanceData {
 
     public static class BuilderImpl implements Builder {
 
-        private final HashMap<Integer, Float> data = new HashMap<>();
+        private final Int2FloatOpenHashMap data = new Int2FloatOpenHashMap();
         private String id;
         private Function<Map<String, Object>, List<JsonObject>> fontProviderFunction = (stringObjectMap -> null);
 

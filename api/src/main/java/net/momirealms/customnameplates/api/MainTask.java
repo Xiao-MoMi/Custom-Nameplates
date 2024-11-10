@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.api;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class MainTask implements Runnable {
 
     private static final Map<Integer, Integer> TIME_1 = new ConcurrentHashMap<>(2048);
     private static final Map<Integer, Integer> TIME_2 = new ConcurrentHashMap<>(2048);
-    private static final Set<Integer> requestedSharedPlaceholders = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<Integer> requestedSharedPlaceholders = Collections.synchronizedSet(new ObjectOpenHashSet<>());
     private int timer;
 
     private final CustomNameplates plugin;

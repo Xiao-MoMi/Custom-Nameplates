@@ -28,6 +28,7 @@ import net.momirealms.customnameplates.api.util.Vector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -190,7 +191,7 @@ public interface CNPlayer {
      * @param placeholders the placeholders to update
      * @param another      the players related to the placeholders
      */
-    void forceUpdatePlaceholders(Set<Placeholder> placeholders, Set<CNPlayer> another);
+    void forceUpdatePlaceholders(Set<Placeholder> placeholders, Collection<CNPlayer> another);
 
     /**
      * Retrieves the cached data for a given placeholder.
@@ -317,7 +318,7 @@ public interface CNPlayer {
      *
      * @return the set of nearby players
      */
-    Set<CNPlayer> nearbyPlayers();
+    Collection<CNPlayer> nearbyPlayers();
 
     /**
      * Adds passenger entities to the tracker for another player.

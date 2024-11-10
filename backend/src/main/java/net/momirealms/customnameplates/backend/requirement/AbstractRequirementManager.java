@@ -18,6 +18,8 @@
 package net.momirealms.customnameplates.backend.requirement;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
@@ -35,12 +37,29 @@ import java.util.*;
 public abstract class AbstractRequirementManager implements RequirementManager {
 
     protected final CustomNameplates plugin;
-    private final HashMap<String, RequirementFactory> requirementFactoryMap = new HashMap<>();
+    private final Object2ObjectOpenHashMap<String, RequirementFactory> requirementFactoryMap = new Object2ObjectOpenHashMap<>(128);
+    private int countId = 0;
+    private final Map<Requirement, Integer> registeredRequirements = new Object2IntOpenHashMap<>(128);
 
     public AbstractRequirementManager(CustomNameplates plugin) {
         this.plugin = plugin;
         this.registerInternalRequirements();
         this.registerPlatformRequirements();
+    }
+
+    @Override
+    public void reload() {
+        this.countId = 0;
+        this.registeredRequirements.clear();
+    }
+
+    @Override
+    public int countId(Requirement requirement) {
+        if (requirement == null) return -1;
+        if (this.registeredRequirements.containsKey(requirement)) return this.registeredRequirements.get(requirement);
+        this.countId++;
+        this.registeredRequirements.put(requirement, countId);
+        return this.countId;
     }
 
     private void registerInternalRequirements() {

@@ -26,4 +26,6 @@ dependencies {
     // TTF
     compileOnly("org.lwjgl:lwjgl-freetype:${rootProject.properties["lwjgl_version"]}")
     compileOnly("org.lwjgl:lwjgl:${rootProject.properties["lwjgl_version"]}")
+    // Fast util
+    compileOnly("it.unimi.dsi:fastutil:${rootProject.properties["fastutil_version"]}")
 }

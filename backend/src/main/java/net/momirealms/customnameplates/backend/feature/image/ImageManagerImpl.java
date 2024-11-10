@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.feature.image;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
@@ -60,7 +61,7 @@ public class ImageManagerImpl implements ImageManager {
 
     @Override
     public Collection<Image> images() {
-        return new HashSet<>(images.values());
+        return new ObjectArrayList<>(images.values());
     }
 
     private void loadConfigs() {

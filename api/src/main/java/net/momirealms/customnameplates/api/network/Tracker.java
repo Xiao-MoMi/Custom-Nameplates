@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.api.network;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
 
 import java.util.HashSet;
@@ -80,7 +81,7 @@ public class Tracker {
     }
 
     public Set<Integer> getPassengerIDs() {
-        return new HashSet<>(passengerIDs);
+        return new ObjectOpenHashSet<>(passengerIDs);
     }
 
     public boolean isEmpty() {

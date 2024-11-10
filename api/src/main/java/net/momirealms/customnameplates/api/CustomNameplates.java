@@ -17,6 +17,8 @@
 
 package net.momirealms.customnameplates.api;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.feature.advance.AdvanceManager;
 import net.momirealms.customnameplates.api.feature.background.BackgroundManager;
@@ -38,10 +40,7 @@ import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -69,7 +68,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     protected MainTask mainTask;
     protected SchedulerTask scheduledMainTask;
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
-    protected HashMap<Integer, CNPlayer> entityIDFastLookup = new HashMap<>();
+    protected Int2ObjectOpenHashMap<CNPlayer> entityIDFastLookup = new Int2ObjectOpenHashMap<>();
     protected AdvanceManager advanceManager;
     protected BackgroundManager backgroundManager;
     protected EventManager eventManager;
@@ -288,7 +287,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
      * @return a collection of {@link CNPlayer} instances
      */
     public Collection<CNPlayer> getOnlinePlayers() {
-        return new HashSet<>(onlinePlayerMap.values());
+        return new ObjectArrayList<>(onlinePlayerMap.values());
     }
 
     /**

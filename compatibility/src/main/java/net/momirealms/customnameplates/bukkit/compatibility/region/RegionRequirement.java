@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.bukkit.compatibility.region;
 
+import com.google.common.base.Objects;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
@@ -75,5 +76,17 @@ public class RegionRequirement extends AbstractRequirement {
     @Override
     public String type() {
         return "region";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RegionRequirement that)) return false;
+        return mode == that.mode && Objects.equal(regions, that.regions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(regions, mode);
     }
 }

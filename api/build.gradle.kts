@@ -23,6 +23,8 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.113.Final")
     // GSON
     compileOnly("com.google.code.gson:gson:${rootProject.properties["gson_version"]}")
+    // Fast util
+    compileOnly("it.unimi.dsi:fastutil:${rootProject.properties["fastutil_version"]}")
 }
 
 java {

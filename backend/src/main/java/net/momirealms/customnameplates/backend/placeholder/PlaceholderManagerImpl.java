@@ -19,6 +19,10 @@ package net.momirealms.customnameplates.backend.placeholder;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -51,7 +55,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
     private final CustomNameplates plugin;
     private final HashMap<String, Integer> refreshIntervals = new HashMap<>();
-    private final HashMap<Integer, Integer> fasterRefreshIntervals = new HashMap<>();
+    private final Int2IntOpenHashMap fasterRefreshIntervals = new Int2IntOpenHashMap();
     private final Map<String, Placeholder> registeredPlaceholders = new HashMap<>();
     private final HashMap<Placeholder, List<PreParsedDynamicText>> childrenText = new HashMap<>();
     private final HashMap<String, Placeholder> nestedPlaceholders = new HashMap<>();
@@ -575,9 +579,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     public void refreshPlaceholders() {
         for (CNPlayer player : plugin.getOnlinePlayers()) {
             if (!player.isOnline()) continue;
-            Set<Feature> featuresToNotifyUpdates = new HashSet<>();
-            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new HashMap<>();
-            List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ArrayList<>();
+            Set<Feature> featuresToNotifyUpdates = new ObjectOpenHashSet<>();
+            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new Object2ObjectOpenHashMap<>();
+            List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ObjectArrayList<>();
             for (Placeholder placeholder : player.activePlaceholdersToRefresh()) {
                 if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
                     TimeStampData<String> previous = player.getValue(placeholder);
@@ -652,7 +656,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         for (Feature feature : player.activeFeatures(placeholder)) {
                             // Filter features that will not be updated for all players
                             if (!featuresToNotifyUpdates.contains(feature)) {
-                                List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ObjectArrayList<>());
                                 players.add(nearby);
                             }
                         }
@@ -663,7 +667,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                                 for (Feature feature : player.activeFeatures(placeholder)) {
                                     // Filter features that will not be updated for all players
                                     if (!featuresToNotifyUpdates.contains(feature)) {
-                                        List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                        List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ObjectArrayList<>());
                                         players.add(nearby);
                                     }
                                 }
@@ -677,7 +681,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                             for (Feature feature : player.activeFeatures(placeholder)) {
                                 // Filter features that will not be updated for all players
                                 if (!featuresToNotifyUpdates.contains(feature)) {
-                                    List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ArrayList<>());
+                                    List<CNPlayer> players = relationalFeaturesToNotifyUpdates.computeIfAbsent(feature, k -> new ObjectArrayList<>());
                                     players.add(nearby);
                                 }
                             }
@@ -773,7 +777,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         if (firstPercent == 0 && text.charAt(text.length() - 1) == '%' && text.indexOf('%', 1) == text.length() - 1) {
             return Collections.singletonList(text);
         }
-        List<String> placeholders = new ArrayList<>();
+        List<String> placeholders = new ObjectArrayList<>();
         Matcher m = PATTERN.matcher(text);
         while (m.find()) {
             placeholders.add(m.group());

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api.requirement;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.CustomNameplates;
 
 /**
  * A requirement that is always satisfied, representing an "empty" or default requirement.
@@ -55,6 +56,11 @@ public class EmptyRequirement implements Requirement {
     @Override
     public String type() {
         return "empty";
+    }
+
+    @Override
+    public int countId() {
+        return CustomNameplates.getInstance().getRequirementManager().countId(this);
     }
 
     /**

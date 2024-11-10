@@ -18,6 +18,11 @@
 package net.momirealms.customnameplates.api;
 
 import io.netty.channel.Channel;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenCustomHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.feature.Feature;
 import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.feature.tag.TeamView;
@@ -51,11 +56,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private final TeamView teamView = new TeamView();
 
-    private final Map<Integer, TimeStampData<String>> cachedValues = new ConcurrentHashMap<>();
-    private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>();
+    private final Int2ObjectOpenHashMap<TimeStampData<String>> cachedValues = new Int2ObjectOpenHashMap<>(64);
+    private final Int2ObjectOpenHashMap<WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new Int2ObjectOpenHashMap<>(64);
 
-    private final Map<Requirement, TimeStampData<Boolean>> cachedRequirements = new ConcurrentHashMap<>();
-    private final Map<Requirement, WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new ConcurrentHashMap<>();
+    private final Int2ObjectOpenHashMap<TimeStampData<Boolean>> cachedRequirements = new Int2ObjectOpenHashMap<>(128);
+    private final Int2ObjectOpenHashMap<WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new Int2ObjectOpenHashMap<>(128);
 
     private final Set<Feature> activeFeatures = new CopyOnWriteArraySet<>();
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new ConcurrentHashMap<>();
@@ -71,7 +76,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     @Override
     public List<Placeholder> activePlaceholdersToRefresh() {
         Placeholder[] activePlaceholders = activePlaceholders();
-        List<Placeholder> placeholderWithChildren = new ArrayList<>();
+        List<Placeholder> placeholderWithChildren = new ObjectArrayList<>();
         for (Placeholder placeholder : activePlaceholders) {
             childrenFirstList(placeholder, placeholderWithChildren);
         }
@@ -79,9 +84,9 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public void forceUpdatePlaceholders(Set<Placeholder> placeholders, Set<CNPlayer> others) {
+    public void forceUpdatePlaceholders(Set<Placeholder> placeholders, Collection<CNPlayer> others) {
         if (placeholders.isEmpty()) return;
-        List<Placeholder> placeholderWithChildren = new ArrayList<>();
+        List<Placeholder> placeholderWithChildren = new ObjectArrayList<>();
         for (Placeholder placeholder : placeholders) {
             childrenFirstList(placeholder, placeholderWithChildren);
         }
@@ -224,7 +229,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         Set<Placeholder> allPlaceholders = feature.allPlaceholders();
         feature2Placeholders.put(feature, allPlaceholders);
         for (Placeholder placeholder : allPlaceholders) {
-            Set<Feature> featureSet = placeholder2Features.computeIfAbsent(placeholder, k -> new HashSet<>());
+            Set<Feature> featureSet = placeholder2Features.computeIfAbsent(placeholder, k -> new ObjectOpenHashSet<>());
             featureSet.add(feature);
         }
     }
@@ -330,7 +335,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Placeholder[] activePlaceholders() {
-        HashSet<Placeholder> placeholders = new HashSet<>();
+        Set<Placeholder> placeholders = new ObjectOpenHashSet<>();
         for (Feature feature : activeFeatures) {
             placeholders.addAll(feature.activePlaceholders());
         }
@@ -341,7 +346,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     public boolean isMet(Requirement[] requirements) {
         int currentTicks = MainTask.getTicks();
         for (Requirement requirement : requirements) {
-            TimeStampData<Boolean> data = cachedRequirements.get(requirement);
+            TimeStampData<Boolean> data = cachedRequirements.get(requirement.countId());
             if (data != null) {
                 if (data.ticks() + requirement.refreshInterval() > currentTicks) {
                     if (!data.data()) {
@@ -358,7 +363,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
             } else {
                 boolean satisfied = requirement.isSatisfied(this, this);
                 data = new TimeStampData<>(satisfied, currentTicks, true);
-                cachedRequirements.put(requirement, data);
+                cachedRequirements.put(requirement.countId(), data);
                 if (!satisfied) {
                     return false;
                 }
@@ -371,7 +376,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     public boolean isMet(CNPlayer another, Requirement[] requirements) {
         int currentTicks = MainTask.getTicks();
         for (Requirement requirement : requirements) {
-            WeakHashMap<CNPlayer, TimeStampData<Boolean>> innerMap = cachedRelationalRequirements.computeIfAbsent(requirement, k -> new WeakHashMap<>());
+            WeakHashMap<CNPlayer, TimeStampData<Boolean>> innerMap = cachedRelationalRequirements.computeIfAbsent(requirement.countId(), k -> new WeakHashMap<>());
             TimeStampData<Boolean> data = innerMap.get(another);
             if (data != null) {
                 if (data.ticks() + requirement.refreshInterval() > currentTicks) {
@@ -421,8 +426,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public Set<CNPlayer> nearbyPlayers() {
-        return new HashSet<>(trackers.keySet());
+    public Collection<CNPlayer> nearbyPlayers() {
+        return new ObjectArrayList<>(trackers.keySet());
     }
 
     @Override
@@ -446,7 +451,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Set<Integer> getTrackedPassengerIds(CNPlayer another) {
-        return Optional.ofNullable(trackers.get(another)).map(Tracker::getPassengerIDs).orElse(new HashSet<>());
+        return Optional.ofNullable(trackers.get(another)).map(Tracker::getPassengerIDs).orElse(new ObjectOpenHashSet<>());
     }
 
     @Override

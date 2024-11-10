@@ -17,14 +17,27 @@
 
 package net.momirealms.customnameplates.backend.requirement;
 
+import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractRequirement implements Requirement {
 
     protected final int refreshInterval;
+    @Nullable
+    protected Integer countId;
 
     public AbstractRequirement(int refreshInterval) {
         this.refreshInterval = refreshInterval;
+    }
+
+    @Override
+    public int countId() {
+        // lazy init
+        if (countId == null) {
+            countId = CustomNameplates.getInstance().getRequirementManager().countId(this);
+        }
+        return countId;
     }
 
     @Override

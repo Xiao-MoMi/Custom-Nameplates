@@ -17,18 +17,18 @@
 
 package net.momirealms.customnameplates.api.feature.advance;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
 public class ConfigurableFontAdvanceDataImpl implements ConfigurableFontAdvanceData {
 
     private final float defaultAdvance;
-    private final HashMap<Integer, Float> data = new HashMap<>();
-    private final List<CharacterFontAdvanceData> parents = new ArrayList<>();
+    private final Map<Integer, Float> data = new Int2FloatOpenHashMap();
+    private final List<CharacterFontAdvanceData> parents = new ObjectArrayList<>();
     private final String id;
 
     public ConfigurableFontAdvanceDataImpl(String id, float defaultAdvance, HashMap<Integer, Float> customData, List<CharacterFontAdvanceData> parentFonts) {

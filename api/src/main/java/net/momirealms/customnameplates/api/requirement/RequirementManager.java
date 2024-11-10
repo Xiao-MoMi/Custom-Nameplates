@@ -87,4 +87,12 @@ public interface RequirementManager extends Reloadable {
      */
     @NotNull
     Requirement parseSimpleRequirement(@NotNull String type, @NotNull Object value);
+
+    /**
+     * Gets the count id for the requirement for faster lookup
+     *
+     * @param requirement requirement
+     * @return the id
+     */
+    int countId(Requirement requirement);
 }
