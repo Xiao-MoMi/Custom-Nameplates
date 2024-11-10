@@ -30,8 +30,9 @@ Once your changes are ready, open a pull request for review. We appreciate your 
 
 ## Support the Developer
 
-Polymart: https://polymart.org/resource/customnameplates.2543 \
-Afdian: https://afdian.com/@xiaomomi
+Polymart: https://polymart.org/resource/customnameplates.2543/ \
+BuiltByBit: https://builtbybit.com/resources/customnameplates.36359/ \
+Afdian: https://afdian.com/@xiaomomi/
 
 ## CustomNameplates API
 
