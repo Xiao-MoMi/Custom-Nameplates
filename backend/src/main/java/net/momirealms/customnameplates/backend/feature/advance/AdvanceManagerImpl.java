@@ -933,7 +933,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
                 .advance(dataMap)
                 .fontProviderFunction(function)
                 .build();
-        charFontWidthDataMap.put(id, fontWidthData);
+        this.charFontWidthDataMap.put(id, fontWidthData);
     }
 
     @Override
@@ -1021,8 +1021,8 @@ public class AdvanceManagerImpl implements AdvanceManager {
 
     @Override
     public void unload() {
+        this.textWidthCache.invalidateAll();
         this.configFontWidthDataMap.clear();
-        this.textWidthCache.cleanUp();
     }
 
     @Override
@@ -1218,6 +1218,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
         return totalAdvance;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public List<Tuple<String, Key, Boolean>> miniMessageToIterable(String text) {
         if (AdventureHelper.legacySupport) text = AdventureHelper.legacyToMiniMessage(text);
@@ -1227,6 +1228,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
         return iterableTexts;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void nodeToIterableTexts(ElementNode node, List<Tuple<String, Key, Boolean>> list, Key font, boolean bold) {
         if (node instanceof ValueNode valueNode) {
             String text = valueNode.value();
