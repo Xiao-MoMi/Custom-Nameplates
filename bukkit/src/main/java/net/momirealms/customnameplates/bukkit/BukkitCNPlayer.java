@@ -53,6 +53,11 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
     }
 
     @Override
+    public boolean isInitialized() {
+        return player != null;
+    }
+
+    @Override
     public Player player() {
         return player.get();
     }

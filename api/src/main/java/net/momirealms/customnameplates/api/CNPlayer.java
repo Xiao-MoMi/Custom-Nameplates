@@ -402,4 +402,11 @@ public interface CNPlayer {
      * @return team view
      */
     TeamView teamView();
+
+    /**
+     * Check if the player is initialized
+     *
+     * @return initialized or not
+     */
+    boolean isInitialized();
 }

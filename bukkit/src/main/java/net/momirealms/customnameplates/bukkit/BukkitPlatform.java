@@ -207,6 +207,7 @@ public class BukkitPlatform implements Platform {
         // for skin plugin compatibility
         registerPacketConsumer((player, event, packet) -> {
             try {
+                if (!player.isInitialized()) return;
                 UUID pUUID = player.uuid();
                 @SuppressWarnings("unchecked")
                 List<UUID> uuids = (List<UUID>) Reflections.field$ClientboundPlayerInfoRemovePacket$profileIds.get(packet);
@@ -228,7 +229,6 @@ public class BukkitPlatform implements Platform {
             try {
                 EnumSet<?> enums = (EnumSet<?>) Reflections.field$ClientboundPlayerInfoUpdatePacket$actions.get(packet);
                 if (enums == null) return;
-                UUID pUUID = player.uuid();
                 boolean add_player = enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$ADD_PLAYER);
                 boolean update_gamemode = enums.contains(Reflections.enum$ClientboundPlayerInfoUpdatePacket$Action$UPDATE_GAME_MODE);
                 if (add_player || update_gamemode) {
@@ -239,8 +239,9 @@ public class BukkitPlatform implements Platform {
                         if (uuid == null) continue;
 
                         // for skin plugin compatibility
-                        if (add_player && uuid.equals(pUUID)) {
-                            if (player.isTempPreviewing() || player.isToggleablePreviewing() || CustomNameplates.getInstance().getUnlimitedTagManager().isAlwaysShow()) {
+                        if (add_player && player.isInitialized()) {
+                            UUID pUUID = player.uuid();
+                            if (uuid.equals(pUUID) && (player.isTempPreviewing() || player.isToggleablePreviewing() || CustomNameplates.getInstance().getUnlimitedTagManager().isAlwaysShow())) {
                                 Tracker tracker = player.addPlayerToTracker(player);
                                 tracker.setScale(player.scale());
                                 tracker.setCrouching(player.isCrouching());
