@@ -1,13 +1,13 @@
-display-name: Thank you, Cheems
+display-name: Video Game Console
 left:
-  image: cheems_left
+  image: game_left
   height: 16
   ascent: 12
 middle:
-  image: cheems_middle
+  image: game_middle
   height: 16
   ascent: 12
 right:
-  image: cheems_right
+  image: game_right
   height: 16
   ascent: 12

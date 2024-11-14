@@ -1,13 +1,13 @@
-display-name: Wither Rose
+display-name: Enter
 left:
-  image: wither_left
+  image: enter_left
   height: 16
   ascent: 12
 middle:
-  image: wither_middle
+  image: enter_middle
   height: 16
   ascent: 12
 right:
-  image: wither_right
+  image: enter_right
   height: 16
   ascent: 12

@@ -138,7 +138,7 @@ public class NameplateManagerImpl implements NameplateManager {
     }
 
     private void saveDefaultNameplates() {
-        String[] png_list = new String[]{"cat", "egg", "cheems", "wither", "xmas", "halloween", "hutao", "starsky", "trident", "rabbit"};
+        String[] png_list = new String[]{"egg", "xmas", "halloween", "hutao", "starsky", "trident", "rabbit", "sign", "game", "enter", "panda", "angel", "banner"};
         String[] part_list = new String[]{"_left.png", "_middle.png", "_right.png", ".yml"};
         for (String name : png_list) {
             for (String part : part_list) {

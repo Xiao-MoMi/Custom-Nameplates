@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit.compatibility;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.api.feature.OffsetFont;
@@ -234,6 +235,9 @@ public class NameplatesExtraExpansion extends PlaceholderExpansion {
                 if (hours >= 24) hours -= 24;
                 String minuteStr = (minutes < 10) ? "0" + minutes : String.valueOf(minutes);
                 return hours + ":" + minuteStr;
+            }
+            case "newline" -> {
+                return "\n";
             }
         }
         return null;

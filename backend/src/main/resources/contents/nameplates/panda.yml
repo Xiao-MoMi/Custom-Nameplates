@@ -1,13 +1,13 @@
-display-name: Sad Cat
+display-name: Panda
 left:
-  image: cat_left
+  image: panda_left
   height: 16
   ascent: 12
 middle:
-  image: cat_middle
+  image: panda_middle
   height: 16
   ascent: 12
 right:
-  image: cat_right
+  image: panda_right
   height: 16
   ascent: 12

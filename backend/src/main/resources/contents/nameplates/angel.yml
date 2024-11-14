@@ -1,0 +1,13 @@
+display-name: Angel
+left:
+  image: angel_left
+  height: 16
+  ascent: 14
+middle:
+  image: angel_middle
+  height: 16
+  ascent: 14
+right:
+  image: angel_right
+  height: 16
+  ascent: 14
