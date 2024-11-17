@@ -83,10 +83,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     private String updatePlayerPlaceholder(PlayerPlaceholder placeholder) {
-        TimeStampData<String> value = getRawValue(placeholder);
+        TimeStampData<String> value = getRawPlayerValue(placeholder);
         if (value == null) {
             value = new TimeStampData<>(placeholder.request(this), MainTask.getTicks(), true);
-            setValue(placeholder, value);
+            setPlayerValue(placeholder, value);
             return value.data();
         }
         if (value.ticks() != MainTask.getTicks()) {
@@ -119,7 +119,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     private String updateSharedPlaceholder(SharedPlaceholder placeholder) {
-        TimeStampData<String> value = getRawValue(placeholder);
+        TimeStampData<String> value = getRawSharedValue(placeholder);
         if (value == null) {
             String latest;
             if (MainTask.hasRequested(placeholder.countId())) {
@@ -128,7 +128,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
                 latest = placeholder.request();
             }
             value = new TimeStampData<>(latest, MainTask.getTicks(), true);
-            setValue(placeholder, value);
+            setSharedValue(placeholder, value);
             return value.data();
         }
         if (value.ticks() != MainTask.getTicks()) {
@@ -266,86 +266,98 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public void setValue(Placeholder placeholder, TimeStampData<String> value) {
+    public void setPlayerValue(PlayerPlaceholder placeholder, TimeStampData<String> value) {
         cachedValues.put(placeholder.countId(), value);
     }
 
     @Override
-    public boolean setValue(Placeholder placeholder, String value) {
-        TimeStampData<String> previous = cachedValues.get(placeholder.countId());
-        int currentTicks = MainTask.getTicks();
-        boolean changed = false;
-        if (previous != null) {
-            if (previous.ticks() == currentTicks) {
-                return false;
-            }
-            String data = previous.data();
-            if (!data.equals(value)) {
-                changed = true;
-                previous.data(value);
-                previous.updateTicks(true);
-            }
-        } else {
-            changed= true;
-            previous = new TimeStampData<>(value, currentTicks, true);
-            cachedValues.put(placeholder.countId(), previous);
-        }
-        return changed;
+    public void setSharedValue(SharedPlaceholder placeholder, TimeStampData<String> value) {
+        cachedValues.put(placeholder.countId(), value);
     }
 
     @Override
-    public void setRelationalValue(Placeholder placeholder, CNPlayer another, TimeStampData<String> value) {
+    public void setRelationalValue(RelationalPlaceholder placeholder, CNPlayer another, TimeStampData<String> value) {
         WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.computeIfAbsent(placeholder.countId(), k -> new WeakHashMap<>());
         map.put(another, value);
     }
 
+//    @Override
+//    public boolean setPlayerValue(PlayerPlaceholder placeholder, String value) {
+//        TimeStampData<String> previous = cachedValues.get(placeholder.countId());
+//        int currentTicks = MainTask.getTicks();
+//        boolean changed = false;
+//        if (previous != null) {
+//            if (previous.ticks() == currentTicks) {
+//                return false;
+//            }
+//            String data = previous.data();
+//            if (!data.equals(value)) {
+//                changed = true;
+//                previous.data(value);
+//                previous.updateTicks(true);
+//            }
+//        } else {
+//            changed= true;
+//            previous = new TimeStampData<>(value, currentTicks, true);
+//            cachedValues.put(placeholder.countId(), previous);
+//        }
+//        return changed;
+//    }
+
+//    @Override
+//    public boolean setRelationalValue(RelationalPlaceholder placeholder, CNPlayer another, String value) {
+//        WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.computeIfAbsent(placeholder.countId(), k -> new WeakHashMap<>());
+//        TimeStampData<String> previous = map.get(another);
+//        int currentTicks = MainTask.getTicks();
+//        boolean changed = false;
+//        if (previous != null) {
+//            if (previous.ticks() == currentTicks) {
+//                return false;
+//            }
+//            String data = previous.data();
+//            if (!data.equals(value)) {
+//                changed = true;
+//                previous.data(value);
+//                previous.updateTicks(true);
+//            }
+//        } else {
+//            changed= true;
+//            previous = new TimeStampData<>(value, currentTicks, true);
+//            map.put(another, previous);
+//        }
+//        return changed;
+//    }
+
     @Override
-    public boolean setRelationalValue(Placeholder placeholder, CNPlayer another, String value) {
-        WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.computeIfAbsent(placeholder.countId(), k -> new WeakHashMap<>());
-        TimeStampData<String> previous = map.get(another);
-        int currentTicks = MainTask.getTicks();
-        boolean changed = false;
-        if (previous != null) {
-            if (previous.ticks() == currentTicks) {
-                return false;
-            }
-            String data = previous.data();
-            if (!data.equals(value)) {
-                changed = true;
-                previous.data(value);
-                previous.updateTicks(true);
-            }
-        } else {
-            changed= true;
-            previous = new TimeStampData<>(value, currentTicks, true);
-            map.put(another, previous);
-        }
-        return changed;
+    public @NotNull String getCachedSharedValue(SharedPlaceholder placeholder) {
+        return updateSharedPlaceholder(placeholder);
     }
 
     @Override
-    public @NotNull String getCachedValue(Placeholder placeholder) {
-        return Optional.ofNullable(cachedValues.get(placeholder.countId())).map(TimeStampData::data).orElse(placeholder.id());
+    public @NotNull String getCachedPlayerValue(PlayerPlaceholder placeholder) {
+        return updatePlayerPlaceholder(placeholder);
+    }
+
+    @Override
+    public @NotNull String getCachedRelationalValue(RelationalPlaceholder placeholder, CNPlayer another) {
+        return updateRelationalPlaceholder(placeholder, another);
     }
 
     @Nullable
     @Override
-    public TimeStampData<String> getRawValue(Placeholder placeholder) {
+    public TimeStampData<String> getRawPlayerValue(PlayerPlaceholder placeholder) {
         return cachedValues.get(placeholder.countId());
     }
 
+    @Nullable
     @Override
-    public @NotNull String getCachedRelationalValue(Placeholder placeholder, CNPlayer another) {
-        WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.get(placeholder.countId());
-        if (map == null) {
-            return placeholder.id();
-        }
-        return Optional.ofNullable(map.get(another)).map(TimeStampData::data).orElse(placeholder.id());
+    public TimeStampData<String> getRawSharedValue(SharedPlaceholder placeholder) {
+        return cachedValues.get(placeholder.countId());
     }
 
     @Nullable
     @Override
-    public TimeStampData<String> getRawRelationalValue(Placeholder placeholder, CNPlayer another) {
+    public TimeStampData<String> getRawRelationalValue(RelationalPlaceholder placeholder, CNPlayer another) {
         WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.get(placeholder.countId());
         if (map == null) {
             return null;
@@ -431,12 +443,12 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         }
         tracker = new Tracker(another);
         trackers.put(another, tracker);
-        for (Placeholder placeholder : activePlaceholders()) {
-            if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
-                String value = relationalPlaceholder.request(this, another);
-                setRelationalValue(placeholder, another, value);
-            }
-        }
+//        for (Placeholder placeholder : activePlaceholders()) {
+//            if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+//                String value = relationalPlaceholder.request(this, another);
+//                setRelationalValue(relationalPlaceholder, another, value);
+//            }
+//        }
         return tracker;
     }
 

@@ -584,10 +584,10 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ObjectArrayList<>();
             for (Placeholder placeholder : player.activePlaceholdersToRefresh()) {
                 if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-                    TimeStampData<String> previous = player.getRawValue(placeholder);
+                    TimeStampData<String> previous = player.getRawPlayerValue(playerPlaceholder);
                     if (previous == null) {
                         String value = playerPlaceholder.request(player);
-                        player.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
+                        player.setPlayerValue(playerPlaceholder, new TimeStampData<>(value, MainTask.getTicks(), true));
                         featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
                     } else {
                         if (previous.ticks() > MainTask.getTicks() - getRefreshInterval(placeholder.countId())) {
@@ -609,7 +609,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 } else if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
                     delayedPlaceholdersToUpdate.add(relationalPlaceholder);
                 } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                    TimeStampData<String> previous = player.getRawValue(placeholder);
+                    TimeStampData<String> previous = player.getRawSharedValue(sharedPlaceholder);
                     if (previous == null) {
                         String value;
                         // if the shared placeholder has been updated by other players
@@ -618,7 +618,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         } else {
                             value = sharedPlaceholder.request();
                         }
-                        player.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
+                        player.setSharedValue(sharedPlaceholder, new TimeStampData<>(value, MainTask.getTicks(), true));
                         featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
                     } else {
                         // The placeholder has been refreshed by other codes

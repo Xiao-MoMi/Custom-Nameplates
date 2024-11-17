@@ -55,18 +55,24 @@ public class PreParsedDynamicText {
         for (String id : detectedPlaceholders) {
             Placeholder placeholder = manager.getPlaceholder(id);
             placeholders.add(placeholder);
-            if (placeholder instanceof RelationalPlaceholder) {
-                convertor.add((owner) -> (viewer) -> owner.getCachedRelationalValue(placeholder, viewer));
+            if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+                convertor.add((owner) -> (viewer) -> owner.getCachedRelationalValue(relationalPlaceholder, viewer));
             } else if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
                 convertor.add((owner) -> (viewer) -> {
                     if (owner != null) {
-                        return owner.getCachedValue(placeholder);
+                        return owner.getCachedPlayerValue(playerPlaceholder);
                     } else {
                         return playerPlaceholder.request(null);
                     }
                 });
             } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                convertor.add((owner) -> (viewer) -> sharedPlaceholder.getLatestValue());
+                convertor.add((owner) -> (viewer) -> {
+                    if (owner != null) {
+                        return owner.getCachedSharedValue(sharedPlaceholder);
+                    } else {
+                        return sharedPlaceholder.request();
+                    }
+                });
             } else {
                 convertor.add((owner) -> (viewer) -> id);
             }

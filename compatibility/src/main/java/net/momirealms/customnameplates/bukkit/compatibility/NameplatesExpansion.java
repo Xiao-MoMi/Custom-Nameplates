@@ -21,17 +21,14 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
+import net.momirealms.customnameplates.api.placeholder.RelationalPlaceholder;
+import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
 
 public class NameplatesExpansion extends PlaceholderExpansion implements Relational {
 
@@ -64,20 +61,22 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         Placeholder placeholder = plugin.getPlaceholderManager().getRegisteredPlaceholder("%np_" + params + "%");
+        CNPlayer cnPlayer = player == null ? null : plugin.getPlayer(player.getUniqueId());
         if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-            CNPlayer cnPlayer = player == null ? null : plugin.getPlayer(player.getUniqueId());
-            if (placeholder.children().isEmpty()) {
-                return playerPlaceholder.request(cnPlayer);
-            }
             if (cnPlayer != null) {
-                cnPlayer.forceUpdatePlaceholders(Set.of(placeholder), Collections.emptySet());
-                return cnPlayer.getCachedValue(placeholder);
+                return cnPlayer.getCachedPlayerValue(playerPlaceholder);
             } else {
                 try {
                     return playerPlaceholder.request(null);
                 } catch (NullPointerException e) {
                     plugin.getPluginLogger().warn("%nameplates_" + params + "% contains a placeholder that requires a player as the parameter");
                 }
+            }
+        } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
+            if (cnPlayer != null) {
+                return cnPlayer.getCachedSharedValue(sharedPlaceholder);
+            } else {
+                return sharedPlaceholder.request();
             }
         }
         return null;
@@ -91,9 +90,8 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
             return null;
         }
         Placeholder placeholder = plugin.getPlaceholderManager().getRegisteredPlaceholder("%rel_np_" + params + "%");
-        if (placeholder != null) {
-            cnPlayer1.forceUpdatePlaceholders(Set.of(placeholder), Set.of(cnPlayer2));
-            return Optional.ofNullable(cnPlayer1.getRawRelationalValue(placeholder, cnPlayer2)).map(TimeStampData::data).orElse(placeholder.id());
+        if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+            return cnPlayer1.getCachedRelationalValue(relationalPlaceholder, cnPlayer2);
         }
         return null;
     }

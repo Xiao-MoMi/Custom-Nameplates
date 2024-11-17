@@ -23,6 +23,8 @@ import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.feature.tag.TeamView;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+import net.momirealms.customnameplates.api.placeholder.PlayerPlaceholder;
+import net.momirealms.customnameplates.api.placeholder.RelationalPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Vector3;
@@ -201,16 +203,16 @@ public interface CNPlayer {
      * @return the cached data as a string
      */
     @NotNull
-    String getCachedValue(Placeholder placeholder);
+    String getCachedSharedValue(SharedPlaceholder placeholder);
 
     /**
-     * Retrieves the cached {@link TimeStampData} for a given placeholder.
+     * Retrieves the cached data for a given placeholder.
      *
      * @param placeholder the placeholder to retrieve data for
-     * @return the cached TickStampData, or null if none exists
+     * @return the cached data as a string
      */
-    @Nullable
-    TimeStampData<String> getRawValue(Placeholder placeholder);
+    @NotNull
+    String getCachedPlayerValue(PlayerPlaceholder placeholder);
 
     /**
      * Retrieves the cached relational data between this player and another for a given placeholder.
@@ -220,7 +222,25 @@ public interface CNPlayer {
      * @return the relational data as a string
      */
     @NotNull
-    String getCachedRelationalValue(Placeholder placeholder, CNPlayer another);
+    String getCachedRelationalValue(RelationalPlaceholder placeholder, CNPlayer another);
+
+    /**
+     * Retrieves the cached {@link TimeStampData} for a given placeholder.
+     *
+     * @param placeholder the placeholder to retrieve data for
+     * @return the cached TickStampData, or null if none exists
+     */
+    @Nullable
+    TimeStampData<String> getRawPlayerValue(PlayerPlaceholder placeholder);
+
+    /**
+     * Retrieves the cached {@link TimeStampData} for a given placeholder.
+     *
+     * @param placeholder the placeholder to retrieve data for
+     * @return the cached TickStampData, or null if none exists
+     */
+    @Nullable
+    TimeStampData<String> getRawSharedValue(SharedPlaceholder placeholder);
 
     /**
      * Retrieves the cached relational {@link TimeStampData} for a given placeholder.
@@ -230,7 +250,7 @@ public interface CNPlayer {
      * @return the cached relational TickStampData, or null if none exists
      */
     @Nullable
-    TimeStampData<String> getRawRelationalValue(Placeholder placeholder, CNPlayer another);
+    TimeStampData<String> getRawRelationalValue(RelationalPlaceholder placeholder, CNPlayer another);
 
     /**
      * Caches the specified {@link TimeStampData} for the given placeholder.
@@ -238,16 +258,15 @@ public interface CNPlayer {
      * @param placeholder the placeholder to cache
      * @param value       the value to cache
      */
-    void setValue(Placeholder placeholder, TimeStampData<String> value);
+    void setPlayerValue(PlayerPlaceholder placeholder, TimeStampData<String> value);
 
     /**
-     * Caches the specified value for the given placeholder.
+     * Caches the specified {@link TimeStampData} for the given placeholder.
      *
      * @param placeholder the placeholder to cache
      * @param value       the value to cache
-     * @return true if the value was changed, false otherwise
      */
-    boolean setValue(Placeholder placeholder, String value);
+    void setSharedValue(SharedPlaceholder placeholder, TimeStampData<String> value);
 
     /**
      * Caches the specified relational {@link TimeStampData} for a given placeholder and player.
@@ -256,17 +275,26 @@ public interface CNPlayer {
      * @param another     the other player
      * @param value       the value to cache
      */
-    void setRelationalValue(Placeholder placeholder, CNPlayer another, TimeStampData<String> value);
+    void setRelationalValue(RelationalPlaceholder placeholder, CNPlayer another, TimeStampData<String> value);
 
-    /**
-     * Caches the specified relational value for a given placeholder and player.
-     *
-     * @param placeholder the relational placeholder
-     * @param another     the other player
-     * @param value       the value to cache
-     * @return true if the value was changed, false otherwise
-     */
-    boolean setRelationalValue(Placeholder placeholder, CNPlayer another, String value);
+//    /**
+//     * Caches the specified value for the given placeholder.
+//     *
+//     * @param placeholder the placeholder to cache
+//     * @param value       the value to cache
+//     * @return true if the value was changed, false otherwise
+//     */
+//    boolean setPlayerValue(PlayerPlaceholder placeholder, String value);
+
+//    /**
+//     * Caches the specified relational value for a given placeholder and player.
+//     *
+//     * @param placeholder the relational placeholder
+//     * @param another     the other player
+//     * @param value       the value to cache
+//     * @return true if the value was changed, false otherwise
+//     */
+//    boolean setRelationalValue(RelationalPlaceholder placeholder, CNPlayer another, String value);
 
     /**
      * Adds a feature to the player
