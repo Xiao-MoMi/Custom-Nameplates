@@ -586,7 +586,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
             }
             registerCharacterFontData(id, bitmapCache, (properties) -> {
                 int ascent = (int) properties.get("shift_y");
-                String filePath = custom ? ConfigManager.namespace() + ":font/" +  file : "minecraft:font/" + codePoints + ".png";
+                String filePath = custom ? ConfigManager.namespace() + ":font/" + file : "minecraft:font/" + codePoints + ".png";
                 plugin.getConfigManager().saveResource("tmp/" + codePoints + ".json");
                 StringBuilder jsonContent = new StringBuilder();
                 try (BufferedReader reader = new BufferedReader(new FileReader(new File(plugin.getDataDirectory().toFile(), "tmp" + File.separator + codePoints + ".json")))) {

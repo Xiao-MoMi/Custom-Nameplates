@@ -71,7 +71,7 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
             }
             if (cnPlayer != null) {
                 cnPlayer.forceUpdatePlaceholders(Set.of(placeholder), Collections.emptySet());
-                return cnPlayer.getData(placeholder);
+                return cnPlayer.getCachedValue(placeholder);
             } else {
                 try {
                     return playerPlaceholder.request(null);
@@ -93,7 +93,7 @@ public class NameplatesExpansion extends PlaceholderExpansion implements Relatio
         Placeholder placeholder = plugin.getPlaceholderManager().getRegisteredPlaceholder("%rel_np_" + params + "%");
         if (placeholder != null) {
             cnPlayer1.forceUpdatePlaceholders(Set.of(placeholder), Set.of(cnPlayer2));
-            return Optional.ofNullable(cnPlayer1.getRelationalValue(placeholder, cnPlayer2)).map(TimeStampData::data).orElse(placeholder.id());
+            return Optional.ofNullable(cnPlayer1.getRawRelationalValue(placeholder, cnPlayer2)).map(TimeStampData::data).orElse(placeholder.id());
         }
         return null;
     }

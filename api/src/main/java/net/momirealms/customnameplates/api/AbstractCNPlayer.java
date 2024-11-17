@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.storage.data.PlayerData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,11 +55,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private final TeamView teamView = new TeamView();
 
-    private final Int2ObjectOpenHashMap<TimeStampData<String>> cachedValues = new Int2ObjectOpenHashMap<>(64);
-    private final Int2ObjectOpenHashMap<WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new Int2ObjectOpenHashMap<>(64);
+    private final Map<Integer, TimeStampData<String>> cachedValues = new ConcurrentHashMap<>(128);
+    private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>(128);
 
-    private final Int2ObjectOpenHashMap<TimeStampData<Boolean>> cachedRequirements = new Int2ObjectOpenHashMap<>(128);
-    private final Int2ObjectOpenHashMap<WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new Int2ObjectOpenHashMap<>(128);
+    private final Map<Integer, TimeStampData<Boolean>> cachedRequirements = new Int2ObjectOpenHashMap<>(32);
+    private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new Int2ObjectOpenHashMap<>(32);
 
     private final Set<Feature> activeFeatures = new CopyOnWriteArraySet<>();
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new ConcurrentHashMap<>();
@@ -91,7 +92,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         placeholderWithChildren = placeholderWithChildren.stream().distinct().toList();
         for (Placeholder placeholder : placeholderWithChildren) {
              if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-                TimeStampData<String> value = getValue(placeholder);
+                TimeStampData<String> value = getRawValue(placeholder);
                 if (value == null) {
                     value = new TimeStampData<>(playerPlaceholder.request(this), MainTask.getTicks(), true);
                     setValue(placeholder, value);
@@ -104,7 +105,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
                 }
             } else if (placeholder instanceof RelationalPlaceholder relational) {
                  for (CNPlayer player : others) {
-                     TimeStampData<String> value = getRelationalValue(placeholder, player);
+                     TimeStampData<String> value = getRawRelationalValue(placeholder, player);
                      if (value == null) {
                          value = new TimeStampData<>(relational.request(this, player), MainTask.getTicks(), true);
                          setRelationalValue(placeholder, player, value);
@@ -117,7 +118,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
                      }
                  }
              } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                TimeStampData<String> value = getValue(placeholder);
+                TimeStampData<String> value = getRawValue(placeholder);
                 if (value == null) {
                     String latest;
                     if (MainTask.hasRequested(sharedPlaceholder.countId())) {
@@ -304,17 +305,18 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public @NotNull String getData(Placeholder placeholder) {
+    public @NotNull String getCachedValue(Placeholder placeholder) {
         return Optional.ofNullable(cachedValues.get(placeholder.countId())).map(TimeStampData::data).orElse(placeholder.id());
     }
 
+    @Nullable
     @Override
-    public TimeStampData<String> getValue(Placeholder placeholder) {
+    public TimeStampData<String> getRawValue(Placeholder placeholder) {
         return cachedValues.get(placeholder.countId());
     }
 
     @Override
-    public @NotNull String getRelationalData(Placeholder placeholder, CNPlayer another) {
+    public @NotNull String getCachedRelationalValue(Placeholder placeholder, CNPlayer another) {
         WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.get(placeholder.countId());
         if (map == null) {
             return placeholder.id();
@@ -322,8 +324,9 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         return Optional.ofNullable(map.get(another)).map(TimeStampData::data).orElse(placeholder.id());
     }
 
+    @Nullable
     @Override
-    public TimeStampData<String> getRelationalValue(Placeholder placeholder, CNPlayer another) {
+    public TimeStampData<String> getRawRelationalValue(Placeholder placeholder, CNPlayer another) {
         WeakHashMap<CNPlayer, TimeStampData<String>> map = cachedRelationalValues.get(placeholder.countId());
         if (map == null) {
             return null;

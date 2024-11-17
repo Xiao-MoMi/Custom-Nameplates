@@ -56,11 +56,11 @@ public class PreParsedDynamicText {
             Placeholder placeholder = manager.getPlaceholder(id);
             placeholders.add(placeholder);
             if (placeholder instanceof RelationalPlaceholder) {
-                convertor.add((owner) -> (viewer) -> owner.getRelationalData(placeholder, viewer));
+                convertor.add((owner) -> (viewer) -> owner.getCachedRelationalValue(placeholder, viewer));
             } else if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
                 convertor.add((owner) -> (viewer) -> {
                     if (owner != null) {
-                        return owner.getData(placeholder);
+                        return owner.getCachedValue(placeholder);
                     } else {
                         return playerPlaceholder.request(null);
                     }

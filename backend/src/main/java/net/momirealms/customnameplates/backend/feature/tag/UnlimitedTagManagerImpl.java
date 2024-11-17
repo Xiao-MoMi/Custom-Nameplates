@@ -140,6 +140,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onPlayerJoin(CNPlayer player) {
+        plugin.debug(() -> player.name() + " joined the server");
         TagRendererImpl sender = new TagRendererImpl(this, player);
         sender.onTick();
         TagRendererImpl previous = tagRenderers.put(player.uuid(), sender);

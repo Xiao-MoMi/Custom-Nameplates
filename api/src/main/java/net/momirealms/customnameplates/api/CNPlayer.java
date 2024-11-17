@@ -23,6 +23,7 @@ import net.momirealms.customnameplates.api.feature.TimeStampData;
 import net.momirealms.customnameplates.api.feature.tag.TeamView;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
+import net.momirealms.customnameplates.api.placeholder.SharedPlaceholder;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Vector3;
 import org.jetbrains.annotations.NotNull;
@@ -185,6 +186,8 @@ public interface CNPlayer {
      */
     List<Placeholder> activePlaceholdersToRefresh();
 
+    String forceUpdatePlaceholder(SharedPlaceholder sharedPlaceholder);
+
     /**
      * Forces an update for the specified placeholders and relational placeholders with another player.
      *
@@ -200,7 +203,7 @@ public interface CNPlayer {
      * @return the cached data as a string
      */
     @NotNull
-    String getData(Placeholder placeholder);
+    String getCachedValue(Placeholder placeholder);
 
     /**
      * Retrieves the cached {@link TimeStampData} for a given placeholder.
@@ -209,7 +212,7 @@ public interface CNPlayer {
      * @return the cached TickStampData, or null if none exists
      */
     @Nullable
-    TimeStampData<String> getValue(Placeholder placeholder);
+    TimeStampData<String> getRawValue(Placeholder placeholder);
 
     /**
      * Retrieves the cached relational data between this player and another for a given placeholder.
@@ -219,7 +222,7 @@ public interface CNPlayer {
      * @return the relational data as a string
      */
     @NotNull
-    String getRelationalData(Placeholder placeholder, CNPlayer another);
+    String getCachedRelationalValue(Placeholder placeholder, CNPlayer another);
 
     /**
      * Retrieves the cached relational {@link TimeStampData} for a given placeholder.
@@ -229,7 +232,7 @@ public interface CNPlayer {
      * @return the cached relational TickStampData, or null if none exists
      */
     @Nullable
-    TimeStampData<String> getRelationalValue(Placeholder placeholder, CNPlayer another);
+    TimeStampData<String> getRawRelationalValue(Placeholder placeholder, CNPlayer another);
 
     /**
      * Caches the specified {@link TimeStampData} for the given placeholder.

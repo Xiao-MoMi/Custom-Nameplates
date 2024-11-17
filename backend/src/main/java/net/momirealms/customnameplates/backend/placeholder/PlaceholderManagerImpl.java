@@ -584,7 +584,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ObjectArrayList<>();
             for (Placeholder placeholder : player.activePlaceholdersToRefresh()) {
                 if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-                    TimeStampData<String> previous = player.getValue(placeholder);
+                    TimeStampData<String> previous = player.getRawValue(placeholder);
                     if (previous == null) {
                         String value = playerPlaceholder.request(player);
                         player.setValue(placeholder, new TimeStampData<>(value, MainTask.getTicks(), true));
@@ -609,7 +609,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                 } else if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
                     delayedPlaceholdersToUpdate.add(relationalPlaceholder);
                 } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                    TimeStampData<String> previous = player.getValue(placeholder);
+                    TimeStampData<String> previous = player.getRawValue(placeholder);
                     if (previous == null) {
                         String value;
                         // if the shared placeholder has been updated by other players
@@ -649,7 +649,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
 
             for (RelationalPlaceholder placeholder : delayedPlaceholdersToUpdate) {
                 for (CNPlayer nearby : player.nearbyPlayers()) {
-                    TimeStampData<String> previous = player.getRelationalValue(placeholder, nearby);
+                    TimeStampData<String> previous = player.getRawRelationalValue(placeholder, nearby);
                     if (previous == null) {
                         String value = placeholder.request(player, nearby);
                         player.setRelationalValue(placeholder, nearby, new TimeStampData<>(value, MainTask.getTicks(), true));

@@ -110,6 +110,7 @@ public abstract class AbstractChatManager implements ChatManager {
     @Override
     public void onChat(CNPlayer player, String message, String channel) {
         String text = message;
+        plugin.debug(() -> player.name() + " says [" + message + "]");
         for (EmojiProvider provider : emojiProviders) {
             text = provider.replace(player, text);
         }
