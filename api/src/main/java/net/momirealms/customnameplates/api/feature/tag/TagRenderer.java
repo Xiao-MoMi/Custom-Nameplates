@@ -36,6 +36,13 @@ public interface TagRenderer {
     void hatOffset(double hatOffset);
 
     /**
+     * Checks if the tag is valid
+     *
+     * @return valid or not
+     */
+    boolean isValid();
+
+    /**
      * Called every tick to update the state of the tags managed by this renderer.
      */
     void onTick();

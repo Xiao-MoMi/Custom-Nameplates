@@ -66,6 +66,7 @@ public abstract class AbstractRequirementManager implements RequirementManager {
     }
 
     private void registerInternalRequirements() {
+        this.registerRequirement((args, interval) -> new LaggyRequirement(interval, (int) args), "laggy");
         this.registerRequirement((args, interval) -> {
             Section section = ConfigUtils.safeCast(args, Section.class);
             if (section == null) return Requirement.empty();

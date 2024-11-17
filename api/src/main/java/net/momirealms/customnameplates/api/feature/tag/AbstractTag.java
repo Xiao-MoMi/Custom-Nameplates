@@ -76,6 +76,7 @@ public abstract class AbstractTag implements Tag {
 
     @Override
     public void show(CNPlayer viewer) {
+        if (!renderer.isValid()) return;
         if (!isShown()) throw new IllegalStateException("This tag is currently hidden");
         viewers.add(viewer);
         resetViewerArray();

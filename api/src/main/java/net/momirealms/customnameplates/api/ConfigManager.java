@@ -217,7 +217,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         // Other settings
         delaySend = config.getInt("other-settings.send-delay", 0);
         defaultPlaceholderRefreshInterval = config.getInt("other-settings.default-placeholder-refresh-interval", 1);
-        defaultConditionRefreshInterval = config.getInt("other-settings.ddefault-condition-refresh-interval", 1);
+        defaultConditionRefreshInterval = config.getInt("other-settings.default-condition-refresh-interval", 20);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
         otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
         displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);

@@ -38,6 +38,7 @@ public class TagRendererImpl implements TagRenderer {
     private Tag[] tagArray;
     private Tag[] rTagsArray;
     private double hatOffset;
+    private boolean valid = true;
 
     public TagRendererImpl(UnlimitedTagManager manager, CNPlayer owner) {
         this.owner = owner;
@@ -66,6 +67,11 @@ public class TagRendererImpl implements TagRenderer {
                 tag.updateTranslation();
             }
         }
+    }
+
+    @Override
+    public boolean isValid() {
+        return valid;
     }
 
     @Override
@@ -135,6 +141,7 @@ public class TagRendererImpl implements TagRenderer {
 
     @Override
     public void destroy() {
+        this.valid = false;
         for (Tag tag : this.tagArray) {
             tag.hide();
             if (tag instanceof Feature feature) {

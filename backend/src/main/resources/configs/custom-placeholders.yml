@@ -4,18 +4,33 @@ conditional-text:
     priority_1:
       text: '%np_background_other_actionbar%' # hides the money hud when a player rides something or dives in water
       conditions:
-        '||':
-          is-passenger: true
-          '!=':
-            value1: '%player_remaining_air%'
-            value2: "300"
-          '!gamemode': survival
+        condition_or:
+          type: "||"
+          refresh-interval: 1
+          value:
+            condition_passenger:
+              type: is-passenger
+              refresh-interval: 1
+              value: true
+            condition_air:
+              type: "!="
+              refresh-interval: 1
+              value:
+                value1: '%player_remaining_air%'
+                value2: "300"
+            condition_gamemode:
+              type: "!gamemode"
+              refresh-interval: 1
+              value: survival
     priority_2:
       text: '%np_static_money_hud%%np_offset_-179%%np_static_other_actionbar%' # displays the money hud + other plugin's actionbar message
       conditions:
-        '!equals':
-          value1: '%np_actionbar%'
-          value2: ""
+        condition_other_actionbar:
+          type: "!equals"
+          refresh-interval: 1
+          value:
+            value1: '%np_actionbar%'
+            value2: ""
     priority_3:
       text: '%np_static_money_hud%' # displays the money hud only
   weather:
