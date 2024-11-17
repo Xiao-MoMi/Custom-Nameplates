@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.backend.requirement.builtin;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
-import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.backend.requirement.AbstractRequirement;
 
 public class LaggyRequirement extends AbstractRequirement {
