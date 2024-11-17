@@ -186,8 +186,6 @@ public interface CNPlayer {
      */
     List<Placeholder> activePlaceholdersToRefresh();
 
-    String forceUpdatePlaceholder(SharedPlaceholder sharedPlaceholder);
-
     /**
      * Forces an update for the specified placeholders and relational placeholders with another player.
      *

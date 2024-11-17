@@ -82,6 +82,68 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         return placeholderWithChildren.stream().distinct().toList();
     }
 
+    private String updatePlayerPlaceholder(PlayerPlaceholder placeholder) {
+        TimeStampData<String> value = getRawValue(placeholder);
+        if (value == null) {
+            value = new TimeStampData<>(placeholder.request(this), MainTask.getTicks(), true);
+            setValue(placeholder, value);
+            return value.data();
+        }
+        if (value.ticks() != MainTask.getTicks()) {
+            String newValue = placeholder.request(this);
+            value.updateTicks(!value.data().equals(newValue));
+            value.data(newValue);
+        }
+        return value.data();
+    }
+
+    private void updateRelationalPlaceholder(RelationalPlaceholder placeholder, Collection<CNPlayer> others) {
+        for (CNPlayer another : others) {
+            updateRelationalPlaceholder(placeholder, another);
+        }
+    }
+
+    private String updateRelationalPlaceholder(RelationalPlaceholder placeholder, CNPlayer another) {
+        TimeStampData<String> value = getRawRelationalValue(placeholder, another);
+        if (value == null) {
+            value = new TimeStampData<>(placeholder.request(this, another), MainTask.getTicks(), true);
+            setRelationalValue(placeholder, another, value);
+            return value.data();
+        }
+        if (value.ticks() != MainTask.getTicks()) {
+            String newValue = placeholder.request(this, another);
+            value.updateTicks(!value.data().equals(newValue));
+            value.data(newValue);
+        }
+        return value.data();
+    }
+
+    private String updateSharedPlaceholder(SharedPlaceholder placeholder) {
+        TimeStampData<String> value = getRawValue(placeholder);
+        if (value == null) {
+            String latest;
+            if (MainTask.hasRequested(placeholder.countId())) {
+                latest = placeholder.getLatestValue();
+            } else {
+                latest = placeholder.request();
+            }
+            value = new TimeStampData<>(latest, MainTask.getTicks(), true);
+            setValue(placeholder, value);
+            return value.data();
+        }
+        if (value.ticks() != MainTask.getTicks()) {
+            String latest;
+            if (MainTask.hasRequested(placeholder.countId())) {
+                latest = placeholder.getLatestValue();
+            } else {
+                latest = placeholder.request();
+            }
+            value.updateTicks(!value.data().equals(latest));
+            value.data(latest);
+        }
+        return value.data();
+    }
+
     @Override
     public void forceUpdatePlaceholders(Set<Placeholder> placeholders, Collection<CNPlayer> others) {
         if (placeholders.isEmpty()) return;
@@ -92,54 +154,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         placeholderWithChildren = placeholderWithChildren.stream().distinct().toList();
         for (Placeholder placeholder : placeholderWithChildren) {
              if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-                TimeStampData<String> value = getRawValue(placeholder);
-                if (value == null) {
-                    value = new TimeStampData<>(playerPlaceholder.request(this), MainTask.getTicks(), true);
-                    setValue(placeholder, value);
-                    continue;
-                }
-                if (value.ticks() != MainTask.getTicks()) {
-                    String newValue = playerPlaceholder.request(this);
-                    value.updateTicks(!value.data().equals(newValue));
-                    value.data(newValue);
-                }
-            } else if (placeholder instanceof RelationalPlaceholder relational) {
-                 for (CNPlayer player : others) {
-                     TimeStampData<String> value = getRawRelationalValue(placeholder, player);
-                     if (value == null) {
-                         value = new TimeStampData<>(relational.request(this, player), MainTask.getTicks(), true);
-                         setRelationalValue(placeholder, player, value);
-                         continue;
-                     }
-                     if (value.ticks() != MainTask.getTicks()) {
-                         String newValue = relational.request(this, player);
-                         value.updateTicks(!value.data().equals(newValue));
-                         value.data(newValue);
-                     }
-                 }
+                 updatePlayerPlaceholder(playerPlaceholder);
+             } else if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
+                 updateRelationalPlaceholder(relationalPlaceholder, others);
              } else if (placeholder instanceof SharedPlaceholder sharedPlaceholder) {
-                TimeStampData<String> value = getRawValue(placeholder);
-                if (value == null) {
-                    String latest;
-                    if (MainTask.hasRequested(sharedPlaceholder.countId())) {
-                        latest = sharedPlaceholder.getLatestValue();
-                    } else {
-                        latest = sharedPlaceholder.request();
-                    }
-                    value = new TimeStampData<>(latest, MainTask.getTicks(), true);
-                    setValue(placeholder, value);
-                    continue;
-                }
-                if (value.ticks() != MainTask.getTicks()) {
-                    String latest;
-                    if (MainTask.hasRequested(sharedPlaceholder.countId())) {
-                        latest = sharedPlaceholder.getLatestValue();
-                    } else {
-                        latest = sharedPlaceholder.request();
-                    }
-                    value.updateTicks(!value.data().equals(latest));
-                    value.data(latest);
-                }
+                 updateSharedPlaceholder(sharedPlaceholder);
              }
         }
     }
