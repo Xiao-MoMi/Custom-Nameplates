@@ -313,6 +313,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.requirementManager.reload();
         // load basics
         this.configManager.reload();
+        this.debugger = ConfigManager.debug() ? (s) -> getPluginLogger().info("[DEBUG] " + s.get()) : (s) -> {};
         this.storageManager.reload();
         this.translationManager.reload();
         // prepare resources
