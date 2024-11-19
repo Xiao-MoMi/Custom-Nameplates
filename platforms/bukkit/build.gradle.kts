@@ -46,7 +46,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}-bukkit.jar"
+        archiveFileName = "CustomNameplates-Bukkit-${rootProject.properties["project_version"]}.jar"
         destinationDirectory.set(file("$rootDir/target"))
         relocate("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("org.incendo", "net.momirealms.customnameplates.libraries")

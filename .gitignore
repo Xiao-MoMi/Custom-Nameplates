@@ -5,6 +5,9 @@ target/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Unfinished ###
+platforms/sponge/
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

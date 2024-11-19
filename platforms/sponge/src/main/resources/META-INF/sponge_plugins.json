@@ -1,0 +1,28 @@
+{
+  "loader": {
+    "name": "java_plain",
+    "version": "1.0"
+  },
+  "license": "GPLv3",
+  "plugins": [
+    {
+      "id": "customnameplates",
+      "name": "CustomNameplates",
+      "version": "${project_version}",
+      "entrypoint": "net.momirealms.customnameplates.sponge.SpongeBootstrap",
+      "description": "A Unique Way to Customize Name Tags",
+      "contributors": [
+        {
+          "name": "XiaoMoMi",
+          "description": "Developer"
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "spongeapi",
+          "version": "8.0.0"
+        }
+      ]
+    }
+  ]
+}

@@ -94,14 +94,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     private boolean loaded = false;
 
-    private String buildByBit = "%%__BUILTBYBIT__%%";
-    private String polymart = "%%__POLYMART__%%";
-    private String time = "%%__TIMESTAMP__%%";
-    private String user = "%%__USER__%%";
-    private String username = "%%__USERNAME__%%";
-
-    private boolean isLatest = false;
-
     public BukkitCustomNameplates(JavaPlugin bootstrap) {
         this.bootstrap = bootstrap;
         VersionHelper.init(getServerVersion());
@@ -212,29 +204,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
             }
         }
 
-        boolean downloadFromPolymart = polymart.equals("1");
-        boolean downloadFromBBB = buildByBit.equals("true");
-
-        if (ConfigManager.checkUpdate()) {
-            VersionHelper.UPDATE_CHECKER.apply(this).thenAccept(result -> {
-                String link;
-                if (downloadFromPolymart) {
-                    link = "https://polymart.org/resource/2543/";
-                } else if (downloadFromBBB) {
-                    link = "https://builtbybit.com/resources/36359/";
-                } else {
-                    link = "https://github.com/Xiao-MoMi/Custom-Nameplates/";
-                }
-                if (!result) {
-                    this.getPluginLogger().info("You are using the latest version.");
-                    isLatest = true;
-                } else {
-                    this.getPluginLogger().warn("Update is available: " + link);
-                    isLatest = false;
-                }
-            });
-        }
-
         if (VersionHelper.isFolia()) {
             this.foliaTrackerTask = getScheduler().asyncRepeating(() -> {
                 for (CNPlayer player : getOnlinePlayers()) {
@@ -264,6 +233,8 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                 }
             }, 200, 200, TimeUnit.MILLISECONDS);
         }
+
+        super.enable();
     }
 
     @Override
@@ -335,10 +306,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.scheduledMainTask = getScheduler().asyncRepeating(mainTask, 50, 50, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public boolean isUpToDate() {
-        return isLatest;
-    }
 
     @Override
     public InputStream getResourceStream(String filePath) {

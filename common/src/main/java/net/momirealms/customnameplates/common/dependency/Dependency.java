@@ -113,6 +113,14 @@ public enum Dependency {
             Relocation.of("cloud", "org{}incendo{}cloud"),
             Relocation.of("geantyref", "io{}leangen{}geantyref")
     ),
+    CLOUD_SPONGE(
+            "org{}incendo",
+            "cloud-sponge7",
+            "maven",
+            "cloud-sponge7",
+            Relocation.of("cloud", "org{}incendo{}cloud"),
+            Relocation.of("geantyref", "io{}leangen{}geantyref")
+    ),
     CLOUD_MINECRAFT_EXTRAS(
             "org{}incendo",
             "cloud-minecraft-extras",
@@ -219,6 +227,18 @@ public enum Dependency {
             "bstats-bukkit",
             "maven",
             "bstats-bukkit",
+            Relocation.of("bstats", "org{}bstats")
+    ) {
+        @Override
+        public String getVersion() {
+            return Dependency.BSTATS_BASE.getVersion();
+        }
+    },
+    BSTATS_SPONGE(
+            "org{}bstats",
+            "bstats-sponge",
+            "maven",
+            "bstats-sponge",
             Relocation.of("bstats", "org{}bstats")
     ) {
         @Override

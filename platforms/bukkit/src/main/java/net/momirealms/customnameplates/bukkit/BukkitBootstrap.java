@@ -18,13 +18,11 @@
 package net.momirealms.customnameplates.bukkit;
 
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitBootstrap extends JavaPlugin {
 
-    private CustomNameplates nameplates;
-    private NameplatesPlugin plugin;
+    private CustomNameplates plugin;
 
     @Override
     public void onLoad() {
