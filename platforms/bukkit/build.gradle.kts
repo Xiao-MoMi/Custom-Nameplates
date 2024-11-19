@@ -17,7 +17,7 @@ dependencies {
     }
     implementation(project(":common"))
     implementation(project(":backend"))
-    implementation(project(":compatibility"))
+    implementation(project(":platforms:bukkit:compatibility"))
 
     compileOnly("dev.folia:folia-api:${rootProject.properties["paper_version"]}-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:${rootProject.properties["placeholder_api_version"]}")
@@ -46,7 +46,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}.jar"
+        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}-bukkit.jar"
         destinationDirectory.set(file("$rootDir/target"))
         relocate("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("org.incendo", "net.momirealms.customnameplates.libraries")
