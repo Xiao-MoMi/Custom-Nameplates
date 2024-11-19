@@ -25,6 +25,7 @@ import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.feature.tag.Tag;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.feature.tag.UnlimitedTagManager;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.Tracker;
 
 import java.util.*;
@@ -301,7 +302,13 @@ public class TagRendererImpl implements TagRenderer {
             passengers[index++] = passenger;
         }
         Object packet = CustomNameplates.getInstance().getPlatform().setPassengersPacket(owner.entityID(), passengers);
-        CustomNameplates.getInstance().getPacketSender().sendPacket(another, packet);
+        if (VersionHelper.isPaperOrItsForks()) {
+            CustomNameplates.getInstance().getPacketSender().sendPacket(another, packet);
+        } else {
+            CustomNameplates.getInstance().getScheduler().sync().runLater(() -> {
+                CustomNameplates.getInstance().getPacketSender().sendPacket(another, packet);
+            }, 0, null);
+        }
     }
 
     public void handleEntityDataChange(CNPlayer another, boolean isCrouching) {

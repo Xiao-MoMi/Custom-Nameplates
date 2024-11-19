@@ -80,7 +80,7 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
     @Override
     public Vector3 position() {
         Location location = player().getLocation();
-        return new Vector3(location.x(), location.y(), location.z());
+        return new Vector3(location.getX(), location.getY(), location.getZ());
     }
 
     @Override

@@ -34,6 +34,7 @@ public class MainTask implements Runnable {
     private int timer;
 
     private final CustomNameplates plugin;
+    private boolean state;
 
     public MainTask(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -53,24 +54,31 @@ public class MainTask implements Runnable {
 
     @Override
     public void run() {
-        RUN_TICKS++;
-        requestedSharedPlaceholders.clear();
-        long time1 = System.nanoTime();
-        plugin.actionBarManager.refreshConditions();
-        plugin.bossBarManager.onTick();
-        plugin.unlimitedTagManager.onTick();
-        long time2 = System.nanoTime();
-        plugin.placeholderManager.refreshPlaceholders();
-        long time3 = System.nanoTime();
-        plugin.actionBarManager.checkHeartBeats();
-        int diff1 = (int) (time2 - time1);
-        TIME_1.put(timer, diff1);
-        int diff2 = (int) (time3 - time2);
-        TIME_2.put(timer, diff2);
-        timer++;
-        if (timer >= 1200) timer = 0;
-        if (RUN_TICKS < 0) {
-            CustomNameplates.getInstance().reload();
+        // we should skip the task if the server is heavily loaded
+        if (this.state) return;
+        this.state = true;
+        try {
+            RUN_TICKS++;
+            requestedSharedPlaceholders.clear();
+            long time1 = System.nanoTime();
+            plugin.actionBarManager.refreshConditions();
+            plugin.bossBarManager.onTick();
+            plugin.unlimitedTagManager.onTick();
+            long time2 = System.nanoTime();
+            plugin.placeholderManager.refreshPlaceholders();
+            long time3 = System.nanoTime();
+            plugin.actionBarManager.checkHeartBeats();
+            int diff1 = (int) (time2 - time1);
+            TIME_1.put(timer, diff1);
+            int diff2 = (int) (time3 - time2);
+            TIME_2.put(timer, diff2);
+            timer++;
+            if (timer >= 1200) timer = 0;
+            if (RUN_TICKS < 0) {
+                CustomNameplates.getInstance().reload();
+            }
+        } finally {
+            this.state = false;
         }
     }
 

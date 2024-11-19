@@ -61,12 +61,18 @@ public class VersionHelper {
     private static float version;
     private static boolean mojmap;
     private static boolean folia;
+    private static boolean mohist;
+    private static boolean paper;
 
     public static void init(String serverVersion) {
         String[] split = serverVersion.split("\\.");
         version = Float.parseFloat(split[1] + "." + (split.length == 3 ? split[2] : "0"));
         checkMojMap();
         checkFolia();
+        checkMohist();
+        checkPaper();
+        boolean isModdedServer = mohist;
+        paper = paper && !isModdedServer;
     }
 
     public static float version() {
@@ -86,6 +92,22 @@ public class VersionHelper {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
             folia = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
+
+    private static void checkMohist() {
+        try {
+            Class.forName("com.mohistmc.api.ServerAPI");
+            mohist = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
+
+    private static void checkPaper() {
+        try {
+            Class.forName("com.destroystokyo.paper.Metrics");
+            paper = true;
         } catch (ClassNotFoundException ignored) {
         }
     }
@@ -116,6 +138,14 @@ public class VersionHelper {
 
     public static boolean isFolia() {
         return folia;
+    }
+
+    public static boolean isMohist() {
+        return mohist;
+    }
+
+    public static boolean isPaperOrItsForks() {
+        return paper;
     }
 
     public static boolean isMojmap() {

@@ -52,12 +52,7 @@ public class BukkitExecutor implements RegionExecutor<Location> {
     @Override
     public SchedulerTask runLater(Runnable r, long delayTicks, Location l) {
         if (delayTicks == 0) {
-            if (Bukkit.isPrimaryThread()) {
-                r.run();
-                return new DummyTask();
-            } else {
-                return new BukkitTask(Bukkit.getScheduler().runTask(plugin, r));
-            }
+            return new BukkitTask(Bukkit.getScheduler().runTask(plugin, r));
         }
         return new BukkitTask(Bukkit.getScheduler().runTaskLater(plugin, r, delayTicks));
     }

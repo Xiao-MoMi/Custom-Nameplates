@@ -37,6 +37,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class AbstractCNPlayer implements CNPlayer {
 
@@ -45,19 +47,20 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     protected Object player;
 
-    private boolean isLoaded = false;
-
-    private boolean tempPreviewing = false;
-    private boolean toggleablePreviewing = false;
+    private volatile boolean isLoaded = false;
+    private volatile boolean tempPreviewing = false;
+    private volatile boolean toggleablePreviewing = false;
 
     private String equippedNameplate;
     private String equippedBubble;
 
     private final TeamView teamView = new TeamView();
 
+    // these two maps can be visited by other threads
     private final Map<Integer, TimeStampData<String>> cachedValues = new ConcurrentHashMap<>(128);
     private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>(128);
 
+    // these two maps can only be modified in the same thread
     private final Map<Integer, TimeStampData<Boolean>> cachedRequirements = new Int2ObjectOpenHashMap<>(32);
     private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new Int2ObjectOpenHashMap<>(32);
 
@@ -65,7 +68,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new ConcurrentHashMap<>();
     private final Map<Feature, Set<Placeholder>> feature2Placeholders = new ConcurrentHashMap<>();
 
-    private final Map<CNPlayer, Tracker> trackers = Collections.synchronizedMap(new WeakHashMap<>());
+    private final Map<CNPlayer, Tracker> trackers = new WeakHashMap<>();
+    private final ReadWriteLock trackerLock = new ReentrantReadWriteLock();
 
     protected AbstractCNPlayer(CustomNameplates plugin, Channel channel) {
         this.plugin = plugin;
@@ -437,58 +441,90 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Tracker addPlayerToTracker(CNPlayer another) {
-        Tracker tracker = trackers.get(another);
-        if (tracker != null) {
+        trackerLock.writeLock().lock();
+        try {
+            Tracker tracker = trackers.get(another);
+            if (tracker != null) {
+                return tracker;
+            }
+            tracker = new Tracker(another);
+            trackers.put(another, tracker);
             return tracker;
+        } finally {
+            trackerLock.writeLock().unlock();
         }
-        tracker = new Tracker(another);
-        trackers.put(another, tracker);
-//        for (Placeholder placeholder : activePlaceholders()) {
-//            if (placeholder instanceof RelationalPlaceholder relationalPlaceholder) {
-//                String value = relationalPlaceholder.request(this, another);
-//                setRelationalValue(relationalPlaceholder, another, value);
-//            }
-//        }
-        return tracker;
     }
 
     @Override
     public void removePlayerFromTracker(CNPlayer another) {
-        trackers.remove(another);
+        trackerLock.writeLock().lock();
+        try {
+            trackers.remove(another);
+        } finally {
+            trackerLock.writeLock().unlock();
+        }
     }
 
     @Override
     public Collection<CNPlayer> nearbyPlayers() {
-        return new ObjectArrayList<>(trackers.keySet());
+        trackerLock.readLock().lock();
+        try {
+            // Create a snapshot of keys to avoid concurrent modification
+            return new ObjectArrayList<>(trackers.keySet());
+        } finally {
+            trackerLock.readLock().unlock();
+        }
     }
 
     @Override
     public void trackPassengers(CNPlayer another, int... passengers) {
-         Tracker tracker = trackers.get(another);
-         if (tracker != null) {
-             for (int passenger : passengers) {
-                 tracker.addPassengerID(passenger);
-             }
-         }
+        trackerLock.writeLock().lock();
+        try {
+            Tracker tracker = trackers.get(another);
+            if (tracker != null) {
+                for (int passenger : passengers) {
+                    tracker.addPassengerID(passenger);
+                }
+            }
+        } finally {
+            trackerLock.writeLock().unlock();
+        }
     }
 
     @Override
     public void untrackPassengers(CNPlayer another, int... passengers) {
-        Optional.ofNullable(trackers.get(another)).ifPresent(tracker -> {
-            for (int passenger : passengers) {
-                tracker.removePassengerID(passenger);
+        trackerLock.writeLock().lock();
+        try {
+            Tracker tracker = trackers.get(another);
+            if (tracker != null) {
+                for (int passenger : passengers) {
+                    tracker.removePassengerID(passenger);
+                }
             }
-        });
+        } finally {
+            trackerLock.writeLock().unlock();
+        }
     }
 
     @Override
     public Set<Integer> getTrackedPassengerIds(CNPlayer another) {
-        return Optional.ofNullable(trackers.get(another)).map(Tracker::getPassengerIDs).orElse(new ObjectOpenHashSet<>());
+        trackerLock.readLock().lock();
+        try {
+            Tracker tracker = trackers.get(another);
+            return tracker != null ? tracker.getPassengerIDs() : new ObjectOpenHashSet<>();
+        } finally {
+            trackerLock.readLock().unlock();
+        }
     }
 
     @Override
     public Tracker getTracker(CNPlayer another) {
-        return trackers.get(another);
+        trackerLock.readLock().lock();
+        try {
+            return trackers.get(another);
+        } finally {
+            trackerLock.readLock().unlock();
+        }
     }
 
     @Override
