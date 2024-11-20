@@ -15,6 +15,7 @@ softdepend:
   - AdvancedChat
   - VentureChat
   - EssentialsChat
+  - ChatControlRed
   - WorldGuard
 permissions:
   nameplates.command.equip:

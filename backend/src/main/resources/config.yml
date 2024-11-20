@@ -33,6 +33,7 @@ integrations:
     CarbonChat: false         # Integration with CarbonChat
     AdvancedChat: false       # Integration with AdvancedChat
     Essentials: false         # Integration with Essentials chat
+    ChatControlRed: false     # Integration with ChatControlRed
 
 # Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:
@@ -72,6 +73,7 @@ other-settings:
     "%player_name%": 100
     "%vault_prefix%": 20
   # Font Templates: Define different fonts and their settings.
+  # Requires a restart to apply because it can be laggy to read thousands of character
   font-templates:
     space:
       space:
@@ -80,7 +82,7 @@ other-settings:
     unihex:
       unifont:
         file: unifont.zip             # Load font from unifont.zip
-        generate: false               # Don't include font in the generated resource pack
+        generate: false               # Should this unihex file be included in the generated pack
         size_overrides:               # Override size for specific Unicode ranges
           - from: "\\u3001"
             to: "\\u30FF"
@@ -120,7 +122,7 @@ other-settings:
             right: 15
       unifont_jp:
         file: unifont_jp.zip          # Load Japanese unifont
-        generate: false               # Don't generate in the resource pack
+        generate: false               # Should this unihex file be included in the generated pack
         filter:
           "jp": true                  # Apply to Japanese characters only
         size_overrides:
@@ -137,7 +139,9 @@ other-settings:
         codepoints: ascii             # Define ASCII bitmap font
         file: ascii.png               # Use ascii.png file for the font
         height: 8                     # Font height is 8 units
-        custom: false                 # Not a custom font (default Minecraft)
+        custom: false                 # Does this png path point to a non-default font path??
+        generate: false               # Should this png file be included in the generated pack
+        # namespace: custom           # Optional namespace if you don't want to use the global namespace set in config.yml
       ascii_sga:
         codepoints: ascii_sga
         file: ascii_sga.png

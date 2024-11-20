@@ -111,6 +111,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean chatCarbon;
     protected boolean chatAdvanced;
     protected boolean chatEss;
+    protected boolean chatChatControlRed;
 
     protected String configVersion;
 
@@ -189,6 +190,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         chatAdvanced = config.getBoolean("integrations.chat.AdvancedChat", false);
         chatTR = config.getBoolean("integrations.chat.TrChat", false);
         chatVenture = config.getBoolean("integrations.chat.VentureChat", false);
+        chatChatControlRed = config.getBoolean("integrations.chat.ChatControlRed", false);
 
         // Packs
         generateOnStart = !config.getBoolean("resource-pack.disable-generation-on-start", false);
@@ -409,6 +411,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean chatAdvanced() {
         return instance.chatAdvanced;
+    }
+
+    public static boolean chatChatControlRed() {
+        return instance.chatChatControlRed;
     }
 
     @Override
