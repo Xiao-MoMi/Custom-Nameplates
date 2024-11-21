@@ -25,7 +25,6 @@
 
 package net.momirealms.customnameplates.bukkit.scheduler.impl;
 
-import net.momirealms.customnameplates.common.plugin.scheduler.DummyTask;
 import net.momirealms.customnameplates.common.plugin.scheduler.RegionExecutor;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
 import org.bukkit.Bukkit;

@@ -114,7 +114,15 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     }
 
     private void loadNestNameplatePlaceholders() {
-        if (!ConfigManager.nameplateModule()) return;
+        if (!ConfigManager.nameplateModule()) {
+            this.registerPlayerPlaceholder("%np_tag-image%", (player -> "Please remove %np_tag-image% if you have disabled nameplates module"));
+            this.registerPlayerPlaceholder("%rel_np_tag-image%", (player -> "Please remove %rel_np_tag-image% if you have disabled nameplates module"));
+            this.registerPlayerPlaceholder("%np_tag-text%", (player -> "Please remove %np_tag-text% if you have disabled nameplates module"));
+            this.registerPlayerPlaceholder("%rel_np_tag-text%", (player -> "Please remove %rel_np_tag-text% if you have disabled nameplates module"));
+            this.registerPlayerPlaceholder("%np_tag%", (player -> "Please remove %np_tag% if you have disabled nameplates module"));
+            this.registerPlayerPlaceholder("%rel_np_tag%", (player -> "Please remove %rel_np_tag% if you have disabled nameplates module"));
+            return;
+        }
         PreParsedDynamicText nameTag = new PreParsedDynamicText(plugin.getNameplateManager().playerNameTag());
         Placeholder placeholder1 = this.registerPlayerPlaceholder("%np_tag-image%", (player -> {
             String equippedNameplate = player.equippedNameplate();

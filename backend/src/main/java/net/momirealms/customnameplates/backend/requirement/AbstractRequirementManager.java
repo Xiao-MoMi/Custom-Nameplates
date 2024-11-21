@@ -124,8 +124,8 @@ public abstract class AbstractRequirementManager implements RequirementManager {
         this.registerRequirement((args, interval) -> {
             Section section = ConfigUtils.safeCast(args, Section.class);
             if (section == null) return Requirement.empty();
-            PreParsedDynamicText dynamicText1 = new PreParsedDynamicText(section.getString("value1", ""), true);
-            String regex = section.getString("value2", "");
+            PreParsedDynamicText dynamicText1 = new PreParsedDynamicText(section.getString("papi", ""), true);
+            String regex = section.getString("regex", "");
             return new RegexRequirement(interval, dynamicText1, regex);
         }, "regex");
         this.registerRequirement((args, interval) -> {
