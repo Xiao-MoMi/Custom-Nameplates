@@ -54,6 +54,9 @@ public class BukkitChatManager extends AbstractChatManager {
         } else if (ConfigManager.chatChatControlRed() && Bukkit.getPluginManager().isPluginEnabled("ChatControlRed")) {
             this.chatProvider = new ChatControlRedProvider(plugin, this);
             plugin.getPluginLogger().info("ChatControlRed hooked!");
+        } else if (ConfigManager.chatChatty() && Bukkit.getPluginManager().isPluginEnabled("Chatty")) {
+            this.chatProvider = new ChattyProvider(plugin, this);
+            plugin.getPluginLogger().info("Chatty hooked!");
         } else {
             this.chatProvider = new AsyncChatProvider(plugin, this);
         }

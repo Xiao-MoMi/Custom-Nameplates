@@ -18,7 +18,6 @@
 package net.momirealms.customnameplates.api;
 
 import io.netty.channel.Channel;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.feature.Feature;
@@ -56,13 +55,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private final TeamView teamView = new TeamView();
 
-    // these two maps can be visited by other threads
+    // these maps might be visited by other threads through PlaceholderAPI
     private final Map<Integer, TimeStampData<String>> cachedValues = new ConcurrentHashMap<>(128);
     private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<String>>> cachedRelationalValues = new ConcurrentHashMap<>(128);
-
-    // these two maps can only be modified in the same thread
-    private final Map<Integer, TimeStampData<Boolean>> cachedRequirements = new Int2ObjectOpenHashMap<>(32);
-    private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new Int2ObjectOpenHashMap<>(32);
+    private final Map<Integer, TimeStampData<Boolean>> cachedRequirements = new ConcurrentHashMap<>(32);
+    private final Map<Integer, WeakHashMap<CNPlayer, TimeStampData<Boolean>>> cachedRelationalRequirements = new ConcurrentHashMap<>(32);
 
     private final Set<Feature> activeFeatures = new CopyOnWriteArraySet<>();
     private final Map<Placeholder, Set<Feature>> placeholder2Features = new ConcurrentHashMap<>();

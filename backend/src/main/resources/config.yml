@@ -34,6 +34,7 @@ integrations:
     AdvancedChat: false       # Integration with AdvancedChat
     Essentials: false         # Integration with Essentials chat
     ChatControlRed: false     # Integration with ChatControlRed
+    Chatty: false             # Integration with Chatty
 
 # Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:

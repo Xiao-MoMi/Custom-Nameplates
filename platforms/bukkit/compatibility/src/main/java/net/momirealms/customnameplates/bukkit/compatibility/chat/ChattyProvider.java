@@ -22,55 +22,52 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.chat.AbstractChatMessageProvider;
 import net.momirealms.customnameplates.api.feature.chat.ChatManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.mineacademy.chatcontrol.PlayerCache;
-import org.mineacademy.chatcontrol.api.ChatChannelEvent;
-import org.mineacademy.chatcontrol.model.Channel;
+import ru.brikster.chatty.api.ChattyApi;
+import ru.brikster.chatty.api.chat.Chat;
+import ru.brikster.chatty.api.event.ChattyMessageEvent;
 
 import java.util.Objects;
 
-public class ChatControlRedProvider extends AbstractChatMessageProvider implements Listener {
+public class ChattyProvider extends AbstractChatMessageProvider implements Listener {
 
-    public ChatControlRedProvider(CustomNameplates plugin, ChatManager manager) {
+    public ChattyProvider(CustomNameplates plugin, ChatManager manager) {
         super(plugin, manager);
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onChat(ChatChannelEvent event) {
-        plugin.debug(() -> "ChatChannelEvent triggered");
-        final CommandSender sender = event.getSender();
-        if (!(sender instanceof Player player)) {
-            return;
-        }
+    public void onChat(ChattyMessageEvent event) {
+        final String message = event.getPlainMessage();
+        final Player player = event.getSender();
         if (!player.isOnline()) return;
         CNPlayer cnPlayer = plugin.getPlayer(player.getUniqueId());
         if (cnPlayer == null) return;
         plugin.getScheduler().async().execute(() -> {
-            manager.onChat(cnPlayer, event.getMessage(), event.getChannel().getName());
+            manager.onChat(cnPlayer, message, event.getChat().getId());
         });
     }
 
     @Override
     public boolean hasJoinedChannel(CNPlayer player, String channelID) {
-        Channel channel = Channel.findChannel(channelID);
-        if (channel == null) return false;
-        return channel.isInChannel((Player) player.player());
+        return true;
     }
 
     @Override
     public boolean canJoinChannel(CNPlayer player, String channelID) {
-        return ((Player) player).hasPermission("chatcontrol.channel.join."+channelID+".read");
+        Chat chat = ChattyApi.instance().getChats().get(channelID);
+        if (chat == null) {
+            return false;
+        }
+        if (!chat.isPermissionRequired()) return true;
+        return chat.hasReadPermission((Player) player.player());
     }
 
     @Override
     public boolean isIgnoring(CNPlayer sender, CNPlayer receiver) {
-        PlayerCache cache = PlayerCache.from((Player) receiver.player());
-        if (cache == null) return false;
-        return cache.isIgnoringPlayer(sender.uuid());
+        return false;
     }
 
     @Override

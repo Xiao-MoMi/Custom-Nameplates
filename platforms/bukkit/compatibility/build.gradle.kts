@@ -33,6 +33,8 @@ dependencies {
     compileOnly("net.william278.huskchat:huskchat-bukkit:3.0.4")
     compileOnly("net.essentialsx:EssentialsX:2.20.1")
     compileOnly("net.essentialsx:EssentialsXChat:2.20.1")
+//    compileOnly("com.github.Brikster:Chatty:v2.19.14")
+    compileOnly(files("libs/Chatty-3.0.0-SNAPSHOT.jar"))
     // Emoji
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14")
     compileOnly("io.th0rgal:oraxen:1.182.0")
