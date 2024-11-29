@@ -92,7 +92,7 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
                 previous.destroy();
             }
         };
-        if (ConfigManager.delaySend() <= 0) {
+        if (ConfigManager.delaySend() < 0) {
             r.run();
         } else {
             plugin.getScheduler().asyncLater(r, ConfigManager.delaySend() * 50L, TimeUnit.MILLISECONDS);

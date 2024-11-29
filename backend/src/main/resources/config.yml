@@ -63,7 +63,7 @@ resource-pack:
 # Additional Settings: Extra options to control behavior and performance.
 other-settings:
   legacy-color-code-support: true     # Enable support for legacy color codes using &
-  send-delay: 20                      # Set actionbar/bossbar send delay (ticks)
+  send-delay: 20                      # Set actionbar/bossbar send delay (ticks)  (0 = send immediately on async threads, -1 = send immediately on main thread)
   catch-other-plugin-actionbar: true  # Capture actionbars from other plugins
   other-actionbar-stay-time: 3000     # How long does other actionsbars stay (ms)
   display-system-actionbar: true      # Should the plugin display system actionbar and temporarily hide the custom actionbar?

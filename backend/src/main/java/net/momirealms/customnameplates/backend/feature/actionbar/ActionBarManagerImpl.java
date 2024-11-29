@@ -124,14 +124,19 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     @Override
     public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.actionbarModule()) return;
-        plugin.getScheduler().asyncLater(() -> {
+        Runnable r = () -> {
             if (!player.isOnline()) return;
             ActionBarSender sender = new ActionBarSender(this, player);
             ActionBarSender previous = senders.put(player.uuid(), sender);
             if (previous != null) {
                 previous.destroy();
             }
-        }, ConfigManager.delaySend() * 50L, TimeUnit.MILLISECONDS);
+        };
+        if (ConfigManager.delaySend() < 0) {
+            r.run();
+        } else {
+            plugin.getScheduler().asyncLater(r, ConfigManager.delaySend() * 50L, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
