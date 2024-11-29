@@ -84,14 +84,19 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
     @Override
     public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.bossbarModule()) return;
-        plugin.getScheduler().asyncLater(() -> {
+        Runnable r = () -> {
             if (!player.isOnline()) return;
             BossBarDisplayController sender = new BossBarDisplayController(this, player);
             BossBarDisplayController previous = senders.put(player.uuid(), sender);
             if (previous != null) {
                 previous.destroy();
             }
-        }, ConfigManager.delaySend() * 50L, TimeUnit.MILLISECONDS);
+        };
+        if (ConfigManager.delaySend() <= 0) {
+            r.run();
+        } else {
+            plugin.getScheduler().asyncLater(r, ConfigManager.delaySend() * 50L, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
