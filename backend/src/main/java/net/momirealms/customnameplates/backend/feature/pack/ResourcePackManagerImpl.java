@@ -41,6 +41,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
 public class ResourcePackManagerImpl implements ResourcePackManager {
@@ -238,7 +239,8 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         }
         if (ConfigManager.packNexo()){
             try {
-                FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(pluginsFolder, "Nexo" + File.separator + "pack" + File.separator + "assets"));
+                FileUtils.deleteDirectory(new File(pluginsFolder, "Nexo" + File.separator + "pack" + File.separator + "external_packs" + File.separator + "CustomNameplates"));
+                FileUtils.copyDirectory(resourcePackFolder, new File(pluginsFolder, "Nexo" + File.separator + "pack" + File.separator + "external_packs" + File.separator + "CustomNameplates"));
             } catch (IOException e){
                 plugin.getPluginLogger().warn("Failed to copy files to Nexo", e);
             }
