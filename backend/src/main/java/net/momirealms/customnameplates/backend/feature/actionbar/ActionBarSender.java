@@ -80,7 +80,7 @@ public class ActionBarSender implements Feature {
         this.onConditionTimerCheck();
     }
 
-    public void onConditionTimerCheck() {
+    public synchronized void onConditionTimerCheck() {
         ActionBarConfig[] configs = manager.actionBarConfigs();
         outer: {
             for (ActionBarConfig config : configs) {

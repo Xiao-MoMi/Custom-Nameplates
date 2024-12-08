@@ -76,7 +76,7 @@ public class TagRendererImpl implements TagRenderer {
     }
 
     @Override
-    public void onTick() {
+    public synchronized void onTick() {
         if (!isValid()) return;
 
         Set<CNPlayer> playersToUpdatePassengers = new ObjectOpenHashSet<>();

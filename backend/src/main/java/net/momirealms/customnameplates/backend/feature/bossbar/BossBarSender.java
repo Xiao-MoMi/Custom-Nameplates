@@ -98,7 +98,7 @@ public class BossBarSender implements Feature, BossBar {
         timeLeft = 0;
     }
 
-    public void tick() {
+    public synchronized void tick() {
         if (timeLeft > 0)
             timeLeft--;
 
