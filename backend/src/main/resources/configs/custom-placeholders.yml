@@ -169,7 +169,8 @@ switch-text:
       'egg': "</gradient>"
       'xmas': "</WHITE>"
       'angel': "</#8B4513>"
-      'sign': "</WHITE>"
+      'sign': "</BLACK>"
+      'banner': "</WHITE>"
       'enter': "</WHITE>"
   world:
     switch: '%player_world%'
