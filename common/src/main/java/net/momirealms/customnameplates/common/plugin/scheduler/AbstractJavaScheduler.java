@@ -81,28 +81,12 @@ public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
 
     @Override
     public void shutdownScheduler() {
-        this.scheduler.shutdown();
-        try {
-            if (!this.scheduler.awaitTermination(1, TimeUnit.MINUTES)) {
-                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomNameplates scheduler to terminate");
-                reportRunningTasks(thread -> thread.getName().equals("nameplates-scheduler"));
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.scheduler.shutdownNow();
     }
 
     @Override
     public void shutdownExecutor() {
-        this.worker.shutdown();
-        try {
-            if (!this.worker.awaitTermination(1, TimeUnit.MINUTES)) {
-                this.plugin.getPluginLogger().severe("Timed out waiting for the CustomNameplates worker thread pool to terminate");
-                reportRunningTasks(thread -> thread.getName().startsWith("nameplates-worker-"));
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.worker.shutdownNow();
     }
 
     private void reportRunningTasks(Predicate<Thread> predicate) {

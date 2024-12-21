@@ -310,7 +310,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.scheduledMainTask = getScheduler().asyncRepeating(mainTask, 50, 50, TimeUnit.MILLISECONDS);
     }
 
-
     @Override
     public InputStream getResourceStream(String filePath) {
         return getBootstrap().getResource(filePath.replace("\\", "/"));
