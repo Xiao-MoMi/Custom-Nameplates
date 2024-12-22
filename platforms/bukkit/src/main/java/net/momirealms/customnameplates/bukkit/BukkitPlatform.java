@@ -99,7 +99,8 @@ public class BukkitPlatform implements Platform {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
             try {
-                Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
+                // some plugins would send null to clear the actionbar, what a bad solution
+                Object component = Optional.ofNullable(Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet)).orElse(Reflections.instance$Component$empty);
                 Object contents = Reflections.method$Component$getContents.invoke(component);
                 if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
                     //String name = scoreContentNameFunction.apply(Reflections.field$ScoreContents$name.get(contents));
