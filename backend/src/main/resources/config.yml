@@ -36,6 +36,10 @@ integrations:
     Essentials: false         # Integration with Essentials chat
     ChatControlRed: false     # Integration with ChatControlRed
     Chatty: false             # Integration with Chatty
+  # Let typewriter take over actionbar on certain events
+  typewriter:
+    dialogue: true
+    cinematic: true
 
 # Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:

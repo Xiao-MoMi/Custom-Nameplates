@@ -67,10 +67,26 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private final Map<CNPlayer, Tracker> trackers = new WeakHashMap<>();
     private final ReadWriteLock trackerLock = new ReentrantReadWriteLock();
+    private final List<String> otherActionBarFeatures = new ArrayList<>();
 
     protected AbstractCNPlayer(CustomNameplates plugin, Channel channel) {
         this.plugin = plugin;
         this.channel = channel;
+    }
+
+    @Override
+    public void acquireActionBar(String id) {
+        this.otherActionBarFeatures.add(id);
+    }
+
+    @Override
+    public void releaseActionBar(String id) {
+        this.otherActionBarFeatures.remove(id);
+    }
+
+    @Override
+    public boolean shouldCNTakeOverActionBar() {
+        return otherActionBarFeatures.isEmpty();
     }
 
     @Override

@@ -160,6 +160,8 @@ public class ActionBarSender implements Feature {
         if (isTemporarilyHidden()) return;
         if (latestContent != null) {
             updateLastUpdateTime();
+            // do not send if other plugins have taken over the actionbar
+            if (!owner.shouldCNTakeOverActionBar()) return;
             Object packet = CustomNameplates.getInstance().getPlatform().setActionBarTextPacket(AdventureHelper.miniMessageToMinecraftComponent(latestContent, "nameplates", "actionbar"));
             CustomNameplates.getInstance().getPacketSender().sendPacket(owner, packet);
         }

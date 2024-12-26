@@ -30,6 +30,7 @@ dependencies {
     compileOnly(files("libs/AdvancedChat-1.3.7.jar"))
     compileOnly(files("libs/CMIAPI-9.7.4.1.jar"))
     compileOnly(files("libs/ChatControl-Red-10.28.3.jar"))
+    compileOnly(files("libs/Typewriter.jar"))
     compileOnly("net.william278.huskchat:huskchat-bukkit:3.0.4")
     compileOnly("net.essentialsx:EssentialsX:2.20.1")
     compileOnly("net.essentialsx:EssentialsXChat:2.20.1")

@@ -115,6 +115,9 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean chatChatControlRed;
     protected boolean chatChatty;
 
+    protected boolean twDialogue;
+    protected boolean twCinematic;
+
     protected String configVersion;
 
     public ConfigManager(CustomNameplates plugin) {
@@ -195,6 +198,9 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         chatVenture = config.getBoolean("integrations.chat.VentureChat", false);
         chatChatControlRed = config.getBoolean("integrations.chat.ChatControlRed", false);
         chatChatty = config.getBoolean("integrations.chat.Chatty", false);
+
+        twDialogue = config.getBoolean("integrations.typewriter.dialogue", true);
+        twCinematic = config.getBoolean("integrations.typewriter.cinematic", true);
 
         // Packs
         generateOnStart = !config.getBoolean("resource-pack.disable-generation-on-start", false);
@@ -363,6 +369,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean metrics() {
         return instance.metrics;
+    }
+
+    public static boolean twDialogue() {
+        return instance.twDialogue;
+    }
+
+    public static boolean twCinematic() {
+        return instance.twCinematic;
     }
 
     public static int defaultPlaceholderRefreshInterval() {

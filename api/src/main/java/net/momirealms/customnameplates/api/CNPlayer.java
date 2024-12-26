@@ -182,6 +182,27 @@ public interface CNPlayer {
     Placeholder[] activePlaceholders();
 
     /**
+     * Acquires the actionbar, preventing CustomNameplates from taking control of it.
+     *
+     * @param id The feature ID requesting the actionbar.
+     */
+    void acquireActionBar(String id);
+
+    /**
+     * Releases the actionbar, allowing CustomNameplates to take control again if no other features are active.
+     *
+     * @param id The feature ID releasing the actionbar.
+     */
+    void releaseActionBar(String id);
+
+    /**
+     * Checks if CustomNameplates should take control of the actionbar.
+     *
+     * @return True if CustomNameplates should take over the actionbar, false otherwise.
+     */
+    boolean shouldCNTakeOverActionBar();
+
+    /**
      * Retrieves the list of placeholders that need to be refreshed based on their refresh intervals.
      *
      * @return a list of placeholders to refresh

@@ -98,6 +98,7 @@ public class BukkitPlatform implements Platform {
         registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
+            if (!player.shouldCNTakeOverActionBar()) return;
             try {
                 // some plugins would send null to clear the actionbar, what a bad solution
                 Object component = Optional.ofNullable(Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet)).orElse(Reflections.instance$Component$empty);
@@ -119,6 +120,7 @@ public class BukkitPlatform implements Platform {
         registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
+            if (!player.shouldCNTakeOverActionBar()) return;
             try {
             boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
                 if (actionBar) {

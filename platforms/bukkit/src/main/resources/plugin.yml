@@ -17,6 +17,7 @@ softdepend:
   - EssentialsChat
   - ChatControlRed
   - WorldGuard
+  - Typewriter
 permissions:
   nameplates.command.equip:
     default: true

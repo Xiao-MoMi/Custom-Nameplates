@@ -40,6 +40,7 @@ import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExtraExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
+import net.momirealms.customnameplates.bukkit.compatibility.quest.TypeWriterListener;
 import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
@@ -202,6 +203,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                 WorldGuardRegion.register();
             } catch (Exception ignore) {
             }
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("Typewriter")) {
+            TypeWriterListener listener = new TypeWriterListener(this);
+            Bukkit.getPluginManager().registerEvents(listener, this.getBootstrap());
         }
 
         if (VersionHelper.isFolia()) {
