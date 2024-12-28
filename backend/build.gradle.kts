@@ -33,3 +33,9 @@ dependencies {
     // Fast util
     compileOnly("it.unimi.dsi:fastutil:${rootProject.properties["fastutil_version"]}")
 }
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+    dependsOn(tasks.clean)
+}
