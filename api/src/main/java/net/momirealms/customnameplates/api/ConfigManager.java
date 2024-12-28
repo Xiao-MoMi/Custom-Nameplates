@@ -104,6 +104,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean packOraxen;
     protected boolean packNexo;
     protected boolean packCreativeCentral;
+    protected boolean packCraftEngine;
 
     protected boolean chatUnsafe;
     protected boolean chatTR;
@@ -188,6 +189,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         packOraxen = config.getBoolean("integrations.resource-pack.Oraxen", false);
         packCreativeCentral = config.getBoolean("integrations.resource-pack.Creative-Central");
         packNexo = config.getBoolean("integrations.resource-pack.Nexo");
+        packCraftEngine = config.getBoolean("integrations.resource-pack.CraftEngine", false);
 
         chatUnsafe = config.getBoolean("other-settings.unsafe-chat-event", false);
         chatEss = config.getBoolean("integrations.chat.Essentials", false);
@@ -319,6 +321,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean packNexo() {
         return instance.packNexo;
+    }
+
+    public static boolean packCraftEngine() {
+        return instance.packCraftEngine;
     }
 
     public static boolean packCreativeCentral() { return instance.packCreativeCentral; }

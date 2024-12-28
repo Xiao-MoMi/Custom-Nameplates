@@ -244,6 +244,16 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
                 plugin.getPluginLogger().warn("Failed to copy files to Nexo", e);
             }
         }
+        if (ConfigManager.packCraftEngine()){
+            try {
+                FileUtils.deleteDirectory(new File(pluginsFolder, "CraftEngine" + File.separator + "resources" + File.separator + "nameplates"));
+                FileUtils.copyDirectory(resourcePackFolder, new File(pluginsFolder, "CraftEngine" + File.separator + "resources" + File.separator + "CustomNameplates" + File.separator + "resourcepack"));
+                FileUtils.delete(new File(pluginsFolder, "CraftEngine" + File.separator + "resources" + File.separator + "CustomNameplates" + File.separator + "resourcepack" + File.separator + "pack.mcmeta"));
+                FileUtils.delete(new File(pluginsFolder, "CraftEngine" + File.separator + "resources" + File.separator + "CustomNameplates" + File.separator + "resourcepack" + File.separator + "pack.png"));
+            } catch (IOException e){
+                plugin.getPluginLogger().warn("Failed to copy files to CraftEngine", e);
+            }
+        }
         if(ConfigManager.packCreativeCentral()) {
             try {
                 FileUtils.copyDirectory(new File(resourcePackFolder, "assets"), new File(pluginsFolder, "creative-central" + File.separator + "resources" + File.separator + "assets"));
