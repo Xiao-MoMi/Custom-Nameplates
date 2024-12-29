@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 
 public class BukkitPlatform implements Platform {
 
-    private static final Pattern LANG_PATTERN = Pattern.compile("<lang:[a-zA-Z0-9._/]+>");
+    private static final Pattern LANG_PATTERN = Pattern.compile("<lang:[a-zA-Z0-9._/':-]+/?>");
 
     private final CustomNameplates plugin;
     private final boolean placeholderAPI;
