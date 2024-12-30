@@ -37,10 +37,18 @@ public class BedrockPlayerRequirement extends AbstractRequirement {
 	public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
 		BukkitPlatform platform = (BukkitPlatform) CustomNameplates.getInstance().getPlatform();
 		if (platform.hasGeyser()) {
-			if (GeyserUtils.isBedrockPlayer(p1.uuid())) return true;
+			if (is) {
+				return GeyserUtils.isBedrockPlayer(p1.uuid());
+			} else {
+				return !GeyserUtils.isBedrockPlayer(p1.uuid());
+			}
 		}
 		if (platform.hasFloodGate()) {
-			if (FloodGateUtils.isBedrockPlayer(p1.uuid())) return true;
+			if (is) {
+				return FloodGateUtils.isBedrockPlayer(p1.uuid());
+			} else {
+				return !FloodGateUtils.isBedrockPlayer(p1.uuid());
+			}
 		}
 		return false;
 	}
