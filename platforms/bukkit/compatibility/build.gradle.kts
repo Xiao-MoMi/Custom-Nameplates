@@ -3,7 +3,7 @@ plugins {
 }
 
 repositories {
-    maven("https://papermc.io/repo/repository/maven-public/") // paper
+    maven("https://repo.papermc.io/repository/maven-public/") // paper
     maven("https://repo.william278.net/releases/") // husk
     maven("https://jitpack.io/")
     maven("https://repo.oraxen.com/releases/")
