@@ -35,6 +35,7 @@ import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.feature.pack.ResourcePackManager;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
+import net.momirealms.customnameplates.api.util.ZipUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -123,6 +124,12 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
         this.setPackFormat();
         // copy the resource pack to hooked plugins
         this.copyResourcePackToHookedPlugins(resourcePackFolder);
+
+        try {
+            ZipUtils.zipDirectory(resourcePackFolder.toPath(), plugin.getDataFolder().toPath().resolve("resourcepack.zip"));
+        } catch (IOException e) {
+            plugin.getPluginLogger().warn("Failed to zip resourcepack.zip", e);
+        }
     }
 
     private void saveFont(JsonObject fontJson) {
