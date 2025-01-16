@@ -73,7 +73,7 @@ public class NameplatesForceEquipCommand extends BukkitCommandFeature<CommandSen
                         plugin.getPluginLogger().warn("Player " + player.name() + " tried to equip a nameplate when data not loaded");
                         return;
                     }
-                    player.equippedNameplate(nameplateId);
+                    player.setNameplateData(nameplateId);
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_FORCE_EQUIP_SUCCESS, Component.text(bukkitPlayer.getName()), Component.text(nameplateId), AdventureHelper.miniMessage(nameplate.displayName()));
                 });

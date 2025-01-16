@@ -296,7 +296,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
         // check requirements
         if (!player.isMet(sendBubbleRequirements())) return;
 
-        String equippedBubble = player.equippedBubble();
+        String equippedBubble = player.currentBubble();
         if (equippedBubble.equals("none")) equippedBubble = defaultBubbleId;
 
         BubbleConfig config = bubbleConfigs.get(equippedBubble);

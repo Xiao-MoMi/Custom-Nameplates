@@ -125,7 +125,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         }
         PreParsedDynamicText nameTag = new PreParsedDynamicText(plugin.getNameplateManager().playerNameTag());
         Placeholder placeholder1 = this.registerPlayerPlaceholder("%np_tag-image%", (player -> {
-            String equippedNameplate = player.equippedNameplate();
+            String equippedNameplate = player.currentNameplate();
             if (equippedNameplate.equals("none")) equippedNameplate = plugin.getNameplateManager().defaultNameplateId();
             Nameplate nameplate = plugin.getNameplateManager().nameplateById(equippedNameplate);
             if (nameplate == null) return "";
@@ -134,7 +134,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             return AdventureHelper.surroundWithNameplatesFont(nameplate.createImage(advance, 0, 0));
         }));
         Placeholder placeholder2 = this.registerRelationalPlaceholder("%rel_np_tag-image%", (p1, p2) -> {
-            String equippedNameplate = p1.equippedNameplate();
+            String equippedNameplate = p1.currentNameplate();
             if (equippedNameplate.equals("none")) equippedNameplate = plugin.getNameplateManager().defaultNameplateId();
             Nameplate nameplate = plugin.getNameplateManager().nameplateById(equippedNameplate);
             if (nameplate == null) return "";
@@ -145,7 +145,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
         Placeholder placeholder3 = this.registerPlayerPlaceholder("%np_tag-text%", (player -> nameTag.fastCreate(player).render(player)));
         Placeholder placeholder4 = this.registerRelationalPlaceholder("%rel_np_tag-text%", (p1, p2) -> nameTag.fastCreate(p1).render(p2));
         Placeholder placeholder5 = this.registerPlayerPlaceholder("%np_tag%", (player -> {
-            String equippedNameplate = player.equippedNameplate();
+            String equippedNameplate = player.currentNameplate();
             if (equippedNameplate.equals("none")) equippedNameplate = plugin.getNameplateManager().defaultNameplateId();
             Nameplate nameplate = plugin.getNameplateManager().nameplateById(equippedNameplate);
             String tag = nameTag.fastCreate(player).render(player);
@@ -155,7 +155,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     + tag + AdventureHelper.surroundWithNameplatesFont(nameplate.createImageSuffix(advance, 0, 0));
         }));
         Placeholder placeholder6 = this.registerRelationalPlaceholder("%rel_np_tag%", (p1, p2) -> {
-            String equippedNameplate = p1.equippedNameplate();
+            String equippedNameplate = p1.currentNameplate();
             Nameplate nameplate = plugin.getNameplateManager().nameplateById(equippedNameplate);
             if (nameplate == null) return p1.name();
             String tag = nameTag.fastCreate(p1).render(p2);
@@ -192,16 +192,16 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
             this.registerPlayerPlaceholder("%np_offset_" + i + "%", (p) -> AdventureHelper.surroundWithNameplatesFont(characters));
         }
         if (ConfigManager.nameplateModule()) {
-            this.registerPlayerPlaceholder("%np_equipped_nameplate%", CNPlayer::equippedNameplate);
+            this.registerPlayerPlaceholder("%np_equipped_nameplate%", CNPlayer::currentNameplate);
             this.registerPlayerPlaceholder("%np_equipped_nameplate-name%", (player) -> {
-                Nameplate nameplate = plugin.getNameplateManager().nameplateById(player.equippedNameplate());
+                Nameplate nameplate = plugin.getNameplateManager().nameplateById(player.currentNameplate());
                 return Optional.ofNullable(nameplate).map(Nameplate::displayName).orElse("");
             });
         }
         if (ConfigManager.bubbleModule()) {
-            this.registerPlayerPlaceholder("%np_equipped_bubble%", CNPlayer::equippedBubble);
+            this.registerPlayerPlaceholder("%np_equipped_bubble%", CNPlayer::currentBubble);
             this.registerPlayerPlaceholder("%np_equipped_bubble-name%", (player) -> {
-                BubbleConfig bubble = plugin.getBubbleManager().bubbleConfigById(player.equippedBubble());
+                BubbleConfig bubble = plugin.getBubbleManager().bubbleConfigById(player.currentBubble());
                 return Optional.ofNullable(bubble).map(BubbleConfig::displayName).orElse("");
             });
         }

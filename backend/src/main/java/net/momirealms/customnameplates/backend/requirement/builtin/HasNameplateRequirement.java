@@ -34,7 +34,7 @@ public class HasNameplateRequirement extends AbstractRequirement {
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         if (!ConfigManager.nameplateModule()) return !has;
-        String nameplate = p1.equippedNameplate();
+        String nameplate = p1.currentNameplate();
         if (nameplate.equals("none")) nameplate = CustomNameplates.getInstance().getNameplateManager().defaultNameplateId();
         if (has) {
             return !nameplate.equals("none");

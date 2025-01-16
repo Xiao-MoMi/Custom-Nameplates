@@ -48,11 +48,11 @@ public class NameplatesUnEquipCommand extends BukkitCommandFeature<CommandSender
                         plugin.getPluginLogger().warn("Player " + player.name() + " tried to unequip a nameplate when data not loaded");
                         return;
                     }
-                    if (player.equippedNameplate().equals("none")) {
+                    if (player.currentNameplate().equals("none")) {
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_UNEQUIP_FAILURE_NOT_EQUIP);
                         return;
                     }
-                    player.equippedNameplate("none");
+                    player.setNameplateData("none");
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_UNEQUIP_SUCCESS);
                 });

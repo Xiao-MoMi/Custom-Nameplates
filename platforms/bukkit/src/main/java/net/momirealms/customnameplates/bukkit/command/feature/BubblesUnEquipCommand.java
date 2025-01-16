@@ -48,11 +48,11 @@ public class BubblesUnEquipCommand extends BukkitCommandFeature<CommandSender> {
                         plugin.getPluginLogger().warn("Player " + player.name() + " tried to unequip a bubble when data not loaded");
                         return;
                     }
-                    if (player.equippedBubble().equals("none")) {
+                    if (player.currentBubble().equals("none")) {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_UNEQUIP_FAILURE_NOT_EQUIP);
                         return;
                     }
-                    player.equippedBubble("none");
+                    player.setBubbleData("none");
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_BUBBLES_UNEQUIP_SUCCESS);
                 });

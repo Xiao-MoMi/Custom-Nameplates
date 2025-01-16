@@ -81,11 +81,11 @@ public class BubblesEquipCommand extends BukkitCommandFeature<CommandSender> {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_FAILURE_PERMISSION);
                         return;
                     }
-                    if (player.equippedBubble().equals(bubbleId)) {
+                    if (player.currentBubble().equals(bubbleId)) {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_FAILURE_NO_CHANGE);
                         return;
                     }
-                    player.equippedBubble(bubbleId);
+                    player.setBubbleData(bubbleId);
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_SUCCESS, Component.text(bubbleId), AdventureHelper.miniMessage(bubble.displayName()));
                 });

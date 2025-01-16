@@ -37,7 +37,7 @@ public class BubbleRequirement extends AbstractRequirement {
     @Override
     public boolean isSatisfied(CNPlayer p1, CNPlayer p2) {
         if (!ConfigManager.bubbleModule()) return false;
-        String bubble = p1.equippedBubble();
+        String bubble = p1.currentBubble();
         if (bubble.equals("none")) bubble = CustomNameplates.getInstance().getBubbleManager().defaultBubbleId();
         return bubbles.contains(bubble);
     }

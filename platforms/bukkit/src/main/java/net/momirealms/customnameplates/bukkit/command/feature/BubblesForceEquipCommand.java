@@ -73,7 +73,7 @@ public class BubblesForceEquipCommand extends BukkitCommandFeature<CommandSender
                         plugin.getPluginLogger().warn("Player " + player.name() + " tried to equip a bubble when data not loaded");
                         return;
                     }
-                    player.equippedBubble(bubbleId);
+                    player.setBubbleData(bubbleId);
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_BUBBLES_FORCE_EQUIP_SUCCESS, Component.text(bukkitPlayer.getName()), Component.text(bubbleId), AdventureHelper.miniMessage(bubble.displayName()));
                 });

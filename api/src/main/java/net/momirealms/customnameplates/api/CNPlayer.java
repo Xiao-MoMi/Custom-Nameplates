@@ -410,36 +410,64 @@ public interface CNPlayer {
     Tracker getTracker(CNPlayer another);
 
     /**
-     * Returns the ID of the currently equipped bubble for the player.
+     * Gets the bubble currently in use (Includes temp bubble used in preview)
      *
-     * @return the ID of the equipped bubble
+     * @return bubble
      */
-    String equippedBubble();
+    String currentBubble();
 
     /**
-     * Sets the equipped bubble for the player.
-     * Operation would fail if player is not loaded.
+     * Sets the bubble currently in use, which would not be saved
      *
-     * @param equippedBubble the new bubble ID to equip
-     * @return success or not
+     * @param bubble id
+     * @return false if data not loaded
      */
-    boolean equippedBubble(String equippedBubble);
+    boolean setCurrentBubble(String bubble);
 
     /**
-     * Returns the ID of the currently equipped nameplate for the player.
+     * Sets the bubble data
      *
-     * @return the ID of the equipped nameplate
+     * @param bubble id
+     * @return false if data not loaded
      */
-    String equippedNameplate();
+    boolean setBubbleData(String bubble);
 
     /**
-     * Sets the equipped nameplate for the player.
-     * Operation would fail if player is not loaded.
+     * Gets the bubble data
      *
-     * @param equippedNameplate the new nameplate ID to equip
-     * @return success or not
+     * @return bubble id
      */
-    boolean equippedNameplate(String equippedNameplate);
+    String bubbleData();
+
+    /**
+     * Gets the nameplate currently in use (Includes temp nameplate used in preview)
+     *
+     * @return nameplate
+     */
+    String currentNameplate();
+
+    /**
+     * Sets the nameplate currently in use, which would not be saved
+     *
+     * @param nameplate id
+     * @return false if data not loaded
+     */
+    boolean setCurrentNameplate(String nameplate);
+
+    /**
+     * Gets the nameplate data
+     *
+     * @return the nameplate id
+     */
+    String nameplateData();
+
+    /**
+     * Sets the nameplate data
+     *
+     * @param nameplate id
+     * @return false if data not loaded
+     */
+    boolean setNameplateData(String nameplate);
 
     /**
      * Save the player's current nameplate/bubble to database

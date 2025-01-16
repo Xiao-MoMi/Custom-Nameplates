@@ -81,11 +81,11 @@ public class NameplatesEquipCommand extends BukkitCommandFeature<CommandSender> 
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_FAILURE_PERMISSION);
                         return;
                     }
-                    if (player.equippedNameplate().equals(nameplateId)) {
+                    if (player.currentNameplate().equals(nameplateId)) {
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_FAILURE_NO_CHANGE);
                         return;
                     }
-                    player.equippedNameplate(nameplateId);
+                    player.setNameplateData(nameplateId);
                     player.save();
                     handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_SUCCESS, Component.text(nameplateId), AdventureHelper.miniMessage(nameplate.displayName()));
                 });

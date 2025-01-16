@@ -50,8 +50,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     private volatile boolean tempPreviewing = false;
     private volatile boolean toggleablePreviewing = false;
 
-    private String equippedNameplate;
-    private String equippedBubble;
+    private String currentNameplate;
+    private String nameplateData;
+    private String currentBubble;
+    private String bubbleData;
 
     private final TeamView teamView = new TeamView();
 
@@ -541,32 +543,57 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     }
 
     @Override
-    public String equippedBubble() {
-        if (equippedNameplate == null) return "none";
-        return equippedBubble;
+    public String currentBubble() {
+        if (currentNameplate == null) return "none";
+        return currentBubble;
     }
 
     @Override
-    public boolean equippedBubble(String equippedBubble) {
+    public boolean setCurrentBubble(String bubble) {
         if (!isLoaded()) return false;
-        if (!equippedBubble.equals(this.equippedBubble)) {
-            this.equippedBubble = equippedBubble;
+        this.currentBubble = bubble;
+        return true;
+    }
+
+    @Override
+    public String bubbleData() {
+        if (bubbleData == null) return "none";
+        return bubbleData;
+    }
+
+    @Override
+    public boolean setBubbleData(String bubble) {
+        if (!isLoaded()) return false;
+        this.currentBubble = bubble;
+        this.bubbleData = bubble;
+        return true;
+    }
+
+    @Override
+    public String currentNameplate() {
+        if (currentNameplate == null) return "none";
+        return currentNameplate;
+    }
+
+    @Override
+    public boolean setCurrentNameplate(String nameplate) {
+        if (!isLoaded()) return false;
+        if (!nameplate.equals(this.currentNameplate)) {
+            this.currentNameplate = nameplate;
         }
         return true;
     }
 
     @Override
-    public String equippedNameplate() {
-        if (equippedNameplate == null) return "none";
-        return equippedNameplate;
+    public String nameplateData() {
+        return nameplateData;
     }
 
     @Override
-    public boolean equippedNameplate(String equippedNameplate) {
+    public boolean setNameplateData(String nameplate) {
         if (!isLoaded()) return false;
-        if (!equippedNameplate.equals(this.equippedNameplate)) {
-            this.equippedNameplate = equippedNameplate;
-        }
+        this.nameplateData = nameplate;
+        this.currentNameplate = nameplate;
         return true;
     }
 
@@ -574,8 +601,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     public void save() {
         plugin.getStorageManager().dataSource().updatePlayerData(PlayerData.builder()
                 .uuid(uuid())
-                .nameplate(equippedNameplate())
-                .bubble(equippedBubble())
+                .nameplate(nameplateData())
+                .bubble(bubbleData())
                 .previewTags(isToggleablePreviewing())
                 .build(), plugin.getScheduler().async());
     }
