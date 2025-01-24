@@ -274,7 +274,7 @@ public class Reflections {
         try {
             Field field = ReflectionUtils.getDeclaredField(
                     clazz$ClientboundBossEventPacket,
-                    "f", "REMOVE_OPERATION");
+                    VersionHelper.isVersionNewerThan1_20_5() ? "g" : "f", "REMOVE_OPERATION");
             field.setAccessible(true);
             instance$ClientboundBossEventPacket$REMOVE_OPERATION = requireNonNull(field.get(null));
         } catch (IllegalAccessException e) {

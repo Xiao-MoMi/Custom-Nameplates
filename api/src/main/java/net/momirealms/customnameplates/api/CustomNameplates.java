@@ -70,7 +70,7 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     protected MainTask mainTask;
     protected SchedulerTask scheduledMainTask;
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
-    protected Int2ObjectOpenHashMap<CNPlayer> entityIDFastLookup = new Int2ObjectOpenHashMap<>();
+    protected ConcurrentHashMap<Integer, CNPlayer> entityIDFastLookup = new ConcurrentHashMap<>();
     protected AdvanceManager advanceManager;
     protected BackgroundManager backgroundManager;
     protected EventManager eventManager;
