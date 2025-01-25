@@ -512,6 +512,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     Placeholder placeholder7 = this.registerSharedPlaceholder("%shared_np_background-image_" + id + "%", () -> adaptiveImageText.getImage(null, null));
                     Placeholder placeholder8 = this.registerPlayerPlaceholder("%np_background-image_" + id + "%", (p) -> adaptiveImageText.getImage(p, p));
                     Placeholder placeholder9 = this.registerRelationalPlaceholder("%rel_np_background-image_" + id + "%", adaptiveImageText::getImage);
+                    Placeholder placeholder40 = this.registerSharedPlaceholder("%shared_np_background-text-offset_" + id + "%", () -> adaptiveImageText.getTextOffsetCharacters(null, null));
+                    Placeholder placeholder50 = this.registerPlayerPlaceholder("%np_background-text-offset_" + id + "%", (p) -> adaptiveImageText.getTextOffsetCharacters(p, p));
+                    Placeholder placeholder60 = this.registerRelationalPlaceholder("%rel_np_background-text-offset_" + id + "%", adaptiveImageText::getTextOffsetCharacters);
                     childrenText.put(placeholder1, list);
                     childrenText.put(placeholder2, list);
                     childrenText.put(placeholder3, list);
@@ -521,6 +524,9 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     childrenText.put(placeholder7, list);
                     childrenText.put(placeholder8, list);
                     childrenText.put(placeholder9, list);
+                    childrenText.put(placeholder40, list);
+                    childrenText.put(placeholder50, list);
+                    childrenText.put(placeholder60, list);
                 } else {
                     plugin.getPluginLogger().warn("Background [" + bgID + "] not exists");
                 }

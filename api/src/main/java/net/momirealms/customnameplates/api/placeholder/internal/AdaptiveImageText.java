@@ -19,7 +19,9 @@ package net.momirealms.customnameplates.api.placeholder.internal;
 
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.CustomNameplatesAPI;
 import net.momirealms.customnameplates.api.feature.AdaptiveImage;
+import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import org.jetbrains.annotations.ApiStatus;
@@ -98,5 +100,10 @@ public class AdaptiveImageText<T extends AdaptiveImage> {
     @NotNull
     public String getText(CNPlayer p1, CNPlayer p2) {
         return preParsedDynamicText.fastCreate(p1).render(p2);
+    }
+
+    @NotNull
+    public String getTextOffsetCharacters(CNPlayer p1, CNPlayer p2) {
+        return OffsetFont.createOffsets(CustomNameplatesAPI.getInstance().getTextAdvance(preParsedDynamicText.fastCreate(p1).render(p2)));
     }
 }
