@@ -24,8 +24,13 @@ import net.momirealms.customnameplates.api.CustomNameplates;
  * for managing the plugin and chat manager.
  */
 public abstract class AbstractChatMessageProvider implements ChatMessageProvider {
-
+    /**
+     * The CustomNameplates plugin
+     */
     protected CustomNameplates plugin;
+    /**
+     * The chat manager
+     */
     protected ChatManager manager;
 
     /**

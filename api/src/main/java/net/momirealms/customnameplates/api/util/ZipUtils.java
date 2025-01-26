@@ -26,8 +26,25 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Utility class for zipping files and directories.
+ * Provides methods for zipping entire directories and adding individual files to a zip archive.
+ */
 public class ZipUtils {
 
+    /**
+     * Private constructor to prevent instantiation of utility class.
+     */
+    private ZipUtils() {}
+
+    /**
+     * Zips the contents of a directory into a zip file.
+     * This method recursively walks through the directory and adds each file to the zip archive.
+     *
+     * @param folderPath The path to the folder to be zipped.
+     * @param zipFilePath The path to the output zip file.
+     * @throws IOException If an I/O error occurs while reading the directory or writing the zip file.
+     */
     public static void zipDirectory(Path folderPath, Path zipFilePath) throws IOException {
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath.toFile()))) {
             try (Stream<Path> paths = Files.walk(folderPath)) {
@@ -45,6 +62,14 @@ public class ZipUtils {
         }
     }
 
+    /**
+     * Adds a file's contents to the zip archive.
+     *
+     * @param zipEntry The zip entry (file) to be added to the zip archive.
+     * @param is The input stream from which the file contents are read.
+     * @param zos The zip output stream where the file will be written.
+     * @throws IOException If an I/O error occurs while writing the file to the zip archive.
+     */
     public static void addToZip(ZipEntry zipEntry, InputStream is, ZipOutputStream zos) throws IOException {
         zos.putNextEntry(zipEntry);
         byte[] buffer = new byte[4096];

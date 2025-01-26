@@ -20,6 +20,9 @@ package net.momirealms.customnameplates.api.feature.image;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * An interface represents the image
+ */
 public interface Image {
 
     /**

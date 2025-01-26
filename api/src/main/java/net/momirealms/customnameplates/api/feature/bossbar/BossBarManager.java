@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature.bossbar;
 
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 
+/**
+ * Manager interface for handling BossBar configurations and their updates.
+ */
 public interface BossBarManager extends Reloadable {
 
     /**

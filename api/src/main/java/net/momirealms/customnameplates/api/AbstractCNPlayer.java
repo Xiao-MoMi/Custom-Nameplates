@@ -39,11 +39,21 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Player instance adapted by CustomNameplates
+ */
 public abstract class AbstractCNPlayer implements CNPlayer {
-
+    /**
+     * The CustomNameplates plugin
+     */
     protected final CustomNameplates plugin;
+    /**
+     * Player netty channel
+     */
     protected final Channel channel;
-
+    /**
+     * Platform player instance
+     */
     protected Object player;
 
     private volatile boolean isLoaded = false;
@@ -71,6 +81,12 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     private final ReadWriteLock trackerLock = new ReentrantReadWriteLock();
     private final List<String> otherActionBarFeatures = new ArrayList<>();
 
+    /**
+     * Creates a player instance
+     *
+     * @param plugin CustomNameplates plugin
+     * @param channel netty channel
+     */
     protected AbstractCNPlayer(CustomNameplates plugin, Channel channel) {
         this.plugin = plugin;
         this.channel = channel;
@@ -204,6 +220,9 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         }
     }
 
+    /**
+     * Reload the player instance, clear caches
+     */
     public void reload() {
         cachedValues.clear();
         cachedRelationalValues.clear();
@@ -214,6 +233,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         feature2Placeholders.clear();
     }
 
+    /**
+     * Sets the platform player instance on join
+     *
+     * @param player player
+     */
     public void setPlayer(Object player) {
         this.player = player;
     }
@@ -233,10 +257,20 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         return player;
     }
 
+    /**
+     * Sets if the player data is loaded
+     *
+     * @param loaded loaded or not
+     */
     public void setLoaded(boolean loaded) {
         isLoaded = loaded;
     }
 
+    /**
+     * Sets if the player is temporarily previewing the nameplate
+     *
+     * @param previewing is previewing or not
+     */
     public void setTempPreviewing(boolean previewing) {
         this.tempPreviewing = previewing;
     }
@@ -246,6 +280,11 @@ public abstract class AbstractCNPlayer implements CNPlayer {
         return tempPreviewing;
     }
 
+    /**
+     * Sets if the player is using toggle command to preview his nameplate
+     *
+     * @param previewing is previewing or not
+     */
     public void setToggleablePreviewing(boolean previewing) {
         this.toggleablePreviewing = previewing;
     }

@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.api;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.feature.actionbar.ActionBarManager;
 import net.momirealms.customnameplates.api.feature.advance.AdvanceManager;
@@ -52,34 +51,137 @@ import java.util.function.Supplier;
  * Provides access to managers for various features.
  */
 public abstract class CustomNameplates implements NameplatesPlugin {
-
     private static CustomNameplates instance;
 
+    /**
+     * Manages the dependencies required by the plugin or system.
+     */
     protected DependencyManager dependencyManager;
+
+    /**
+     * Handles translations for the plugin, ensuring text is localized based on the player's language.
+     */
     protected TranslationManager translationManager;
+
+    /**
+     * A debugger function that logs debug information with a "[DEBUG]" prefix.
+     * It consumes a supplier of strings and logs the result.
+     */
     protected Consumer<Supplier<String>> debugger = (s) -> getPluginLogger().info("[DEBUG] " + s.get());
+
+    /**
+     * Manages configuration settings, loading and accessing configuration data for the plugin.
+     */
     protected ConfigManager configManager;
+
+    /**
+     * Responsible for sending packets to clients or other network entities.
+     */
     protected PacketSender packetSender;
+
+    /**
+     * Injects custom pipelines into the system to modify or handle data processing flows.
+     */
     protected PipelineInjector pipelineInjector;
+
+    /**
+     * Manages placeholders used for dynamic text replacements in the plugin's output.
+     */
     protected PlaceholderManager placeholderManager;
+
+    /**
+     * Manages requirements or conditions that must be met for certain actions or events to occur.
+     */
     protected RequirementManager requirementManager;
+
+    /**
+     * Manages the action bar, responsible for displaying dynamic text to players in the action bar.
+     */
     protected ActionBarManager actionBarManager;
+
+    /**
+     * Manages the boss bar, which displays a customizable progress bar and messages to players.
+     */
     protected BossBarManager bossBarManager;
+
+    /**
+     * Manages unlimited tags that can be applied to players, items, or other entities.
+     */
     protected UnlimitedTagManager unlimitedTagManager;
+
+    /**
+     * Represents the platform on which the plugin or system is running (e.g., Spigot, Bukkit, etc.).
+     */
     protected Platform platform;
+
+    /**
+     * The main task or process that the plugin or system executes.
+     */
     protected MainTask mainTask;
+
+    /**
+     * A scheduled task that runs alongside the main task, typically used for periodic or delayed actions.
+     */
     protected SchedulerTask scheduledMainTask;
+
+    /**
+     * A map that tracks online players by their unique UUID, allowing quick access to player data.
+     */
     protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
+
+    /**
+     * A fast lookup map that associates entity IDs to player data (CNPlayer) for quick access.
+     */
     protected ConcurrentHashMap<Integer, CNPlayer> entityIDFastLookup = new ConcurrentHashMap<>();
+
+    /**
+     * Manages advances or progressions for players, such as achievements or level ups.
+     */
     protected AdvanceManager advanceManager;
+
+    /**
+     * Manages background tasks, likely for asynchronous processing or UI updates.
+     */
     protected BackgroundManager backgroundManager;
+
+    /**
+     * Manages events and event handling within the plugin or system.
+     */
     protected EventManager eventManager;
+
+    /**
+     * Manages the plugin's data storage system, including saving and retrieving player data.
+     */
     protected StorageManager storageManager;
+
+    /**
+     * Manages bubble effects, likely for UI or visual effects displayed to players.
+     */
     protected BubbleManager bubbleManager;
+
+    /**
+     * Manages chat functionality, including message formatting, commands, and interactions.
+     */
     protected ChatManager chatManager;
+
+    /**
+     * Manages images, such as textures or images for resource packs or player displays.
+     */
     protected ImageManager imageManager;
+
+    /**
+     * Manages nameplates displayed above players or entities.
+     */
     protected NameplateManager nameplateManager;
+
+    /**
+     * Manages resource packs, allowing the plugin to send custom content to players.
+     */
     protected ResourcePackManager resourcePackManager;
+
+    /**
+     * Provides an API for external access to the plugin's functionality and data.
+     */
     protected CustomNameplatesAPI api;
 
     private String buildByBit = "%%__BUILTBYBIT__%%";
@@ -89,6 +191,9 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     private String username = "%%__USERNAME__%%";
     private boolean isLatest = false;
 
+    /**
+     * Creates the CustomNameplates instance
+     */
     protected CustomNameplates() {
         instance = this;
     }

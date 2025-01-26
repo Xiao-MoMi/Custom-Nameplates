@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature.bubble;
 
 import net.momirealms.customnameplates.api.util.Vector3;
 
+/**
+ * Bubble configuration
+ */
 public interface BubbleConfig {
 
     /**

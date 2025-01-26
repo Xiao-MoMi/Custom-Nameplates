@@ -20,6 +20,9 @@ package net.momirealms.customnameplates.api.feature.bossbar;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 
+/**
+ * Interface for BossBarConfig
+ */
 public interface BossBarConfig {
 
     /**

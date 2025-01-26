@@ -33,6 +33,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.withType<JavaCompile> {
@@ -43,20 +45,39 @@ tasks.withType<JavaCompile> {
 
 tasks {
     shadowJar {
-        archiveClassifier = ""
-        archiveFileName = "CustomNameplates-${rootProject.properties["project_version"]}.jar"
+//        archiveClassifier.set("")
+        archiveFileName = "custom-nameplates-${rootProject.properties["project_version"]}.jar"
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
+    }
+    javadoc {
+        options {
+            encoding = "UTF-8"
+        }
+        options.quiet()
     }
 }
 
 publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.momirealms.net/releases")
+            credentials(PasswordCredentials::class) {
+                username = System.getenv("REPO_USERNAME")
+                password = System.getenv("REPO_PASSWORD")
+            }
+        }
+    }
     publications {
         create<MavenPublication>("mavenJava") {
             groupId = "net.momirealms"
-            artifactId = "CustomNameplates"
-            version = rootProject.version.toString()
-            artifact(tasks.shadowJar)
+            artifactId = "custom-nameplates"
+            version = rootProject.properties["project_version"].toString()
+            from(components["java"])
+            pom {
+                name = "CustomNameplates API"
+                url = "https://momirealms.net"
+            }
         }
     }
 }

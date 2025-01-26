@@ -23,8 +23,13 @@ import java.util.UUID;
  * Represents player-specific data, including the player's nameplate, bubble, and UUID.
  */
 public interface PlayerData {
-
+    /**
+     * Default nameplate
+     */
     String DEFAULT_NAMEPLATE = "none";
+    /**
+     * Default bubble
+     */
     String DEFAULT_BUBBLE = "none";
 
     /**

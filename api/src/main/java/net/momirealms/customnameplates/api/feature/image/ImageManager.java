@@ -22,6 +22,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Manages image configurations
+ */
 public interface ImageManager extends Reloadable {
 
     /**

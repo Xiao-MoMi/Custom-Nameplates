@@ -22,8 +22,10 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
 
+/**
+ * Implementation of NameTagConfig
+ */
 public class NameTagConfigImpl implements NameTagConfig {
-
     private final String id;
     private final Requirement[] ownerRequirements;
     private final Requirement[] viewerRequirements;
@@ -44,7 +46,7 @@ public class NameTagConfigImpl implements NameTagConfig {
     private final boolean affectedByScale;
     private final boolean affectedBySpectator;
 
-    public NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale, boolean affectedBySpectator) {
+    private NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale, boolean affectedBySpectator) {
         this.id = id;
         this.ownerRequirements = ownerRequirements;
         this.viewerRequirements = viewerRequirements;
@@ -161,6 +163,9 @@ public class NameTagConfigImpl implements NameTagConfig {
         return lineWidth;
     }
 
+    /**
+     * The builder implementation
+     */
     public static class BuilderImpl implements Builder {
         private String id;
         private Requirement[] ownerRequirements;

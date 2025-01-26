@@ -23,6 +23,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/**
+ * Interface to manage data storage
+ */
 public interface StorageManager extends Reloadable {
 
 	/**

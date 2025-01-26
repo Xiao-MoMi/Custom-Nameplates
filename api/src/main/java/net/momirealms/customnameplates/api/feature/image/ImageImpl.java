@@ -22,14 +22,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+/**
+ * Implementation of Image
+ */
 public class ImageImpl implements Image {
-
     private final String id;
     private final boolean removeShadow;
     private final ConfiguredCharacter character;
     private final Animation animation;
 
-    public ImageImpl(String id, boolean removeShadow, Animation animation, ConfiguredCharacter character) {
+    private ImageImpl(String id, boolean removeShadow, Animation animation, ConfiguredCharacter character) {
         this.id = id;
         this.removeShadow = removeShadow;
         this.character = character;
@@ -69,8 +71,10 @@ public class ImageImpl implements Image {
         return Objects.hashCode(id);
     }
 
+    /**
+     * The builder Implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private boolean removeShadow;
         private ConfiguredCharacter character;

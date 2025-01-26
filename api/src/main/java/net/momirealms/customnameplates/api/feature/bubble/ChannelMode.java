@@ -17,9 +17,21 @@
 
 package net.momirealms.customnameplates.api.feature.bubble;
 
+/**
+ * Enum representing the different modes for Bubble channels.
+ * The mode determines the visibility and access rules for Bubbles in various channels.
+ */
 public enum ChannelMode {
-
+    /**
+     * The ALL mode means that Bubbles can be displayed in all channels, regardless of the player's status or permissions.
+     */
     ALL,
+    /**
+     * The JOINED mode means that Bubbles can only be displayed in channels where the player is currently a member.
+     */
     JOINED,
+    /**
+     * The CAN_JOIN mode means that Bubbles can be displayed in channels that the player can join, even if they are not currently in them.
+     */
     CAN_JOIN
 }

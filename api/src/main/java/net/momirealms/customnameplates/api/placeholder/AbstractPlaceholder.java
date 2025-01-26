@@ -23,15 +23,42 @@ import net.momirealms.customnameplates.api.CustomNameplates;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * An abstract placeholder class
+ */
 public abstract class AbstractPlaceholder implements Placeholder {
-
+    /**
+     * Placeholder in string format
+     */
     protected String id;
+    /**
+     * The internal id
+     */
     protected int countId = PlaceholderCounter.getAndIncrease();
+    /**
+     * Refresh internal
+     */
     protected int refreshInterval;
+    /**
+     * The PlaceholderManager instance
+     */
     protected PlaceholderManager manager;
+    /**
+     * The nested placeholders
+     */
     protected Set<Placeholder> children = new ObjectOpenHashSet<>();
+    /**
+     * The parent placeholders
+     */
     protected Set<Placeholder> parents = new ObjectOpenHashSet<>();
 
+    /**
+     * Constructs a new placeholder
+     *
+     * @param manager manager
+     * @param id id
+     * @param refreshInterval refreshInterval
+     */
     protected AbstractPlaceholder(PlaceholderManager manager, String id, int refreshInterval) {
         if (refreshInterval == 0) {
             refreshInterval = -1;

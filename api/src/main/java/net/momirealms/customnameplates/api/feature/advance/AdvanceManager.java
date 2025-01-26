@@ -25,6 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Interface that defines methods for managing and calculating text advance data,
+ */
 public interface AdvanceManager extends Reloadable {
 
     /**

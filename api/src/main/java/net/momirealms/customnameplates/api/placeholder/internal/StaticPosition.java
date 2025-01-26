@@ -17,7 +17,20 @@
 
 package net.momirealms.customnameplates.api.placeholder.internal;
 
+/**
+ * Enum representing the static positions that an element can occupy.
+ */
 public enum StaticPosition {
-
-    LEFT, RIGHT, MIDDLE
+    /**
+     * Represents the leftmost position.
+     */
+    LEFT,
+    /**
+     * Represents the rightmost position.
+     */
+    RIGHT,
+    /**
+     * Represents the center position.
+     */
+    MIDDLE
 }

@@ -36,33 +36,57 @@ public class JsonData {
     private int flags;
 
     /**
-     * Constructs a new {@link JsonData} instance.
+     * Constructs a new {@link JsonData} instance with the specified nameplate and bubble, setting flags to 0.
      *
      * @param nameplate the nameplate value
      * @param bubble    the bubble value
      */
     public JsonData(String nameplate, String bubble) {
-        this.nameplate = nameplate;
-        this.bubble = bubble;
-        this.flags = 0;
+        this(nameplate, bubble, 0);
     }
 
+    /**
+     * Constructs a new {@link JsonData} instance with the specified nameplate, bubble, and flags.
+     *
+     * @param nameplate the nameplate value
+     * @param bubble    the bubble value
+     * @param flags     the flags value
+     */
     public JsonData(String nameplate, String bubble, int flags) {
         this.nameplate = nameplate;
         this.bubble = bubble;
         this.flags = flags;
     }
 
+    /**
+     * Constructs a new {@link JsonData} instance with the specified nameplate, bubble, and a preview state flag.
+     *
+     * @param nameplate    the nameplate value
+     * @param bubble       the bubble value
+     * @param previewState the preview state
+     */
     public JsonData(String nameplate, String bubble, boolean previewState) {
         this.nameplate = nameplate;
         this.bubble = bubble;
         this.flags = encodeFlags(previewState);
     }
 
+    /**
+     * Encodes the preview state as a flag (0 or 1).
+     *
+     * @param previewState the preview state
+     * @return 1 if preview state is true, otherwise 0
+     */
     public static int encodeFlags(boolean previewState) {
         return previewState ? 1 : 0;
     }
 
+    /**
+     * Decodes the preview state from the flags.
+     *
+     * @param flags the flags value
+     * @return true if the preview state flag is set, otherwise false
+     */
     public static boolean decodePreviewState(int flags) {
         return (flags & 1) == 1;
     }

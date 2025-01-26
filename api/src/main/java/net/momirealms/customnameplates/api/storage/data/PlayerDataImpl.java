@@ -24,13 +24,27 @@ import java.util.UUID;
  * It includes the player's name, their nameplate and bubble data.
  */
 public class PlayerDataImpl implements PlayerData {
-
+	/**
+	 * The UUID of the player
+	 */
 	protected UUID uuid;
+
+	/**
+	 * The nameplate identifier for the player
+	 */
 	protected String nameplate;
+
+	/**
+	 * The bubble identifier for the player
+	 */
 	protected String bubble;
+
+	/**
+	 * Flag indicating whether preview tags are enabled
+	 */
 	protected boolean previewTags;
 
-	public PlayerDataImpl(UUID uuid, String nameplate, String bubble, boolean previewTags) {
+	private PlayerDataImpl(UUID uuid, String nameplate, String bubble, boolean previewTags) {
 		this.uuid = uuid;
 		this.nameplate = nameplate;
 		this.bubble = bubble;

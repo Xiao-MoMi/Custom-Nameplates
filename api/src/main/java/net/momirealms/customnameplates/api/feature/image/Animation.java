@@ -17,5 +17,8 @@
 
 package net.momirealms.customnameplates.api.feature.image;
 
+/**
+ * A record representing an animation with a speed and a number of frames.
+ */
 public record Animation(int speed, int frames) {
 }

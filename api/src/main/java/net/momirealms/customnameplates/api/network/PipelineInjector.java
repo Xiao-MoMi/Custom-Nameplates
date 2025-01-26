@@ -27,15 +27,43 @@ import org.jetbrains.annotations.ApiStatus;
  */
 public interface PipelineInjector {
 
+    /**
+     * Sets the user (player) associated with the given Netty channel.
+     * This is an internal method for managing the mapping between a channel and a player.
+     *
+     * @param channel the Netty channel to associate with the player
+     * @param user the player to associate with the channel
+     */
     @ApiStatus.Internal
     void setUser(Channel channel, CNPlayer user);
 
+    /**
+     * Retrieves the player associated with the given Netty channel.
+     * This is an internal method for fetching the player mapped to a specific channel.
+     *
+     * @param channel the Netty channel for which the player is being retrieved
+     * @return the player associated with the given channel
+     */
     @ApiStatus.Internal
     CNPlayer getUser(Channel channel);
 
+    /**
+     * Removes the player associated with the specified Netty channel.
+     * This is an internal method for detaching a player from the given channel.
+     *
+     * @param channel the Netty channel from which the player will be removed
+     * @return the player that was removed, or null if no player was associated
+     */
     @ApiStatus.Internal
     CNPlayer removeUser(Channel channel);
 
+    /**
+     * Retrieves the player associated with the specified object.
+     * This method is internal and can be used to get a player from various representations.
+     *
+     * @param player the object representing the player (could be a reference or other object type)
+     * @return the player associated with the object
+     */
     @ApiStatus.Internal
     CNPlayer getUser(Object player);
 

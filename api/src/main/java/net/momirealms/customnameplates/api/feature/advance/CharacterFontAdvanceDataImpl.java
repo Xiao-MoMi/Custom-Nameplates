@@ -26,13 +26,22 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implementation of the CharacterFontAdvanceData interface.
+ */
 public class CharacterFontAdvanceDataImpl implements CharacterFontAdvanceData {
-
     private final Map<Integer, Float> data;
     private final String id;
     private final Function<Map<String, Object>, List<JsonObject>> fontProviderFunction;
 
-    public CharacterFontAdvanceDataImpl(String id, Map<Integer, Float> data, Function<Map<String, Object>, List<JsonObject>> fontProviderFunction) {
+    /**
+     * Constructs a new instance of CharacterFontAdvanceDataImpl.
+     *
+     * @param id                    the unique identifier for this font advance data
+     * @param data                  a map of character code points and their corresponding advance values
+     * @param fontProviderFunction  a function that generates font provider configurations
+     */
+    private CharacterFontAdvanceDataImpl(String id, Map<Integer, Float> data, Function<Map<String, Object>, List<JsonObject>> fontProviderFunction) {
         this.data = data;
         this.id = requireNonNull(id);
         this.fontProviderFunction = requireNonNull(fontProviderFunction);
@@ -63,8 +72,10 @@ public class CharacterFontAdvanceDataImpl implements CharacterFontAdvanceData {
         return fontProviderFunction.apply(properties);
     }
 
+    /**
+     * The builder implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private final Int2FloatOpenHashMap data = new Int2FloatOpenHashMap();
         private String id;
         private Function<Map<String, Object>, List<JsonObject>> fontProviderFunction = (stringObjectMap -> null);

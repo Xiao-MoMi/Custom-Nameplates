@@ -22,6 +22,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Interface representing a manager for background configurations.
+ */
 public interface BackgroundManager extends Reloadable {
 
     /**

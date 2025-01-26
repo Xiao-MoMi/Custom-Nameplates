@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature.pack;
 
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 
+/**
+ * Interface to manager resource packs
+ */
 public interface ResourcePackManager extends Reloadable {
 
     /**

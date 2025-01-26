@@ -22,14 +22,25 @@ import net.momirealms.customnameplates.api.feature.OffsetFont;
 
 import java.util.Objects;
 
+/**
+ * Implementation of the Bubble interface
+ */
 public class BubbleImpl implements Bubble {
-
     private final String id;
     private final ConfiguredCharacter left;
     private final ConfiguredCharacter right;
     private final ConfiguredCharacter middle;
     private final ConfiguredCharacter tail;
 
+    /**
+     * Constructs a new BubbleImpl.
+     *
+     * @param id the unique ID for the bubble
+     * @param left the character representing the left part of the bubble
+     * @param right the character representing the right part of the bubble
+     * @param middle the character representing the middle part of the bubble
+     * @param tail the character representing the tail part of the bubble
+     */
     public BubbleImpl(String id, ConfiguredCharacter left, ConfiguredCharacter right, ConfiguredCharacter middle, ConfiguredCharacter tail) {
         this.id = id;
         this.left = left;
@@ -149,8 +160,10 @@ public class BubbleImpl implements Bubble {
         return sb.toString();
     }
 
+    /**
+     * Builder implementation for creating BubbleImpl instances.
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private ConfiguredCharacter left;
         private ConfiguredCharacter right;

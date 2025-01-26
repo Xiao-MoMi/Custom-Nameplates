@@ -21,6 +21,9 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Interface representing a manager for handling ActionBars.
+ */
 public interface ActionBarManager extends Reloadable {
 
     /**

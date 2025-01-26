@@ -25,6 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * The BubbleManager interface is responsible for managing the configuration and display of Bubbles,
+ * including retrieving available Bubbles, managing Bubble configurations, and controlling display settings.
+ */
 public interface BubbleManager extends Reloadable {
 
     /**

@@ -22,6 +22,9 @@ import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * An interface manages unlimited tags
+ */
 public interface UnlimitedTagManager extends Reloadable {
 
     /**

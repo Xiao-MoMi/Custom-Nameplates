@@ -22,6 +22,9 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
 
+/**
+ * NameTag Configuration
+ */
 public interface NameTagConfig {
 
     /**

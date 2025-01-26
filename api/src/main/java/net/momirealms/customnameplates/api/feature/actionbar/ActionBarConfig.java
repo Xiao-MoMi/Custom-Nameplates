@@ -20,6 +20,9 @@ package net.momirealms.customnameplates.api.feature.actionbar;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 
+/**
+ * ActionBar Config
+ */
 public interface ActionBarConfig {
 
     /**

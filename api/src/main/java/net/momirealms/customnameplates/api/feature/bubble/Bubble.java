@@ -20,6 +20,9 @@ package net.momirealms.customnameplates.api.feature.bubble;
 import net.momirealms.customnameplates.api.feature.AdaptiveImage;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 
+/**
+ * Bubble
+ */
 public interface Bubble extends AdaptiveImage {
 
     /**

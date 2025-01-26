@@ -22,6 +22,9 @@ import net.momirealms.customnameplates.api.util.Vector3;
 
 import java.util.UUID;
 
+/**
+ * Represents a tag
+ */
 public interface Tag {
 
     /**
@@ -59,6 +62,11 @@ public interface Tag {
      */
     boolean affectedByScaling();
 
+    /**
+     * Checks if the tag is affected by spectator mode.
+     *
+     * @return true if affected by spectator mode, false otherwise
+     */
     boolean affectedBySpectator();
 
     /**
@@ -189,6 +197,8 @@ public interface Tag {
 
     /**
      * Updates the translation of the tag for a certain player
+     *
+     * @param viewer the player to update
      */
     void updateTranslation(CNPlayer viewer);
 

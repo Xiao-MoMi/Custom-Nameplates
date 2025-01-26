@@ -20,6 +20,9 @@ package net.momirealms.customnameplates.api.feature.nameplate;
 import net.momirealms.customnameplates.api.feature.AdaptiveImage;
 import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 
+/**
+ * Nameplate
+ */
 public interface Nameplate extends AdaptiveImage {
 
     /**

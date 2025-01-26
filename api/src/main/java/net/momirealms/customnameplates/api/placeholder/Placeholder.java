@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.placeholder;
 
 import java.util.Set;
 
+/**
+ * Placeholder
+ */
 public interface Placeholder {
 
     /**

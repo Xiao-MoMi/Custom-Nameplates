@@ -17,6 +17,15 @@
 
 package net.momirealms.customnameplates.api.feature;
 
+/**
+ * Interface representing an adaptive image with methods for generating image
+ * prefixes, suffixes, and the full image string based on specified parameters.
+ * <p>
+ * The implementation of this interface should define how the image is adapted
+ * based on the given margins and advance, which are used for layout and
+ * positioning purposes.
+ * </p>
+ */
 public interface AdaptiveImage {
 
     /**

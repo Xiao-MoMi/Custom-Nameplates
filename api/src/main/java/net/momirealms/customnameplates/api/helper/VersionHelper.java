@@ -28,11 +28,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
- * This class implements the VersionManager interface and is responsible for managing version-related information.
+ * VersionHelper is a utility class that provides methods for managing and checking version-related information,
+ * including plugin updates and server version details. It implements the VersionManager interface.
  */
 public class VersionHelper {
 
-    // Method to asynchronously check for plugin updates
+    /**
+     * A function to check for plugin updates asynchronously by comparing the plugin's current version with the latest version available.
+     */
     public static final Function<NameplatesPlugin, CompletableFuture<Boolean>> UPDATE_CHECKER = (plugin) -> {
         CompletableFuture<Boolean> updateFuture = new CompletableFuture<>();
         plugin.getScheduler().async().execute(() -> {
@@ -64,6 +67,12 @@ public class VersionHelper {
     private static boolean mohist;
     private static boolean paper;
 
+    /**
+     * Initializes version-specific settings based on the server version.
+     * This method checks if the server is running Mojmap, Folia, Mohist, or Paper.
+     *
+     * @param serverVersion The server version string.
+     */
     public static void init(String serverVersion) {
         String[] split = serverVersion.split("\\.");
         version = Float.parseFloat(split[1] + "." + (split.length == 3 ? split[2] : "0"));
@@ -75,12 +84,19 @@ public class VersionHelper {
         paper = paper && !isModdedServer;
     }
 
+    /**
+     * Gets the current server version as a float.
+     *
+     * @return The server version as a float.
+     */
     public static float version() {
         return version;
     }
 
+    /**
+     * Checks if the server is running Mojmap.
+     */
     private static void checkMojMap() {
-        // Check if the server is Mojmap
         try {
             Class.forName("net.minecraft.network.protocol.game.ClientboundBossEventPacket");
             mojmap = true;
@@ -88,6 +104,9 @@ public class VersionHelper {
         }
     }
 
+    /**
+     * Checks if the server is running Folia.
+     */
     private static void checkFolia() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
@@ -96,6 +115,9 @@ public class VersionHelper {
         }
     }
 
+    /**
+     * Checks if the server is running Mohist.
+     */
     private static void checkMohist() {
         try {
             Class.forName("com.mohistmc.api.ServerAPI");
@@ -104,6 +126,9 @@ public class VersionHelper {
         }
     }
 
+    /**
+     * Checks if the server is running Paper or its forks.
+     */
     private static void checkPaper() {
         try {
             Class.forName("com.destroystokyo.paper.Metrics");
@@ -112,47 +137,103 @@ public class VersionHelper {
         }
     }
 
+    /**
+     * Checks if the server version is newer than 1.21.2.
+     *
+     * @return True if the version is newer than 1.21.2, otherwise false.
+     */
     public static boolean isVersionNewerThan1_21_2() {
         return version >= 21.19;
     }
 
+    /**
+     * Checks if the server version is newer than 1.20.5.
+     *
+     * @return True if the version is newer than 1.20.5, otherwise false.
+     */
     public static boolean isVersionNewerThan1_20_5() {
         return version >= 20.49;
     }
 
+    /**
+     * Checks if the server version is newer than 1.20.4.
+     *
+     * @return True if the version is newer than 1.20.4, otherwise false.
+     */
     public static boolean isVersionNewerThan1_20_4() {
         return version >= 20.39;
     }
 
+    /**
+     * Checks if the server version is newer than 1.19.4.
+     *
+     * @return True if the version is newer than 1.19.4, otherwise false.
+     */
     public static boolean isVersionNewerThan1_19_4() {
         return version >= 19.39;
     }
 
+    /**
+     * Checks if the server version is newer than 1.20.2.
+     *
+     * @return True if the version is newer than 1.20.2, otherwise false.
+     */
     public static boolean isVersionNewerThan1_20_2() {
         return version >= 20.19;
     }
 
+    /**
+     * Checks if the server version is newer than 1.20.
+     *
+     * @return True if the version is newer than 1.20, otherwise false.
+     */
     public static boolean isVersionNewerThan1_20() {
         return version >= 20;
     }
 
+    /**
+     * Checks if the server is running Folia.
+     *
+     * @return True if the server is running Folia, otherwise false.
+     */
     public static boolean isFolia() {
         return folia;
     }
 
+    /**
+     * Checks if the server is running Mohist.
+     *
+     * @return True if the server is running Mohist, otherwise false.
+     */
     public static boolean isMohist() {
         return mohist;
     }
 
+    /**
+     * Checks if the server is running Paper or its forks.
+     *
+     * @return True if the server is running Paper or its forks, otherwise false.
+     */
     public static boolean isPaperOrItsForks() {
         return paper;
     }
 
+    /**
+     * Checks if the server is using Mojmap.
+     *
+     * @return True if the server is using Mojmap, otherwise false.
+     */
     public static boolean isMojmap() {
         return mojmap;
     }
 
-    // Method to compare two version strings
+    /**
+     * Compares two version strings to determine if the first version is newer than the second.
+     *
+     * @param newV The new version string.
+     * @param currentV The current version string.
+     * @return True if the new version is newer than the current version, otherwise false.
+     */
     private static boolean compareVer(String newV, String currentV) {
         if (newV == null || currentV == null || newV.isEmpty() || currentV.isEmpty()) {
             return false;
@@ -170,31 +251,11 @@ public class VersionHelper {
                     return true;
                 } else if (newNum < currentNum) {
                     return false;
-                } else if (newPart.length > 1 && currentPart.length > 1) {
-                    String[] newHotfix = newPart[1].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                    String[] currentHotfix = currentPart[1].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                    if (newHotfix.length == 2 && currentHotfix.length == 1) return true;
-                    else if (newHotfix.length > 1 && currentHotfix.length > 1) {
-                        int newHotfixNum = Integer.parseInt(newHotfix[1]);
-                        int currentHotfixNum = Integer.parseInt(currentHotfix[1]);
-                        if (newHotfixNum > currentHotfixNum) {
-                            return true;
-                        } else if (newHotfixNum < currentHotfixNum) {
-                            return false;
-                        } else {
-                            return newHotfix[0].compareTo(currentHotfix[0]) > 0;
-                        }
-                    }
-                } else if (newPart.length > 1) {
-                    return true;
-                } else if (currentPart.length > 1) {
-                    return false;
                 }
-            }
-            catch (NumberFormatException ignored) {
-                return false;
+            } catch (NumberFormatException e) {
+                // handle error
             }
         }
-        return newVS.length > currentVS.length;
+        return false;
     }
 }

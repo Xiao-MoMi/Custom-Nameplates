@@ -22,8 +22,10 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implementation of BossBar Config
+ */
 public class BossBarConfigImpl implements BossBarConfig {
-
     private final String id;
     private final Requirement[] requirements;
     private final CarouselText[] carouselTexts;
@@ -31,7 +33,18 @@ public class BossBarConfigImpl implements BossBarConfig {
     private final BossBar.Color color;
     private final float progress;
 
-    public BossBarConfigImpl(String id, Requirement[] requirements, CarouselText[] carouselTexts, BossBar.Overlay overlay, BossBar.Color color, float progress) {
+    /**
+     * Constructor for creating a new BossBarConfigImpl.
+     * Ensures that all fields are non-null and properly initialized.
+     *
+     * @param id the unique ID of the BossBar configuration
+     * @param requirements the requirements for the BossBar
+     * @param carouselTexts the carousel texts associated with the BossBar
+     * @param overlay the overlay style of the BossBar
+     * @param color the color of the BossBar
+     * @param progress the progress value of the BossBar (between 0.0 and 1.0)
+     */
+    private BossBarConfigImpl(String id, Requirement[] requirements, CarouselText[] carouselTexts, BossBar.Overlay overlay, BossBar.Color color, float progress) {
         this.id = requireNonNull(id);
         this.requirements = requireNonNull(requirements);
         this.carouselTexts = requireNonNull(carouselTexts);
@@ -70,8 +83,10 @@ public class BossBarConfigImpl implements BossBarConfig {
         return progress;
     }
 
+    /**
+     * Builder Implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private Requirement[] requirements;
         private CarouselText[] carouselTexts;

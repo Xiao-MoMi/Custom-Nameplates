@@ -23,6 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Manages the nameplates system, providing functionality to retrieve, check access,
+ * and manipulate nameplates associated with players.
+ */
 public interface NameplateManager extends Reloadable {
 
     /**

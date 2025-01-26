@@ -29,22 +29,44 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * Represents a dynamically parsed text that can contain placeholders.
+ * The text is parsed at initialization and placeholders are replaced with corresponding values.
+ * This class provides functionality to manage placeholders and generate dynamic text for players.
+ */
 public class PreParsedDynamicText {
-
     private final String text;
     private final List<Function<CNPlayer, Function<CNPlayer, String>>> textFunctions = new ObjectArrayList<>();
     private final Set<Placeholder> set = new ObjectOpenHashSet<>();
     private boolean init = false;
 
+    /**
+     * Constructs a PreParsedDynamicText with the given text.
+     *
+     * @param text the original text containing placeholders to be parsed
+     * @throws NullPointerException if the provided text is null
+     */
     public PreParsedDynamicText(String text) {
         this.text = Objects.requireNonNull(text);
     }
 
+    /**
+     * Constructs a PreParsedDynamicText with the given text and initializes it (parses placeholders).
+     *
+     * @param text the original text containing placeholders to be parsed
+     * @param init flag indicating whether to initialize the text immediately
+     * @throws NullPointerException if the provided text is null
+     */
     public PreParsedDynamicText(String text, boolean init) {
         this.text = Objects.requireNonNull(text);
         if (init) init();
     }
 
+    /**
+     * Initializes the PreParsedDynamicText by parsing the text for placeholders and creating
+     * corresponding functions for replacing the placeholders with values.
+     * This method is called automatically if the constructor is provided with `true` for the init flag.
+     */
     public void init() {
         if (init) return;
         init = true;
@@ -101,6 +123,13 @@ public class PreParsedDynamicText {
         set.addAll(new ObjectArrayList<>(placeholders));
     }
 
+    /**
+     * Creates a dynamic text based on the current pre-parsed text, tailored to the given player.
+     * This method uses the player's data to generate the final text.
+     *
+     * @param player the player for whom the dynamic text is being generated
+     * @return a DynamicText object containing the final text for the player
+     */
     public DynamicText fastCreate(CNPlayer player) {
         List<Function<CNPlayer, String>> functions = new ObjectArrayList<>();
         for (Function<CNPlayer, Function<CNPlayer, String>> textFunction : textFunctions) {
@@ -109,6 +138,11 @@ public class PreParsedDynamicText {
         return new DynamicText(text, functions, set);
     }
 
+    /**
+     * Returns a set of placeholders detected in the text.
+     *
+     * @return a set of placeholders used in the text
+     */
     public Set<Placeholder> placeholders() {
         return set;
     }

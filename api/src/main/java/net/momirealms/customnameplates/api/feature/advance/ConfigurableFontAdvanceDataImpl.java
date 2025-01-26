@@ -24,14 +24,16 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implementation of ConfigurableFontAdvanceData
+ */
 public class ConfigurableFontAdvanceDataImpl implements ConfigurableFontAdvanceData {
-
     private final float defaultAdvance;
     private final Map<Integer, Float> data = new Int2FloatOpenHashMap();
     private final List<CharacterFontAdvanceData> parents = new ObjectArrayList<>();
     private final String id;
 
-    public ConfigurableFontAdvanceDataImpl(String id, float defaultAdvance, HashMap<Integer, Float> customData, List<CharacterFontAdvanceData> parentFonts) {
+    private ConfigurableFontAdvanceDataImpl(String id, float defaultAdvance, HashMap<Integer, Float> customData, List<CharacterFontAdvanceData> parentFonts) {
         this.id = requireNonNull(id);
         this.defaultAdvance = defaultAdvance;
         for (CharacterFontAdvanceData parent : parentFonts) {
@@ -71,8 +73,10 @@ public class ConfigurableFontAdvanceDataImpl implements ConfigurableFontAdvanceD
         return id;
     }
 
+    /**
+     * The builder implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private final HashMap<Integer, Float> customData = new HashMap<>();
         private final List<CharacterFontAdvanceData> parents = new ArrayList<>();
         private float defaultAdvance = 0;

@@ -19,8 +19,21 @@ package net.momirealms.customnameplates.api.util;
 
 import java.util.ArrayList;
 
+/**
+ * Utility class for handling character and Unicode conversions.
+ * This class provides methods to convert between Unicode escape sequences, character arrays,
+ * and code points, as well as converting characters to their Unicode representations.
+ */
 public class CharacterUtils {
 
+    private CharacterUtils() {}
+
+    /**
+     * Converts a Unicode string (e.g., "\\u0041\\u0042") into an array of characters.
+     *
+     * @param unicodeString a string containing Unicode escape sequences (e.g., "\\u0041\\u0042")
+     * @return a character array corresponding to the Unicode string
+     */
     public static char[] unicodeToChars(String unicodeString) {
         String processedString = unicodeString.replace("\\u", "");
         int length = processedString.length() / 4;
@@ -37,6 +50,14 @@ public class CharacterUtils {
         return chars;
     }
 
+    /**
+     * Converts a character array to a single Unicode code point. If the array contains two characters
+     * (a high surrogate and a low surrogate), it is combined into a single supplementary code point.
+     *
+     * @param chars the character array to convert
+     * @return the Unicode code point corresponding to the character(s)
+     * @throws IllegalArgumentException if the character array contains more than 2 characters
+     */
     public static int toCodePoint(char[] chars) {
         if (chars.length == 1) {
             return chars[0];
@@ -47,6 +68,14 @@ public class CharacterUtils {
         }
     }
 
+    /**
+     * Converts a character array to an array of Unicode code points. If the array contains surrogate pairs,
+     * they are combined into a single supplementary code point.
+     *
+     * @param chars the character array to convert
+     * @return an array of Unicode code points corresponding to the characters
+     * @throws IllegalArgumentException if there is an illegal surrogate pair
+     */
     public static int[] toCodePoints(char[] chars) {
         ArrayList<Integer> codePoints = new ArrayList<>();
         for (int i = 0; i < chars.length; i++) {
@@ -67,6 +96,12 @@ public class CharacterUtils {
         return codePoints.stream().mapToInt(i -> i).toArray();
     }
 
+    /**
+     * Converts a single character to its Unicode escape sequence (e.g., '\\u0041' for 'A').
+     *
+     * @param c the character to convert
+     * @return a string representing the Unicode escape sequence for the character
+     */
     public static String char2Unicode(char c) {
         StringBuilder stringBuilder_1 = new StringBuilder("\\u");
         StringBuilder stringBuilder_2 = new StringBuilder(Integer.toHexString(c));
@@ -76,6 +111,12 @@ public class CharacterUtils {
         return stringBuilder_1.toString();
     }
 
+    /**
+     * Converts an array of characters to their Unicode escape sequences.
+     *
+     * @param c the character array to convert
+     * @return a string representing the Unicode escape sequences for all characters in the array
+     */
     public static String char2Unicode(char[] c) {
         StringBuilder builder = new StringBuilder();
         for (char value : c) {

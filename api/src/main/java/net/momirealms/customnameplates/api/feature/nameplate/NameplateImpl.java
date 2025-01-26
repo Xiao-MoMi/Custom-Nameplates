@@ -22,8 +22,10 @@ import net.momirealms.customnameplates.api.feature.OffsetFont;
 
 import java.util.Objects;
 
+/**
+ * Implementation of Nameplate
+ */
 public class NameplateImpl implements Nameplate {
-
     private final String id;
     private final String displayName;
     private final ConfiguredCharacter left;
@@ -31,7 +33,7 @@ public class NameplateImpl implements Nameplate {
     private final ConfiguredCharacter right;
     private final int minWidth;
 
-    public NameplateImpl(String id, String displayName, int minWidth, ConfiguredCharacter left, ConfiguredCharacter middle, ConfiguredCharacter right) {
+    private NameplateImpl(String id, String displayName, int minWidth, ConfiguredCharacter left, ConfiguredCharacter middle, ConfiguredCharacter right) {
         this.id = id;
         this.displayName = displayName;
         this.minWidth = minWidth;
@@ -134,8 +136,10 @@ public class NameplateImpl implements Nameplate {
         return sb.toString();
     }
 
+    /**
+     * The builder implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private String displayName;
         private ConfiguredCharacter left;

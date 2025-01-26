@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature.bossbar;
 
 import java.util.UUID;
 
+/**
+ * Represents a BossBar
+ */
 public interface BossBar {
 
     /**
@@ -50,21 +53,74 @@ public interface BossBar {
      */
     Overlay overlay();
 
+    /**
+     * Enum representing the different overlay styles for the BossBar.
+     * The overlay style determines how the bar is divided, either as a simple progress bar or as notches.
+     */
     enum Overlay {
+        /**
+         * The bar is displayed as a simple progress bar.
+         */
         PROGRESS,
+
+        /**
+         * The bar is divided into 6 notches.
+         */
         NOTCHED_6,
+
+        /**
+         * The bar is divided into 10 notches.
+         */
         NOTCHED_10,
+
+        /**
+         * The bar is divided into 12 notches.
+         */
         NOTCHED_12,
+
+        /**
+         * The bar is divided into 20 notches.
+         */
         NOTCHED_20
     }
 
+    /**
+     * Enum representing the different colors for the BossBar.
+     */
     enum Color {
+        /**
+         * Blue color for the BossBar.
+         */
         BLUE,
+
+        /**
+         * Green color for the BossBar.
+         */
         GREEN,
+
+        /**
+         * Pink color for the BossBar.
+         */
         PINK,
+
+        /**
+         * Purple color for the BossBar.
+         */
         PURPLE,
+
+        /**
+         * Red color for the BossBar.
+         */
         RED,
+
+        /**
+         * White color for the BossBar.
+         */
         WHITE,
+
+        /**
+         * Yellow color for the BossBar.
+         */
         YELLOW
     }
 }

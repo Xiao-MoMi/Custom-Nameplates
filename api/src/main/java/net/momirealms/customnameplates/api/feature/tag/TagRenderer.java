@@ -19,6 +19,9 @@ package net.momirealms.customnameplates.api.feature.tag;
 
 import java.util.function.Predicate;
 
+/**
+ * An interface to control the rendering of tags
+ */
 public interface TagRenderer {
 
     /**

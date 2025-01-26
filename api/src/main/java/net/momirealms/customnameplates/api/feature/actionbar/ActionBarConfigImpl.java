@@ -22,13 +22,15 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implementation of ActionBarConfig
+ */
 public class ActionBarConfigImpl implements ActionBarConfig {
-
     private final String id;
     private final Requirement[] requirements;
     private final CarouselText[] carouselTexts;
 
-    public ActionBarConfigImpl(String id, Requirement[] requirements, CarouselText[] carouselTexts) {
+    private ActionBarConfigImpl(String id, Requirement[] requirements, CarouselText[] carouselTexts) {
         this.id = requireNonNull(id);
         this.requirements = requireNonNull(requirements);
         this.carouselTexts = requireNonNull(carouselTexts);
@@ -49,8 +51,10 @@ public class ActionBarConfigImpl implements ActionBarConfig {
         return carouselTexts;
     }
 
+    /**
+     * Builder Implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private Requirement[] requirements;
         private CarouselText[] carouselTexts;

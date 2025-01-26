@@ -28,23 +28,59 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.function.Consumer;
 
+/**
+ * Represents an abstract tag for a {@link CNPlayer} that can be shown to specific viewers.
+ * This class handles the rendering of the tag, showing and hiding it for specific players,
+ * and managing tag attributes such as opacity and scale.
+ */
 public abstract class AbstractTag implements Tag {
-
+    /**
+     * The owner of this tag
+     */
     protected CNPlayer owner;
+    /**
+     * The {@link TagRenderer} responsible for rendering this tag.
+     */
     protected TagRenderer renderer;
+    /**
+     * The unique UUID assigned to this tag.
+     */
     protected final UUID uuid = UUID.randomUUID();
+    /**
+     * The unique entity ID assigned to this tag, used to track visibility and actions.
+     */
     protected final int entityID = SelfIncreaseEntityID.getAndIncrease();
-
+    /**
+     * A flag indicating whether the tag is currently visible to viewers.
+     */
     protected boolean isShown = false;
-
+    /**
+     * A list of players who are currently viewing this tag.
+     */
     protected final Vector<CNPlayer> viewers = new Vector<>();
+    /**
+     * An array representation of the viewers, used for optimization.
+     */
     protected CNPlayer[] viewerArray = new CNPlayer[0];
 
-    public AbstractTag(CNPlayer owner, TagRenderer renderer) {
+    /**
+     * Constructs a new {@link AbstractTag} for the given {@link CNPlayer} owner and
+     * {@link TagRenderer}.
+     *
+     * @param owner the {@link CNPlayer} who owns this tag
+     * @param renderer the {@link TagRenderer} used to render this tag
+     */
+    protected AbstractTag(CNPlayer owner, TagRenderer renderer) {
         this.owner = owner;
         this.renderer = renderer;
     }
 
+    /**
+     * Spawns the tag for the given viewer by sending a packet to the viewer.
+     *
+     * @param viewer the {@link CNPlayer} who will see the tag
+     * @return a list of objects representing the spawn packet for the tag
+     */
     protected abstract List<Object> spawnPacket(CNPlayer viewer);
 
     @Override
@@ -188,6 +224,9 @@ public abstract class AbstractTag implements Tag {
         return uuid;
     }
 
+    /**
+     * Resets the viewer array
+     */
     protected void resetViewerArray() {
         this.viewerArray = viewers.toArray(new CNPlayer[0]);
     }

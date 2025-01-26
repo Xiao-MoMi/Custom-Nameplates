@@ -22,101 +22,14 @@ import net.momirealms.customnameplates.api.feature.OffsetFont;
 
 import java.util.Objects;
 
+/**
+ * Implements the {@link Background} interface, representing the detailed configuration of a background.
+ */
 @SuppressWarnings("DuplicatedCode")
-public class BackgroundImpl implements Background {
-
-    private final String id;
-    private final ConfiguredCharacter left;
-    private final ConfiguredCharacter width_1;
-    private final ConfiguredCharacter width_2;
-    private final ConfiguredCharacter width_4;
-    private final ConfiguredCharacter width_8;
-    private final ConfiguredCharacter width_16;
-    private final ConfiguredCharacter width_32;
-    private final ConfiguredCharacter width_64;
-    private final ConfiguredCharacter width_128;
-    private final ConfiguredCharacter right;
-
-    public BackgroundImpl(
-            String id,
-            ConfiguredCharacter left,
-            ConfiguredCharacter width_1,
-            ConfiguredCharacter width_2,
-            ConfiguredCharacter width_4,
-            ConfiguredCharacter width_8,
-            ConfiguredCharacter width_16,
-            ConfiguredCharacter width_32,
-            ConfiguredCharacter width_64,
-            ConfiguredCharacter width_128,
-            ConfiguredCharacter right
-    ) {
-        this.id = id;
-        this.left = left;
-        this.width_1 = width_1;
-        this.width_2 = width_2;
-        this.width_4 = width_4;
-        this.width_8 = width_8;
-        this.width_16 = width_16;
-        this.width_32 = width_32;
-        this.width_64 = width_64;
-        this.width_128 = width_128;
-        this.right = right;
-    }
-
-    @Override
-    public String id() {
-        return id;
-    }
-
-    @Override
-    public ConfiguredCharacter left() {
-        return left;
-    }
-
-    @Override
-    public ConfiguredCharacter width_1() {
-        return width_1;
-    }
-
-    @Override
-    public ConfiguredCharacter width_2() {
-        return width_2;
-    }
-
-    @Override
-    public ConfiguredCharacter width_4() {
-        return width_4;
-    }
-
-    @Override
-    public ConfiguredCharacter width_8() {
-        return width_8;
-    }
-
-    @Override
-    public ConfiguredCharacter width_16() {
-        return width_16;
-    }
-
-    @Override
-    public ConfiguredCharacter width_32() {
-        return width_32;
-    }
-
-    @Override
-    public ConfiguredCharacter width_64() {
-        return width_64;
-    }
-
-    @Override
-    public ConfiguredCharacter width_128() {
-        return width_128;
-    }
-
-    @Override
-    public ConfiguredCharacter right() {
-        return right;
-    }
+public record BackgroundImpl(String id, ConfiguredCharacter left, ConfiguredCharacter width_1,
+                             ConfiguredCharacter width_2, ConfiguredCharacter width_4, ConfiguredCharacter width_8,
+                             ConfiguredCharacter width_16, ConfiguredCharacter width_32, ConfiguredCharacter width_64,
+                             ConfiguredCharacter width_128, ConfiguredCharacter right) implements Background {
 
     @Override
     public String createImagePrefix(float advance, float leftMargin, float rightMargin) {
@@ -239,8 +152,10 @@ public class BackgroundImpl implements Background {
         return Objects.hashCode(id);
     }
 
+    /**
+     * The builder implementation
+     */
     public static class BuilderImpl implements Builder {
-
         private String id;
         private ConfiguredCharacter left;
         private ConfiguredCharacter width_1;

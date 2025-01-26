@@ -27,6 +27,9 @@ public class GsonHelper {
 
     private final Gson gson;
 
+    /**
+     * Create the gson
+     */
     public GsonHelper() {
         this.gson = new GsonBuilder()
                 .create();
