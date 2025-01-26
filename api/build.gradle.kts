@@ -59,12 +59,6 @@ tasks {
         relocate ("net.kyori", "net.momirealms.customnameplates.libraries")
         relocate("dev.dejvokep", "net.momirealms.customnameplates.libraries")
     }
-    javadoc {
-        options {
-            encoding = "UTF-8"
-        }
-        options.quiet()
-    }
 }
 
 publishing {
