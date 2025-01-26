@@ -1,7 +1,6 @@
 # Custom-Nameplates
 
 ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Xiao-MoMi/Custom-Nameplates)
-[![](https://jitpack.io/v/Xiao-MoMi/Custom-Nameplates.svg)](https://jitpack.io/#Xiao-MoMi/Custom-Nameplates)
 <a href="https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates" alt="GitBook">
 <img src="https://img.shields.io/badge/docs-gitbook-brightgreen" alt="Gitbook"/>
 </a>
@@ -41,42 +40,29 @@ Afdian: https://afdian.com/@xiaomomi/
 ```html
 <repositories>
   <repository>
-    <id>jitpack</id>
-    <url>https://jitpack.io/</url>
+    <id>xiaomomi repo</id>
+    <url>https://repo.momirealms.net/</url>
   </repository>
 </repositories>
 ```
 ```html
 <dependencies>
-  <dependency>
-    <groupId>com.github.Xiao-MoMi</groupId>
-    <artifactId>Custom-Nameplates</artifactId>
-    <version>{VERSION}</version>
-    <scope>provided</scope>
-  </dependency>
+    <dependency>
+        <groupId>net.momirealms</groupId>
+        <artifactId>custom-nameplates</artifactId>
+        <version>3.0.19</version>
+    </dependency>
 </dependencies>
-```
-### Gradle (Groovy)
-
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-```
-```groovy
-dependencies {
-    compileOnly 'com.github.Xiao-MoMi:Custom-Nameplates:{VERSION}'
-}
 ```
 ### Gradle (Kotlin)
 
 ```kotlin
 repositories {
-    maven("https://jitpack.io/")
+    maven("https://repo.momirealms.net/")
 }
 ```
 ```kotlin
 dependencies {
-    compileOnly("com.github.Xiao-MoMi:Custom-Nameplates:{VERSION}")
+    compileOnly("net.momirealms:custom-nameplates:3.0.19")
 }
 ```
