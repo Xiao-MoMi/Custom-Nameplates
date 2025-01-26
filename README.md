@@ -35,30 +35,9 @@ Afdian: https://afdian.com/@xiaomomi/
 
 ## CustomNameplates API
 
-### Maven
-
-```html
-<repositories>
-  <repository>
-    <id>xiaomomi repo</id>
-    <url>https://repo.momirealms.net/</url>
-  </repository>
-</repositories>
-```
-```html
-<dependencies>
-    <dependency>
-        <groupId>net.momirealms</groupId>
-        <artifactId>custom-nameplates</artifactId>
-        <version>3.0.19</version>
-    </dependency>
-</dependencies>
-```
-### Gradle (Kotlin)
-
 ```kotlin
 repositories {
-    maven("https://repo.momirealms.net/")
+    maven("https://repo.momirealms.net/releases/")
 }
 ```
 ```kotlin
