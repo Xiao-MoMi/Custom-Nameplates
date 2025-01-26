@@ -16,7 +16,6 @@ repositories {
 
 dependencies {
     compileOnly(project(":api"))
-    compileOnly(project(":common"))
     compileOnly(project(":backend"))
     compileOnly("dev.dejvokep:boosted-yaml:${rootProject.properties["boosted_yaml_version"]}")
     // WorldGuard

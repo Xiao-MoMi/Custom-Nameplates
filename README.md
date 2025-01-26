@@ -25,7 +25,7 @@ Get the artifact under /target folder
 ## How to Contribute
 
 #### Translations
-Clone this project and create a new language file in the /common/src/main/resources/translations directory. \
+Clone this project and create a new language file in the /backend/src/main/resources/translations directory. \
 Once your changes are ready, open a pull request for review. We appreciate your works!
 
 ## Support the Developer

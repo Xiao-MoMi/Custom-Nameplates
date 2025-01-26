@@ -1,13 +1,8 @@
-plugins {
-    id("io.github.goooler.shadow") version "8.1.8"
-}
-
 repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
-    compileOnly(project(":common"))
     compileOnly(project(":api"))
     // YAML
     compileOnly("dev.dejvokep:boosted-yaml:${rootProject.properties["boosted_yaml_version"]}")
