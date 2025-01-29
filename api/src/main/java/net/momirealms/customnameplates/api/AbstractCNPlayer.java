@@ -79,7 +79,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     private final Map<CNPlayer, Tracker> trackers = new WeakHashMap<>();
     private final ReadWriteLock trackerLock = new ReentrantReadWriteLock();
-    private final List<String> otherActionBarFeatures = new ArrayList<>();
+    private final Vector<String> otherActionBarFeatures = new Vector<>();
 
     /**
      * Creates a player instance

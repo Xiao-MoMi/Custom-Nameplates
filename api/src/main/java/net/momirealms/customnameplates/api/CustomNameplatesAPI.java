@@ -34,6 +34,11 @@ import java.util.UUID;
  * CustomNameplatesAPI
  */
 public record CustomNameplatesAPI(CustomNameplates plugin) {
+    public CustomNameplatesAPI(CustomNameplates plugin) {
+        this.plugin = plugin;
+        instance = this;
+    }
+
     private static CustomNameplatesAPI instance;
 
     /**
