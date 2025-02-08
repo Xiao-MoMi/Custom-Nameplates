@@ -112,7 +112,7 @@ public class EntityDataValue {
 
     public static Object create(int id, Object serializer, Object value) {
         try {
-            Object entityDataAccessor =Reflections.constructor$EntityDataAccessor.newInstance(id, serializer);
+            Object entityDataAccessor = Reflections.constructor$EntityDataAccessor.newInstance(id, serializer);
             return Reflections.method$SynchedEntityData$DataValue$create.invoke(null, entityDataAccessor, value);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
