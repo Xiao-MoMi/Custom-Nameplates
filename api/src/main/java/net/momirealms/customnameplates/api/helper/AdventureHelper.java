@@ -231,7 +231,7 @@ public class AdventureHelper {
      * @return the text wrapped in a color tag to remove shadows
      */
     public static String removeShadow(String text) {
-        return "<#F0F0F0>" + text + "</#F0F0F0>";
+        return "<shadow:#00000000><#F0F0F0>" + text + "</#F0F0F0></shadow>";
     }
 
     /**

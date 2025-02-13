@@ -138,6 +138,15 @@ public class VersionHelper {
     }
 
     /**
+     * Checks if the server version is newer than 1.21.4
+     *
+     * @return True if the version is newer than 1.21.4, otherwise false.
+     */
+    public static boolean isVersionNewerThan1_21_4() {
+        return version >= 21.39;
+    }
+
+    /**
      * Checks if the server version is newer than 1.21.2.
      *
      * @return True if the version is newer than 1.21.2, otherwise false.

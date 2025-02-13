@@ -4,24 +4,24 @@
         "description": "CustomNameplates",
         "supported_formats": {
             "min_inclusive": 32,
-            "max_inclusive": 46
+            "max_inclusive": 51
         }
     },
     "overlays": {
         "entries": [
             {
                 "formats": {
-                    "min_inclusive": 32,
-                    "max_inclusive": 34
+                    "min_inclusive": 42,
+                    "max_inclusive": 45
                 },
-                "directory": "overlay_1_20_5"
+                "directory": "overlay_1_21_2"
             },
             {
                 "formats": {
-                    "min_inclusive": 42,
-                    "max_inclusive": 46
+                    "min_inclusive": 46,
+                    "max_inclusive": 51
                 },
-                "directory": "overlay_1_21_2"
+                "directory": "overlay_1_21_4"
             }
         ]
     }

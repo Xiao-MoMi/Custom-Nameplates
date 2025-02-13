@@ -1,0 +1,10 @@
+{
+    "pack": {
+        "pack_format": 46,
+        "description": "CustomNameplates",
+        "supported_formats": {
+            "min_inclusive": 46,
+            "max_inclusive": 51
+        }
+    }
+}

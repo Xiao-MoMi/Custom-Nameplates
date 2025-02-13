@@ -4,7 +4,7 @@
         "description": "CustomNameplates",
         "supported_formats": {
             "min_inclusive": 13,
-            "max_inclusive": 46
+            "max_inclusive": 51
         }
     },
     "overlays": {
@@ -19,9 +19,16 @@
             {
                 "formats": {
                     "min_inclusive": 42,
-                    "max_inclusive": 46
+                    "max_inclusive": 45
                 },
                 "directory": "overlay_1_21_2"
+            },
+            {
+                "formats": {
+                    "min_inclusive": 46,
+                    "max_inclusive": 51
+                },
+                "directory": "overlay_1_21_4"
             }
         ]
     }
