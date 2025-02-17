@@ -29,6 +29,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.mineacademy.chatcontrol.PlayerCache;
 import org.mineacademy.chatcontrol.api.ChatChannelEvent;
+import org.mineacademy.chatcontrol.api.ChatControlAPI;
 import org.mineacademy.chatcontrol.model.Channel;
 
 import java.util.Objects;
@@ -44,6 +45,9 @@ public class ChatControlRedProvider extends AbstractChatMessageProvider implemen
         plugin.debug(() -> "ChatChannelEvent triggered");
         final CommandSender sender = event.getSender();
         if (!(sender instanceof Player player)) {
+            return;
+        }
+        if (ChatControlAPI.isChatMuted()) {
             return;
         }
         if (!player.isOnline()) return;

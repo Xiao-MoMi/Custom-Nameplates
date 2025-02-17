@@ -178,17 +178,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.playerListeners.add((PlayerListener) unlimitedTagManager);
         this.chatManager.registerListener((ChatListener) bubbleManager);
 
-        Bukkit.getPluginManager().registerEvents(this, getBootstrap());
-
-        this.commandManager.registerDefaultFeatures();
-        this.reload();
-
-        this.loaded = true;
-
-        if (ConfigManager.metrics()) new Metrics(getBootstrap(), 16649);
-        if (ConfigManager.generateOnStart()) {
-            this.resourcePackManager.generate();
-        }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new NameplatesExpansion(this).register();
             new NameplatesExtraExpansion(this).register();
@@ -208,6 +197,16 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (Bukkit.getPluginManager().isPluginEnabled("Typewriter")) {
             TypeWriterListener listener = new TypeWriterListener(this);
             Bukkit.getPluginManager().registerEvents(listener, this.getBootstrap());
+        }
+
+        this.reload();
+        this.loaded = true;
+        Bukkit.getPluginManager().registerEvents(this, getBootstrap());
+        this.commandManager.registerDefaultFeatures();
+
+        if (ConfigManager.metrics()) new Metrics(getBootstrap(), 16649);
+        if (ConfigManager.generateOnStart()) {
+            this.resourcePackManager.generate();
         }
 
         if (VersionHelper.isFolia()) {
