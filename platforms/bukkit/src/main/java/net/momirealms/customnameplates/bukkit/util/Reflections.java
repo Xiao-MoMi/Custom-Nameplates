@@ -478,34 +478,6 @@ public class Reflections {
             )
     );
 
-    public static final Field field$EntityType$TEXT_DISPLAY;
-
-    static {
-        if (VersionHelper.isVersionNewerThan1_20_5()) {
-            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
-                    clazz$EntityType,
-                    "TEXT_DISPLAY", "bb");
-        } else if (VersionHelper.isVersionNewerThan1_20_4()) {
-            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
-                    clazz$EntityType,
-                    "TEXT_DISPLAY", "aY");
-        } else {
-            field$EntityType$TEXT_DISPLAY = ReflectionUtils.getDeclaredField(
-                    clazz$EntityType,
-                    "TEXT_DISPLAY", "aX");
-        }
-    }
-
-    public static final Object instance$EntityType$TEXT_DISPLAY;
-
-    static {
-        try {
-            instance$EntityType$TEXT_DISPLAY = field$EntityType$TEXT_DISPLAY.get(clazz$EntityType);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        }
-    }
-
     public static final Constructor<?> constructor$ClientboundAddEntityPacket = requireNonNull(
             ReflectionUtils.getConstructor(clazz$ClientboundAddEntityPacket,
                     int.class, UUID.class,
@@ -1130,4 +1102,62 @@ public class Reflections {
                     clazz$AttributeModifier, clazz$AttributeModifier$Operation, 0
             )
     );
+
+    public static final Method method$ResourceLocation$fromNamespaceAndPath = requireNonNull(
+            ReflectionUtils.getStaticMethod(
+                    clazz$ResourceLocation, clazz$ResourceLocation, String.class, String.class
+            )
+    );
+
+    public static final Object instance$BuiltInRegistries$ENTITY_TYPE;
+    public static final Object instance$Registries$ENTITY_TYPE;
+    public static final Object instance$registryAccess;
+
+    static {
+        Field[] fields = clazz$Registries.getDeclaredFields();
+        try {
+            Object registries$EntityType  = null;
+            for (Field field : fields) {
+                Type fieldType = field.getGenericType();
+                if (fieldType instanceof ParameterizedType paramType) {
+                    if (paramType.getRawType() == clazz$ResourceKey) {
+                        Type[] actualTypeArguments = paramType.getActualTypeArguments();
+                        if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof ParameterizedType registryType) {
+                            Type type = registryType.getActualTypeArguments()[0];
+                            if (type instanceof  ParameterizedType parameterizedType) {
+                                Type rawType = parameterizedType.getRawType();
+                                if (rawType == clazz$EntityType) {
+                                    registries$EntityType = field.get(null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            instance$Registries$ENTITY_TYPE = requireNonNull(registries$EntityType);
+            Object server = method$MinecraftServer$getServer.invoke(null);
+            Object registries = field$MinecraftServer$registries.get(server);
+            instance$registryAccess = field$LayeredRegistryAccess$composite.get(registries);
+            instance$BuiltInRegistries$ENTITY_TYPE = method$RegistryAccess$registryOrThrow.invoke(instance$registryAccess, registries$EntityType);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final Method method$Registry$get = requireNonNull(
+            ReflectionUtils.getMethods(
+                    clazz$Registry, Object.class, clazz$ResourceLocation
+            ).stream().filter(m -> m.getReturnType() != Optional.class).findAny().orElse(null)
+    );
+
+    public static final Object instance$EntityType$TEXT_DISPLAY;
+
+    static {
+        try {
+            Object textDisplay = method$ResourceLocation$fromNamespaceAndPath.invoke(null, "minecraft", "text_display");
+            instance$EntityType$TEXT_DISPLAY = Reflections.method$Registry$get.invoke(Reflections.instance$BuiltInRegistries$ENTITY_TYPE, textDisplay);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

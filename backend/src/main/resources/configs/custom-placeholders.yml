@@ -70,31 +70,31 @@ nameplate-text:
 background-text:
   location:
     background: bedrock_1
-    text: '%np_image_compass% %np_shift_location%'
+    text: '<shadow:#00000000>%np_image_compass%</shadow> %np_shift_location%'
     shadow: false
     left-margin: 1
     right-margin: 1
   time:
     background: bedrock_1
-    text: '%np_image_clock% %np_shift_time%'
+    text: '<shadow:#00000000>%np_image_clock%</shadow> %np_shift_time%'
     shadow: false
     left-margin: 1
     right-margin: 1
   weather:
     background: bedrock_1
-    text: '%np_image_weather% %np_shift_weather%'
+    text: '<shadow:#00000000>%np_image_weather%</shadow> %np_shift_weather%'
     shadow: false
     left-margin: 1
     right-margin: 1
   hello:
     background: bedrock_1
-    text: '%np_image_bubble% %np_shift_hello%'
+    text: '<shadow:#00000000>%np_image_bubble%</shadow> %np_shift_hello%'
     shadow: false
     left-margin: 1
     right-margin: 1
   update:
     background: bedrock_1
-    text: '%np_image_bell% %np_shift_update%'
+    text: '<shadow:#00000000>%np_image_bell%</shadow> %np_shift_update%'
     shadow: false
     left-margin: 1
     right-margin: 1
