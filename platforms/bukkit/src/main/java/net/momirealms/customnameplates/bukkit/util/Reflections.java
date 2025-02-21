@@ -324,18 +324,18 @@ public class Reflections {
 
     public static final Class<?> clazz$HolderLookup$Provider = ReflectionUtils.getClazz(
             BukkitReflectionUtils.assembleMCClass("core.HolderLookup$Provider"),
-            BukkitReflectionUtils.assembleMCClass("core.HolderLookup$b")
+            BukkitReflectionUtils.assembleMCClass(VersionHelper.isVersionNewerThan1_20_5() ? "core.HolderLookup$a" : "core.HolderLookup$b")
     );
 
     public static final Method method$Component$Serializer$fromJson = ReflectionUtils.getMethod(
             clazz$Component$Serializer,
-            new String[] { "fromJson" },
+            new String[] { "fromJson", "a" },
             String.class, clazz$HolderLookup$Provider
     );
 
     public static final Method method$Component$Serializer$toJson = ReflectionUtils.getMethod(
             clazz$Component$Serializer,
-            new String[] { "toJson" },
+            new String[] { "toJson", "a" },
             clazz$Component, clazz$HolderLookup$Provider
     );
 
@@ -601,7 +601,7 @@ public class Reflections {
     public static final Class<?> clazz$SynchedEntityData$DataValue = requireNonNull(
             ReflectionUtils.getClazz(
                     BukkitReflectionUtils.assembleMCClass("network.syncher.SynchedEntityData$DataValue"),
-                    BukkitReflectionUtils.assembleMCClass("network.syncher.DataWatcher$b")
+                    BukkitReflectionUtils.assembleMCClass(VersionHelper.isVersionNewerThan1_20_5() ? "network.syncher.DataWatcher$c" : "network.syncher.DataWatcher$b")
             )
     );
 

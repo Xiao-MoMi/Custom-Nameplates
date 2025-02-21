@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
 import net.advancedplugins.chat.api.AdvancedChannelChatEvent;
 import net.advancedplugins.chat.api.AdvancedChatAPI;
+import net.advancedplugins.chat.api.AdvancedChatEvent;
 import net.advancedplugins.chat.channel.ChatChannel;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -36,6 +37,17 @@ public class AdvancedChatProvider extends AbstractChatMessageProvider implements
 
     public AdvancedChatProvider(CustomNameplates plugin, ChatManager manager) {
         super(plugin, manager);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdvancedChat(AdvancedChatEvent event) {
+        Player player = event.getChatEvent().getPlayer();
+        if (!player.isOnline()) return;
+        CNPlayer cnPlayer = plugin.getPlayer(player.getUniqueId());
+        if (cnPlayer == null) return;
+        plugin.getScheduler().async().execute(() -> {
+            manager.onChat(cnPlayer, event.getMessage(), "");
+        });
     }
 
     @EventHandler(ignoreCancelled = true)
