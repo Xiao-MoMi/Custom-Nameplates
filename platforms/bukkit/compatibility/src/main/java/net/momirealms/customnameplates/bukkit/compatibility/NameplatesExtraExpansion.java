@@ -34,10 +34,77 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class NameplatesExtraExpansion extends PlaceholderExpansion {
+    private static final Map<Character, Character> CHAR_CONVERTOR = new HashMap<>();
+    static {
+        CHAR_CONVERTOR.put('A', 'ᴀ');
+        CHAR_CONVERTOR.put('a', 'ᴀ');
+        CHAR_CONVERTOR.put('B', 'ʙ');
+        CHAR_CONVERTOR.put('b', 'ʙ');
+        CHAR_CONVERTOR.put('C', 'ᴄ');
+        CHAR_CONVERTOR.put('c', 'ᴄ');
+        CHAR_CONVERTOR.put('D', 'ᴅ');
+        CHAR_CONVERTOR.put('d', 'ᴅ');
+        CHAR_CONVERTOR.put('E', 'ᴇ');
+        CHAR_CONVERTOR.put('e', 'ᴇ');
+        CHAR_CONVERTOR.put('F', 'ꜰ');
+        CHAR_CONVERTOR.put('f', 'ꜰ');
+        CHAR_CONVERTOR.put('G', 'ɢ');
+        CHAR_CONVERTOR.put('g', 'ɢ');
+        CHAR_CONVERTOR.put('H', 'ʜ');
+        CHAR_CONVERTOR.put('h', 'ʜ');
+        CHAR_CONVERTOR.put('I', 'ɪ');
+        CHAR_CONVERTOR.put('i', 'ɪ');
+        CHAR_CONVERTOR.put('J', 'ᴊ');
+        CHAR_CONVERTOR.put('j', 'ᴊ');
+        CHAR_CONVERTOR.put('K', 'ᴋ');
+        CHAR_CONVERTOR.put('k', 'ᴋ');
+        CHAR_CONVERTOR.put('L', 'ʟ');
+        CHAR_CONVERTOR.put('l', 'ʟ');
+        CHAR_CONVERTOR.put('M', 'ᴍ');
+        CHAR_CONVERTOR.put('m', 'ᴍ');
+        CHAR_CONVERTOR.put('N', 'ɴ');
+        CHAR_CONVERTOR.put('n', 'ɴ');
+        CHAR_CONVERTOR.put('O', 'ᴏ');
+        CHAR_CONVERTOR.put('o', 'ᴏ');
+        CHAR_CONVERTOR.put('P', 'ᴘ');
+        CHAR_CONVERTOR.put('p', 'ᴘ');
+        CHAR_CONVERTOR.put('Q', 'ꞯ');
+        CHAR_CONVERTOR.put('q', 'ꞯ');
+        CHAR_CONVERTOR.put('R', 'ʀ');
+        CHAR_CONVERTOR.put('r', 'ʀ');
+        CHAR_CONVERTOR.put('S', 'ꜱ');
+        CHAR_CONVERTOR.put('s', 'ꜱ');
+        CHAR_CONVERTOR.put('T', 'ᴛ');
+        CHAR_CONVERTOR.put('t', 'ᴛ');
+        CHAR_CONVERTOR.put('U', 'ᴜ');
+        CHAR_CONVERTOR.put('u', 'ᴜ');
+        CHAR_CONVERTOR.put('V', 'ᴠ');
+        CHAR_CONVERTOR.put('v', 'ᴠ');
+        CHAR_CONVERTOR.put('W', 'ᴡ');
+        CHAR_CONVERTOR.put('w', 'ᴡ');
+        CHAR_CONVERTOR.put('X', 'x');
+        CHAR_CONVERTOR.put('x', 'x');
+        CHAR_CONVERTOR.put('Y', 'ʏ');
+        CHAR_CONVERTOR.put('y', 'ʏ');
+        CHAR_CONVERTOR.put('Z', 'ᴢ');
+        CHAR_CONVERTOR.put('z', 'ᴢ');
+        CHAR_CONVERTOR.put('0', '₀');
+        CHAR_CONVERTOR.put('1', '₁');
+        CHAR_CONVERTOR.put('2', '₂');
+        CHAR_CONVERTOR.put('3', '₃');
+        CHAR_CONVERTOR.put('4', '₄');
+        CHAR_CONVERTOR.put('5', '₅');
+        CHAR_CONVERTOR.put('6', '₆');
+        CHAR_CONVERTOR.put('7', '₇');
+        CHAR_CONVERTOR.put('8', '₈');
+        CHAR_CONVERTOR.put('9', '₉');
+    }
 
     private final CustomNameplates plugin;
 
@@ -237,6 +304,21 @@ public class NameplatesExtraExpansion extends PlaceholderExpansion {
             }
             case "newline" -> {
                 return "\n";
+            }
+            case "smallfont" -> {
+                if (split.length != 2) {
+                    return null;
+                }
+                String anotherPlaceholder = PlaceholderAPI.setPlaceholders(player, "%" + split[1] + "%");
+                StringBuilder builder = new StringBuilder();
+                for (char c : anotherPlaceholder.toCharArray()) {
+                    builder.append(CHAR_CONVERTOR.getOrDefault(c, c));
+                }
+                String finalString = builder.toString();
+                if (finalString.length() == split[1].length() + 2 && finalString.charAt(0) == '%' && finalString.charAt(finalString.length() - 1) == '%') {
+                    return finalString.substring(1, finalString.length() - 1);
+                }
+                return finalString;
             }
         }
         return null;
