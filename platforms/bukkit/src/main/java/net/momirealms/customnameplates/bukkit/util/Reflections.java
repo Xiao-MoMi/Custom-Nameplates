@@ -30,6 +30,8 @@ import static java.util.Objects.requireNonNull;
 
 public class Reflections {
 
+    public static void load() {}
+
     public static final Class<?> clazz$Component = requireNonNull(
             ReflectionUtils.getClazz(
                     BukkitReflectionUtils.assembleMCClass("network.chat.Component"),

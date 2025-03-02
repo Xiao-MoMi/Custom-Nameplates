@@ -17,6 +17,7 @@
 
 package net.momirealms.customnameplates.api.feature.bubble;
 
+import net.momirealms.customnameplates.api.feature.PreParsedDynamicText;
 import net.momirealms.customnameplates.api.util.Vector3;
 
 import static java.util.Objects.requireNonNull;
@@ -30,8 +31,8 @@ public class BubbleConfigImpl implements BubbleConfig {
     private final int lineWidth;
     private final int maxLines;
     private final Bubble[] bubbles;
-    private final String textPrefix;
-    private final String textSuffix;
+    private final PreParsedDynamicText textPrefix;
+    private final PreParsedDynamicText textSuffix;
     private final String displayName;
     private final Vector3 scale;
 
@@ -54,8 +55,8 @@ public class BubbleConfigImpl implements BubbleConfig {
         this.maxLines = maxLines;
         this.id = id;
         this.bubbles = requireNonNull(bubbles);
-        this.textPrefix = requireNonNull(textPrefix);
-        this.textSuffix = requireNonNull(textSuffix);
+        this.textPrefix = new PreParsedDynamicText(requireNonNull(textPrefix), true);
+        this.textSuffix = new PreParsedDynamicText(requireNonNull(textSuffix), true);
         this.displayName = requireNonNull(displayName);
         this.scale = requireNonNull(scale);
     }
@@ -86,12 +87,12 @@ public class BubbleConfigImpl implements BubbleConfig {
     }
 
     @Override
-    public String textPrefix() {
+    public PreParsedDynamicText textPrefix() {
         return textPrefix;
     }
 
     @Override
-    public String textSuffix() {
+    public PreParsedDynamicText textSuffix() {
         return textSuffix;
     }
 

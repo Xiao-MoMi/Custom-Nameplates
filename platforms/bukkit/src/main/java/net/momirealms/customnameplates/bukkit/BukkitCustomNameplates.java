@@ -44,6 +44,7 @@ import net.momirealms.customnameplates.bukkit.compatibility.quest.TypeWriterList
 import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
+import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.bukkit.util.SimpleLocation;
 import net.momirealms.customnameplates.common.dependency.Dependency;
 import net.momirealms.customnameplates.common.dependency.DependencyManagerImpl;
@@ -128,6 +129,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
                         Dependency.LWJGL, Dependency.LWJGL_NATIVES, Dependency.LWJGL_FREETYPE, Dependency.LWJGL_FREETYPE_NATIVES
                 )
         );
+        Reflections.load();
     }
 
     @Override

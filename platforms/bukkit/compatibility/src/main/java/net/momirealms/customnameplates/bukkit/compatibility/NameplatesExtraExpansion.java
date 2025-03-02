@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.imageio.ImageIO;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
