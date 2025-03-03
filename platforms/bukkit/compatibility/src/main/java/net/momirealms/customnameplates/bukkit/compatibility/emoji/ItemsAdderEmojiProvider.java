@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit.compatibility.emoji;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.chat.emoji.EmojiProvider;
 import org.bukkit.entity.Player;
 
@@ -27,7 +28,10 @@ public class ItemsAdderEmojiProvider implements EmojiProvider {
     @Override
     public String replace(CNPlayer player, String text) {
         try {
-            return FontImageWrapper.replaceFontImages((Player) player.player(), text).replace("§f","<white><font:default>").replace("§r","</font></white>");
+            CustomNameplates.getInstance().debug(() -> "before: " + text);
+            String result = FontImageWrapper.replaceFontImages((Player) player.player(), text).replace("§f","<white><font:default>").replace("§r","</font></white>");
+            CustomNameplates.getInstance().debug(() -> "after: " + result);
+            return result;
         } catch (NoSuchMethodError ignore) {
             return text;
         }

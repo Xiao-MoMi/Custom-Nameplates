@@ -64,10 +64,11 @@ public class BukkitChatManager extends AbstractChatManager {
 
     @Override
     protected void setUpPlatformEmojiProviders() {
-        if (Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) {
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
             this.emojiProviders.add(new ItemsAdderEmojiProvider());
+            plugin.debug(() -> "ItemsAdderEmojiProvider Enabled");
         }
-        if (Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
+        if (Bukkit.getPluginManager().getPlugin("Oraxen") != null) {
             try {
                 this.emojiProviders.add(new OraxenEmojiProvider(Bukkit.getPluginManager().getPlugin("Oraxen").getDescription().getVersion().startsWith("1") ? 1 : 2));
             } catch (Exception ignore) {
