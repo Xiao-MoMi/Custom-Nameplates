@@ -74,7 +74,7 @@ public class NameplatesForcePreviewCommand extends BukkitCommandFeature<CommandS
 
                     int time = (int) context.optional("time").orElse(plugin.getUnlimitedTagManager().previewDuration());
 
-                    String previousNameplate = player.currentNameplate();
+                    String previousNameplate = player.nameplateData();
                     if (specified) {
                         player.setCurrentNameplate(optionalNameplate.get());
                     }
