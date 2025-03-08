@@ -45,6 +45,9 @@ integrations:
 # Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:
   disable-generation-on-start: false  # Allow resource pack generation at server start
+  supported-version:
+    # You can specify a version like 1.20.1, 1.21.4 or use SERVER_VERSION
+    min: "SERVER_VERSION"
   namespace: "nameplates"             # Namespace for the resource pack
   font: "default"                     # Default font used
   initial-char: '뀁'                  # Starting character for custom fonts (won't affect Korean characters in chat)

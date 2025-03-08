@@ -29,6 +29,7 @@ import dev.dejvokep.boostedyaml.utils.format.NodeRole;
 import net.momirealms.customnameplates.api.feature.CharacterArranger;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.CustomNameplatesProperties;
 import net.momirealms.customnameplates.common.plugin.config.ConfigLoader;
@@ -336,6 +337,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      */
     protected String configVersion;
 
+    protected float minPackVersion;
+
     /**
      * Constructs a new {@code ConfigManager} for the specified {@code CustomNameplates} plugin instance.
      *
@@ -465,6 +468,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
         legacyUnicodes = config.getBoolean("resource-pack.legacy-unicodes", true);
 
+        minPackVersion = getVersion(config.getString("resource-pack.supported-version.min", "SERVER_VERSION"));
+
         // Other settings
         delaySend = config.getInt("other-settings.send-delay", 0);
         defaultPlaceholderRefreshInterval = config.getInt("other-settings.default-placeholder-refresh-interval", 1);
@@ -479,6 +484,22 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     public void unload() {
         Reloadable.super.unload();
     }
+
+    private static float getVersion(String version) {
+        if (version.equalsIgnoreCase("SERVER_VERSION")) {
+            return VersionHelper.version();
+        }
+        String[] split = version.split("\\.", 2);
+        if (split.length != 2) {
+            throw new IllegalArgumentException("Invalid version: " + version);
+        }
+        return Float.parseFloat(split[1]);
+    }
+
+    public static float minPackVersion() {
+        return instance.minPackVersion;
+    }
+
     /**
      * Retrieves the delay before sending updates.
      * @return the delay time (in milliseconds).
