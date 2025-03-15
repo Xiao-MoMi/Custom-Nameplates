@@ -22,7 +22,7 @@ modules:
 # Plugin Integrations: Integrate resource packs and chat plugins with other plugins.
 integrations:
   resource-pack:
-    CraftEngine: false        # Integration with CraftEngine
+    # CraftEngine: false      # Deprecated, please use the `merge-external-folders` feature in CraftEngine
     ItemsAdder: false         # Integration with ItemsAdder
     ItemsAdder-old-method: false # Legacy integration with ItemsAdder
     Oraxen: false             # Integration with Oraxen

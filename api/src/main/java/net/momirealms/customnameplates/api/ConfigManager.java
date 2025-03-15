@@ -429,7 +429,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         packOraxen = config.getBoolean("integrations.resource-pack.Oraxen", false);
         packCreativeCentral = config.getBoolean("integrations.resource-pack.Creative-Central");
         packNexo = config.getBoolean("integrations.resource-pack.Nexo");
-        packCraftEngine = config.getBoolean("integrations.resource-pack.CraftEngine", false);
+        packCraftEngine = false;
 
         chatUnsafe = config.getBoolean("other-settings.unsafe-chat-event", false);
         chatEss = config.getBoolean("integrations.chat.Essentials", false);

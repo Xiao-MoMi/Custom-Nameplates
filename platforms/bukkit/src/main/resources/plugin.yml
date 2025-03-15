@@ -9,7 +9,6 @@ softdepend:
   - MagicCosmetics
   - ItemsAdder
   - Oraxen
-  - CraftEngine
   - TrChat
   - CarbonChat
   - HuskChat
