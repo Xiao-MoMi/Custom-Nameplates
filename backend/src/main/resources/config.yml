@@ -16,7 +16,7 @@ modules:
   backgrounds: true          # Enable background images for nameplates
   bubbles: true              # Enable bubble text display
   bossbars: true             # Enable bossbars
-  actionbars: true           # Enable actionbars
+  actionbars: false           # Enable actionbars
   images: true               # Enable image displays
 
 # Plugin Integrations: Integrate resource packs and chat plugins with other plugins.

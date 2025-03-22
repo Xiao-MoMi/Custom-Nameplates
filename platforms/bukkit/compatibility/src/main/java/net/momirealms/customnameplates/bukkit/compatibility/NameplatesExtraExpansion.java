@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.api.feature.background.Background;
 import net.momirealms.customnameplates.api.feature.bubble.Bubble;
 import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.api.placeholder.internal.StaticPosition;
 import net.momirealms.customnameplates.common.util.MoonPhase;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -34,7 +35,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -145,6 +145,18 @@ public class NameplatesExtraExpansion extends PlaceholderExpansion {
                     return null;
                 }
                 return OffsetFont.createOffsets(Float.parseFloat(split[1]));
+            }
+            // left:0:xxx
+            case "static" -> {
+                if (split.length != 2) {
+                    return null;
+                }
+                String subParams = split[1];
+                String[] subSplit = subParams.split(":", 3);
+                if (subSplit.length != 3) {
+                    return null;
+                }
+                return CustomNameplatesAPI.getInstance().createStaticText(subSplit[2], Integer.parseInt(subSplit[1]), StaticPosition.valueOf(subSplit[0].toUpperCase(Locale.ENGLISH)));
             }
             case "background" -> {
                 if (split.length != 2) {
