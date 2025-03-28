@@ -201,6 +201,30 @@ public class ReflectionUtils {
     }
 
     @Nullable
+    public static Method getMethod(final Class<?> clazz, Class<?> returnType, final String[] possibleMethodNames, final Class<?>... parameterTypes) {
+        outer:
+        for (Method method : clazz.getMethods()) {
+            if (method.getParameterCount() != parameterTypes.length) {
+                continue;
+            }
+            Class<?>[] types = method.getParameterTypes();
+            for (int i = 0; i < types.length; i++) {
+                if (types[i] != parameterTypes[i]) {
+                    continue outer;
+                }
+            }
+            for (String name : possibleMethodNames) {
+                if (name.equals(method.getName())) {
+                    if (returnType.isAssignableFrom(method.getReturnType())) {
+                        return method;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     public static Method getMethod(final Class<?> clazz, Class<?> returnType, int index) {
         int i = 0;
         for (Method method : clazz.getMethods()) {

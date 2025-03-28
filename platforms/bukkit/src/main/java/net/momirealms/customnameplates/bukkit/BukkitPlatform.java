@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -43,6 +44,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -56,6 +58,7 @@ public class BukkitPlatform implements Platform {
     private final boolean geyser;
     private final boolean floodGate;
     private final boolean libsDisguises;
+    private static Object serializer;
 
     private static final HashMap<String, TriConsumer<CNPlayer, PacketEvent, Object>> packetFunctions = new HashMap<>();
 
@@ -87,6 +90,12 @@ public class BukkitPlatform implements Platform {
         this.geyser = Bukkit.getPluginManager().getPlugin("Geyser-Spigot") != null;
         this.floodGate = Bukkit.getPluginManager().getPlugin("floodgate") != null;
         this.libsDisguises = Bukkit.getPluginManager().getPlugin("LibsDisguises") != null;
+        try {
+            Object builder = Reflections.method$GsonComponentSerializer$builder.invoke(null);
+            serializer = Reflections.method$GsonComponentSerializer$Builder$build.invoke(builder);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static {
@@ -101,19 +110,33 @@ public class BukkitPlatform implements Platform {
             if (!player.shouldCNTakeOverActionBar()) return;
             try {
                 // some plugins would send null to clear the actionbar, what a bad solution
-                Object component = Optional.ofNullable(Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet)).orElse(Reflections.instance$Component$empty);
-                Object contents = Reflections.method$Component$getContents.invoke(component);
-                if (contents == null) {
-                    return;
+                Object component = Reflections.field$ClientboundSetActionBarTextPacket$text.get(packet);
+                if (component == null && !VersionHelper.isVersionNewerThan1_20_5()) {
+                    // paper api, must be from other plugins
+                    Object adventureComponent = Reflections.field$ClientboundSetActionBarTextPacket$adventure$text.get(packet);
+                    if (adventureComponent != null) {
+                        String json = (String) Reflections.method$ComponentSerializer$serialize.invoke(serializer, adventureComponent);
+                        CustomNameplates.getInstance().getScheduler().async().execute(() -> {
+                            ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.jsonToMiniMessage(json));
+                        });
+                    } else {
+                        // bungeecord components ?
+                    }
+                } else {
+                    // mc components
+                    Object contents = Reflections.method$Component$getContents.invoke(component);
+                    if (contents == null) {
+                        return;
+                    }
+                    if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
+                        //String name = scoreContentNameFunction.apply(Reflections.field$ScoreContents$name.get(contents));
+                        String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
+                        if ("actionbar".equals(objective)) return;
+                    }
+                    CustomNameplates.getInstance().getScheduler().async().execute(() -> {
+                        ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
+                    });
                 }
-                if (Reflections.clazz$ScoreContents.isAssignableFrom(contents.getClass())) {
-                    //String name = scoreContentNameFunction.apply(Reflections.field$ScoreContents$name.get(contents));
-                    String objective = (String) Reflections.field$ScoreContents$objective.get(contents);
-                    if ("actionbar".equals(objective)) return;
-                }
-                CustomNameplates.getInstance().getScheduler().async().execute(() -> {
-                    ((ActionBarManagerImpl) CustomNameplates.getInstance().getActionBarManager()).handleActionBarPacket(player, AdventureHelper.minecraftComponentToMiniMessage(component));
-                });
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundSetActionBarTextPacket", e);
             }

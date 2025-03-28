@@ -1162,4 +1162,58 @@ public class Reflections {
             throw new RuntimeException(e);
         }
     }
+
+    public static final Class<?> clazz$AdventureComponent = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "net{}kyori{}adventure{}text{}Component".replace("{}", ".")
+            )
+    );
+
+    // <= 1.20.4
+    public static final Field field$ClientboundSetActionBarTextPacket$adventure$text =
+            ReflectionUtils.getDeclaredField(
+                    clazz$ClientboundSetActionBarTextPacket, clazz$AdventureComponent, 0
+            );
+
+    public static final Class<?> clazz$ComponentSerializer = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "net{}kyori{}adventure{}text{}serializer{}ComponentSerializer".replace("{}", ".")
+            )
+    );
+
+    public static final Class<?> clazz$GsonComponentSerializer = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "net{}kyori{}adventure{}text{}serializer{}gson{}GsonComponentSerializer".replace("{}", ".")
+            )
+    );
+
+    public static final Class<?> clazz$GsonComponentSerializer$Builder = requireNonNull(
+            ReflectionUtils.getClazz(
+                    "net{}kyori{}adventure{}text{}serializer{}gson{}GsonComponentSerializer$Builder".replace("{}", ".")
+            )
+    );
+
+    public static final Method method$GsonComponentSerializer$builder = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$GsonComponentSerializer, clazz$GsonComponentSerializer$Builder
+            )
+    );
+
+    public static final Method method$GsonComponentSerializer$Builder$build = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$GsonComponentSerializer$Builder, clazz$GsonComponentSerializer
+            )
+    );
+
+    public static final Method method$ComponentSerializer$serialize = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$ComponentSerializer, Object.class, new String[] {"serialize"}, clazz$AdventureComponent
+            )
+    );
+
+    public static final Method method$ComponentSerializer$deserialize = requireNonNull(
+            ReflectionUtils.getMethod(
+                    clazz$ComponentSerializer, Object.class, new String[] {"deserialize"}, Object.class
+            )
+    );
 }
