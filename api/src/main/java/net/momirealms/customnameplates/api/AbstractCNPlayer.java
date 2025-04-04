@@ -33,6 +33,8 @@ import net.momirealms.customnameplates.api.storage.data.PlayerData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -54,7 +56,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     /**
      * Platform player instance
      */
-    protected Object player;
+    protected Reference<Object> player;
 
     private volatile boolean isLoaded = false;
     private volatile boolean tempPreviewing = false;
@@ -239,7 +241,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
      * @param player player
      */
     public void setPlayer(Object player) {
-        this.player = player;
+        this.player = new WeakReference<>(player);
     }
 
     @Override
@@ -254,7 +256,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Object player() {
-        return player;
+        return player.get();
     }
 
     /**
