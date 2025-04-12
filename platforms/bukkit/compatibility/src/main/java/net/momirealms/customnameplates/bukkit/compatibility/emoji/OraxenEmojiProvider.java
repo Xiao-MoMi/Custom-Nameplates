@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class OraxenEmojiProvider implements EmojiProvider {
-
     private final FontManager fontManager;
     private final Function<Glyph, String> characterFunction;
 

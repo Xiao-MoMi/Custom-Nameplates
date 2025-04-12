@@ -26,6 +26,8 @@ import net.momirealms.customnameplates.common.plugin.feature.Reloadable;
  */
 public interface ChatManager extends Reloadable {
 
+    String replaceEmojis(CNPlayer player, String text);
+
     /**
      * Sets a custom chat message provider.
      *

@@ -68,6 +68,14 @@ public abstract class AbstractChatManager implements ChatManager {
     protected abstract void setUpPlatformEmojiProviders();
 
     @Override
+    public String replaceEmojis(CNPlayer player, String text) {
+        for (EmojiProvider emojiProvider : emojiProviders) {
+            text = emojiProvider.replace(player, text);
+        }
+        return text;
+    }
+
+    @Override
     public boolean setCustomChatProvider(ChatMessageProvider provider) {
         if (this.customProvider != null)
             return false;

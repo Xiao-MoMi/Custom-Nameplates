@@ -33,7 +33,6 @@ import net.momirealms.customnameplates.api.feature.image.Animation;
 import net.momirealms.customnameplates.api.feature.image.Image;
 import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.feature.pack.ResourcePackManager;
-import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
 import net.momirealms.customnameplates.api.util.ZipUtils;
 import org.apache.commons.io.FileUtils;

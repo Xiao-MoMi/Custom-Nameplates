@@ -32,7 +32,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
-import net.momirealms.customnameplates.api.feature.*;
+import net.momirealms.customnameplates.api.feature.ChatListener;
+import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
+import net.momirealms.customnameplates.api.feature.OffsetFont;
 import net.momirealms.customnameplates.api.feature.bubble.Bubble;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleManager;
@@ -302,7 +304,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
             return;
         }
 
-        String fullText = config.textPrefix().fastCreate(player).render(player) + AdventureHelper.stripTags(message.replace("\\", "\\\\")) + config.textSuffix().fastCreate(player).render(player);
+        String fullText = config.textPrefix().fastCreate(player).render(player) + message.replace("\\", "\\\\") + config.textSuffix().fastCreate(player).render(player);
         int lines = plugin.getAdvanceManager().getLines(fullText, config.lineWidth());
         if (lines > config.maxLines()) return;
         if (lines <= 0) return;
