@@ -1035,11 +1035,39 @@ public class Reflections {
             )
     );
 
-    public static final Field field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility = requireNonNull(
-            ReflectionUtils.getInstanceDeclaredField(
-                    clazz$ClientboundSetPlayerTeamPacket$Parameters, String.class, 0
+    public static final Class<?> clazz$Team$Visibility = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("world.scores.ScoreboardTeam$EnumNameTagVisibility"),
+                    BukkitReflectionUtils.assembleMCClass("world.scores.Team$Visibility")
             )
     );
+
+    public static final Field field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility = requireNonNull(
+            VersionHelper.isVersionNewerThan1_21_5() ?
+                    ReflectionUtils.getInstanceDeclaredField(
+                            clazz$ClientboundSetPlayerTeamPacket$Parameters, clazz$Team$Visibility, 0
+                    )
+                    : ReflectionUtils.getInstanceDeclaredField(
+                            clazz$ClientboundSetPlayerTeamPacket$Parameters, String.class, 0
+                    )
+    );
+
+    public static final Method method$Team$Visibility$values = requireNonNull(
+            ReflectionUtils.getStaticMethod(
+                    clazz$Team$Visibility, clazz$Team$Visibility.arrayType()
+            )
+    );
+
+    public static final Object instance$Team$Visibility$NEVER;
+
+    static {
+        try {
+            Object[] values = (Object[]) method$Team$Visibility$values.invoke(null);
+            instance$Team$Visibility$NEVER = values[1];
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static final Class<?> clazz$ServerConnectionListener = requireNonNull(
             ReflectionUtils.getClazz(

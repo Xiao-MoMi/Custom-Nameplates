@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "9.0.0-beta6"
+    id("com.gradleup.shadow") version "9.0.0-beta11"
 }
 
 val git : String = versionBanner()
