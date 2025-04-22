@@ -54,6 +54,7 @@ public class ChatControlRedProvider extends AbstractChatMessageProvider implemen
         CNPlayer cnPlayer = plugin.getPlayer(player.getUniqueId());
         if (cnPlayer == null) return;
         plugin.getScheduler().async().execute(() -> {
+            plugin.debug(() -> "Channel: " + event.getChannel().getName());
             manager.onChat(cnPlayer, event.getMessage(), event.getChannel().getName());
         });
     }

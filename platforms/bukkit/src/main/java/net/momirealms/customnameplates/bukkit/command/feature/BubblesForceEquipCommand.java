@@ -53,7 +53,7 @@ public class BubblesForceEquipCommand extends BukkitCommandFeature<CommandSender
                 .required("bubble", StringParser.stringComponent().suggestionProvider(new SuggestionProvider<>() {
                     @Override
                     public @NonNull CompletableFuture<? extends @NonNull Iterable<? extends @NonNull Suggestion>> suggestionsFuture(@NonNull CommandContext<Object> context, @NonNull CommandInput input) {
-                        return CompletableFuture.completedFuture(plugin.getBubbleManager().bubbles().stream().map(it -> Suggestion.suggestion(it.id())).toList());
+                        return CompletableFuture.completedFuture(plugin.getBubbleManager().bubbleConfigs().stream().map(it -> Suggestion.suggestion(it.id())).toList());
                     }
                 }))
                 .handler(context -> {

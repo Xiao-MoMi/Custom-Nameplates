@@ -21,10 +21,7 @@ import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.util.Vector3;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
@@ -37,11 +34,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class BukkitCNPlayer extends AbstractCNPlayer {
-
+public class BukkitCNPlayer extends AbstractCNPlayer<Player> {
     private static final Attribute scaleAttribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.scale"));
-
-    private Reference<Player> player;
 
     public BukkitCNPlayer(CustomNameplates plugin, Channel channel) {
         super(plugin, channel);
@@ -49,32 +43,19 @@ public class BukkitCNPlayer extends AbstractCNPlayer {
 
     public void setPlayer(Player player) {
         super.setPlayer(player);
-        this.player = new WeakReference<>(player);
+        super.entityId = player.getEntityId();
+        super.uuid = player.getUniqueId();
+        super.name = player.getName();
     }
 
     @Override
     public boolean isInitialized() {
-        return player != null;
+        return this.player != null;
     }
 
     @Override
     public Player player() {
-        return player.get();
-    }
-
-    @Override
-    public String name() {
-        return player().getName();
-    }
-
-    @Override
-    public UUID uuid() {
-        return player().getUniqueId();
-    }
-
-    @Override
-    public int entityID() {
-        return player().getEntityId();
+        return super.player;
     }
 
     @Override

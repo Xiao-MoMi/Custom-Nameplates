@@ -72,7 +72,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
             if (preview) return;
             onRemovePlayer(player, player);
             player.removePlayerFromTracker(player);
-            ((AbstractCNPlayer) player).setTempPreviewing(false);
+            ((AbstractCNPlayer<?>) player).setTempPreviewing(false);
         } else {
             if (!preview) return;
             Tracker tracker = player.addPlayerToTracker(player);
@@ -80,7 +80,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
             tracker.setCrouching(player.isCrouching());
             tracker.setSpectator(player.isSpectator());
             onAddPlayer(player, player);
-            ((AbstractCNPlayer) player).setTempPreviewing(true);
+            ((AbstractCNPlayer<?>) player).setTempPreviewing(true);
         }
     }
 
@@ -91,7 +91,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
             if (preview) return;
             onRemovePlayer(player, player);
             player.removePlayerFromTracker(player);
-            ((AbstractCNPlayer) player).setToggleablePreviewing(false);
+            ((AbstractCNPlayer<?>) player).setToggleablePreviewing(false);
         } else {
             if (!preview) return;
             Tracker tracker = player.addPlayerToTracker(player);
@@ -99,7 +99,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
             tracker.setCrouching(player.isCrouching());
             tracker.setSpectator(player.isSpectator());
             onAddPlayer(player, player);
-            ((AbstractCNPlayer) player).setToggleablePreviewing(true);
+            ((AbstractCNPlayer<?>) player).setToggleablePreviewing(true);
         }
     }
 

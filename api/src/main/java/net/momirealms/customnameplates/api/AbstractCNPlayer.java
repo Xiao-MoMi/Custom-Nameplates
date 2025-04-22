@@ -44,7 +44,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Player instance adapted by CustomNameplates
  */
-public abstract class AbstractCNPlayer implements CNPlayer {
+public abstract class AbstractCNPlayer<P> implements CNPlayer {
     /**
      * The CustomNameplates plugin
      */
@@ -56,7 +56,10 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     /**
      * Platform player instance
      */
-    protected Reference<Object> player;
+    protected P player;
+    protected UUID uuid;
+    protected int entityId;
+    protected String name;
 
     private volatile boolean isLoaded = false;
     private volatile boolean tempPreviewing = false;
@@ -240,8 +243,8 @@ public abstract class AbstractCNPlayer implements CNPlayer {
      *
      * @param player player
      */
-    public void setPlayer(Object player) {
-        this.player = new WeakReference<>(player);
+    public void setPlayer(P player) {
+        this.player = player;
     }
 
     @Override
@@ -256,7 +259,7 @@ public abstract class AbstractCNPlayer implements CNPlayer {
 
     @Override
     public Object player() {
-        return player.get();
+        return player;
     }
 
     /**
@@ -664,5 +667,20 @@ public abstract class AbstractCNPlayer implements CNPlayer {
     @Override
     public int hashCode() {
         return entityID();
+    }
+
+    @Override
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public UUID uuid() {
+        return this.uuid;
+    }
+
+    @Override
+    public int entityID() {
+        return this.entityId;
     }
 }

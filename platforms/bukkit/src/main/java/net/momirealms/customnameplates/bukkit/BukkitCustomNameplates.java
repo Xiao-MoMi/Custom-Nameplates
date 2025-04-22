@@ -289,7 +289,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         MainTask.reset();
         // reload players
         for (CNPlayer player : getOnlinePlayers()) {
-            ((AbstractCNPlayer) player).reload();
+            ((AbstractCNPlayer<?>) player).reload();
         }
         // clear requirement ids
         this.requirementManager.reload();
@@ -401,6 +401,14 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         entityIDFastLookup.remove(cnPlayer.entityID());
         if (VersionHelper.isFolia()) {
             foliaLocationTracker.remove(player.getName());
+        }
+    }
+
+    public void handleQuit(CNPlayer cnPlayer) {
+        entityIDFastLookup.remove(cnPlayer.entityID());
+        onlinePlayerMap.remove(cnPlayer.uuid());
+        if (VersionHelper.isFolia()) {
+            foliaLocationTracker.remove(cnPlayer.name());
         }
     }
 
