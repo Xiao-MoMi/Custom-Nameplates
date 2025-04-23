@@ -27,10 +27,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.mineacademy.chatcontrol.PlayerCache;
-import org.mineacademy.chatcontrol.api.ChatChannelEvent;
+import org.mineacademy.chatcontrol.api.ChannelPostChatEvent;
 import org.mineacademy.chatcontrol.api.ChatControlAPI;
 import org.mineacademy.chatcontrol.model.Channel;
+import org.mineacademy.chatcontrol.model.db.PlayerCache;
 
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class ChatControlRedProvider extends AbstractChatMessageProvider implemen
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onChat(ChatChannelEvent event) {
+    public void onChat(ChannelPostChatEvent event) {
         plugin.debug(() -> "ChatChannelEvent triggered");
         final CommandSender sender = event.getSender();
         if (!(sender instanceof Player player)) {
@@ -73,7 +73,7 @@ public class ChatControlRedProvider extends AbstractChatMessageProvider implemen
 
     @Override
     public boolean isIgnoring(CNPlayer sender, CNPlayer receiver) {
-        PlayerCache cache = PlayerCache.from((Player) receiver.player());
+        PlayerCache cache = PlayerCache.fromCached((Player) receiver.player());
         if (cache == null) return false;
         return cache.isIgnoringPlayer(sender.uuid());
     }
