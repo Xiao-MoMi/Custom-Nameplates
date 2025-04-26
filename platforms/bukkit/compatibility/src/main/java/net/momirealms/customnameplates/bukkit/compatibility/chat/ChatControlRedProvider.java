@@ -68,7 +68,7 @@ public class ChatControlRedProvider extends AbstractChatMessageProvider implemen
 
     @Override
     public boolean canJoinChannel(CNPlayer player, String channelID) {
-        return ((Player) player).hasPermission("chatcontrol.channel.join."+channelID+".read");
+        return player.hasPermission("chatcontrol.channel.join."+channelID+".read");
     }
 
     @Override

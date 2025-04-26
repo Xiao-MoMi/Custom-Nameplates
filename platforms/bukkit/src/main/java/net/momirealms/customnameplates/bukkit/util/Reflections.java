@@ -1037,7 +1037,7 @@ public class Reflections {
 
     public static final Class<?> clazz$Team$Visibility = requireNonNull(
             ReflectionUtils.getClazz(
-                    BukkitReflectionUtils.assembleMCClass("world.scores.ScoreboardTeam$EnumNameTagVisibility"),
+                    BukkitReflectionUtils.assembleMCClass("world.scores.ScoreboardTeamBase$EnumNameTagVisibility"),
                     BukkitReflectionUtils.assembleMCClass("world.scores.Team$Visibility")
             )
     );
