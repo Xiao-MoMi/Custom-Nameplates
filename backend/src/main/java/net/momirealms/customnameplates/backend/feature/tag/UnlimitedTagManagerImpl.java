@@ -52,11 +52,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitListener, PlayerListener {
+public class UnlimitedTagManagerImpl implements UnlimitedTagManager, PlayerListener {
 
     private final CustomNameplates plugin;
     private final LinkedHashMap<String, NameTagConfig> configs = new LinkedHashMap<>();
-    private final ConcurrentHashMap<UUID, TagRendererImpl> tagRenderers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, TagRendererImpl> tagRenderers = new ConcurrentHashMap<>();
     private NameTagConfig[] configArray = new NameTagConfig[0];
     private int previewDuration;
     private boolean alwaysShow;
@@ -142,7 +142,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
     public void onPlayerJoin(CNPlayer player) {
         plugin.debug(() -> player.name() + " joined the server");
         TagRendererImpl sender = new TagRendererImpl(this, player);
-        TagRendererImpl previous = tagRenderers.put(player.uuid(), sender);
+        TagRendererImpl previous = tagRenderers.put(player.entityID(), sender);
         if (previous != null) {
             previous.destroy();
         }
@@ -155,7 +155,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onPlayerQuit(CNPlayer player) {
-        TagRendererImpl sender = tagRenderers.remove(player.uuid());
+        TagRendererImpl sender = tagRenderers.remove(player.entityID());
         if (sender != null) {
             sender.destroy();
         }
@@ -208,7 +208,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onAddPlayer(CNPlayer owner, CNPlayer added) {
-        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        TagRendererImpl controller = tagRenderers.get(owner.entityID());
         if (controller != null) {
             controller.handlePlayerAdd(added);
         }
@@ -216,12 +216,12 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public TagRenderer getTagRender(CNPlayer owner) {
-        return tagRenderers.get(owner.uuid());
+        return tagRenderers.get(owner.entityID());
     }
 
     @Override
     public void onRemovePlayer(CNPlayer owner, CNPlayer removed) {
-        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        TagRendererImpl controller = tagRenderers.get(owner.entityID());
         if (controller != null) {
             controller.handlePlayerRemove(removed);
         }
@@ -229,7 +229,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onPlayerDataSet(CNPlayer owner, CNPlayer viewer, boolean isCrouching) {
-        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        TagRendererImpl controller = tagRenderers.get(owner.entityID());
         if (controller != null) {
             controller.handleEntityDataChange(viewer, isCrouching);
         }
@@ -237,7 +237,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onPlayerAttributeSet(CNPlayer owner, CNPlayer viewer, double scale) {
-        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        TagRendererImpl controller = tagRenderers.get(owner.entityID());
         if (controller != null) {
             controller.handleAttributeChange(viewer, scale);
         }
@@ -245,7 +245,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, JoinQuitLis
 
     @Override
     public void onPlayerGameModeChange(CNPlayer owner, CNPlayer viewer, boolean isSpectator) {
-        TagRendererImpl controller = tagRenderers.get(owner.uuid());
+        TagRendererImpl controller = tagRenderers.get(owner.entityID());
         if (controller != null) {
             controller.handleGameModeChange(viewer, isSpectator);
         }

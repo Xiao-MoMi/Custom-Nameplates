@@ -32,7 +32,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class TagRendererImpl implements TagRenderer {
-
     private final CNPlayer owner;
     private final UnlimitedTagManager manager;
     private final Vector<Tag> tagVector;

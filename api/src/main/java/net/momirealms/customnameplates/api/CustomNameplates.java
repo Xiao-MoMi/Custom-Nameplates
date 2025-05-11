@@ -39,8 +39,11 @@ import net.momirealms.customnameplates.common.event.EventManager;
 import net.momirealms.customnameplates.common.locale.TranslationManager;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.plugin.scheduler.SchedulerTask;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -127,12 +130,12 @@ public abstract class CustomNameplates implements NameplatesPlugin {
     /**
      * A map that tracks online players by their unique UUID, allowing quick access to player data.
      */
-    protected ConcurrentHashMap<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
+    protected Map<UUID, CNPlayer> onlinePlayerMap = new ConcurrentHashMap<>();
 
     /**
      * A fast lookup map that associates entity IDs to player data (CNPlayer) for quick access.
      */
-    protected ConcurrentHashMap<Integer, CNPlayer> entityIDFastLookup = new ConcurrentHashMap<>();
+    protected Map<Integer, CNPlayer> entityIDFastLookup = new ConcurrentHashMap<>();
 
     /**
      * Manages advances or progressions for players, such as achievements or level ups.
@@ -461,5 +464,17 @@ public abstract class CustomNameplates implements NameplatesPlugin {
      */
     public static CustomNameplates getInstance() {
         return instance;
+    }
+
+    @ApiStatus.Experimental
+    public void addPlayerUnsafe(int entityId, CNPlayer player) {
+        if (this.entityIDFastLookup.containsKey(entityId)) return;
+        this.entityIDFastLookup.put(entityId, player);
+    }
+
+    @Nullable
+    @ApiStatus.Experimental
+    public CNPlayer removePlayerUnsafe(int entityId) {
+        return this.entityIDFastLookup.remove(entityId);
     }
 }

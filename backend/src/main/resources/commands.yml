@@ -148,7 +148,7 @@ bubbles_list:
 # A command to test some stuffs
 # Usage: [COMMAND]
 debug_test:
-  enable: false
+  enable: true
   permission: nameplates.command.debug.test
   usage:
     - /nameplates debug test
