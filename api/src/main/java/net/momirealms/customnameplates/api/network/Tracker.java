@@ -1,20 +1,3 @@
-/*
- *  Copyright (C) <2024> <XiaoMoMi>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package net.momirealms.customnameplates.api.network;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -40,6 +23,9 @@ public class Tracker {
      * @param tracker the tracker who is tracking the player
      */
     public Tracker(CNPlayer tracker) {
+        if (tracker == null) {
+            throw new IllegalArgumentException("Tracker cannot be null");
+        }
         this.isCrouching = false;
         this.scale = 1;
         this.tracker = tracker;
@@ -51,6 +37,9 @@ public class Tracker {
      * @return the tracker
      */
     public CNPlayer tracker() {
+        if (tracker == null) {
+            throw new IllegalStateException("Tracker is not initialized");
+        }
         return tracker;
     }
 
