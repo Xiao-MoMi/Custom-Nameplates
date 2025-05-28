@@ -306,19 +306,19 @@ public class AdventureHelper {
                 case '7' -> stringBuilder.append("<gray>");
                 case '8' -> stringBuilder.append("<dark_gray>");
                 case '9' -> stringBuilder.append("<blue>");
-                case 'a' -> stringBuilder.append("<green>");
-                case 'b' -> stringBuilder.append("<aqua>");
-                case 'c' -> stringBuilder.append("<red>");
-                case 'd' -> stringBuilder.append("<light_purple>");
-                case 'e' -> stringBuilder.append("<yellow>");
-                case 'f' -> stringBuilder.append("<white>");
-                case 'r' -> stringBuilder.append("<reset>");
-                case 'l' -> stringBuilder.append("<b>");
-                case 'm' -> stringBuilder.append("<st>");
-                case 'o' -> stringBuilder.append("<i>");
-                case 'n' -> stringBuilder.append("<u>");
-                case 'k' -> stringBuilder.append("<obf>");
-                case 'x' -> {
+                case 'a', 'A' -> stringBuilder.append("<green>");
+                case 'b', 'B' -> stringBuilder.append("<aqua>");
+                case 'c', 'C' -> stringBuilder.append("<red>");
+                case 'd', 'D' -> stringBuilder.append("<light_purple>");
+                case 'e', 'E' -> stringBuilder.append("<yellow>");
+                case 'f', 'F' -> stringBuilder.append("<white>");
+                case 'r', 'R' -> stringBuilder.append("<reset>");
+                case 'l', 'L' -> stringBuilder.append("<b>");
+                case 'm', 'M' -> stringBuilder.append("<st>");
+                case 'o', 'O' -> stringBuilder.append("<i>");
+                case 'n', 'N' -> stringBuilder.append("<u>");
+                case 'k', 'K' -> stringBuilder.append("<obf>");
+                case 'x', 'X' -> {
                     if (i + 13 >= chars.length
                             || !isLegacyColorCode(chars[i+2])
                             || !isLegacyColorCode(chars[i+4])
