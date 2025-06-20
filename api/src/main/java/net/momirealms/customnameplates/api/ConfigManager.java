@@ -338,6 +338,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected String configVersion;
 
     protected float minPackVersion;
+    protected boolean stripChatColorTags;
 
     /**
      * Constructs a new {@code ConfigManager} for the specified {@code CustomNameplates} plugin instance.
@@ -478,6 +479,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
         displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);
         hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
+        stripChatColorTags = config.getBoolean("other-settings.strip-chat-color-tags", false);
     }
 
     @Override
@@ -914,6 +916,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      */
     public static boolean chatChatty() {
         return instance.chatChatty;
+    }
+
+    public static boolean stripChatColorTags() {
+        return instance.stripChatColorTags;
     }
 
     /**

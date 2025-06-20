@@ -22,9 +22,11 @@ import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.chat.AbstractChatMessageProvider;
 import net.momirealms.customnameplates.api.feature.chat.ChatManager;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,8 +53,14 @@ public class VentureChatProvider extends AbstractChatMessageProvider implements 
         if (cnPlayer == null) {
             return;
         }
+        String chatMessage;
+        if (ConfigManager.stripChatColorTags()) {
+            chatMessage = AdventureHelper.stripTags(AdventureHelper.legacyToMiniMessage(event.getChat()));
+        } else {
+            chatMessage = event.getChat();
+        }
         plugin.getScheduler().async().execute(() -> {
-            manager.onChat(cnPlayer, event.getChat(), channelName);
+            manager.onChat(cnPlayer, chatMessage, channelName);
         });
     }
 

@@ -77,6 +77,7 @@ other-settings:
   display-system-actionbar: true      # Should the plugin display system actionbar and temporarily hide the custom actionbar?
   hide-team-names: true               # Hide the team name sent by other plugins or vanilla team system
   unsafe-chat-event: false            # Listen for canceled(unsafe) chat events from unknown plugins
+  strip-chat-color-tags: false        # Strip color codes from messages provided by external chat API
   default-condition-refresh-interval: 10  # Set default condition refresh interval in ticks
   default-placeholder-refresh-interval: 1  # Set default placeholder refresh interval in ticks
   placeholder-refresh-interval:       # Custom placeholder refresh intervals for performance optimization
