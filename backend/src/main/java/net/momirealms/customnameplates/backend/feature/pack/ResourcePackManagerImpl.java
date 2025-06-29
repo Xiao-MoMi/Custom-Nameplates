@@ -33,6 +33,7 @@ import net.momirealms.customnameplates.api.feature.image.Animation;
 import net.momirealms.customnameplates.api.feature.image.Image;
 import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.feature.pack.ResourcePackManager;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.util.CharacterUtils;
 import net.momirealms.customnameplates.api.util.ZipUtils;
 import org.apache.commons.io.FileUtils;
@@ -72,46 +73,16 @@ public class ResourcePackManagerImpl implements ResourcePackManager {
 
         if (ConfigManager.enableShader()) {
             if (ConfigManager.minPackVersion() >= 21.4f) {
-                this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_4" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-                try {
-                    FileUtils.copyDirectory(
-                            new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_21_4"),
-                            new File(plugin.getDataFolder(), "ResourcePack")
-                    );
-                    FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_21_4"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                // do nothing
             } else if (ConfigManager.minPackVersion() >= 21.2f) {
                 this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_2" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-                try {
-                    FileUtils.copyDirectory(
-                            new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_21_2"),
-                            new File(plugin.getDataFolder(), "ResourcePack")
-                    );
-                    FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_21_2"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_4" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
             } else if (ConfigManager.minPackVersion() >= 20.5f) {
                 this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-                try {
-                    FileUtils.copyDirectory(
-                            new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"),
-                            new File(plugin.getDataFolder(), "ResourcePack")
-                    );
-                    FileUtils.deleteDirectory(new File(plugin.getDataFolder(), "ResourcePack" + File.separator + "overlay_1_20_5"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
                 this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_2" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-                this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_4" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
             } else {
-                this.generateShaders("ResourcePack" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, false);
+                this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_2" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, false);
                 this.generateShaders("ResourcePack" + File.separator + "overlay_1_20_5" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
                 this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_2" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
-                this.generateShaders("ResourcePack" + File.separator + "overlay_1_21_4" + File.separator + "assets" + File.separator + "minecraft" + File.separator + "shaders" + File.separator + "core" + File.separator, true);
             }
         }
 

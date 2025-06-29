@@ -11,10 +11,10 @@
         "entries": [
             {
                 "formats": {
-                    "min_inclusive": 46,
-                    "max_inclusive": 99
+                    "min_inclusive": 42,
+                    "max_inclusive": 45
                 },
-                "directory": "overlay_1_21_4"
+                "directory": "overlay_1_21_2"
             }
         ]
     }

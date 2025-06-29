@@ -124,6 +124,12 @@ public class Reflections {
                     clazz$ClientboundSystemChatPacket, String.class, 0
             );
 
+    public static final Constructor<?> constructor$ClientboundSystemChatPacket = requireNonNull(
+            ReflectionUtils.getConstructor(
+                    clazz$ClientboundSystemChatPacket, clazz$Component, boolean.class
+            )
+    );
+
     public static final Class<?> clazz$CraftChatMessage = requireNonNull(
             ReflectionUtils.getClazz(
                     BukkitReflectionUtils.assembleCBClass("util.CraftChatMessage")
@@ -317,28 +323,9 @@ public class Reflections {
         }
     }
 
-    public static final Class<?> clazz$Component$Serializer = requireNonNull(
-            ReflectionUtils.getClazz(
-                    BukkitReflectionUtils.assembleMCClass("network.chat.Component$Serializer"),
-                    BukkitReflectionUtils.assembleMCClass("network.chat.IChatBaseComponent$ChatSerializer")
-            )
-    );
-
     public static final Class<?> clazz$HolderLookup$Provider = ReflectionUtils.getClazz(
             BukkitReflectionUtils.assembleMCClass("core.HolderLookup$Provider"),
             BukkitReflectionUtils.assembleMCClass(VersionHelper.isVersionNewerThan1_20_5() ? "core.HolderLookup$a" : "core.HolderLookup$b")
-    );
-
-    public static final Method method$Component$Serializer$fromJson = ReflectionUtils.getMethod(
-            clazz$Component$Serializer,
-            new String[] { "fromJson", "a" },
-            String.class, clazz$HolderLookup$Provider
-    );
-
-    public static final Method method$Component$Serializer$toJson = ReflectionUtils.getMethod(
-            clazz$Component$Serializer,
-            new String[] { "toJson", "a" },
-            clazz$Component, clazz$HolderLookup$Provider
     );
 
     public static final Class<?> clazz$ClientboundBundlePacket = requireNonNull(

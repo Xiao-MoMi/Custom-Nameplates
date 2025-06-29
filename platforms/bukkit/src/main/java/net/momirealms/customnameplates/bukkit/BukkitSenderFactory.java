@@ -28,6 +28,8 @@ package net.momirealms.customnameplates.bukkit;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
+import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.sender.Sender;
 import net.momirealms.customnameplates.common.sender.SenderFactory;
 import net.momirealms.customnameplates.common.util.Tristate;
@@ -69,8 +71,14 @@ public class BukkitSenderFactory extends SenderFactory<BukkitCustomNameplates, C
 
     @Override
     protected void sendMessage(CommandSender sender, Component message) {
-        // we can safely send async for players and the console - otherwise, send it sync
-        if (sender instanceof Player || sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
+        if (sender instanceof Player player) {
+            try {
+                Object packet = Reflections.constructor$ClientboundSystemChatPacket.newInstance(getPlugin().getPlatform().jsonToMinecraftComponent(AdventureHelper.gson().serialize(message)), false);
+                getPlugin().getPacketSender().sendPacket(getPlugin().getPlayer(player.getUniqueId()), packet);
+            } catch (ReflectiveOperationException e) {
+                getPlugin().getPluginLogger().warn("Failed to send message to player " + sender.getName(), e);
+            }
+        } else if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
             getAudience(sender).sendMessage(message);
         } else {
             getPlugin().getScheduler().executeSync(() -> getAudience(sender).sendMessage(message));

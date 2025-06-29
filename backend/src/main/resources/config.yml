@@ -46,7 +46,7 @@ integrations:
 resource-pack:
   disable-generation-on-start: false  # Allow resource pack generation at server start
   supported-version:
-    # You can specify a version like 1.20.1, 1.21.4 or use SERVER_VERSION
+    # You can specify a version like 1.20.2, 1.21.4 or use SERVER_VERSION
     min: "SERVER_VERSION"
   namespace: "nameplates"             # Namespace for the resource pack
   font: "default"                     # Default font used
@@ -57,6 +57,8 @@ resource-pack:
     images: 'font/images/'            # Path for other images
     bubbles: 'font/bubbles/'          # Path for bubble text images
     space-split: 'font/base/'         # Path for base font images
+  # Using shader is dangerous and might conflict with other plugin
+  # It's recommended to disable shaders on a 1.21.4+ server
   shader:
     enable: true                      # Enable shader generation
     hide-scoreboard-number: false     # Hiding of scoreboard numbers

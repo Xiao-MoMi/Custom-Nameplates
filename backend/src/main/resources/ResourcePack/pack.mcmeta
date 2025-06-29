@@ -11,6 +11,13 @@
         "entries": [
             {
                 "formats": {
+                    "min_inclusive": 13,
+                    "max_inclusive": 31
+                },
+                "directory": "overlay_1_20_2"
+            },
+            {
+                "formats": {
                     "min_inclusive": 32,
                     "max_inclusive": 34
                 },
@@ -22,13 +29,6 @@
                     "max_inclusive": 45
                 },
                 "directory": "overlay_1_21_2"
-            },
-            {
-                "formats": {
-                    "min_inclusive": 46,
-                    "max_inclusive": 99
-                },
-                "directory": "overlay_1_21_4"
             }
         ]
     }

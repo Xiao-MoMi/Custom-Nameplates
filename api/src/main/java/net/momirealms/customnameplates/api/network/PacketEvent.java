@@ -19,18 +19,12 @@ package net.momirealms.customnameplates.api.network;
 
 import net.momirealms.customnameplates.common.event.Cancellable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 /**
  * Represents a packet event, which can be cancelled and supports delayed tasks that are executed later.
  */
 public class PacketEvent implements Cancellable {
 
     private boolean cancelled;
-    private List<Runnable> delayedTasks = null;
     private final Object packet;
 
     /**
@@ -49,27 +43,6 @@ public class PacketEvent implements Cancellable {
      */
     public Object getPacket() {
         return packet;
-    }
-
-    /**
-     * Adds a task to be executed later, after the event has been processed.
-     *
-     * @param task the task to be added
-     */
-    public void addDelayedTask(Runnable task) {
-        if (delayedTasks == null) {
-            delayedTasks = new ArrayList<>();
-        }
-        delayedTasks.add(task);
-    }
-
-    /**
-     * Returns the list of delayed tasks to be executed.
-     *
-     * @return a list of tasks, or an empty list if no tasks are added
-     */
-    public List<Runnable> getDelayedTasks() {
-        return Optional.ofNullable(delayedTasks).orElse(Collections.emptyList());
     }
 
     /**
