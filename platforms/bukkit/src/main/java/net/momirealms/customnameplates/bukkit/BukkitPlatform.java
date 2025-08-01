@@ -424,6 +424,10 @@ public class BukkitPlatform implements Platform {
                                     if (p == null) {
                                         return;
                                     }
+                                    // do not hide team name for the viewer
+                                    if (player.name().equals(entity)) {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -449,6 +453,9 @@ public class BukkitPlatform implements Platform {
                                     Player p = Bukkit.getPlayer(entity);
                                     // it's a fake player
                                     if (p == null) {
+                                        return;
+                                    }
+                                    if (player.name().equals(entity)) {
                                         return;
                                     }
                                 }
