@@ -56,8 +56,8 @@ MariaDB:
 MongoDB:
   host: 'localhost'
   port: '27017'
-  #user: 'root'
-  #password: 'password'
+  user: ''
+  password: ''
   database: 'minecraft'
   # If this section is not empty, it would override the configs above
   # https://www.mongodb.com/docs/manual/reference/connection-string/

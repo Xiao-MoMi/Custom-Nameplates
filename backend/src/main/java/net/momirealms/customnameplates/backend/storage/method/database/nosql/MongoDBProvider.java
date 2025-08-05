@@ -49,7 +49,7 @@ public class MongoDBProvider extends AbstractStorage {
             return;
         }
 
-        if (section.contains("user")) {
+        if (section.contains("user") && section.contains("password") && !section.getString("user").isEmpty() && !section.getString("password").isEmpty()) {
             MongoCredential credential = MongoCredential.createCredential(
                     section.getString("user", "root"),
                     section.getString("database", "minecraft"),
