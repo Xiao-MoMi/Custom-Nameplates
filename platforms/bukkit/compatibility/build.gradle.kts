@@ -13,6 +13,7 @@ repositories {
     maven("https://repo.opencollab.dev/main/") // geyser
     maven("https://maven.enginehub.org/repo/") // worldguard worldedit
     maven("https://repo.alessiodp.com/releases/") // parties
+    maven("https://maven.devs.beer/") // ia
 }
 
 dependencies {
@@ -39,7 +40,7 @@ dependencies {
 //    compileOnly("com.github.Brikster:Chatty:v2.19.14")
     compileOnly(files("libs/Chatty-3.0.0-SNAPSHOT.jar"))
     // Emoji
-    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14")
+    compileOnly("dev.lone:api-itemsadder:4.0.10")
     compileOnly("io.th0rgal:oraxen:1.182.0")
     // PAPI
     compileOnly("me.clip:placeholderapi:${rootProject.properties["placeholder_api_version"]}")
