@@ -52,6 +52,7 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
     // Cosmetics
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.9")
+    compileOnly("com.github.sculmix:API-ECosmetics:1.0.1")
 }
 
 java {
