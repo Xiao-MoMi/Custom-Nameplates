@@ -671,7 +671,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
 
     @Override
     public String name() {
-        return this.name;
+        return Optional.ofNullable(this.name).orElse("");
     }
 
     @Override

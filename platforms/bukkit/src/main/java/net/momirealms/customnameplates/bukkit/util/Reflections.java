@@ -1231,4 +1231,24 @@ public class Reflections {
                     clazz$ComponentSerializer, Object.class, new String[] {"deserialize"}, Object.class
             )
     );
+
+    public static final Class<?> clazz$ClientboundLoginFinishedPacket = requireNonNull(
+            ReflectionUtils.getClazz(
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.login.PacketLoginOutSuccess"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.login.ClientboundLoginFinishedPacket"),
+                    BukkitReflectionUtils.assembleMCClass("network.protocol.login.ClientboundGameProfilePacket")
+            )
+    );
+
+    public static final Class<?> clazz$GameProfile = requireNonNull(
+            ReflectionUtils.getClazz("com.mojang.authlib.GameProfile")
+    );
+
+    public static final Field field$ClientboundLoginFinishedPacket$gameProfile = requireNonNull(
+            ReflectionUtils.getDeclaredField(clazz$ClientboundLoginFinishedPacket, clazz$GameProfile, 0)
+    );
+
+    public static final Field field$GameProfile$name = requireNonNull(
+            ReflectionUtils.getDeclaredField(clazz$GameProfile, String.class, 0)
+    );
 }

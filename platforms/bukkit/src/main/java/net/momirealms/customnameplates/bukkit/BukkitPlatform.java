@@ -143,6 +143,19 @@ public class BukkitPlatform implements Platform {
         }, "ClientboundSetActionBarTextPacket");
 
         registerPacketConsumer((player, event, packet) -> {
+            try {
+                Object gameProfile = Reflections.field$ClientboundLoginFinishedPacket$gameProfile.get(packet);
+                if (gameProfile != null) {
+                    String name = (String) Reflections.field$GameProfile$name.get(gameProfile);
+                    BukkitCNPlayer bukkitCNPlayer = (BukkitCNPlayer) player;
+                    bukkitCNPlayer.setName(name);
+                }
+            } catch (ReflectiveOperationException e) {
+                CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundGameProfilePacket", e);
+            }
+        }, "PacketLoginOutSuccess", "ClientboundLoginFinishedPacket", "ClientboundGameProfilePacket");
+
+        registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
             if (!player.shouldCNTakeOverActionBar()) return;

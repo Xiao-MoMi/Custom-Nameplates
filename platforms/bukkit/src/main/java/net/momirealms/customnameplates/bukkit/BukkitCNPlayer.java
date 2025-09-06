@@ -48,6 +48,10 @@ public class BukkitCNPlayer extends AbstractCNPlayer<Player> {
         super.name = player.getName();
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean isInitialized() {
         return this.player != null;

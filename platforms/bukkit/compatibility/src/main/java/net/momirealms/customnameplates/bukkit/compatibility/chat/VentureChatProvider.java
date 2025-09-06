@@ -53,12 +53,7 @@ public class VentureChatProvider extends AbstractChatMessageProvider implements 
         if (cnPlayer == null) {
             return;
         }
-        String chatMessage;
-        if (ConfigManager.stripChatColorTags()) {
-            chatMessage = AdventureHelper.stripTags(AdventureHelper.legacyToMiniMessage(event.getChat()));
-        } else {
-            chatMessage = event.getChat();
-        }
+        String chatMessage = event.getChat();
         plugin.getScheduler().async().execute(() -> {
             manager.onChat(cnPlayer, chatMessage, channelName);
         });

@@ -24,6 +24,7 @@ import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.translation.Translator;
 import net.kyori.adventure.util.TriState;
 import net.kyori.examination.ExaminableProperty;
+import net.momirealms.customnameplates.api.ConfigManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +65,9 @@ public class MiniMessageTranslatorImpl implements MiniMessageTranslator {
     public @Nullable Component translate(@NotNull TranslatableComponent component, @NotNull Locale locale) {
         for (final Translator source : this.sources) {
             final Component translation = source.translate(component, locale);
-            if (translation != null) return translation;
+            if (translation != null) {
+                return translation;
+            }
         }
         return null;
     }

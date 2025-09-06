@@ -31,6 +31,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.TriState;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,6 +94,9 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
         }
         if (miniMessageString.isEmpty()) {
             return Component.empty();
+        }
+        if (AdventureHelper.legacySupport) {
+            miniMessageString = AdventureHelper.legacyToMiniMessage(miniMessageString);
         }
         final Component resultingComponent;
         if (component.arguments().isEmpty()) {
