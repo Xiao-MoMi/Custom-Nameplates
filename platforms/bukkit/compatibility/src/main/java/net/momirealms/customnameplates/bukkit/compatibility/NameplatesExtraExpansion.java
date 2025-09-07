@@ -333,6 +333,10 @@ public class NameplatesExtraExpansion extends PlaceholderExpansion {
                 }
                 return finalString;
             }
+            case "parse-twice" -> {
+                String anotherPlaceholder = PlaceholderAPI.setPlaceholders(player, "%" + split[1] + "%");
+                return PlaceholderAPI.setPlaceholders(player, anotherPlaceholder);
+            }
         }
         return null;
     }
