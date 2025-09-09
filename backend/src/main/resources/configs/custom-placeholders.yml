@@ -1,4 +1,4 @@
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/conditional-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/conditional-text
 conditional-text:
   actionbar:
     priority_1:
@@ -50,7 +50,7 @@ conditional-text:
         weather:
           - thunder
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 bubble-text:
   chat:
     bubble: chat_1
@@ -58,7 +58,7 @@ bubble-text:
     left-margin: 1
     right-margin: 1
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 nameplate-text:
   halloween:
     nameplate: halloween
@@ -66,7 +66,7 @@ nameplate-text:
     left-margin: 1
     right-margin: 1
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/background-nameplate-bubble-text
 background-text:
   location:
     background: bedrock_1
@@ -105,7 +105,7 @@ background-text:
     left-margin: 1
     right-margin: 1
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/static-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/static-text
 static-text:
   money_hud:
     position: right
@@ -116,7 +116,7 @@ static-text:
     text: "%np_background_other_actionbar%"
     value: 180
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/descent-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/shift-text
 shift-text:
   player_name:
     text: "%player_name%"
@@ -140,7 +140,7 @@ shift-text:
     text: "%vault_eco_balance%"
     font: shift_2
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/switch-text
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/switch-text
 switch-text:
   nameplate_color_prefix:
     switch: "%np_equipped_nameplate%"
@@ -180,7 +180,7 @@ switch-text:
       'world_the_end': "<red>The End</red>"
     default: "<gray>Unknown world</gray>"
 
-# https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/custom-placeholders/vanilla-hud
+# https://mo-mi.gitbook.io/xiaomomi-plugins/customnameplates/plugin-wiki/customnameplates/custom-placeholders/vanilla-hud
 vanilla-hud:
   stamina_hud:
     reverse: true
