@@ -526,15 +526,32 @@ public class BukkitPlatform implements Platform {
         Placeholder placeholder;
         if (id.startsWith("%rel_")) {
             placeholder = plugin.getPlaceholderManager().registerRelationalPlaceholder(id,
-                                                                        // viewer              // owner
-                    (p1, p2) -> PlaceholderAPI.setRelationalPlaceholders((Player) p2.player(), (Player) p1.player(), id));
+                    (p1, p2) -> {
+                        try {
+                            return PlaceholderAPI.setRelationalPlaceholders((Player) p2.player(), (Player) p1.player(), id);
+                        } catch (Exception e) {
+                            return id;
+                        }
+                    });
         } else if (id.startsWith("%shared_")) {
             String sub = "%" + id.substring("%shared_".length());
             placeholder =plugin.getPlaceholderManager().registerSharedPlaceholder(id,
-                    () -> PlaceholderAPI.setPlaceholders(null, sub));
+                    () -> {
+                        try {
+                            return PlaceholderAPI.setPlaceholders(null, sub);
+                        } catch (Exception e) {
+                            return sub;
+                        }
+                    });
         } else {
             placeholder = plugin.getPlaceholderManager().registerPlayerPlaceholder(id,
-                    (p) -> p == null ? PlaceholderAPI.setPlaceholders(null, id) : PlaceholderAPI.setPlaceholders((OfflinePlayer) p.player(), id));
+                    (p) -> {
+                        try {
+                            return p == null ? PlaceholderAPI.setPlaceholders(null, id) : PlaceholderAPI.setPlaceholders((OfflinePlayer) p.player(), id);
+                        } catch (Exception e) {
+                            return id;
+                        }
+                    });
         }
         return placeholder;
     }
