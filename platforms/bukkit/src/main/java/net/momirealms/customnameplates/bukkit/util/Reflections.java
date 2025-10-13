@@ -28,7 +28,7 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-public class Reflections {
+public final class Reflections {
 
     public static void load() {}
 

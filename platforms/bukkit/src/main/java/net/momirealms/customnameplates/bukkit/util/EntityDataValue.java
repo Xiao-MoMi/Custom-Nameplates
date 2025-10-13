@@ -89,7 +89,8 @@ public class EntityDataValue {
             if (VersionHelper.isVersionNewerThan1_21_5()) Serializers$OPTIONAL_LIVING_ENTITY_REFERENCE = initSerializersByName("OPTIONAL_LIVING_ENTITY_REFERENCE");
             else Serializers$OPTIONAL_LIVING_ENTITY_REFERENCE = null;
             Serializers$OPTIONAL_GLOBAL_POS = initSerializersByName("OPTIONAL_GLOBAL_POS");
-            Serializers$COMPOUND_TAG = initSerializersByName("COMPOUND_TAG");
+            if (!VersionHelper.isVersionNewerThan1_21_9()) Serializers$COMPOUND_TAG = initSerializersByName("COMPOUND_TAG");
+            else Serializers$COMPOUND_TAG = null;
             Serializers$VILLAGER_DATA = initSerializersByName("VILLAGER_DATA");
             Serializers$OPTIONAL_UNSIGNED_INT = initSerializersByName("OPTIONAL_UNSIGNED_INT");
             Serializers$POSE = initSerializersByName("POSE");

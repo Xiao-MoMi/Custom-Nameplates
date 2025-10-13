@@ -61,7 +61,7 @@ public class VersionHelper {
         return updateFuture;
     };
 
-    private static float version;
+    private static int version;
     private static boolean mojmap;
     private static boolean folia;
     private static boolean mohist;
@@ -74,14 +74,41 @@ public class VersionHelper {
      * @param serverVersion The server version string.
      */
     public static void init(String serverVersion) {
-        String[] split = serverVersion.split("\\.");
-        version = Float.parseFloat(split[1] + "." + (split.length == 3 ? split[2] : "0"));
+        version = parseVersionToInteger(serverVersion);
         checkMojMap();
         checkFolia();
         checkMohist();
         checkPaper();
         boolean isModdedServer = mohist;
         paper = paper && !isModdedServer;
+    }
+
+    public static int parseVersionToInteger(String versionString) {
+        int major = 0;
+        int minor = 0;
+        int currentNumber = 0;
+        int part = 0;
+        for (int i = 0; i < versionString.length(); i++) {
+            char c = versionString.charAt(i);
+            if (c >= '0' && c <= '9') {
+                currentNumber = currentNumber * 10 + (c - '0');
+            } else if (c == '.') {
+                if (part == 1) {
+                    major = currentNumber;
+                }
+                part++;
+                currentNumber = 0;
+                if (part > 2) {
+                    break;
+                }
+            }
+        }
+        if (part == 1) {
+            major = currentNumber;
+        } else if (part == 2) {
+            minor = currentNumber;
+        }
+        return 10000 + major * 100 + minor;
     }
 
     /**
@@ -138,12 +165,21 @@ public class VersionHelper {
     }
 
     /**
+     * Checks if the server version is newer than 1.21.9
+     *
+     * @return True if the version is newer than 1.21.9, otherwise false.
+     */
+    public static boolean isVersionNewerThan1_21_9() {
+        return version >= 12109;
+    }
+
+    /**
      * Checks if the server version is newer than 1.21.5
      *
      * @return True if the version is newer than 1.21.5, otherwise false.
      */
     public static boolean isVersionNewerThan1_21_5() {
-        return version >= 21.49f;
+        return version >= 12105;
     }
 
     /**
@@ -152,7 +188,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.21.4, otherwise false.
      */
     public static boolean isVersionNewerThan1_21_4() {
-        return version >= 21.39f;
+        return version >= 12104;
     }
 
     /**
@@ -161,7 +197,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.21.2, otherwise false.
      */
     public static boolean isVersionNewerThan1_21_2() {
-        return version >= 21.19f;
+        return version >= 12102;
     }
 
     /**
@@ -170,7 +206,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.20.5, otherwise false.
      */
     public static boolean isVersionNewerThan1_20_5() {
-        return version >= 20.49f;
+        return version >= 12005;
     }
 
     /**
@@ -179,7 +215,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.20.4, otherwise false.
      */
     public static boolean isVersionNewerThan1_20_4() {
-        return version >= 20.39f;
+        return version >= 12004;
     }
 
     /**
@@ -188,7 +224,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.19.4, otherwise false.
      */
     public static boolean isVersionNewerThan1_19_4() {
-        return version >= 19.39f;
+        return version >= 11904;
     }
 
     /**
@@ -197,7 +233,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.20.2, otherwise false.
      */
     public static boolean isVersionNewerThan1_20_2() {
-        return version >= 20.19f;
+        return version >= 12002;
     }
 
     /**
@@ -206,7 +242,7 @@ public class VersionHelper {
      * @return True if the version is newer than 1.20, otherwise false.
      */
     public static boolean isVersionNewerThan1_20() {
-        return version >= 20f;
+        return version >= 12000;
     }
 
     /**
