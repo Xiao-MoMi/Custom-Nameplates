@@ -34,6 +34,7 @@ import net.momirealms.customnameplates.api.util.Vector3;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class NameTag extends AbstractTag implements RelationalFeature {
 
@@ -72,6 +73,13 @@ public class NameTag extends AbstractTag implements RelationalFeature {
                 config.lineWidth(),
                 (affectedByCrouching() && tracker.isCrouching())
         );
+    }
+
+    @Override
+    public void darkTag(CNPlayer viewer, boolean dark) {
+        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createSneakModifier(dark, this.config);
+        Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifiers));
+        CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }
 
     @Override

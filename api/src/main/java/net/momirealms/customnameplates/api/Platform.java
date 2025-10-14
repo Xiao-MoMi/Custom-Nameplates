@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.api;
 
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
+import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
@@ -189,13 +190,7 @@ public interface Platform {
      */
     Consumer<List<Object>> createTranslationModifier(Vector3 translation);
 
-    /**
-     * Creates a modifier to change the opacity of a text display.
-     *
-     * @param opacity the new opacity
-     * @return a consumer that applies the modifier to a list of packets
-     */
-    Consumer<List<Object>> createOpacityModifier(byte opacity);
+    Consumer<List<Object>> createSneakModifier(boolean isSneaking, NameTagConfig config);
 
     /**
      * Updates an existing text display entity with modifiers.

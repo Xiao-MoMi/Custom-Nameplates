@@ -24,6 +24,7 @@ import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.Platform;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
+import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
@@ -638,7 +639,7 @@ public class BukkitPlatform implements Platform {
             EntityData.LineWidth.addEntityDataIfNotDefaultValue(           lineWidth,                    values);
             EntityData.Scale.addEntityDataIfNotDefaultValue(               scale.toVec3(),               values);
             EntityData.Translation.addEntityDataIfNotDefaultValue(         translation.toVec3(),         values);
-            EntityData.TextDisplayMasks.addEntityDataIfNotDefaultValue(EntityData.encodeMask(hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment.getId()), values);
+            EntityData.TextDisplayMasks.addEntityDataIfNotDefaultValue(EntityData.encodeMask(hasShadow, !isCrouching, useDefaultBackgroundColor, alignment.getId()), values);
 
             Object setDataPacket = Reflections.constructor$ClientboundSetEntityDataPacket.newInstance(entityID, values);
 
@@ -678,8 +679,11 @@ public class BukkitPlatform implements Platform {
     }
 
     @Override
-    public Consumer<List<Object>> createOpacityModifier(byte opacity) {
-        return (values) -> EntityData.TextOpacity.addEntityData(opacity, values);
+    public Consumer<List<Object>> createSneakModifier(boolean sneak, NameTagConfig config) {
+        return (values) -> {
+            EntityData.TextOpacity.addEntityData(sneak ? 64 : config.opacity(), values);
+            EntityData.TextDisplayMasks.addEntityData(EntityData.encodeMask(config.hasShadow(), !sneak, config.useDefaultBackgroundColor(), config.alignment().getId()), values);
+        };
     }
 
     @Override

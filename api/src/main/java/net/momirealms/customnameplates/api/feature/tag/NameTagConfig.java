@@ -81,6 +81,7 @@ public interface NameTagConfig {
      *
      * @return true if the name tag is see-through, false otherwise
      */
+    @Deprecated
     boolean isSeeThrough();
 
     /**
