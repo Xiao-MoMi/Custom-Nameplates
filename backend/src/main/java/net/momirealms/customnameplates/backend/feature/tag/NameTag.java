@@ -66,7 +66,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
                 0, 0, 0,
                 component, config.backgroundColor(),
                 (owner.isSpectator() && affectedBySpectator()) || (owner.isCrouching() && affectedByCrouching()) ? 64 : opacity(),
-                config.hasShadow(), config.isSeeThrough(), config.useDefaultBackgroundColor(),
+                config.hasShadow(), config.isSeeThrough().asBoolean() && (!affectedByCrouching() || !tracker.isCrouching()), config.useDefaultBackgroundColor(),
                 config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
                 (affectedByScaling() ? scale(viewer).multiply(tracker.getScale()) : scale(viewer)),
                 (affectedByScaling() ? translation(viewer).multiply(tracker.getScale()) : translation(viewer)),
@@ -77,7 +77,9 @@ public class NameTag extends AbstractTag implements RelationalFeature {
 
     @Override
     public void darkTag(CNPlayer viewer, boolean dark) {
-        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createSneakModifier(dark, this.config);
+        Tracker tracker = owner.getTracker(viewer);
+        boolean seeThrough = config.isSeeThrough().asBoolean() && (!affectedByCrouching() || !tracker.isCrouching());
+        Consumer<List<Object>> modifiers = CustomNameplates.getInstance().getPlatform().createSneakModifier(dark, seeThrough, this.config);
         Object packet = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifiers));
         CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, packet);
     }

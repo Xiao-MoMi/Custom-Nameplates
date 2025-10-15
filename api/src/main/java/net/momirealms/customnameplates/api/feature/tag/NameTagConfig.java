@@ -21,6 +21,7 @@ import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.Vector3;
+import net.momirealms.customnameplates.common.util.Tristate;
 
 /**
  * NameTag Configuration
@@ -79,10 +80,8 @@ public interface NameTagConfig {
     /**
      * Checks if the name tag is see-through.
      *
-     * @return true if the name tag is see-through, false otherwise
      */
-    @Deprecated
-    boolean isSeeThrough();
+    Tristate isSeeThrough();
 
     /**
      * Checks if the default background color is used.
@@ -245,7 +244,7 @@ public interface NameTagConfig {
          * @param seeThrough true if the name tag is see-through, false otherwise
          * @return the builder instance
          */
-        Builder seeThrough(boolean seeThrough);
+        Builder seeThrough(Tristate seeThrough);
 
         /**
          * Sets whether the name tag uses the default background color.

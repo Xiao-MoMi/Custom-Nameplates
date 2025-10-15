@@ -22,6 +22,7 @@ unlimited:
     affected-by-spectator: true
     line-width: 1024
     background-color: 64,0,0,0
+    is-see-through: false
   tag_image_part:
     text: '%np_tag-image%'
     translation: 0,0.2,0
@@ -35,6 +36,7 @@ unlimited:
     affected-by-spectator: true
     line-width: 1024
     background-color: 0,0,0,0
+    is-see-through: false
   tag_text_part:
     text: '%np_tag-text%'
     translation: 0.01,0.2,0.01
@@ -48,3 +50,4 @@ unlimited:
     affected-by-spectator: true
     line-width: 1024
     background-color: 0,0,0,0
+    is-see-through: false

@@ -43,6 +43,7 @@ import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 import net.momirealms.customnameplates.api.util.Vector3;
+import net.momirealms.customnameplates.common.util.Tristate;
 
 import java.io.File;
 import java.io.IOException;
@@ -302,7 +303,7 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, PlayerListe
                             .shadowStrength(section.getFloat("shadow-strength", 1f))
                             .lineWidth(section.getInt("line-width", 200))
                             .hasShadow(section.getBoolean("has-shadow", false))
-                            .seeThrough(section.getBoolean("is-see-through", false))
+                            .seeThrough(Tristate.fromBoolean((Boolean) section.get("is-see-through")))
                             .opacity(section.getByte("opacity", (byte) -1))
                             .useDefaultBackgroundColor(section.getBoolean("use-default-background-color", false))
                             .backgroundColor(ConfigUtils.argb(section.getString("background-color", "64,0,0,0")))

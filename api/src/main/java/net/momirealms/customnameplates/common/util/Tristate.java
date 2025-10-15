@@ -69,6 +69,21 @@ public enum Tristate {
         this.booleanValue = booleanValue;
     }
 
+    public boolean or(boolean val) {
+        if (this == UNDEFINED) {
+            return val;
+        } else {
+            return this.booleanValue;
+        }
+    }
+
+    public static Tristate fromBoolean(Boolean val) {
+        if (val == null) {
+            return UNDEFINED;
+        }
+        return val ? TRUE : FALSE;
+    }
+
     /**
      * Returns the value of the Tristate as a boolean.
      *

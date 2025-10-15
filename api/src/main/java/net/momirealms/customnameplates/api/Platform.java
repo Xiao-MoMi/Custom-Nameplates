@@ -190,7 +190,7 @@ public interface Platform {
      */
     Consumer<List<Object>> createTranslationModifier(Vector3 translation);
 
-    Consumer<List<Object>> createSneakModifier(boolean isSneaking, NameTagConfig config);
+    Consumer<List<Object>> createSneakModifier(boolean isSneaking, boolean seeThrough, NameTagConfig config);
 
     /**
      * Updates an existing text display entity with modifiers.
