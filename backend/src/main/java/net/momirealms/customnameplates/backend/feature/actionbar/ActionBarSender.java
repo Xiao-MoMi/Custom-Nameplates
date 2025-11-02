@@ -213,10 +213,9 @@ public class ActionBarSender implements Feature {
         return externalActionBar;
     }
 
-    public void externalActionBar(@NotNull String externalActionBar) {
-        requireNonNull(externalActionBar);
+    public void externalActionBar(@Nullable String externalActionBar) {
         this.externalActionBar = externalActionBar;
-        this.externalExpireTime = System.currentTimeMillis() + ConfigManager.otherActionBarStayTime();
+        this.externalExpireTime = System.currentTimeMillis() + (externalActionBar == null ? -1 : ConfigManager.otherActionBarStayTime());
     }
 
     public void temporarilyHide() {
