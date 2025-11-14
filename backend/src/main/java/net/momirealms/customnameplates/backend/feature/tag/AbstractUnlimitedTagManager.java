@@ -32,7 +32,6 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.CarouselText;
-import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.api.feature.PlayerListener;
 import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
@@ -49,20 +48,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class UnlimitedTagManagerImpl implements UnlimitedTagManager, PlayerListener {
+public abstract class AbstractUnlimitedTagManager implements UnlimitedTagManager, PlayerListener {
+    protected final CustomNameplates plugin;
+    protected final LinkedHashMap<String, NameTagConfig> configs = new LinkedHashMap<>();
+    protected final ConcurrentHashMap<Integer, TagRendererImpl> tagRenderers = new ConcurrentHashMap<>();
+    protected NameTagConfig[] configArray = new NameTagConfig[0];
+    protected int previewDuration;
+    protected boolean alwaysShow;
 
-    private final CustomNameplates plugin;
-    private final LinkedHashMap<String, NameTagConfig> configs = new LinkedHashMap<>();
-    private final ConcurrentHashMap<Integer, TagRendererImpl> tagRenderers = new ConcurrentHashMap<>();
-    private NameTagConfig[] configArray = new NameTagConfig[0];
-    private int previewDuration;
-    private boolean alwaysShow;
-
-    public UnlimitedTagManagerImpl(CustomNameplates plugin) {
+    public AbstractUnlimitedTagManager(CustomNameplates plugin) {
         this.plugin = plugin;
     }
 
@@ -142,8 +139,8 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, PlayerListe
     @Override
     public void onPlayerJoin(CNPlayer player) {
         plugin.debug(() -> player.name() + " joined the server");
-        TagRendererImpl sender = new TagRendererImpl(this, player);
-        TagRendererImpl previous = tagRenderers.put(player.entityID(), sender);
+        TagRendererImpl renderer = new TagRendererImpl(this, player);
+        TagRendererImpl previous = tagRenderers.put(player.entityID(), renderer);
         if (previous != null) {
             previous.destroy();
         }
@@ -156,9 +153,9 @@ public class UnlimitedTagManagerImpl implements UnlimitedTagManager, PlayerListe
 
     @Override
     public void onPlayerQuit(CNPlayer player) {
-        TagRendererImpl sender = tagRenderers.remove(player.entityID());
-        if (sender != null) {
-            sender.destroy();
+        TagRendererImpl renderer = tagRenderers.remove(player.entityID());
+        if (renderer != null) {
+            renderer.destroy();
         }
     }
 

@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit.command.feature;
 
 import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.MainTask;
+import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
 import net.momirealms.customnameplates.common.command.CustomNameplatesCommandManager;
@@ -37,6 +38,10 @@ public class DebugPerformanceCommand extends BukkitCommandFeature<CommandSender>
     public Command.Builder<? extends CommandSender> assembleCommand(CommandManager<CommandSender> manager, Command.Builder<CommandSender> builder) {
         return builder
                 .handler(context -> {
+                    if (VersionHelper.isFolia()) {
+                        context.sender().sendMessage("Not available on Folia");
+                        return;
+                    }
                     MainTask.HealthyProfile profile = MainTask.getHealthyProfile();
                     handleFeedback(context, MessageConstants.COMMAND_DEBUG_PERFORMANCE,
                             Component.text(String.format("%.3f", profile.getLoad() * 100)),

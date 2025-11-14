@@ -33,7 +33,7 @@ import net.momirealms.customnameplates.backend.feature.bubble.BubbleManagerImpl;
 import net.momirealms.customnameplates.backend.feature.image.ImageManagerImpl;
 import net.momirealms.customnameplates.backend.feature.nameplate.NameplateManagerImpl;
 import net.momirealms.customnameplates.backend.feature.pack.ResourcePackManagerImpl;
-import net.momirealms.customnameplates.backend.feature.tag.UnlimitedTagManagerImpl;
+import net.momirealms.customnameplates.backend.feature.tag.AbstractUnlimitedTagManager;
 import net.momirealms.customnameplates.backend.placeholder.PlaceholderManagerImpl;
 import net.momirealms.customnameplates.backend.storage.StorageManagerImpl;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
@@ -45,6 +45,7 @@ import net.momirealms.customnameplates.bukkit.compatibility.quest.TypeWriterList
 import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
+import net.momirealms.customnameplates.bukkit.tag.BukkitUnlimitedTagManager;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.bukkit.util.SimpleLocation;
 import net.momirealms.customnameplates.common.dependency.Dependency;
@@ -166,7 +167,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.nameplateManager = new NameplateManagerImpl(this);
         this.placeholderManager = new PlaceholderManagerImpl(this);
         this.imageManager = new ImageManagerImpl(this);
-        this.unlimitedTagManager = new UnlimitedTagManagerImpl(this);
+        this.unlimitedTagManager = new BukkitUnlimitedTagManager(this);
         this.requirementManager = new BukkitRequirementManager(this);
         this.storageManager = new StorageManagerImpl(this);
         this.chatManager = new BukkitChatManager(this);
