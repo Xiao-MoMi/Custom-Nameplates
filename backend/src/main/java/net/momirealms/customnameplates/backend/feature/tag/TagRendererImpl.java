@@ -39,6 +39,7 @@ public class TagRendererImpl implements TagRenderer {
     private Tag[] rTagsArray;
     private double hatOffset;
     private boolean valid = true;
+    private Set<Integer> cachedPassengers = Set.of();
 
     public TagRendererImpl(UnlimitedTagManager manager, CNPlayer owner) {
         this.owner = owner;
@@ -126,9 +127,9 @@ public class TagRendererImpl implements TagRenderer {
         }
 
         // Update passengers
-        Set<Integer> realPassengers = owner.passengers();
+        this.cachedPassengers = owner.passengers();
         for (CNPlayer nearby : playersToUpdatePassengers) {
-            updatePassengers(nearby, realPassengers);
+            updatePassengers(nearby, this.cachedPassengers);
         }
 
         // Update relative translation tags
@@ -287,8 +288,7 @@ public class TagRendererImpl implements TagRenderer {
             }
         }
         if (updatePassengers) {
-            Set<Integer> realPassengers = owner.passengers();
-            updatePassengers(another, realPassengers);
+            updatePassengers(another, this.cachedPassengers);
         }
     }
 
