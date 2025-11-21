@@ -19,6 +19,7 @@ repositories {
 dependencies {
     compileOnly(project(":api"))
     compileOnly(project(":backend"))
+    compileOnly("net.kyori:adventure-api:${rootProject.properties["adventure_bundle_version"]}")
     compileOnly("dev.dejvokep:boosted-yaml:${rootProject.properties["boosted_yaml_version"]}")
     // WorldGuard
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9")
@@ -27,11 +28,11 @@ dependencies {
     // Chat
     compileOnly(files("libs/VentureChat-3.7.1.jar"))
     compileOnly(files("libs/TrChat-2.0.11.jar"))
-    compileOnly(files("libs/carbonchat-paper-3.0.0-beta.27.jar"))
     compileOnly(files("libs/AdvancedChat-1.3.7.jar"))
     compileOnly(files("libs/CMIAPI-9.7.4.1.jar"))
     compileOnly(files("libs/ChatControl-11.3.1.jar"))
     compileOnly(files("libs/Typewriter.jar"))
+    compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.36")
     compileOnly("net.william278.huskchat:huskchat-bukkit:3.0.4")
     compileOnly("net.essentialsx:EssentialsX:2.20.1")
     compileOnly("net.essentialsx:EssentialsXChat:2.20.1")
@@ -65,6 +66,6 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
     dependsOn(tasks.clean)
 }

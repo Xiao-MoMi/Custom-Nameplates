@@ -49,7 +49,7 @@ public class CarbonChatProvider extends AbstractChatMessageProvider {
 
     public CarbonChatProvider(CustomNameplates plugin, ChatManager manager) {
         super(plugin, manager);
-        this.api = net.draycia.carbon.api.CarbonChatProvider.carbonChat();
+        api = net.draycia.carbon.api.CarbonChatProvider.carbonChat();
         try {
             this.originalMessageMethod = CarbonChatEvent.class.getMethod("originalMessage");
             this.channelKeyMethod = ChatChannel.class.getMethod("key");
@@ -172,11 +172,8 @@ public class CarbonChatProvider extends AbstractChatMessageProvider {
         if (channel == null) {
             return false;
         }
-        String perm = channel.permission();
-        if (perm == null) {
-            return true;
-        }
-        return player.hasPermission(perm);
+        CarbonPlayer carbonPlayer = this.api.userManager().user(player.uuid()).join();
+        return channel.permissions().joinPermitted(carbonPlayer).permitted();
     }
 
     @Override
