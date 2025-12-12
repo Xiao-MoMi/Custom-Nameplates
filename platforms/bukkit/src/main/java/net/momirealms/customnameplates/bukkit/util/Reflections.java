@@ -879,7 +879,8 @@ public final class Reflections {
     public static final Class<?> clazz$ResourceLocation = requireNonNull(
             ReflectionUtils.getClazz(
                     BukkitReflectionUtils.assembleMCClass("resources.ResourceLocation"),
-                    BukkitReflectionUtils.assembleMCClass("resources.MinecraftKey")
+                    BukkitReflectionUtils.assembleMCClass("resources.MinecraftKey"),
+                    BukkitReflectionUtils.assembleMCClass("resources.Identifier")
             )
     );
 
