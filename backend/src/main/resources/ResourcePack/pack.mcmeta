@@ -11,7 +11,7 @@
         "entries": [
             {
                 "formats": {
-                    "min_inclusive": 13,
+                    "min_inclusive": 18,
                     "max_inclusive": 31
                 },
                 "directory": "overlay_1_20_2"
