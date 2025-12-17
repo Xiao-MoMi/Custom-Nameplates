@@ -9,7 +9,7 @@ repositories {
     maven("https://repo.oraxen.com/releases/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
     maven("https://repo.essentialsx.net/releases/") // ess
-    maven("https://repo.md-5.net/content/groups/public/") // disguise
+    maven("https://mvn.lib.co.nz/public") // disguise
     maven("https://repo.opencollab.dev/main/") // geyser
     maven("https://maven.enginehub.org/repo/") // worldguard worldedit
     maven("https://repo.alessiodp.com/releases/") // parties
