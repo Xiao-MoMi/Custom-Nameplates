@@ -59,6 +59,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
         String newName = currentText.render(viewer);
         Object component = AdventureHelper.miniMessageToMinecraftComponent(newName);
         Tracker tracker = owner.getTracker(viewer);
+        if (tracker == null) return List.of();
         return CustomNameplates.getInstance().getPlatform().createTextDisplayPacket(
                 entityID, uuid,
                 owner.position().add(0,(1.8 + (affectedByCrouching() && tracker.isCrouching() && !owner.isFlying() ? -0.3 : 0) + renderer.hatOffset()) * (affectedByScaling() ? tracker.getScale() : 1),0),

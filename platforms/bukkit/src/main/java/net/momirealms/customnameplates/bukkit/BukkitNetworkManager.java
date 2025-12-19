@@ -182,6 +182,7 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     @Override
     public void sendPacket(@NotNull CNPlayer player, final List<Object> packet) {
         if (!player.isOnline()) return;
+        if (packet.isEmpty()) return;
         packetsConsumer.accept(player, packet);
     }
 
