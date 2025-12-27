@@ -378,7 +378,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     public void handleJoin(Player player) {
         CNPlayer user = pipelineInjector.getUser(player);
         if (user == null) {
-            getPluginLogger().severe("Player " + player.getName() + " has not been injected yet");
             return;
         }
         ((BukkitCNPlayer) user).setPlayer(player);
@@ -400,7 +399,6 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         Player player = event.getPlayer();
         CNPlayer cnPlayer = onlinePlayerMap.remove(player.getUniqueId());
         if (cnPlayer == null) {
-            getPluginLogger().severe("Player " + player.getName() + " is not recorded by CustomNameplates");
             return;
         }
         for (JoinQuitListener listener : joinQuitListeners) {
