@@ -211,14 +211,10 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
     }
 
     public void handleDisconnection(Channel channel) {
-        CNPlayer user = removeUser(channel);
-        if (user == null) return;
-        channel.eventLoop().submit(() -> {
-            if (channel.pipeline().get(NAMEPLATES_PACKET_HANDLER_NAME) != null) {
-                channel.pipeline().remove(NAMEPLATES_PACKET_HANDLER_NAME);
-            }
-            return null;
-        });
+        if (channel.pipeline().get(NAMEPLATES_PACKET_HANDLER_NAME) != null) {
+            channel.pipeline().remove(NAMEPLATES_PACKET_HANDLER_NAME);
+        }
+        removeUser(channel);
     }
 
     public void injectChannel(Channel channel, ConnectionState connectionState) {
