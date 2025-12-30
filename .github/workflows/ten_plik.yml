@@ -28,8 +28,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
-      - name: Upload Paper JAR
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: CustomNameplates-Paper
-          path: platforms/paper/build/libs/*.jar
+          name: CustomNameplates-JAR
+          path: |
+            backend/build/libs/*.jar
+            build/libs/*.jar
