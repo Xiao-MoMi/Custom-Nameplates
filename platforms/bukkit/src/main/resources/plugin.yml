@@ -13,6 +13,7 @@ softdepend:
   - TrChat
   - CarbonChat
   - HuskChat
+  - ZelChat
   - AdvancedChat
   - VentureChat
   - EssentialsChat

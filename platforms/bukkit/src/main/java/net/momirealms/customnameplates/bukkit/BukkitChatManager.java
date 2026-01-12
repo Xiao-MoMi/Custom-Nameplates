@@ -60,6 +60,9 @@ public class BukkitChatManager extends AbstractChatManager {
         } else if (ConfigManager.chatChatty() && Bukkit.getPluginManager().isPluginEnabled("Chatty")) {
             this.chatProvider = new ChattyProvider(plugin, this);
             plugin.getPluginLogger().info("Chatty hooked!");
+        } else if (ConfigManager.chatZel() && Bukkit.getPluginManager().isPluginEnabled("ZelChat")) {
+            this.chatProvider = new ZelChatProvider(plugin, this);
+            plugin.getPluginLogger().info("ZelChat hooked!");
         } else if (VersionHelper.isPaperOrItsForks()) {
             this.chatProvider = new PaperAsyncChatProvider(plugin, this);
         } else {

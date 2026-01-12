@@ -37,6 +37,7 @@ integrations:
     Essentials: false         # Integration with Essentials chat
     ChatControlRed: false     # Integration with ChatControlRed
     Chatty: false             # Integration with Chatty
+    ZelChat: false            # Integration with ZelChat
   # Let typewriter take over actionbar on certain events
   typewriter:
     dialogue: true

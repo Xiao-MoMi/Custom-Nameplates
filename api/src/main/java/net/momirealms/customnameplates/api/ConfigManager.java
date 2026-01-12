@@ -323,6 +323,11 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean chatChatty;
 
     /**
+     * Flag to enable or disable chat features for Zel.
+     */
+    protected boolean chatZel;
+
+    /**
      * Flag to enable or disable dialogue features for TW (text world).
      */
     protected boolean twDialogue;
@@ -441,6 +446,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         chatVenture = config.getBoolean("integrations.chat.VentureChat", false);
         chatChatControlRed = config.getBoolean("integrations.chat.ChatControlRed", false);
         chatChatty = config.getBoolean("integrations.chat.Chatty", false);
+        chatZel = config.getBoolean("integrations.chat.ZelChat", false);
 
         twDialogue = config.getBoolean("integrations.typewriter.dialogue", true);
         twCinematic = config.getBoolean("integrations.typewriter.cinematic", true);
@@ -916,6 +922,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      */
     public static boolean chatChatty() {
         return instance.chatChatty;
+    }
+
+    /**
+     * Retrieves whether ZelChat chat features are enabled.
+     * @return true if ZelChat chat is enabled; false otherwise.
+     */
+    public static boolean chatZel() {
+        return instance.chatZel;
     }
 
     public static boolean stripChatColorTags() {

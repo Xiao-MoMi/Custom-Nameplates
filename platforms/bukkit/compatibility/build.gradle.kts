@@ -14,6 +14,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/") // worldguard worldedit
     maven("https://repo.alessiodp.com/releases/") // parties
     maven("https://maven.devs.beer/") // ia
+    maven("https://repo.pinodev.it/releases/") // zelchat
 }
 
 dependencies {
@@ -38,6 +39,7 @@ dependencies {
     compileOnly("net.essentialsx:EssentialsXChat:2.20.1")
     compileOnly("com.alessiodp.parties:parties-api:3.2.16")
     compileOnly("com.alessiodp.parties:parties-bukkit:3.2.16")
+    compileOnly("it.pino.zelchat:api:2.0.0")
 //    compileOnly("com.github.Brikster:Chatty:v2.19.14")
     compileOnly(files("libs/Chatty-3.0.0-SNAPSHOT.jar"))
     // Emoji
