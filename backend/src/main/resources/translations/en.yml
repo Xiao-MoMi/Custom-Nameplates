@@ -74,9 +74,3 @@ command.bubbles.list.delimiter: ", "
 command.bubbles.force_equip.failure.not_exists: "<red>Failed to apply bubbles to <arg:0> because <arg:1> doesn't exist</red>"
 command.bubbles.force_equip.success: "<white>Forced to apply <arg:1> to <arg:0></white>"  # use <arg:2> for display name
 command.bubbles.force_unequip.success: "<white>Removed <arg:0>'s bubbles</white>"
-
-
-
-
-
-
