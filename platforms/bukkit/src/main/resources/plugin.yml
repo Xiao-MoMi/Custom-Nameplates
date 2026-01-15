@@ -8,6 +8,7 @@ softdepend:
   - PlaceholderAPI
   - MagicCosmetics
   - ECosmetics
+  - HMCCosmetics
   - ItemsAdder
   - Oraxen
   - TrChat
