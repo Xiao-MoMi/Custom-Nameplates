@@ -40,6 +40,7 @@ import net.momirealms.customnameplates.bukkit.command.BukkitCommandManager;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.NameplatesExtraExpansion;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.ECosmeticsHook;
+import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.HMCCosmeticsHook;
 import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmeticsHook;
 import net.momirealms.customnameplates.bukkit.compatibility.quest.TypeWriterListener;
 import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
@@ -195,6 +196,12 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (Bukkit.getPluginManager().isPluginEnabled("ECosmetics")) {
             try {
                 Bukkit.getPluginManager().registerEvents(new ECosmeticsHook(this), this.getBootstrap());
+            } catch (Exception ignore) {
+            }
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("HMCCosmetics")) {
+            try {
+                Bukkit.getPluginManager().registerEvents(new HMCCosmeticsHook(this), this.getBootstrap());
             } catch (Exception ignore) {
             }
         }
