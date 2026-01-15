@@ -15,6 +15,7 @@ repositories {
     maven("https://repo.alessiodp.com/releases/") // parties
     maven("https://maven.devs.beer/") // ia
     maven("https://repo.pinodev.it/releases/") // zelchat
+    maven("https://repo.hibiscusmc.com/releases") // HMCCosmetics
 }
 
 dependencies {
@@ -56,6 +57,7 @@ dependencies {
     // Cosmetics
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.9")
     compileOnly("com.github.sculmix:API-ECosmetics:1.0.1")
+    compileOnly("com.hibiscusmc:HMCCosmetics:2.8.3-e88b8461")
 }
 
 java {

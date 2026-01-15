@@ -42,6 +42,9 @@ integrations:
   typewriter:
     dialogue: true
     cinematic: true
+  # Integration with HMCCosmetics for cosmetics support
+  # When set to -1, it is disabled.
+  hmccosmetics-offset-y: 0.2
 
 # Resource Pack Generation Settings: Configure resource pack generation behavior.
 resource-pack:

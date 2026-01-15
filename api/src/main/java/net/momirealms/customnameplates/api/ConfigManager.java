@@ -338,6 +338,11 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean twCinematic;
 
     /**
+     * The configured offset for HMCCosmetics helmet. Returns 0.0 or less if disabled.
+     */
+    protected double hmcCosmeticsOffsetY;
+
+    /**
      * The version of the current configuration.
      */
     protected String configVersion;
@@ -450,6 +455,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
         twDialogue = config.getBoolean("integrations.typewriter.dialogue", true);
         twCinematic = config.getBoolean("integrations.typewriter.cinematic", true);
+
+        hmcCosmeticsOffsetY = config.getDouble("integrations.hmccosmetics-offset-y", -1.0);
 
         // Packs
         generateOnStart = !config.getBoolean("resource-pack.disable-generation-on-start", false);
@@ -794,6 +801,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      */
     public static boolean twCinematic() {
         return instance.twCinematic;
+    }
+
+    /**
+     * Returns the configured offset for HMCCosmetics helmet.
+     * @return the y-offset value; returns 0.0 or less if disabled.
+     */
+    public static double hmcCosmeticsOffsetY() {
+        return instance.hmcCosmeticsOffsetY;
     }
 
     /**

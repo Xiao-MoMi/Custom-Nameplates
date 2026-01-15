@@ -20,6 +20,7 @@ softdepend:
   - ChatControlRed
   - WorldGuard
   - Typewriter
+  - HMCCosmetics
 permissions:
   nameplates.command.equip:
     default: true
