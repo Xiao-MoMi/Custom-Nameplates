@@ -28,7 +28,7 @@ public class HMCCosmeticsHook implements Listener {
         if (cosmetic.getSlot() != CosmeticSlot.HELMET) return;
         ConfigurationNode config = cosmetic.getConfig();
         if (config == null) return;
-        updateHatOffset(event.getUniqueId(), config.node("offset-y").getInt(0));
+        updateHatOffset(event.getUniqueId(), config.node("hat-height").getInt(0));
     }
 
     @EventHandler
@@ -49,7 +49,7 @@ public class HMCCosmeticsHook implements Listener {
         if (cosmetic == null) return;
         ConfigurationNode config = cosmetic.getConfig();
         if (config == null) return;
-        updateHatOffset(event.getUniqueId(), config.node("offset-y").getInt(0));
+        updateHatOffset(event.getUniqueId(), config.node("hat-height").getInt(0));
     }
 
     @EventHandler
@@ -59,16 +59,16 @@ public class HMCCosmeticsHook implements Listener {
         ConfigurationNode config = cosmetic.getConfig();
         if (config == null) return;
         this.plugin.getScheduler().asyncLater(
-                () -> updateHatOffset(event.getUniqueId(), config.node("offset-y").getInt(0)),
+                () -> updateHatOffset(event.getUniqueId(), config.node("hat-height").getInt(0)),
                 100, TimeUnit.MILLISECONDS
         );
     }
 
-    private void updateHatOffset(UUID uid, int offsetY) {
+    private void updateHatOffset(UUID uid, int hatHeight) {
         CNPlayer player = this.plugin.getPlayer(uid);
         if (player == null) return;
         TagRenderer renderer = this.plugin.getUnlimitedTagManager().getTagRender(player);
         if (renderer == null) return;
-        renderer.hatOffset(offsetY);
+        renderer.hatOffset(hatHeight);
     }
 }
