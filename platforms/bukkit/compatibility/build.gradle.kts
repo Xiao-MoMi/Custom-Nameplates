@@ -35,11 +35,15 @@ dependencies {
     compileOnly(files("libs/Typewriter.jar"))
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.36")
     compileOnly("net.william278.huskchat:huskchat-bukkit:3.0.4")
-    compileOnly("net.essentialsx:EssentialsX:2.20.1")
-    compileOnly("net.essentialsx:EssentialsXChat:2.20.1")
+    compileOnly("net.essentialsx:EssentialsX:2.20.1") {
+        exclude(module = "spigot-api")
+    }
+    compileOnly("net.essentialsx:EssentialsXChat:2.20.1") {
+        exclude(module = "spigot-api")
+    }
     compileOnly("com.alessiodp.parties:parties-api:3.2.16")
     compileOnly("com.alessiodp.parties:parties-bukkit:3.2.16")
-    compileOnly("it.pino.zelchat:api:2.0.0")
+    compileOnly("it.pino.zelchat:zelchat-api:2.0.0-pre-13")
 //    compileOnly("com.github.Brikster:Chatty:v2.19.14")
     compileOnly(files("libs/Chatty-3.0.0-SNAPSHOT.jar"))
     // Emoji

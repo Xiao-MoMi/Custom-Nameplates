@@ -18,11 +18,13 @@
 package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
 import it.pino.zelchat.api.ZelChatAPI;
-import it.pino.zelchat.api.channel.ChatChannel;
-import it.pino.zelchat.api.formatter.module.external.ExternalModule;
-import it.pino.zelchat.api.formatter.module.priority.ModulePriority;
 import it.pino.zelchat.api.message.ChatMessage;
-import it.pino.zelchat.api.message.MessageState;
+import it.pino.zelchat.api.message.channel.ChannelType;
+import it.pino.zelchat.api.message.channel.ChatChannel;
+import it.pino.zelchat.api.message.state.MessageState;
+import it.pino.zelchat.api.module.ChatModule;
+import it.pino.zelchat.api.module.annotation.ChatModuleSettings;
+import it.pino.zelchat.api.module.priority.ModulePriority;
 import it.pino.zelchat.api.player.ChatPlayer;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
@@ -40,7 +42,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ZelChatProvider extends AbstractChatMessageProvider {
-    private final Collection<ExternalModule> modules;
+    private final Collection<ChatModule> modules;
     private final JavaPlugin nameplates;
     private final Method originalMessageMethod;
     private final Object miniMessageInstance;
@@ -65,7 +67,7 @@ public class ZelChatProvider extends AbstractChatMessageProvider {
     @Override
     public void register() {
         this.modules.forEach(module -> {
-            ZelChatAPI.get().getFormatterService().registerExternalModule(this.nameplates, module);
+            ZelChatAPI.get().getModuleManager().register(this.nameplates, module);
             module.load();
         });
     }
@@ -74,7 +76,7 @@ public class ZelChatProvider extends AbstractChatMessageProvider {
     public void unregister() {
         this.modules.forEach(module -> {
             module.unload();
-            ZelChatAPI.get().getFormatterService().unregisterExternalModule(this.nameplates, module);
+            ZelChatAPI.get().getModuleManager().register(this.nameplates, module);
         });
     }
 
@@ -91,30 +93,25 @@ public class ZelChatProvider extends AbstractChatMessageProvider {
     @Override
     public boolean isIgnoring(CNPlayer sender, CNPlayer receiver) {
         ChatPlayer player = ZelChatAPI.get().getPlayerService().getOnlinePlayers().get(receiver.uuid());
-        return player.getIgnoredPlayers().contains(sender.uuid());
+        return player.getHiddenPlayers().contains(sender.uuid());
     }
 
-    public class CNModule extends ExternalModule {
+    @ChatModuleSettings(pluginOwner = "CustomNameplates", priority = ModulePriority.NORMAL)
+    public class CNModule implements ChatModule {
 
         @Override
-        public ModulePriority getPriority() {
-            return ModulePriority.NORMAL;
-        }
-
-        @Override
-        public ChatMessage handleChatMessage(@NotNull ChatMessage chatMessage) {
-            if(chatMessage.getState() == MessageState.CANCELLED || chatMessage.getState() == MessageState.FILTERED)
-                return chatMessage;
+        public void handleChatMessage(@NotNull ChatMessage chatMessage) {
+            if (chatMessage.getState() == MessageState.CANCELLED || chatMessage.getState() == MessageState.FILTERED)
+                return;
             CNPlayer cnPlayer = plugin.getPlayer(chatMessage.getChatPlayer().getUniqueId());
             if (cnPlayer == null) {
-                return chatMessage;
+                return;
             }
             ChatChannel channel = chatMessage.getChannel();
             try {
                 Object component = getComponentFromEvent(chatMessage);
                 String message = (String) serializeComponentMethod.invoke(miniMessageInstance, component);
                 plugin.getScheduler().async().execute(() -> manager.onChat(cnPlayer, message, channel.getType().name()));
-                return null;
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }
