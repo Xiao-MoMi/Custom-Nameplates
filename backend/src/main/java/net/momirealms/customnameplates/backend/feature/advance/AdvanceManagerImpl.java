@@ -911,7 +911,7 @@ public class AdvanceManagerImpl implements AdvanceManager {
             }
 
             registerCharacterFontData(id, ttfCache, (properties) -> {
-                int y = (int) properties.get("shift_y");
+                int y = (int) properties.getOrDefault("shift_y", 0);
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("type", "ttf");
                 JsonArray ja = new JsonArray();
