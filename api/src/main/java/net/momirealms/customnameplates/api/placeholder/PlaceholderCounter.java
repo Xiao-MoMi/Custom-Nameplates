@@ -17,12 +17,14 @@
 
 package net.momirealms.customnameplates.api.placeholder;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Utility class for managing a global counter for placeholder IDs.
  */
 public class PlaceholderCounter {
 
-    private static int id = 1;
+    private static final AtomicInteger ID = new AtomicInteger();
 
     /**
      * Returns the current ID and increments the counter by 1.
@@ -30,15 +32,13 @@ public class PlaceholderCounter {
      * @return the current ID
      */
     public static int getAndIncrease() {
-        int i = id;
-        id++;
-        return i;
+        return ID.getAndIncrement();
     }
 
     /**
      * Resets the ID counter back to 1.
      */
     public static void reset() {
-        id = 1;
+        ID.set(1);
     }
 }

@@ -1,3 +1,11 @@
+import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.register
+import xyz.jpenilla.runpaper.task.RunServer
+
+plugins {
+    id("xyz.jpenilla.run-paper") version "3.0.2"
+}
+
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
     maven("https://libraries.minecraft.net") // brigadier
@@ -78,4 +86,20 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.release.set(21)
     dependsOn(tasks.clean)
+}
+
+tasks.register("run-paper", RunServer::class) {
+    group = "run paper"
+    workingDir("run")
+    pluginJars.from(tasks.shadowJar.flatMap { it.archiveFile })
+    minecraftVersion("1.21.11")
+    javaLauncher = javaToolchains.launcherFor {
+        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    jvmArgs("-Dsun.stdout.encoding=UTF-8")
+    jvmArgs("-Dsun.stderr.encoding=UTF-8")
+    jvmArgs("-Ddisable.watchdog=true")
+    jvmArgs("-Xlog:redefine+class*=info")
+    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }
