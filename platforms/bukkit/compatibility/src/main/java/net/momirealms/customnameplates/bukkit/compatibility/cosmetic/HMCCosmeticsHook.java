@@ -23,7 +23,7 @@ public class HMCCosmeticsHook implements Listener {
     }
 
     @EventHandler
-    public void onPlayerCosmeticEquip(PlayerCosmeticEquipEvent event) {
+    public void onPlayerCosmeticPostEquip(PlayerCosmeticPostEquipEvent event) {
         Cosmetic cosmetic = event.getCosmetic();
         if (cosmetic.getSlot() != CosmeticSlot.HELMET) return;
         ConfigurationNode config = cosmetic.getConfig();
