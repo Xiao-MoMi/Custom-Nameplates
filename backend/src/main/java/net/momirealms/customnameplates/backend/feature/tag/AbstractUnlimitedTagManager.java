@@ -138,6 +138,7 @@ public abstract class AbstractUnlimitedTagManager implements UnlimitedTagManager
 
     @Override
     public void onPlayerJoin(CNPlayer player) {
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockNametagModule()) return;
         plugin.debug(() -> player.name() + " joined the server");
         TagRendererImpl renderer = new TagRendererImpl(this, player);
         TagRendererImpl previous = tagRenderers.put(player.entityID(), renderer);

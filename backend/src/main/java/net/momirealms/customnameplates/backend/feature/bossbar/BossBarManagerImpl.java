@@ -84,6 +84,7 @@ public class BossBarManagerImpl implements BossBarManager, JoinQuitListener {
     @Override
     public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.bossbarModule()) return;
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockBossBarModule()) return;
         Runnable r = () -> {
             if (!player.isOnline()) return;
             BossBarDisplayController sender = new BossBarDisplayController(this, player);
