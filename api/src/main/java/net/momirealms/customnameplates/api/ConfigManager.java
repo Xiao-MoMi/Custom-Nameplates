@@ -345,6 +345,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected float minPackVersion;
     protected boolean stripChatColorTags;
 
+    protected boolean bedrockNametagModule;
+    protected boolean bedrockNameplateModule;
+    protected boolean bedrockBackgroundModule;
+    protected boolean bedrockBubbleModule;
+    protected boolean bedrockBossBarModule;
+    protected boolean bedrockActionbarModule;
+    protected boolean bedrockImageModule;
+
     /**
      * Constructs a new {@code ConfigManager} for the specified {@code CustomNameplates} plugin instance.
      *
@@ -486,6 +494,15 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);
         hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
         stripChatColorTags = config.getBoolean("other-settings.strip-chat-color-tags", false);
+
+        // Bedrock modules
+        bedrockNametagModule = config.getBoolean("bedrock.modules.nametags", true);
+        bedrockNameplateModule = config.getBoolean("bedrock.modules.nameplates", true);
+        bedrockBackgroundModule = config.getBoolean("bedrock.modules.backgrounds", true);
+        bedrockBubbleModule = config.getBoolean("bedrock.modules.bubbles", true);
+        bedrockBossBarModule = config.getBoolean("bedrock.modules.bossbars", true);
+        bedrockActionbarModule = config.getBoolean("bedrock.modules.actionbars", false);
+        bedrockImageModule = config.getBoolean("bedrock.modules.images", true);
     }
 
     @Override
@@ -934,6 +951,62 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean stripChatColorTags() {
         return instance.stripChatColorTags;
+    }
+
+    /**
+     * Retrieves whether the nametag module is enabled for Bedrock players.
+     * @return true if Bedrock nametags are enabled; false otherwise.
+     */
+    public static boolean bedrockNametagModule() {
+        return instance.bedrockNametagModule;
+    }
+
+    /**
+     * Retrieves whether the nameplate module is enabled for Bedrock players.
+     * @return true if Bedrock nameplates are enabled; false otherwise.
+     */
+    public static boolean bedrockNameplateModule() {
+        return instance.bedrockNameplateModule;
+    }
+
+    /**
+     * Retrieves whether the background module is enabled for Bedrock players.
+     * @return true if Bedrock backgrounds are enabled; false otherwise.
+     */
+    public static boolean bedrockBackgroundModule() {
+        return instance.bedrockBackgroundModule;
+    }
+
+    /**
+     * Retrieves whether the bubble module is enabled for Bedrock players.
+     * @return true if Bedrock bubbles are enabled; false otherwise.
+     */
+    public static boolean bedrockBubbleModule() {
+        return instance.bedrockBubbleModule;
+    }
+
+    /**
+     * Retrieves whether the boss bar module is enabled for Bedrock players.
+     * @return true if Bedrock boss bars are enabled; false otherwise.
+     */
+    public static boolean bedrockBossBarModule() {
+        return instance.bedrockBossBarModule;
+    }
+
+    /**
+     * Retrieves whether the action bar module is enabled for Bedrock players.
+     * @return true if Bedrock action bars are enabled; false otherwise.
+     */
+    public static boolean bedrockActionbarModule() {
+        return instance.bedrockActionbarModule;
+    }
+
+    /**
+     * Retrieves whether the image module is enabled for Bedrock players.
+     * @return true if Bedrock images are enabled; false otherwise.
+     */
+    public static boolean bedrockImageModule() {
+        return instance.bedrockImageModule;
     }
 
     /**

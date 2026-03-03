@@ -490,4 +490,11 @@ public interface CNPlayer {
      * @return initialized or not
      */
     boolean isInitialized();
+
+    /**
+     * Checks if the player is a Bedrock player (connected via Geyser/Floodgate).
+     *
+     * @return true if the player is a Bedrock player, false otherwise
+     */
+    boolean isBedrockPlayer();
 }
