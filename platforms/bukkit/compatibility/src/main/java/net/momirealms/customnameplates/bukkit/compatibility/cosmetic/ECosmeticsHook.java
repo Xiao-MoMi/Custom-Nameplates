@@ -23,11 +23,11 @@ import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import ru.sculmix.ecosmetics.api.Cosmetic;
-import ru.sculmix.ecosmetics.api.CosmeticType;
-import ru.sculmix.ecosmetics.cache.PlayerData;
-import ru.sculmix.ecosmetics.cache.cosmetics.Hat;
-import ru.sculmix.ecosmetics.events.*;
+import ru.flestiz.ecosmetics.api.Cosmetic;
+import ru.flestiz.ecosmetics.api.CosmeticType;
+import ru.flestiz.ecosmetics.cache.PlayerData;
+import ru.flestiz.ecosmetics.cache.cosmetics.Hat;
+import ru.flestiz.ecosmetics.events.*;
 
 import java.util.concurrent.TimeUnit;
 
