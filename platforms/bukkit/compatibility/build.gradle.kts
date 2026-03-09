@@ -60,7 +60,7 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
     // Cosmetics
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.9")
-    compileOnly("com.github.sculmix:API-ECosmetics:1.0.1")
+    compileOnly("com.github.flestiz:API-ECosmetics:1.0.2")
     compileOnly("com.hibiscusmc:HMCCosmetics:2.8.3")
     compileOnly("me.lojosho:HibiscusCommons:0.8.3")
 }
