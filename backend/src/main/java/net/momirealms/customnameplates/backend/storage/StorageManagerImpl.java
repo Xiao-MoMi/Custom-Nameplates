@@ -93,8 +93,16 @@ public class StorageManagerImpl implements StorageManager, JoinQuitListener {
 	}
 
 	private void handleDataLoad(CNPlayer player, PlayerData data) {
-		player.setBubbleData(data.bubble());
-		player.setNameplateData(data.nameplate());
+		if (plugin.getNameplateManager().hasNameplate(player, data.nameplate())) {
+			player.setNameplateData(data.nameplate());
+		} else {
+			player.setNameplateData(PlayerData.DEFAULT_NAMEPLATE);
+		}
+		if (plugin.getBubbleManager().hasBubble(player, data.bubble())) {
+			player.setBubbleData(data.bubble());
+		} else {
+			player.setBubbleData(PlayerData.DEFAULT_BUBBLE);
+		}
 		plugin.getUnlimitedTagManager().togglePreviewing(player, data.previewTags());
 	}
 

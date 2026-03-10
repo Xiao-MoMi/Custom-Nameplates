@@ -23,6 +23,8 @@ dependencies {
     compileOnly(project(":backend"))
     compileOnly("net.kyori:adventure-api:${rootProject.properties["adventure_bundle_version"]}")
     compileOnly("dev.dejvokep:boosted-yaml:${rootProject.properties["boosted_yaml_version"]}")
+    // Permission
+    compileOnly("net.luckperms:api:5.4")
     // WorldGuard
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9")
     // Platform
