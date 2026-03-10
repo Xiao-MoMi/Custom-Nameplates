@@ -63,6 +63,9 @@ public class BubblesForceEquipCommand extends BukkitCommandFeature<CommandSender
                     Player bukkitPlayer = context.get("player");
                     BubbleConfig bubble = plugin.getBubbleManager().bubbleConfigByCommand(bubbleId);
                     if (bubble == null) {
+                        bubble = plugin.getBubbleManager().bubbleConfigById(bubbleId);
+                    }
+                    if (bubble == null) {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_FORCE_EQUIP_FAILURE_NOT_EXISTS, Component.text(bukkitPlayer.getName()), Component.text(bubbleId));
                         return;
                     }

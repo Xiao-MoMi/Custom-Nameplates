@@ -66,6 +66,9 @@ public class NameplatesEquipCommand extends BukkitCommandFeature<CommandSender> 
                     String nameplateId = context.get("nameplate");
                     Nameplate nameplate = plugin.getNameplateManager().nameplateByCommand(nameplateId);
                     if (nameplate == null) {
+                        nameplate = plugin.getNameplateManager().nameplateById(nameplateId);
+                    }
+                    if (nameplate == null) {
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_FAILURE_NOT_EXISTS, Component.text(nameplateId));
                         return;
                     }

@@ -66,6 +66,9 @@ public class BubblesEquipCommand extends BukkitCommandFeature<CommandSender> {
                     String bubbleId = context.get("bubble");
                     BubbleConfig bubble = plugin.getBubbleManager().bubbleConfigByCommand(bubbleId);
                     if (bubble == null) {
+                        bubble = plugin.getBubbleManager().bubbleConfigById(bubbleId);
+                    }
+                    if (bubble == null) {
                         handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_FAILURE_NOT_EXISTS, Component.text(bubbleId));
                         return;
                     }

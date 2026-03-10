@@ -62,6 +62,9 @@ public class NameplatesForceEquipCommand extends BukkitCommandFeature<CommandSen
                     Player bukkitPlayer = context.get("player");
                     Nameplate nameplate = plugin.getNameplateManager().nameplateByCommand(nameplateId);
                     if (nameplate == null) {
+                        nameplate = plugin.getNameplateManager().nameplateById(nameplateId);
+                    }
+                    if (nameplate == null) {
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_FORCE_EQUIP_FAILURE_NOT_EXISTS, Component.text(bukkitPlayer.getName()), Component.text(nameplateId));
                         return;
                     }
