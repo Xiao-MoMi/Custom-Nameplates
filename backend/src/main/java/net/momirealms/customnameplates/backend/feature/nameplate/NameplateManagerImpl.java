@@ -35,6 +35,7 @@ public class NameplateManagerImpl implements NameplateManager {
 
     private final CustomNameplates plugin;
     private final Map<String, Nameplate> nameplates = new HashMap<>();
+    private final Map<String, Nameplate> nameplatesByCommand = new HashMap<>();
     private String defaultNameplateId;
     private String nameTag;
 
@@ -45,6 +46,7 @@ public class NameplateManagerImpl implements NameplateManager {
     @Override
     public void unload() {
         this.nameplates.clear();
+        this.nameplatesByCommand.clear();
     }
 
     @Override
@@ -58,6 +60,12 @@ public class NameplateManagerImpl implements NameplateManager {
     @Override
     public Nameplate nameplateById(String id) {
         return this.nameplates.get(id);
+    }
+
+    @Nullable
+    @Override
+    public Nameplate nameplateByCommand(String suggestion) {
+        return this.nameplatesByCommand.get(suggestion);
     }
 
     @Override
@@ -115,6 +123,7 @@ public class NameplateManagerImpl implements NameplateManager {
             String id = configFile.getName().substring(0, configFile.getName().lastIndexOf("."));
             Nameplate nameplate = Nameplate.builder()
                     .id(id)
+                    .commandSuggestion(config.getString("command-suggestion", id))
                     .displayName(config.getString("display-name", id))
                     .minWidth(config.getInt("min-width", 0))
                     .left(ConfiguredCharacter.create(
@@ -133,7 +142,8 @@ public class NameplateManagerImpl implements NameplateManager {
                             config.getInt("right.height", 16)
                     ))
                     .build();
-            this.nameplates.put(id, nameplate);
+            this.nameplates.put(nameplate.id(), nameplate);
+            this.nameplatesByCommand.put(nameplate.commandSuggestion(), nameplate);
         }
     }
 

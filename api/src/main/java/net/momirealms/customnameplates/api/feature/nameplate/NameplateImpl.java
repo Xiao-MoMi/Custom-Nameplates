@@ -21,20 +21,23 @@ import net.momirealms.customnameplates.api.feature.ConfiguredCharacter;
 import net.momirealms.customnameplates.api.feature.OffsetFont;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Implementation of Nameplate
  */
 public class NameplateImpl implements Nameplate {
     private final String id;
+    private final String commandSuggestion;
     private final String displayName;
     private final ConfiguredCharacter left;
     private final ConfiguredCharacter middle;
     private final ConfiguredCharacter right;
     private final int minWidth;
 
-    private NameplateImpl(String id, String displayName, int minWidth, ConfiguredCharacter left, ConfiguredCharacter middle, ConfiguredCharacter right) {
+    private NameplateImpl(String id, String commandSuggestion, String displayName, int minWidth, ConfiguredCharacter left, ConfiguredCharacter middle, ConfiguredCharacter right) {
         this.id = id;
+        this.commandSuggestion = commandSuggestion;
         this.displayName = displayName;
         this.minWidth = minWidth;
         this.left = left;
@@ -50,6 +53,11 @@ public class NameplateImpl implements Nameplate {
     @Override
     public String displayName() {
         return displayName;
+    }
+
+    @Override
+    public String commandSuggestion() {
+        return this.commandSuggestion;
     }
 
     @Override
@@ -141,6 +149,7 @@ public class NameplateImpl implements Nameplate {
      */
     public static class BuilderImpl implements Builder {
         private String id;
+        private String commandSuggestion;
         private String displayName;
         private ConfiguredCharacter left;
         private ConfiguredCharacter middle;
@@ -150,6 +159,12 @@ public class NameplateImpl implements Nameplate {
         @Override
         public Builder id(String id) {
             this.id = id;
+            return this;
+        }
+
+        @Override
+        public Builder commandSuggestion(String commandSuggestion) {
+            this.commandSuggestion = commandSuggestion;
             return this;
         }
 
@@ -185,7 +200,7 @@ public class NameplateImpl implements Nameplate {
 
         @Override
         public Nameplate build() {
-            return new NameplateImpl(id, displayName, minWidth, left, middle, right);
+            return new NameplateImpl(id, Optional.ofNullable(commandSuggestion).orElse(id), displayName, minWidth, left, middle, right);
         }
     }
 }

@@ -51,7 +51,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class BubbleManagerImpl implements BubbleManager, ChatListener {
-
     private final CustomNameplates plugin;
     private final Map<String, Bubble> bubbles = new Object2ObjectOpenHashMap<>();
     private Requirement[] sendBubbleRequirements;
@@ -65,6 +64,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
     private Set<String> blacklistChannels;
     private ChannelMode channelMode;
     private final Map<String, BubbleConfig> bubbleConfigs = new Object2ObjectOpenHashMap<>();
+    private final Map<String, BubbleConfig> bubbleConfigsByCommand = new Object2ObjectOpenHashMap<>();
 
     public BubbleManagerImpl(CustomNameplates plugin) {
         this.plugin = plugin;
@@ -74,6 +74,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
     public void unload() {
         this.bubbles.clear();
         this.bubbleConfigs.clear();
+        this.bubbleConfigsByCommand.clear();
     }
 
     @Override
@@ -89,9 +90,16 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
         return this.bubbles.get(id);
     }
 
+    @Nullable
     @Override
-    public @Nullable BubbleConfig bubbleConfigById(String id) {
+    public BubbleConfig bubbleConfigById(String id) {
         return this.bubbleConfigs.get(id);
+    }
+
+    @Nullable
+    @Override
+    public BubbleConfig bubbleConfigByCommand(String id) {
+        return this.bubbleConfigsByCommand.get(id);
     }
 
     @Override
@@ -226,8 +234,9 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
                     for (int i = 0; i < maxLines; i++) {
                         bubbleArray[i] = bubbleById(inner.getString("lines." + (i+1)));
                     }
-                    this.bubbleConfigs.put(key, BubbleConfig.builder()
+                    BubbleConfig bubble = BubbleConfig.builder()
                             .id(key)
+                            .commandSuggestion(inner.getString("command-suggestion", key))
                             .maxLines(maxLines)
                             .bubbles(bubbleArray)
                             .displayName(inner.getString("display-name", key))
@@ -236,7 +245,9 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
                             .textPrefix(inner.getString("text-prefix", "").replace("{namespace}", ConfigManager.namespace()))
                             .textSuffix(inner.getString("text-suffix", ""))
                             .scale(ConfigUtils.vector3(inner.getString("scale", "1,1,1")))
-                            .build());
+                            .build();
+                    this.bubbleConfigs.put(bubble.id(), bubble);
+                    this.bubbleConfigsByCommand.put(bubble.commandSuggestion(), bubble);
                 }
             }
         }

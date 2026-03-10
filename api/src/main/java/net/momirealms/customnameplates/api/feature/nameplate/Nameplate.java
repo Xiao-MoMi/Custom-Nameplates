@@ -33,6 +33,15 @@ public interface Nameplate extends AdaptiveImage {
     String id();
 
     /**
+     * Returns the command suggestion of the nameplate configuration.
+     *
+     * @return the nameplate ID
+     */
+    default String commandSuggestion() {
+        return id();
+    }
+
+    /**
      * Returns the display name of the nameplate.
      *
      * @return the display name of the nameplate
@@ -88,6 +97,14 @@ public interface Nameplate extends AdaptiveImage {
          * @return the builder instance
          */
         Builder id(String id);
+
+        /**
+         * Sets the command suggestion for the nameplate
+         *
+         * @param commandSuggestion command suggestion
+         * @return the builder instance
+         */
+        Builder commandSuggestion(String commandSuggestion);
 
         /**
          * Sets the display name for the nameplate.

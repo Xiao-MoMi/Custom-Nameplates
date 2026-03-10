@@ -33,6 +33,15 @@ public interface BubbleConfig {
     String id();
 
     /**
+     * Returns the command suggestion of the Bubble configuration.
+     *
+     * @return the configuration ID
+     */
+    default String commandSuggestion() {
+        return id();
+    }
+
+    /**
      * Returns the background color of the Bubble text.
      *
      * @return the background color (ARGB) as an integer
@@ -109,6 +118,14 @@ public interface BubbleConfig {
          * @return the builder instance
          */
         Builder id(String id);
+
+        /**
+         * Sets the command suggestion for the BubbleConfig.
+         *
+         * @param suggestion the command suggestion
+         * @return the builder instance
+         */
+        Builder commandSuggestion(String suggestion);
 
         /**
          * Sets the display name for the BubbleConfig.

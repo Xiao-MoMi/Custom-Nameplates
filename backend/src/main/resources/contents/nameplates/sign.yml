@@ -1,4 +1,5 @@
 display-name: Oak Sign
+command-suggestion: Oak Sign
 left:
   image: sign_left
   height: 16

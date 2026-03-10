@@ -75,6 +75,10 @@ public abstract class AbstractTag implements Tag {
         this.renderer = renderer;
     }
 
+    public CNPlayer[] viewerArray() {
+        return this.viewerArray;
+    }
+
     /**
      * Spawns the tag for the given viewer by sending a packet to the viewer.
      *

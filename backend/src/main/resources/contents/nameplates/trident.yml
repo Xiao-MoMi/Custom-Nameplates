@@ -1,4 +1,5 @@
 display-name: Trident
+command-suggestion: Trident
 left:
   image: trident_left
   height: 16

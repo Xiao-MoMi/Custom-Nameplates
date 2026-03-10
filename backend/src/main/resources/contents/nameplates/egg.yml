@@ -1,4 +1,5 @@
 display-name: Happy Egg
+command-suggestion: Happy Egg
 left:
   image: egg_left
   height: 16

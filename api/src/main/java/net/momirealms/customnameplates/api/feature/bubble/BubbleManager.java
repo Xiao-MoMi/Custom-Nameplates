@@ -64,6 +64,14 @@ public interface BubbleManager extends Reloadable {
     BubbleConfig bubbleConfigById(String id);
 
     /**
+     * Retrieves a Bubble configuration by its command suggestion
+     *
+     * @param suggestion command suggestion
+     * @return the BubbleConfig instance, or null if not found
+     */
+    @Nullable BubbleConfig bubbleConfigByCommand(String suggestion);
+
+    /**
      * Checks if a player has access to a specific Bubble by its ID.
      *
      * @param player the player to check

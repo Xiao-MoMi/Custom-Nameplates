@@ -663,12 +663,15 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
 
     @Override
     public void save() {
-        plugin.getStorageManager().dataSource().updatePlayerData(PlayerData.builder()
+        this.plugin.getStorageManager().dataSource().updatePlayerData(
+            PlayerData.builder()
                 .uuid(uuid())
                 .nameplate(nameplateData())
                 .bubble(bubbleData())
                 .previewTags(isToggleablePreviewing())
-                .build(), plugin.getScheduler().async());
+                .build(),
+            this.plugin.getScheduler().async()
+        );
     }
 
     @Override

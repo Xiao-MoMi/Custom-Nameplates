@@ -39,6 +39,15 @@ public interface NameplateManager extends Reloadable {
     Nameplate nameplateById(String id);
 
     /**
+     * Retrieves a Nameplate by command suggestion.
+     *
+     * @param suggestion the command suggestion of the nameplate
+     * @return the Nameplate instance, or null if not found
+     */
+    @Nullable
+    Nameplate nameplateByCommand(String suggestion);
+
+    /**
      * Returns a collection of all available nameplates.
      *
      * @return a collection of Nameplate instances
