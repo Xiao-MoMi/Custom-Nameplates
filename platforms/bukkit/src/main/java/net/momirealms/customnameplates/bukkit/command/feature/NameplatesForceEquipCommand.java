@@ -78,7 +78,7 @@ public class NameplatesForceEquipCommand extends BukkitCommandFeature<CommandSen
                     }
                     player.setNameplateData(nameplate.id());
                     player.save();
-                    handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_FORCE_EQUIP_SUCCESS, Component.text(bukkitPlayer.getName()), Component.text(nameplateId), AdventureHelper.miniMessage(nameplate.displayName()));
+                    handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_FORCE_EQUIP_SUCCESS, Component.text(bukkitPlayer.getName()), AdventureHelper.miniMessage(nameplate.displayName()));
                 });
     }
 

@@ -90,7 +90,7 @@ public class NameplatesEquipCommand extends BukkitCommandFeature<CommandSender> 
                     }
                     player.setNameplateData(nameplate.id());
                     player.save();
-                    handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_SUCCESS, Component.text(nameplateId), AdventureHelper.miniMessage(nameplate.displayName()));
+                    handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_SUCCESS, AdventureHelper.miniMessage(nameplate.displayName()));
                 });
     }
 

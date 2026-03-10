@@ -90,7 +90,7 @@ public class BubblesEquipCommand extends BukkitCommandFeature<CommandSender> {
                     }
                     player.setBubbleData(bubble.id());
                     player.save();
-                    handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_SUCCESS, Component.text(bubbleId), AdventureHelper.miniMessage(bubble.displayName()));
+                    handleFeedback(context, MessageConstants.COMMAND_BUBBLES_EQUIP_SUCCESS, AdventureHelper.miniMessage(bubble.displayName()));
                 });
     }
 
