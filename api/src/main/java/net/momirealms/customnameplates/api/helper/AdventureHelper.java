@@ -354,6 +354,28 @@ public class AdventureHelper {
                             .append(">");
                     i += 12;
                 }
+                case '#' -> {
+                    if (i + 7 >= chars.length
+                            || !isHexColorCode(chars[i+2])
+                            || !isHexColorCode(chars[i+3])
+                            || !isHexColorCode(chars[i+4])
+                            || !isHexColorCode(chars[i+5])
+                            || !isHexColorCode(chars[i+6])
+                            || !isHexColorCode(chars[i+7])) {
+                        stringBuilder.append(chars[i]);
+                        continue;
+                    }
+                    stringBuilder
+                            .append("<#")
+                            .append(chars[i+2])
+                            .append(chars[i+3])
+                            .append(chars[i+4])
+                            .append(chars[i+5])
+                            .append(chars[i+6])
+                            .append(chars[i+7])
+                            .append(">");
+                    i += 6;
+                }
                 default -> {
                     stringBuilder.append(chars[i]);
                     continue;
@@ -362,5 +384,11 @@ public class AdventureHelper {
             i++;
         }
         return stringBuilder.toString();
+    }
+
+    private static boolean isHexColorCode(char c) {
+        return c >= '0' && c <= '9' ||
+                c >= 'a' && c <= 'f' ||
+                c >= 'A' && c <= 'F';
     }
 }
