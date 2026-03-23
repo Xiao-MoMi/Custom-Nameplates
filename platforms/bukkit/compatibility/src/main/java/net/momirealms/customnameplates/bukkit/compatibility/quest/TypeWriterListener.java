@@ -41,6 +41,7 @@ public class TypeWriterListener implements Listener {
         if (!ConfigManager.twDialogue()) return;
         Player player = event.getPlayer();
         AbstractCNPlayer cnPlayer = (AbstractCNPlayer) plugin.getPlayer(player.getUniqueId());
+        if (cnPlayer == null) return;
         cnPlayer.acquireActionBar("TWDialogue");
     }
 
@@ -49,6 +50,7 @@ public class TypeWriterListener implements Listener {
         if (!ConfigManager.twDialogue()) return;
         Player player = event.getPlayer();
         AbstractCNPlayer cnPlayer = (AbstractCNPlayer) plugin.getPlayer(player.getUniqueId());
+        if (cnPlayer == null) return;
         cnPlayer.releaseActionBar("TWDialogue");
     }
 
@@ -57,6 +59,7 @@ public class TypeWriterListener implements Listener {
         if (!ConfigManager.twCinematic()) return;
         Player player = event.getPlayer();
         AbstractCNPlayer cnPlayer = (AbstractCNPlayer) plugin.getPlayer(player.getUniqueId());
+        if (cnPlayer == null) return;
         cnPlayer.acquireActionBar("TWCinematic");
     }
 
@@ -65,6 +68,7 @@ public class TypeWriterListener implements Listener {
         if (!ConfigManager.twCinematic()) return;
         Player player = event.getPlayer();
         AbstractCNPlayer cnPlayer = (AbstractCNPlayer) plugin.getPlayer(player.getUniqueId());
+        if (cnPlayer == null) return;
         cnPlayer.releaseActionBar("TWCinematic");
     }
 }
