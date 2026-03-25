@@ -106,7 +106,9 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     }
 
     public void temporarilyHideCustomActionBar(CNPlayer player) {
-        ActionBarSender sender = senders.get(player.uuid());
+        UUID uuid = player.uuid();
+        if (uuid == null) return;
+        ActionBarSender sender = senders.get(uuid);
         if (sender != null) {
             sender.temporarilyHide();
         }
