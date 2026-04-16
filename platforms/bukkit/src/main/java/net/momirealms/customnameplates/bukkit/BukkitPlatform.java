@@ -160,6 +160,7 @@ public class BukkitPlatform implements Platform {
             if (!ConfigManager.actionbarModule()) return;
             if (!ConfigManager.catchOtherActionBar()) return;
             if (!player.shouldCNTakeOverActionBar()) return;
+            if (player.player() == null) return;
             try {
             boolean actionBar = (boolean) Reflections.field$ClientboundSystemChatPacket$overlay.get(packet);
                 if (actionBar) {

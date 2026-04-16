@@ -34,6 +34,7 @@ public class HMCCosmeticsHook implements Listener {
     @EventHandler
     public void onPlayerCosmeticRemove(PlayerCosmeticRemoveEvent event) {
         Cosmetic cosmetic = event.getCosmetic();
+        if (cosmetic == null) return;
         if (cosmetic.getSlot() != CosmeticSlot.HELMET) return;
         updateHatOffset(event.getUniqueId(), 0);
     }
