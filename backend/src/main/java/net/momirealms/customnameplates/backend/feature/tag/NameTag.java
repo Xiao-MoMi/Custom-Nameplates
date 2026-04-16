@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.backend.feature.tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.feature.DynamicText;
@@ -138,6 +139,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
 
     @Override
     public boolean canShow(CNPlayer viewer) {
+        if (viewer.isBedrockPlayer() && !ConfigManager.bedrockNametagModule()) return false;
         return viewer.isMet(owner, config.viewerRequirements());
     }
 

@@ -18,6 +18,7 @@
 package net.momirealms.customnameplates.backend.feature.bubble;
 
 import net.momirealms.customnameplates.api.CNPlayer;
+import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleManager;
@@ -109,6 +110,7 @@ public class BubbleTag extends AbstractTag {
 
     @Override
     public boolean canShow(CNPlayer viewer) {
+        if (viewer.isBedrockPlayer() && !ConfigManager.bedrockBubbleModule()) return false;
         if (!viewer.isMet(owner, manager.viewBubbleRequirements())) {
             return false;
         }

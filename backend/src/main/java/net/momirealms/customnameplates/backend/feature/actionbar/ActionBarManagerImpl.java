@@ -126,6 +126,7 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     @Override
     public void onPlayerJoin(CNPlayer player) {
         if (!ConfigManager.actionbarModule()) return;
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockActionbarModule()) return;
         Runnable r = () -> {
             if (!player.isOnline()) return;
             ActionBarSender sender = new ActionBarSender(this, player);

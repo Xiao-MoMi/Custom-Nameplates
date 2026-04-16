@@ -114,6 +114,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
 
     @Override
     public boolean hasBubble(CNPlayer player, String id) {
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockBubbleModule()) return false;
         if (!this.bubbleConfigs.containsKey(id)) {
             return false;
         }
@@ -122,6 +123,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
 
     @Override
     public Collection<BubbleConfig> availableBubbles(CNPlayer player) {
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockBubbleModule()) return Collections.emptyList();
         ArrayList<BubbleConfig> available = new ArrayList<>();
         for (BubbleConfig bubble : bubbleConfigs.values()) {
             if (player.hasPermission("bubbles.equip." + bubble.id())) {
@@ -302,6 +304,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
     @Override
     public void onPlayerChat(CNPlayer player, String message, String channel) {
         if (!ConfigManager.bubbleModule()) return;
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockBubbleModule()) return;
         // ignore blacklist channels
         if (blacklistChannels().contains(channel)) return;
         // check requirements

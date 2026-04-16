@@ -64,6 +64,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
     private volatile boolean isLoaded = false;
     private volatile boolean tempPreviewing = false;
     private volatile boolean toggleablePreviewing = false;
+    private volatile Boolean bedrockPlayer = null;
 
     private String currentNameplate;
     private String nameplateData;
@@ -705,5 +706,13 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
     @Override
     public int entityID() {
         return this.entityId;
+    }
+
+    @Override
+    public boolean isBedrockPlayer() {
+        if (bedrockPlayer == null) {
+            bedrockPlayer = net.momirealms.customnameplates.api.helper.BedrockHelper.isBedrockPlayer(uuid);
+        }
+        return bedrockPlayer;
     }
 }

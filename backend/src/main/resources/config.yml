@@ -19,6 +19,17 @@ modules:
   actionbars: false           # Enable actionbars
   images: true               # Enable image displays
 
+# Bedrock Module Settings: Enable or disable specific features for Bedrock players (requires FloodgateAPI).
+bedrock:
+  modules:
+    nametags: true             # Enable name tags for Bedrock players
+    nameplates: true           # Enable nameplates for Bedrock players
+    backgrounds: true          # Enable background images for Bedrock players
+    bubbles: true              # Enable bubble text display for Bedrock players
+    bossbars: true             # Enable bossbars for Bedrock players
+    actionbars: false          # Enable actionbars for Bedrock players
+    images: true               # Enable image displays for Bedrock players
+
 # Plugin Integrations: Integrate resource packs and chat plugins with other plugins.
 integrations:
   resource-pack:

@@ -75,6 +75,7 @@ public class NameplateManagerImpl implements NameplateManager {
 
     @Override
     public boolean hasNameplate(CNPlayer player, String id) {
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockNameplateModule()) return false;
         if (!this.nameplates.containsKey(id)) {
             return false;
         }
@@ -83,6 +84,7 @@ public class NameplateManagerImpl implements NameplateManager {
 
     @Override
     public Collection<Nameplate> availableNameplates(CNPlayer player) {
+        if (player.isBedrockPlayer() && !ConfigManager.bedrockNameplateModule()) return Collections.emptyList();
         ArrayList<Nameplate> available = new ArrayList<>();
         for (Nameplate nameplate : nameplates.values()) {
             if (player.hasPermission("nameplates.equip." + nameplate.id())) {
