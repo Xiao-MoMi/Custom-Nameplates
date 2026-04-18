@@ -341,7 +341,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      * The version of the current configuration.
      */
     protected String configVersion;
-
+    protected int forceUpdatePassengerInterval;
     protected float minPackVersion;
     protected boolean stripChatColorTags;
 
@@ -486,6 +486,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);
         hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
         stripChatColorTags = config.getBoolean("other-settings.strip-chat-color-tags", false);
+        forceUpdatePassengerInterval = config.getInt("other-settings.force-update-passenger-interval", -1);
     }
 
     @Override
@@ -934,6 +935,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean stripChatColorTags() {
         return instance.stripChatColorTags;
+    }
+
+    public static int forceUpdatePassengerInterval() {
+        return instance.forceUpdatePassengerInterval;
     }
 
     /**

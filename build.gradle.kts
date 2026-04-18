@@ -23,7 +23,7 @@ subprojects {
             expand(rootProject.properties)
         }
 
-        filesMatching(arrayListOf("*.yml", "*/*.yml", "META-INF/sponge_plugins.json")) {
+        filesMatching(arrayListOf("*.yml", "*/*.yml")) {
             expand(
                 Pair("project_version", rootProject.properties["project_version"]!!),
                 Pair("config_version", rootProject.properties["config_version"]!!)
