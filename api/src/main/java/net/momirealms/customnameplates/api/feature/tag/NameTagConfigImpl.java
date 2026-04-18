@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.api.feature.tag;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.common.util.Tristate;
 
@@ -38,6 +39,7 @@ public class NameTagConfigImpl implements NameTagConfig {
     private final Tristate isSeeThrough;
     private final boolean useDefaultBackgroundColor;
     private final Alignment alignment;
+    private final Billboard billboard;
     private final float viewRange;
     private final float shadowRadius;
     private final float shadowStrength;
@@ -47,7 +49,7 @@ public class NameTagConfigImpl implements NameTagConfig {
     private final boolean affectedByScale;
     private final boolean affectedBySpectator;
 
-    private NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, Tristate isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale, boolean affectedBySpectator) {
+    private NameTagConfigImpl(String id, Requirement[] ownerRequirements, Requirement[] viewerRequirements, CarouselText[] carouselTexts, int lineWidth, byte opacity, int backgroundColor, boolean hasShadow, Tristate isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment, Billboard billboard, float viewRange, float shadowRadius, float shadowStrength, Vector3 scale, Vector3 translation, boolean affectedByCrouching, boolean affectedByScale, boolean affectedBySpectator) {
         this.id = id;
         this.ownerRequirements = ownerRequirements;
         this.viewerRequirements = viewerRequirements;
@@ -58,6 +60,7 @@ public class NameTagConfigImpl implements NameTagConfig {
         this.isSeeThrough = isSeeThrough;
         this.useDefaultBackgroundColor = useDefaultBackgroundColor;
         this.alignment = alignment;
+        this.billboard = billboard;
         this.viewRange = viewRange;
         this.shadowRadius = shadowRadius;
         this.shadowStrength = shadowStrength;
@@ -102,6 +105,11 @@ public class NameTagConfigImpl implements NameTagConfig {
     @Override
     public boolean hasShadow() {
         return hasShadow;
+    }
+
+    @Override
+    public Billboard billboard() {
+        return billboard;
     }
 
     @Override
@@ -179,6 +187,7 @@ public class NameTagConfigImpl implements NameTagConfig {
         private Tristate isSeeThrough;
         private boolean useDefaultBackgroundColor;
         private Alignment alignment;
+        private Billboard billboard;
         private float viewRange;
         private float shadowRadius;
         private float shadowStrength;
@@ -255,6 +264,12 @@ public class NameTagConfigImpl implements NameTagConfig {
         }
 
         @Override
+        public Builder billboard(Billboard billboard) {
+            this.billboard = billboard;
+            return this;
+        }
+
+        @Override
         public Builder viewRange(float viewRange) {
             this.viewRange = viewRange;
             return this;
@@ -304,7 +319,7 @@ public class NameTagConfigImpl implements NameTagConfig {
 
         @Override
         public NameTagConfig build() {
-            return new NameTagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, viewRange, shadowRadius, shadowStrength, scale, translation, affectedByCrouching, affectedByScale, affectedBySpectator);
+            return new NameTagConfigImpl(id, ownerRequirements, viewerRequirements, carouselTexts, lineWidth, opacity, backgroundColor, hasShadow, isSeeThrough, useDefaultBackgroundColor, alignment, billboard, viewRange, shadowRadius, shadowStrength, scale, translation, affectedByCrouching, affectedByScale, affectedBySpectator);
         }
     }
 }

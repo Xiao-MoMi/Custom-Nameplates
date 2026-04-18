@@ -32,6 +32,7 @@ import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.placeholder.DummyPlaceholder;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.backend.feature.actionbar.ActionBarManagerImpl;
 import net.momirealms.customnameplates.bukkit.util.BiomeUtils;
@@ -612,9 +613,8 @@ public class BukkitPlatform implements Platform {
             int interpolationDelay, int transformationInterpolationDuration, int positionRotationInterpolationDuration,
             Object component, int backgroundColor, byte opacity,
             boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment,
-            float viewRange, float shadowRadius, float shadowStrength,
-            Vector3 scale, Vector3 translation, int lineWidth, boolean isCrouching
-    ) {
+            Billboard billboard, float viewRange, float shadowRadius, float shadowStrength,
+            Vector3 scale, Vector3 translation, int lineWidth, boolean isCrouching) {
         try {
             Object addEntityPacket = Reflections.constructor$ClientboundAddEntityPacket.newInstance(
                     entityID, uuid, position.x(), position.y(), position.z(), pitch, yaw,
@@ -630,7 +630,7 @@ public class BukkitPlatform implements Platform {
             } else {
                 EntityData.InterpolationDuration.addEntityDataIfNotDefaultValue(transformationInterpolationDuration, values);
             }
-            EntityData.BillboardConstraints.addEntityDataIfNotDefaultValue((byte) 3,                     values);
+            EntityData.BillboardConstraints.addEntityDataIfNotDefaultValue(billboard.id(),               values);
             EntityData.BackgroundColor.addEntityDataIfNotDefaultValue(     backgroundColor,              values);
             EntityData.Text.addEntityDataIfNotDefaultValue(                component,                    values);
             EntityData.TextOpacity.addEntityDataIfNotDefaultValue(         isCrouching ? 64 : opacity,   values);

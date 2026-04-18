@@ -17,7 +17,6 @@
 
 package net.momirealms.customnameplates.common.locale;
 
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -29,8 +28,6 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.TriState;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +42,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessageTranslationRegistry {
+public class MiniMessageTranslationRegistryImpl implements MiniMessageTranslationRegistry {
     private final Key name;
     private final Map<String, Translation> translations = new ConcurrentHashMap<>();
     private Locale defaultLocale = Locale.US;
@@ -134,11 +131,6 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(ExaminableProperty.of("translations", this.translations));
-    }
-
-    @Override
     public boolean equals(final Object other) {
         if (this == other) return true;
         if (!(other instanceof MiniMessageTranslationRegistryImpl that)) return false;
@@ -150,11 +142,6 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.translations, this.defaultLocale);
-    }
-
-    @Override
-    public String toString() {
-        return Internals.toString(this);
     }
 
     public static class ArgumentTag implements TagResolver {
@@ -188,7 +175,7 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
         }
     }
 
-    final class Translation implements Examinable {
+    final class Translation {
         private final String key;
         private final Map<Locale, String> formats;
 
@@ -215,14 +202,6 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
         }
 
         @Override
-        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-            return Stream.of(
-                    ExaminableProperty.of("key", this.key),
-                    ExaminableProperty.of("formats", this.formats)
-            );
-        }
-
-        @Override
         public boolean equals(final Object other) {
             if (this == other) return true;
             if (!(other instanceof Translation that)) return false;
@@ -233,11 +212,6 @@ public class MiniMessageTranslationRegistryImpl implements Examinable, MiniMessa
         @Override
         public int hashCode() {
             return Objects.hash(this.key, this.formats);
-        }
-
-        @Override
-        public String toString() {
-            return Internals.toString(this);
         }
     }
 }

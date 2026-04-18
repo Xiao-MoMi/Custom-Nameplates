@@ -22,6 +22,7 @@ import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.Vector3;
 
 import java.util.List;
@@ -115,29 +116,30 @@ public interface Platform {
     /**
      * Creates packets to display text on a custom text display entity.
      *
-     * @param entityID                           the entity ID
-     * @param uuid                               the entity UUID
-     * @param position                           the position of the text
-     * @param pitch                              the pitch of the entity
-     * @param yaw                                the yaw of the entity
-     * @param headYaw                            the head yaw of the entity
-     * @param interpolationDelay                 the interpolation delay
-     * @param transformationInterpolationDuration the transformation interpolation duration
+     * @param entityID                              the entity ID
+     * @param uuid                                  the entity UUID
+     * @param position                              the position of the text
+     * @param pitch                                 the pitch of the entity
+     * @param yaw                                   the yaw of the entity
+     * @param headYaw                               the head yaw of the entity
+     * @param interpolationDelay                    the interpolation delay
+     * @param transformationInterpolationDuration   the transformation interpolation duration
      * @param positionRotationInterpolationDuration the position and rotation interpolation duration
-     * @param component                          the component containing the text
-     * @param backgroundColor                    the background color
-     * @param opacity                            the opacity of the text
-     * @param hasShadow                          whether the text has a shadow
-     * @param isSeeThrough                       whether the text is see-through
-     * @param useDefaultBackgroundColor          whether the default background color is used
-     * @param alignment                          the alignment of the text
-     * @param viewRange                          the view range of the text
-     * @param shadowRadius                       the shadow radius
-     * @param shadowStrength                     the shadow strength
-     * @param scale                              the scale of the text
-     * @param translation                        the translation of the text
-     * @param lineWidth                          the width of the text line
-     * @param isCrouching                        whether the entity is crouching
+     * @param component                             the component containing the text
+     * @param backgroundColor                       the background color
+     * @param opacity                               the opacity of the text
+     * @param hasShadow                             whether the text has a shadow
+     * @param isSeeThrough                          whether the text is see-through
+     * @param useDefaultBackgroundColor             whether the default background color is used
+     * @param alignment                             the alignment of the text
+     * @param billboard
+     * @param viewRange                             the view range of the text
+     * @param shadowRadius                          the shadow radius
+     * @param shadowStrength                        the shadow strength
+     * @param scale                                 the scale of the text
+     * @param translation                           the translation of the text
+     * @param lineWidth                             the width of the text line
+     * @param isCrouching                           whether the entity is crouching
      * @return a list of packets for creating the text display
      */
     List<Object> createTextDisplayPacket(
@@ -146,9 +148,8 @@ public interface Platform {
             int interpolationDelay, int transformationInterpolationDuration, int positionRotationInterpolationDuration,
             Object component, int backgroundColor, byte opacity,
             boolean hasShadow, boolean isSeeThrough, boolean useDefaultBackgroundColor, Alignment alignment,
-            float viewRange, float shadowRadius, float shadowStrength,
-            Vector3 scale, Vector3 translation, int lineWidth, boolean isCrouching
-    );
+            Billboard billboard, float viewRange, float shadowRadius, float shadowStrength,
+            Vector3 scale, Vector3 translation, int lineWidth, boolean isCrouching);
 
     /**
      * Creates a modifier for interpolation delay.

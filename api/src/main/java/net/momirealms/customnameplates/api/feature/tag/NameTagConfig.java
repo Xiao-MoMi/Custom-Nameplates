@@ -20,6 +20,7 @@ package net.momirealms.customnameplates.api.feature.tag;
 import net.momirealms.customnameplates.api.feature.CarouselText;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.common.util.Tristate;
 
@@ -76,6 +77,13 @@ public interface NameTagConfig {
      * @return true if the name tag has a shadow, false otherwise
      */
     boolean hasShadow();
+
+    /**
+     * Gets the billboard
+     *
+     * @return billboard
+     */
+    Billboard billboard();
 
     /**
      * Checks if the name tag is see-through.
@@ -261,6 +269,14 @@ public interface NameTagConfig {
          * @return the builder instance
          */
         Builder alignment(Alignment alignment);
+
+        /**
+         * Sets the billboard of the name tag
+         *
+         * @param billboard billboard
+         * @return the builder instance
+         */
+        Builder billboard(Billboard billboard);
 
         /**
          * Sets the view range for the name tag.

@@ -42,6 +42,7 @@ import net.momirealms.customnameplates.api.feature.bubble.ChannelMode;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.requirement.Requirement;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -245,6 +246,8 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
                             .textPrefix(inner.getString("text-prefix", "").replace("{namespace}", ConfigManager.namespace()))
                             .textSuffix(inner.getString("text-suffix", ""))
                             .scale(ConfigUtils.vector3(inner.getString("scale", "1,1,1")))
+                            .hasShadow(inner.getBoolean("has-shadow", false))
+                            .billboard(inner.getEnum("billboard", Billboard.class, Billboard.CENTER))
                             .build();
                     this.bubbleConfigs.put(bubble.id(), bubble);
                     this.bubbleConfigsByCommand.put(bubble.commandSuggestion(), bubble);

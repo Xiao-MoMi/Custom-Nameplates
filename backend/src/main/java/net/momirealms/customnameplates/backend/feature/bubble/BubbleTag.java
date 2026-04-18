@@ -26,6 +26,7 @@ import net.momirealms.customnameplates.api.feature.tag.Tag;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.SelfIncreaseEntityID;
 import net.momirealms.customnameplates.api.util.Vector3;
 import org.jetbrains.annotations.Nullable;
@@ -70,8 +71,8 @@ public class BubbleTag extends AbstractTag {
                 owner.position().add(0, (1.8 + (affectedByCrouching() && tracker.isCrouching() && !owner.isFlying() ? -0.3 : 0) + renderer.hatOffset()) * (affectedByScaling() ? tracker.getScale() : 1), 0),
                 0f, 0f, 0d,
                 -1, 0, 0,
-                text, bubbleConfig.backgroundColor(), (byte) -1, false, false, false,
-                Alignment.CENTER, manager.viewRange(), 0.0f, 1.0f,
+                text, bubbleConfig.backgroundColor(), (byte) -1, bubbleConfig.hasShadow(), false, false,
+                Alignment.CENTER, bubbleConfig.billboard(), manager.viewRange(), 0.0f, 1.0f,
                 new Vector3(0.001, 0.001, 0.001),
                 affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.01, 0, 0.01) : translation,
                 bubbleConfig.lineWidth(),
@@ -84,7 +85,7 @@ public class BubbleTag extends AbstractTag {
                     0f, 0f, 0d,
                     -1, 0, 0,
                     background, 0, (byte) -1, false, false, false,
-                    Alignment.CENTER, manager.viewRange(), 0.0f, 1.0f,
+                    Alignment.CENTER, bubbleConfig.billboard(), manager.viewRange(), 0.0f, 1.0f,
                     new Vector3(0.001, 0.001, 0.001),
                     affectedByScaling() ? translation.multiply(tracker.getScale()) : translation,
                     2048,

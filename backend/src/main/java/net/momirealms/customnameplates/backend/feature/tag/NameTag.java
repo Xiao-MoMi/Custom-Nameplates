@@ -68,7 +68,7 @@ public class NameTag extends AbstractTag implements RelationalFeature {
                 component, config.backgroundColor(),
                 (owner.isSpectator() && affectedBySpectator()) || (owner.isCrouching() && affectedByCrouching()) ? 64 : opacity(),
                 config.hasShadow(), config.isSeeThrough().asBoolean() && (!affectedByCrouching() || !tracker.isCrouching()), config.useDefaultBackgroundColor(),
-                config.alignment(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
+                config.alignment(), config.billboard(), config.viewRange(), config.shadowRadius(), config.shadowStrength(),
                 (affectedByScaling() ? scale(viewer).multiply(tracker.getScale()) : scale(viewer)),
                 (affectedByScaling() ? translation(viewer).multiply(tracker.getScale()) : translation(viewer)),
                 config.lineWidth(),
