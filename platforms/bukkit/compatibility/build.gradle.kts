@@ -3,19 +3,76 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public/") // paper
-    maven("https://repo.william278.net/releases/") // husk
-    maven("https://jitpack.io/")
-    maven("https://repo.oraxen.com/releases/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
-    maven("https://repo.essentialsx.net/releases/") // ess
-    maven("https://mvn.lib.co.nz/public") // disguise
-    maven("https://repo.opencollab.dev/main/") // geyser
-    maven("https://maven.enginehub.org/repo/") // worldguard worldedit
-    maven("https://repo.alessiodp.com/releases/") // parties
-    maven("https://maven.devs.beer/") // ia
-    maven("https://repo.pinodev.it/releases/") // zelchat
-    maven("https://repo.hibiscusmc.com/releases") // hmccosmetics
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        content {
+            includeGroup("io.papermc.paper")
+            includeGroup("dev.folia")
+            includeGroup("net.luckperms")
+            includeGroup("net.kyori")
+        }
+    }
+    maven("https://maven.enginehub.org/repo/") {
+        content {
+            includeGroupByRegex("com\\.sk89q.*")
+        }
+    }
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
+        content {
+            includeGroup("me.clip")
+        }
+    }
+    maven("https://repo.essentialsx.net/releases/") {
+        content {
+            includeGroup("net.essentialsx")
+        }
+    }
+    maven("https://repo.william278.net/releases/") {
+        content {
+            includeGroupByRegex("net\\.william278.*")
+            includeGroup("de.hexaoxi")
+        }
+    }
+    maven("https://repo.opencollab.dev/main/") {
+        content {
+            includeGroupByRegex("org\\.geysermc.*")
+        }
+    }
+    maven("https://repo.alessiodp.com/releases/") {
+        content {
+            includeGroupByRegex("com\\.alessiodp.*")
+        }
+    }
+    maven("https://mvn.lib.co.nz/public") {
+        content {
+            includeGroup("LibsDisguises")
+        }
+    }
+    maven("https://maven.devs.beer/") {
+        content {
+            includeGroup("dev.lone")
+        }
+    }
+    maven("https://repo.oraxen.com/releases/") {
+        content {
+            includeGroup("io.th0rgal")
+        }
+    }
+    maven("https://repo.pinodev.it/releases/") {
+        content {
+            includeGroup("it.pino.zelchat")
+        }
+    }
+    maven("https://repo.hibiscusmc.com/releases") {
+        content {
+            includeGroup("com.hibiscusmc")
+            includeGroup("me.lojosho")
+        }
+    }
+    maven("https://jitpack.io/") {
+        content {
+            includeGroupByRegex("com\\.github.*")
+        }
+    }
 }
 
 dependencies {
