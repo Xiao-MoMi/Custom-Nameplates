@@ -218,6 +218,21 @@ public abstract class AbstractRequirementManager implements RequirementManager {
         this.registerRequirement((args, interval) -> new NotNameplateRequirement(interval, new HashSet<>(ListUtils.toList(args))), "!nameplate");
         this.registerRequirement((args, interval) -> new BubbleRequirement(interval, new HashSet<>(ListUtils.toList(args))), "bubble");
         this.registerRequirement((args, interval) -> new NotBubbleRequirement(interval, new HashSet<>(ListUtils.toList(args))), "!bubble");
+        this.registerRequirement((args, interval) -> {
+            Section section = ConfigUtils.safeCast(args, Section.class);
+            if (section == null) return Requirement.empty();
+            List<PreParsedDynamicText> texts = new ArrayList<>();
+            Object papiValue = section.get("papi");
+            if (papiValue instanceof List<?> list) {
+                for (Object item : list) {
+                    if (item instanceof String s) texts.add(new PreParsedDynamicText(s, true));
+                }
+            } else {
+                texts.add(new PreParsedDynamicText(section.getString("papi", ""), true));
+            }
+            long timeoutMs = (long) (section.getDouble("timeout", 5.0) * 1000L);
+            return new PlaceholderChangeTimeoutRequirement(interval, texts, timeoutMs);
+        }, "placeholder-change-timeout");
     }
 
     protected abstract void registerPlatformRequirements();
