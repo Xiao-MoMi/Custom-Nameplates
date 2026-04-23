@@ -3,89 +3,20 @@ plugins {
 }
 
 repositories {
-    maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-        content {
-            includeGroup("io.papermc.paper")
-            includeGroup("dev.folia")
-            includeGroup("net.luckperms")
-            includeGroup("net.kyori")
-        }
-    }
-    maven {
-        url = uri("https://maven.enginehub.org/repo/")
-        content {
-            includeGroupByRegex("com\\.sk89q.*")
-        }
-    }
-    maven {
-        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-        content {
-            includeGroup("me.clip")
-        }
-    }
-    maven {
-        url = uri("https://repo.essentialsx.net/releases/")
-        content {
-            includeGroup("net.essentialsx")
-        }
-    }
-    maven {
-        url = uri("https://repo.william278.net/releases/")
-        content {
-            includeGroupByRegex("net\\.william278.*")
-            includeGroup("de.hexaoxi")
-        }
-    }
-    maven {
-        url = uri("https://repo.opencollab.dev/main/")
-        content {
-            includeGroupByRegex("org\\.geysermc.*")
-        }
-    }
-    maven {
-        url = uri("https://repo.alessiodp.com/releases/")
-        content {
-            includeGroupByRegex("com\\.alessiodp.*")
-        }
-    }
-    maven {
-        url = uri("https://mvn.lib.co.nz/public")
-        content {
-            includeGroup("LibsDisguises")
-        }
-    }
-    maven {
-        url = uri("https://maven.devs.beer/")
-        content {
-            includeGroup("dev.lone")
-        }
-    }
-    maven {
-        url = uri("https://repo.oraxen.com/releases/")
-        content {
-            includeGroup("io.th0rgal")
-        }
-    }
-    maven {
-        url = uri("https://repo.pinodev.it/releases/")
-        content {
-            includeGroup("it.pino.zelchat")
-        }
-    }
-    maven {
-        url = uri("https://repo.hibiscusmc.com/releases")
-        content {
-            includeGroup("com.hibiscusmc")
-            includeGroup("me.lojosho")
-        }
-    }
-    maven {
-        url = uri("https://jitpack.io/")
-        content {
-            includeGroupByRegex("com\\.github.*")
-        }
-    }
+    maven("https://repo.papermc.io/repository/maven-public/") // paper, folia, luckperms
+    maven("https://repo.william278.net/releases/") // husk
+    maven("https://jitpack.io/")
+    maven("https://repo.oraxen.com/releases/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
+    maven("https://repo.essentialsx.net/releases/") // ess
+    maven("https://mvn.lib.co.nz/public") // disguise
+    maven("https://repo.opencollab.dev/main/") // geyser, cloudburstmc
+    maven("https://maven.enginehub.org/repo/") // worldguard worldedit
+    maven("https://repo.alessiodp.com/releases/") // parties
+    maven("https://maven.devs.beer/") // ia
+    maven("https://repo.pinodev.it/releases/") // zelchat
+    maven("https://repo.hibiscusmc.com/releases") // hmccosmetics
+    maven("https://libraries.minecraft.net/") // mojang (brigadier)
 }
 
 dependencies {
