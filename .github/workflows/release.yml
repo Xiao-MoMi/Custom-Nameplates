@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build shadowJar
-        run: ./gradlew :platforms:bukkit:shadowJar --no-daemon
+        run: ./gradlew :platforms:bukkit:shadowJar --no-daemon --stacktrace --info 2>&1 | tee build.log; exit ${PIPESTATUS[0]}
 
       - name: Locate JAR
         id: jar
@@ -42,6 +42,14 @@ jobs:
           JAR=$(ls target/CustomNameplates-Bukkit-*.jar | head -1)
           echo "path=$JAR" >> $GITHUB_OUTPUT
           echo "name=$(basename $JAR)" >> $GITHUB_OUTPUT
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
