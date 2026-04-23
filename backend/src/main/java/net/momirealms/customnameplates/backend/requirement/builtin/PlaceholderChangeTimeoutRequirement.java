@@ -28,7 +28,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Satisfied (shows) when any tracked placeholder changed recently.
+ * Satisfied (shows) when any tracked placeholder changed recently to a non-baseline value.
+ * The first observed value per player is treated as the baseline — transitions back to it
+ * (e.g. health returning to full) are ignored and do not extend the visibility window.
  * After {@code timeoutMs} of inactivity, returns false to hide the actionbar.
  */
 public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
@@ -56,11 +58,13 @@ public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
         long now = System.currentTimeMillis();
         PlayerState state = states.compute(p1.uuid(), (uuid, existing) -> {
             if (existing == null) {
-                return new PlayerState(currentValue, now);
+                return new PlayerState(currentValue, 0L);
             }
             if (!currentValue.equals(existing.lastValue)) {
                 existing.lastValue = currentValue;
-                existing.lastChangeTime = now;
+                if (!currentValue.equals(existing.baselineValue)) {
+                    existing.lastChangeTime = now;
+                }
             }
             return existing;
         });
@@ -87,11 +91,13 @@ public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
     }
 
     private static class PlayerState {
+        final String baselineValue;
         String lastValue;
         long lastChangeTime;
 
-        PlayerState(String lastValue, long lastChangeTime) {
-            this.lastValue = lastValue;
+        PlayerState(String baselineValue, long lastChangeTime) {
+            this.baselineValue = baselineValue;
+            this.lastValue = baselineValue;
             this.lastChangeTime = lastChangeTime;
         }
     }
