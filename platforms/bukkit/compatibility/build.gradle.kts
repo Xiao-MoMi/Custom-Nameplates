@@ -3,7 +3,8 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public/") {
+    maven {
+        url = uri("https://repo.papermc.io/repository/maven-public/")
         content {
             includeGroup("io.papermc.paper")
             includeGroup("dev.folia")
@@ -11,64 +12,76 @@ repositories {
             includeGroup("net.kyori")
         }
     }
-    maven("https://maven.enginehub.org/repo/") {
+    maven {
+        url = uri("https://maven.enginehub.org/repo/")
         content {
             includeGroupByRegex("com\\.sk89q.*")
         }
     }
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
+    maven {
+        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         content {
             includeGroup("me.clip")
         }
     }
-    maven("https://repo.essentialsx.net/releases/") {
+    maven {
+        url = uri("https://repo.essentialsx.net/releases/")
         content {
             includeGroup("net.essentialsx")
         }
     }
-    maven("https://repo.william278.net/releases/") {
+    maven {
+        url = uri("https://repo.william278.net/releases/")
         content {
             includeGroupByRegex("net\\.william278.*")
             includeGroup("de.hexaoxi")
         }
     }
-    maven("https://repo.opencollab.dev/main/") {
+    maven {
+        url = uri("https://repo.opencollab.dev/main/")
         content {
             includeGroupByRegex("org\\.geysermc.*")
         }
     }
-    maven("https://repo.alessiodp.com/releases/") {
+    maven {
+        url = uri("https://repo.alessiodp.com/releases/")
         content {
             includeGroupByRegex("com\\.alessiodp.*")
         }
     }
-    maven("https://mvn.lib.co.nz/public") {
+    maven {
+        url = uri("https://mvn.lib.co.nz/public")
         content {
             includeGroup("LibsDisguises")
         }
     }
-    maven("https://maven.devs.beer/") {
+    maven {
+        url = uri("https://maven.devs.beer/")
         content {
             includeGroup("dev.lone")
         }
     }
-    maven("https://repo.oraxen.com/releases/") {
+    maven {
+        url = uri("https://repo.oraxen.com/releases/")
         content {
             includeGroup("io.th0rgal")
         }
     }
-    maven("https://repo.pinodev.it/releases/") {
+    maven {
+        url = uri("https://repo.pinodev.it/releases/")
         content {
             includeGroup("it.pino.zelchat")
         }
     }
-    maven("https://repo.hibiscusmc.com/releases") {
+    maven {
+        url = uri("https://repo.hibiscusmc.com/releases")
         content {
             includeGroup("com.hibiscusmc")
             includeGroup("me.lojosho")
         }
     }
-    maven("https://jitpack.io/") {
+    maven {
+        url = uri("https://jitpack.io/")
         content {
             includeGroupByRegex("com\\.github.*")
         }
