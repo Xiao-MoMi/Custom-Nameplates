@@ -231,7 +231,8 @@ public abstract class AbstractRequirementManager implements RequirementManager {
                 texts.add(new PreParsedDynamicText(section.getString("papi", ""), true));
             }
             long timeoutMs = (long) (section.getDouble("timeout", 5.0) * 1000L);
-            return new PlaceholderChangeTimeoutRequirement(interval, texts, timeoutMs);
+            Set<String> resetValues = new HashSet<>(section.getStringList("reset-values"));
+            return new PlaceholderChangeTimeoutRequirement(interval, texts, timeoutMs, resetValues);
         }, "placeholder-change-timeout");
     }
 

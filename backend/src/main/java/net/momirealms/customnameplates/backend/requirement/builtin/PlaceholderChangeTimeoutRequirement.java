@@ -28,21 +28,24 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Satisfied (shows) when any tracked placeholder changed recently to a non-baseline value.
- * The first observed value per player is treated as the baseline — transitions back to it
- * (e.g. health returning to full) are ignored and do not extend the visibility window.
+ * Satisfied (shows) when any tracked placeholder changed recently to a non-reset value.
+ * The first observed value per player is always treated as a reset point (baseline).
+ * Additional reset values can be configured explicitly (e.g. "", "0") — transitions to
+ * any reset value do not extend the visibility window.
  * After {@code timeoutMs} of inactivity, returns false to hide the actionbar.
  */
 public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
 
     private final List<PreParsedDynamicText> texts;
     private final long timeoutMs;
+    private final Set<String> resetValues;
     private final ConcurrentHashMap<UUID, PlayerState> states = new ConcurrentHashMap<>();
 
-    public PlaceholderChangeTimeoutRequirement(int refreshInterval, List<PreParsedDynamicText> texts, long timeoutMs) {
+    public PlaceholderChangeTimeoutRequirement(int refreshInterval, List<PreParsedDynamicText> texts, long timeoutMs, Set<String> resetValues) {
         super(refreshInterval);
         this.texts = texts;
         this.timeoutMs = timeoutMs;
+        this.resetValues = resetValues;
     }
 
     @Override
@@ -62,7 +65,8 @@ public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
             }
             if (!currentValue.equals(existing.lastValue)) {
                 existing.lastValue = currentValue;
-                if (!currentValue.equals(existing.baselineValue)) {
+                boolean isReset = currentValue.equals(existing.baselineValue) || resetValues.contains(currentValue);
+                if (!isReset) {
                     existing.lastChangeTime = now;
                 }
             }
@@ -82,12 +86,14 @@ public class PlaceholderChangeTimeoutRequirement extends AbstractRequirement {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceholderChangeTimeoutRequirement that = (PlaceholderChangeTimeoutRequirement) object;
-        return timeoutMs == that.timeoutMs && Objects.equals(texts, that.texts);
+        return timeoutMs == that.timeoutMs
+                && Objects.equals(texts, that.texts)
+                && Objects.equals(resetValues, that.resetValues);
     }
 
     @Override
     public int hashCode() {
-        return 397 + texts.hashCode() * 17 + Long.hashCode(timeoutMs) * 43;
+        return 397 + texts.hashCode() * 17 + Long.hashCode(timeoutMs) * 43 + resetValues.hashCode() * 71;
     }
 
     private static class PlayerState {

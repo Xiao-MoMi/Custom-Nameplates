@@ -41,6 +41,13 @@ actionbar:
 #           - "%player_health%"
 #           - "%player_food_level%"
 #         timeout: 8.0
+#         # reset-values: values that should NOT count as an update (e.g. when a
+#         # placeholder is wiped back to "" or "0" after a cooldown). Transitions
+#         # TO any listed value are ignored and do not re-show the actionbar.
+#         reset-values:
+#           - ""
+#           - "0"
+#           - "0.00"
 #   text-display-order:
 #     1:
 #       duration: -1
