@@ -1,6 +1,9 @@
 # Do not modify this value
 config-version: '${config_version}'
 # https://mo-mi.gitbook.io/xiaomomi-plugins/plugin-wiki/customnameplates/config/nameplate.yml
+# background-color accepts two formats:
+#   A,R,G,B  (decimal 0-255, e.g. 64,0,0,0)
+#   #AARRGGBB or #RRGGBB  (hex, e.g. #40000000 or #000000)
 preview-duration: 5
 default-nameplate: 'none'
 always-show: false

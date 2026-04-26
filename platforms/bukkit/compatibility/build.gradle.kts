@@ -3,19 +3,20 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public/") // paper
+    maven("https://repo.papermc.io/repository/maven-public/") // paper, folia, luckperms
     maven("https://repo.william278.net/releases/") // husk
     maven("https://jitpack.io/")
     maven("https://repo.oraxen.com/releases/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
     maven("https://repo.essentialsx.net/releases/") // ess
     maven("https://mvn.lib.co.nz/public") // disguise
-    maven("https://repo.opencollab.dev/main/") // geyser
+    maven("https://repo.opencollab.dev/main/") // geyser, cloudburstmc
     maven("https://maven.enginehub.org/repo/") // worldguard worldedit
     maven("https://repo.alessiodp.com/releases/") // parties
     maven("https://maven.devs.beer/") // ia
     maven("https://repo.pinodev.it/releases/") // zelchat
     maven("https://repo.hibiscusmc.com/releases") // hmccosmetics
+    maven("https://libraries.minecraft.net/") // mojang (brigadier)
 }
 
 dependencies {
