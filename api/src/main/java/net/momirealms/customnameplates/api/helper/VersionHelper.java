@@ -84,31 +84,42 @@ public class VersionHelper {
     }
 
     public static int parseVersionToInteger(String versionString) {
-        int major = 0;
-        int minor = 0;
+        int v1 = 0;
+        int v2 = 0;
+        int v3 = 0;
         int currentNumber = 0;
         int part = 0;
-        for (int i = 0; i < versionString.length(); i++) {
+
+        for(int i = 0; i < versionString.length(); ++i) {
             char c = versionString.charAt(i);
             if (c >= '0' && c <= '9') {
-                currentNumber = currentNumber * 10 + (c - '0');
+                currentNumber = currentNumber * 10 + (c - 48);
             } else if (c == '.') {
-                if (part == 1) {
-                    major = currentNumber;
+                if (part == 0) {
+                    v1 = currentNumber;
                 }
-                part++;
+
+                if (part == 1) {
+                    v2 = currentNumber;
+                }
+
+                ++part;
                 currentNumber = 0;
                 if (part > 2) {
                     break;
                 }
             }
         }
-        if (part == 1) {
-            major = currentNumber;
+
+        if (part == 0) {
+            v1 = currentNumber;
+        } else if (part == 1) {
+            v2 = currentNumber;
         } else if (part == 2) {
-            minor = currentNumber;
+            v3 = currentNumber;
         }
-        return 10000 + major * 100 + minor;
+
+        return 10000 * v1 + v2 * 100 + v3;
     }
 
     /**
@@ -162,6 +173,10 @@ public class VersionHelper {
             paper = true;
         } catch (ClassNotFoundException ignored) {
         }
+    }
+
+    public static boolean isVersionNewerThan26_1() {
+        return version >= 260100;
     }
 
     /**

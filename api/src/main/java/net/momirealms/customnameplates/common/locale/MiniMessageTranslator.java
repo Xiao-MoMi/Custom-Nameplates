@@ -20,12 +20,11 @@ package net.momirealms.customnameplates.common.locale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.translation.Translator;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public interface MiniMessageTranslator extends Translator, Examinable {
+public interface MiniMessageTranslator extends Translator {
 
     static @NotNull MiniMessageTranslator translator() {
         return MiniMessageTranslatorImpl.INSTANCE;

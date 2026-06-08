@@ -40,6 +40,7 @@ import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.requirement.Requirement;
 import net.momirealms.customnameplates.api.util.Alignment;
+import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.ConfigUtils;
 import net.momirealms.customnameplates.api.util.Vector3;
 import net.momirealms.customnameplates.common.util.Tristate;
@@ -294,7 +295,8 @@ public abstract class AbstractUnlimitedTagManager implements UnlimitedTagManager
                             .viewerRequirement(plugin.getRequirementManager().parseRequirements(section.getSection("viewer-conditions")))
                             .translation(VersionHelper.isVersionNewerThan1_20_2() ? translation : translation.add(0,0.5,0))
                             .scale(ConfigUtils.vector3(section.getString("scale", "1,1,1")))
-                            .alignment(Alignment.valueOf(section.getString("alignment", "CENTER")))
+                            .alignment(section.getEnum("alignment", Alignment.class, Alignment.CENTER))
+                            .billboard(section.getEnum("billboard", Billboard.class, Billboard.CENTER))
                             .viewRange(section.getFloat("view-range", 1f))
                             .shadowRadius(section.getFloat("shadow-radius", 0f))
                             .shadowStrength(section.getFloat("shadow-strength", 1f))

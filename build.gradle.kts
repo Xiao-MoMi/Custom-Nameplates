@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 val git : String = versionBanner()
@@ -23,7 +23,7 @@ subprojects {
             expand(rootProject.properties)
         }
 
-        filesMatching(arrayListOf("*.yml", "*/*.yml", "META-INF/sponge_plugins.json")) {
+        filesMatching(arrayListOf("*.yml", "*/*.yml")) {
             expand(
                 Pair("project_version", rootProject.properties["project_version"]!!),
                 Pair("config_version", rootProject.properties["config_version"]!!)
