@@ -54,8 +54,6 @@ public abstract class SenderFactory<P extends NameplatesPlugin, T> implements Au
 
     protected abstract String getName(T sender);
 
-    public abstract Audience getAudience(T sender);
-
     protected abstract void sendMessage(T sender, Component message);
 
     protected abstract Tristate getPermissionValue(T sender, String node);

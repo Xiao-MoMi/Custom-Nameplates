@@ -25,9 +25,8 @@
 
 package net.momirealms.customnameplates.bukkit;
 
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.sender.Sender;
@@ -41,11 +40,9 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class BukkitSenderFactory extends SenderFactory<BukkitCustomNameplates, CommandSender> {
-    private final BukkitAudiences audiences;
 
     public BukkitSenderFactory(BukkitCustomNameplates plugin) {
         super(plugin);
-        this.audiences = BukkitAudiences.create(plugin.getBootstrap());
     }
 
     @Override
@@ -65,11 +62,6 @@ public class BukkitSenderFactory extends SenderFactory<BukkitCustomNameplates, C
     }
 
     @Override
-    public Audience getAudience(CommandSender sender) {
-        return this.audiences.sender(sender);
-    }
-
-    @Override
     protected void sendMessage(CommandSender sender, Component message) {
         if (sender instanceof Player player) {
             try {
@@ -78,10 +70,8 @@ public class BukkitSenderFactory extends SenderFactory<BukkitCustomNameplates, C
             } catch (ReflectiveOperationException e) {
                 getPlugin().getPluginLogger().warn("Failed to send message to player " + sender.getName(), e);
             }
-        } else if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
-            getAudience(sender).sendMessage(message);
         } else {
-            getPlugin().getScheduler().executeSync(() -> getAudience(sender).sendMessage(message));
+            sender.sendMessage(LegacyComponentSerializer.legacySection().serialize(message));
         }
     }
 
@@ -114,6 +104,5 @@ public class BukkitSenderFactory extends SenderFactory<BukkitCustomNameplates, C
     @Override
     public void close() {
         super.close();
-        this.audiences.close();
     }
 }
