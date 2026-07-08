@@ -179,6 +179,10 @@ public class VersionHelper {
         return version >= 260100;
     }
 
+    public static boolean isVersionNewerThan26_2() {
+        return version >= 260200;
+    }
+
     /**
      * Checks if the server version is newer than 1.21.9
      *

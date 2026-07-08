@@ -40,6 +40,9 @@ import net.momirealms.customnameplates.bukkit.util.EntityData;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.util.TriConsumer;
 import net.momirealms.customnameplates.common.util.UUIDUtils;
+import net.momirealms.sparrow.reflection.clazz.SparrowClass;
+import net.momirealms.sparrow.reflection.field.SField;
+import net.momirealms.sparrow.reflection.field.matcher.FieldMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -418,6 +421,7 @@ public class BukkitPlatform implements Platform {
         }, "ClientboundSetEntityDataPacket", "PacketPlayOutEntityMetadata");
 
         // not a perfect solution but would work in most cases
+        SField visibilityField = VersionHelper.isVersionNewerThan26_2() ? SparrowClass.of(Reflections.clazz$ClientboundSetPlayerTeamPacket$Parameters).getDeclaredSparrowField(FieldMatcher.named("nameTagVisibility")).mh() : null;
         registerPacketConsumer((player, event, packet) -> {
             if (!ConfigManager.nametagModule()) return;
             if (!ConfigManager.hideTeamNames()) return;
@@ -451,7 +455,11 @@ public class BukkitPlatform implements Platform {
                         Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
                         if (optionalParameters.isPresent()) {
                             Object parameters = optionalParameters.get();
-                            Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, VersionHelper.isVersionNewerThan1_21_5() ? Reflections.instance$Team$Visibility$NEVER : "never");
+                            if (VersionHelper.isVersionNewerThan26_2()) {
+                                visibilityField.set(parameters, Reflections.instance$Team$Visibility$NEVER);
+                            } else {
+                                Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, VersionHelper.isVersionNewerThan1_21_5() ? Reflections.instance$Team$Visibility$NEVER : "never");
+                            }
                         }
                     }
                     // remove
@@ -481,7 +489,11 @@ public class BukkitPlatform implements Platform {
                         Optional<Object> optionalParameters = (Optional<Object>) Reflections.field$ClientboundSetPlayerTeamPacket$parameters.get(packet);
                         if (optionalParameters.isPresent()) {
                             Object parameters = optionalParameters.get();
-                            Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, VersionHelper.isVersionNewerThan1_21_5() ? Reflections.instance$Team$Visibility$NEVER : "never");
+                            if (VersionHelper.isVersionNewerThan26_2()) {
+                                visibilityField.set(parameters, Reflections.instance$Team$Visibility$NEVER);
+                            } else {
+                                Reflections.field$ClientboundSetPlayerTeamPacket$Parameters$nametagVisibility.set(parameters, VersionHelper.isVersionNewerThan1_21_5() ? Reflections.instance$Team$Visibility$NEVER : "never");
+                            }
                         }
                     }
                     // add members
