@@ -54,6 +54,7 @@ public class BukkitRequirementManager extends AbstractRequirementManager {
         this.registerDisguise();
         this.registerPassenger();
         this.registerTeammates();
+        this.registerEventType();
     }
 
     private void registerTeammates() {
@@ -220,5 +221,12 @@ public class BukkitRequirementManager extends AbstractRequirementManager {
             List<String> list = ListUtils.toList(args);
             return new NotGameModeRequirement(interval, list);
         }, "!gamemode");
+    }
+
+    private void registerEventType() {
+        this.registerRequirement((args, interval) -> {
+            String eventType = (String) args;
+            return new EventTypeRequirement(interval, eventType);
+        }, "event-type");
     }
 }

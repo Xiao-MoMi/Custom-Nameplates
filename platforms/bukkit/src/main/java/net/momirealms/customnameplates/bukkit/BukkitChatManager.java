@@ -25,6 +25,7 @@ import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.backend.feature.chat.AbstractChatManager;
 import net.momirealms.customnameplates.bukkit.compatibility.chat.*;
 import net.momirealms.customnameplates.bukkit.compatibility.emoji.ItemsAdderEmojiProvider;
+import net.momirealms.customnameplates.bukkit.compatibility.emoji.NexoEmojiProvider;
 import net.momirealms.customnameplates.bukkit.compatibility.emoji.OraxenEmojiProvider;
 import org.bukkit.Bukkit;
 
@@ -80,6 +81,13 @@ public class BukkitChatManager extends AbstractChatManager {
             try {
                 this.emojiProviders.add(new OraxenEmojiProvider(Bukkit.getPluginManager().getPlugin("Oraxen").getDescription().getVersion().startsWith("1") ? 1 : 2));
             } catch (Exception ignore) {
+            }
+        }
+        if (Bukkit.getPluginManager().getPlugin("Nexo") != null) {
+            try {
+                this.emojiProviders.add(new NexoEmojiProvider());
+                plugin.debug(() -> "NexoEmojiProvider Enabled");
+            } catch (Throwable ignore) {
             }
         }
     }

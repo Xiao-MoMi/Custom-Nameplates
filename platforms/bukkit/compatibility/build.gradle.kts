@@ -16,6 +16,7 @@ repositories {
     maven("https://maven.devs.beer/") // ia
     maven("https://repo.pinodev.it/releases/") // zelchat
     maven("https://repo.hibiscusmc.com/releases") // hmccosmetics
+    maven("https://repo.nexomc.com/releases/") // nexo
 }
 
 dependencies {
@@ -52,6 +53,7 @@ dependencies {
     // Emoji
     compileOnly("dev.lone:api-itemsadder:4.0.10")
     compileOnly("io.th0rgal:oraxen:1.182.0")
+    compileOnly("com.nexomc:nexo:${rootProject.properties["nexo_version"]}")
     // PAPI
     compileOnly("me.clip:placeholderapi:${rootProject.properties["placeholder_api_version"]}")
     // Disguise

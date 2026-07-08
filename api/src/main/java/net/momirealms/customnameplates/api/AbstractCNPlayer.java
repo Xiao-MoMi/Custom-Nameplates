@@ -85,6 +85,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
     private final Map<CNPlayer, Tracker> trackers = new WeakHashMap<>();
     private final ReadWriteLock trackerLock = new ReentrantReadWriteLock();
     private final Vector<String> otherActionBarFeatures = new Vector<>();
+    private final Set<String> activeEvents = new HashSet<>();
 
     /**
      * Creates a player instance
@@ -110,6 +111,21 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
     @Override
     public boolean shouldCNTakeOverActionBar() {
         return otherActionBarFeatures.isEmpty();
+    }
+
+    @Override
+    public void markEventActive(String eventType) {
+        this.activeEvents.add(eventType);
+    }
+
+    @Override
+    public void markEventInactive(String eventType) {
+        this.activeEvents.remove(eventType);
+    }
+
+    @Override
+    public boolean isEventActive(String eventType) {
+        return this.activeEvents.contains(eventType);
     }
 
     @Override

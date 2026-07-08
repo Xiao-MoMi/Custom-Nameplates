@@ -206,6 +206,28 @@ public interface CNPlayer {
     boolean shouldCNTakeOverActionBar();
 
     /**
+     * Marks an event type as active for this player.
+     *
+     * @param eventType The event type to mark as active.
+     */
+    void markEventActive(String eventType);
+
+    /**
+     * Marks an event type as inactive for this player.
+     *
+     * @param eventType The event type to mark as inactive.
+     */
+    void markEventInactive(String eventType);
+
+    /**
+     * Checks if a specific event type is currently active for this player.
+     *
+     * @param eventType The event type to check.
+     * @return True if the event type is active, false otherwise.
+     */
+    boolean isEventActive(String eventType);
+
+    /**
      * Retrieves the list of placeholders that need to be refreshed based on their refresh intervals.
      *
      * @return a list of placeholders to refresh

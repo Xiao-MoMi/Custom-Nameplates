@@ -8,6 +8,10 @@ bossbar_1:
       refresh-interval: 20
       value:
         - bossbar.show
+    condition_2:
+      type: event-type
+      refresh-interval: 10
+      value: "JobExpGainEvent"
   text-display-order:
     1:
       duration: 100
