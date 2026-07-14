@@ -231,8 +231,8 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
         viewBubbleRequirements = plugin.getRequirementManager().parseRequirements(document.getSection("viewer-requirements"));
         defaultBubbleId = document.getString("default-bubble", "chat");
         yOffset = document.getDouble("y-offset", 0.2);
-        stayDuration = document.getInt("stay-duration", 160);
-        durationPerCharacter = document.getDouble("duration-per-character", 0.0);
+        stayDuration = document.getInt("stay-duration", 100);
+        durationPerCharacter = document.getDouble("duration-per-character", 2.0);
         maxStayDuration = document.getInt("max-stay-duration", 0);
         appearDuration = document.getInt("appear-duration", 20);
         disappearDuration = document.getInt("disappear-duration", 10);

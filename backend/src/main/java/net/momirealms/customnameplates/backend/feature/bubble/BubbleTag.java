@@ -81,7 +81,7 @@ public class BubbleTag extends AbstractTag {
                 text, bubbleConfig.backgroundColor(), (byte) -1, bubbleConfig.hasShadow(), false, false,
                 Alignment.CENTER, bubbleConfig.billboard(), manager.viewRange(), 0.0f, 1.0f,
                 new Vector3(0.001, 0.001, 0.001),
-                affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.01, 0, 0.01) : translation,
+                affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.02, 0, 0.02) : translation.add(0.02, 0, 0.02),
                 bubbleConfig.lineWidth(),
                 (affectedByCrouching() && tracker.isCrouching())
         ));
@@ -180,7 +180,7 @@ public class BubbleTag extends AbstractTag {
     public void onPlayerScaleUpdate(CNPlayer viewer, double scale) {
         Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createScaleModifier(scale(viewer).multiply(scale));
         Vector3 translation = translation(viewer);
-        Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(scale).add(0.01,0,0.01));
+        Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(scale).add(0.02,0,0.02));
         Object packet1 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1, modifier2));
         if (background != null) {
             Consumer<List<Object>> modifier3 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(scale));
@@ -196,7 +196,7 @@ public class BubbleTag extends AbstractTag {
         Tracker tracker = owner.getTracker(viewer);
         if (tracker != null) {
             Vector3 translation = translation(viewer);
-            Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.01,0,0.01) : translation.add(0.01,0,0.01));
+            Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.02,0,0.02) : translation.add(0.02,0,0.02));
             Object packet1 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1));
             if (background != null) {
                 Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(affectedByScaling() ? translation.multiply(tracker.getScale()) : translation);
