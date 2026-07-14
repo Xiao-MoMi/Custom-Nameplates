@@ -51,7 +51,7 @@ dependencies {
     compileOnly(files("libs/Chatty-3.0.0-SNAPSHOT.jar"))
     // Emoji
     compileOnly("dev.lone:api-itemsadder:4.0.10")
-    compileOnly("io.th0rgal:oraxen:1.182.0")
+    compileOnly("io.th0rgal:oraxen:1.217.0")
     // PAPI
     compileOnly("me.clip:placeholderapi:${rootProject.properties["placeholder_api_version"]}")
     // Disguise

@@ -78,7 +78,7 @@ public class BukkitChatManager extends AbstractChatManager {
         }
         if (Bukkit.getPluginManager().getPlugin("Oraxen") != null) {
             try {
-                this.emojiProviders.add(new OraxenEmojiProvider(Bukkit.getPluginManager().getPlugin("Oraxen").getDescription().getVersion().startsWith("1") ? 1 : 2));
+                this.emojiProviders.add(new OraxenEmojiProvider());
             } catch (Exception ignore) {
             }
         }
