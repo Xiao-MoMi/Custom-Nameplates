@@ -45,6 +45,7 @@ public class BubbleTag extends AbstractTag {
     private final Object background;
     private final BubbleManager manager;
     private final BubbleConfig bubbleConfig;
+    private final int stayDuration;
     private int ticker;
     private boolean canShow;
     private final String channel;
@@ -53,13 +54,19 @@ public class BubbleTag extends AbstractTag {
     protected final int subEntityID = SelfIncreaseEntityID.getAndIncrease();
     protected final UUID subEntityUUID = UUID.randomUUID();
 
-    public BubbleTag(CNPlayer owner, TagRenderer renderer, String channel, BubbleConfig bubbleConfig, Object text, @Nullable Object background, BubbleManager bubbleManager) {
+    public BubbleTag(CNPlayer owner, TagRenderer renderer, String channel, BubbleConfig bubbleConfig, Object text, @Nullable Object background, BubbleManager bubbleManager, int textLength) {
         super(owner, renderer);
         this.text = text;
         this.manager = bubbleManager;
         this.bubbleConfig = bubbleConfig;
         this.channel = channel;
         this.background = background;
+        int base = bubbleManager.stayDuration();
+        int extra = (int) (textLength * bubbleManager.durationPerCharacter());
+        int duration = base + extra;
+        int max = bubbleManager.maxStayDuration();
+        if (max > 0 && duration > max) duration = max;
+        this.stayDuration = duration;
     }
 
     @Override
@@ -162,7 +169,7 @@ public class BubbleTag extends AbstractTag {
     @Override
     public void tick() {
         if (!canShow) return;
-        if (ticker >= manager.stayDuration()) {
+        if (ticker >= stayDuration) {
             renderer.removeTag(this);
             return;
         }

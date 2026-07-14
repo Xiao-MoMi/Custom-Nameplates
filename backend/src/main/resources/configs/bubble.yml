@@ -14,6 +14,11 @@ default-bubble: 'chat'
 y-offset: 0.1
 view-range: 0.5
 stay-duration: 150
+# Additional ticks added per visible character of the chat message.
+# Set to 0.0 to disable length-based duration.
+duration-per-character: 0.0
+# Maximum stay duration in ticks. 0 means no limit.
+max-stay-duration: 0
 appear-duration: 4
 disappear-duration: 2
 bubble-settings:

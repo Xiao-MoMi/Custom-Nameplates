@@ -138,6 +138,21 @@ public interface BubbleManager extends Reloadable {
     int stayDuration();
 
     /**
+     * Returns the additional duration (in ticks) added per visible character in the Bubble text.
+     *
+     * @return the duration per character in ticks
+     */
+    double durationPerCharacter();
+
+    /**
+     * Returns the maximum duration (in ticks) for which the Bubble remains visible.
+     * A value of 0 means no maximum.
+     *
+     * @return the maximum stay duration in ticks
+     */
+    int maxStayDuration();
+
+    /**
      * Returns the duration (in ticks) for the Bubble to appear.
      *
      * @return the appear duration in ticks
