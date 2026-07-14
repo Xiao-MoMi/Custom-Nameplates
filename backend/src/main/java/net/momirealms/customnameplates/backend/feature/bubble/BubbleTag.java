@@ -189,10 +189,10 @@ public class BubbleTag extends AbstractTag {
         Tracker tracker = owner.getTracker(viewer);
         if (tracker != null) {
             Vector3 translation = translation(viewer);
-            Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()).add(0.01,0,0.01));
+            Consumer<List<Object>> modifier1 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(affectedByScaling() ? translation.multiply(tracker.getScale()).add(0.01,0,0.01) : translation.add(0.01,0,0.01));
             Object packet1 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(entityID, List.of(modifier1));
             if (background != null) {
-                Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(translation.multiply(tracker.getScale()));
+                Consumer<List<Object>> modifier2 = CustomNameplates.getInstance().getPlatform().createTranslationModifier(affectedByScaling() ? translation.multiply(tracker.getScale()) : translation);
                 Object packet2 = CustomNameplates.getInstance().getPlatform().updateTextDisplayPacket(subEntityID, List.of(modifier2));
                 CustomNameplates.getInstance().getPacketSender().sendPacket(viewer, List.of(packet1, packet2));
             } else {
@@ -309,7 +309,7 @@ public class BubbleTag extends AbstractTag {
 
     @Override
     public boolean affectedByScaling() {
-        return true;
+        return bubbleConfig.affectedByScaling();
     }
 
     @Override

@@ -248,6 +248,7 @@ public class BubbleManagerImpl implements BubbleManager, ChatListener {
                             .scale(ConfigUtils.vector3(inner.getString("scale", "1,1,1")))
                             .hasShadow(inner.getBoolean("has-shadow", false))
                             .billboard(inner.getEnum("billboard", Billboard.class, Billboard.CENTER))
+                            .affectedByScaling(inner.getBoolean("affected-by-scale-attribute", true))
                             .build();
                     this.bubbleConfigs.put(bubble.id(), bubble);
                     this.bubbleConfigsByCommand.put(bubble.commandSuggestion(), bubble);

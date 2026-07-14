@@ -41,6 +41,7 @@ public class BubbleConfigImpl implements BubbleConfig {
     private final Vector3 scale;
     private final boolean hasShadow;
     private final Billboard billboard;
+    private final boolean affectedByScaling;
 
     /**
      * Constructs a new BubbleConfigImpl.
@@ -56,8 +57,10 @@ public class BubbleConfigImpl implements BubbleConfig {
      * @param textSuffix    a suffix that will be added after the text in the bubble
      * @param scale         the scale of the bubble display (as a Vector3)
      * @param hasShadow     has shadow or not
+     * @param billboard     billboard
+     * @param affectedByScaling if the bubble is affected by scaling
      */
-    public BubbleConfigImpl(String id, String commandSuggestion, String displayName, int backgroundColor, int lineWidth, int maxLines, Bubble[] bubbles, String textPrefix, String textSuffix, Vector3 scale, boolean hasShadow, Billboard billboard) {
+    public BubbleConfigImpl(String id, String commandSuggestion, String displayName, int backgroundColor, int lineWidth, int maxLines, Bubble[] bubbles, String textPrefix, String textSuffix, Vector3 scale, boolean hasShadow, Billboard billboard, boolean affectedByScaling) {
         this.backgroundColor = backgroundColor;
         this.lineWidth = lineWidth;
         this.maxLines = maxLines;
@@ -70,6 +73,7 @@ public class BubbleConfigImpl implements BubbleConfig {
         this.scale = requireNonNull(scale);
         this.hasShadow = hasShadow;
         this.billboard = billboard;
+        this.affectedByScaling = affectedByScaling;
     }
 
     @Override
@@ -132,6 +136,11 @@ public class BubbleConfigImpl implements BubbleConfig {
         return billboard;
     }
 
+    @Override
+    public boolean affectedByScaling() {
+        return affectedByScaling;
+    }
+
     /**
      * Builder implementation for creating BubbleConfigImpl instances.
      */
@@ -148,6 +157,7 @@ public class BubbleConfigImpl implements BubbleConfig {
         private Vector3 scale;
         private boolean hasShadow;
         private Billboard billboard;
+        private boolean affectedByScaling = true;
 
         @Override
         public Builder id(String id) {
@@ -222,8 +232,14 @@ public class BubbleConfigImpl implements BubbleConfig {
         }
 
         @Override
+        public Builder affectedByScaling(boolean affectedByScaling) {
+            this.affectedByScaling = affectedByScaling;
+            return this;
+        }
+
+        @Override
         public BubbleConfig build() {
-            return new BubbleConfigImpl(id, Optional.ofNullable(this.commandSuggestion).orElse(id), displayName, backgroundColor, lineWidth, maxLines, bubbles, textPrefix, textSuffix, scale, hasShadow, billboard);
+            return new BubbleConfigImpl(id, Optional.ofNullable(this.commandSuggestion).orElse(id), displayName, backgroundColor, lineWidth, maxLines, bubbles, textPrefix, textSuffix, scale, hasShadow, billboard, affectedByScaling);
         }
     }
 }

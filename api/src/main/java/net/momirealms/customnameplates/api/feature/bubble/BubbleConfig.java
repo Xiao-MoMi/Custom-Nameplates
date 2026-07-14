@@ -113,6 +113,13 @@ public interface BubbleConfig {
     Vector3 scale();
 
     /**
+     * Checks if the bubble is affected by scaling.
+     *
+     * @return true if affected by scaling, false otherwise
+     */
+    boolean affectedByScaling();
+
+    /**
      * Creates a new builder for constructing a BubbleConfig.
      *
      * @return a new builder instance
@@ -205,6 +212,14 @@ public interface BubbleConfig {
          * @return the builder instance
          */
         Builder scale(Vector3 scale);
+
+        /**
+         * Sets if the bubble is affected by scaling
+         *
+         * @param affectedByScaling affected by scaling
+         * @return the builder instance
+         */
+        Builder affectedByScaling(boolean affectedByScaling);
 
         /**
          * Sets if the text has shadow
