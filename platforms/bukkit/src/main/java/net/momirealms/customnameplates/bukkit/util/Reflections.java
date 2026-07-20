@@ -1210,7 +1210,7 @@ public final class Reflections {
     );
 
     public static final Method method$GsonComponentSerializer$builder = requireNonNull(
-            ReflectionUtils.getMethod(
+            ReflectionUtils.getStaticMethod(
                     clazz$GsonComponentSerializer, clazz$GsonComponentSerializer$Builder
             )
     );
