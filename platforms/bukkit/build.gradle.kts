@@ -40,11 +40,11 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-json-legacy-impl:${rootProject.properties["adventure_bundle_version"]}")
     implementation("net.kyori:adventure-text-serializer-legacy:${project.properties["adventure_bundle_version"]}")
 
-    implementation("net.momirealms:sparrow-reflection:0.33")
-    implementation("net.momirealms:sparrow-nbt:0.19.2")
-    implementation("net.momirealms:sparrow-nbt-codec:0.19.2")
-    implementation("net.momirealms:sparrow-nbt-legacy-codec:0.19.2")
-    implementation("net.momirealms:sparrow-nbt-parser:0.19.2")
+    implementation("net.momirealms:sparrow-reflection:0.34")
+    implementation("net.momirealms:sparrow-nbt:0.22")
+    implementation("net.momirealms:sparrow-nbt-codec:0.22")
+    implementation("net.momirealms:sparrow-nbt-legacy-codec:0.22")
+    implementation("net.momirealms:sparrow-nbt-parser:0.22")
 
     // BStats
     compileOnly("org.bstats:bstats-bukkit:${rootProject.properties["bstats_version"]}")
