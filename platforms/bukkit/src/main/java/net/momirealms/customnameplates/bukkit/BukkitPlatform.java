@@ -19,6 +19,7 @@ package net.momirealms.customnameplates.bukkit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -48,6 +49,13 @@ import net.momirealms.customnameplates.bukkit.util.EntityData;
 import net.momirealms.customnameplates.bukkit.util.Reflections;
 import net.momirealms.customnameplates.common.util.TriConsumer;
 import net.momirealms.customnameplates.common.util.UUIDUtils;
+import net.momirealms.sparrow.nbt.EndTag;
+import net.momirealms.sparrow.nbt.Tag;
+import net.momirealms.sparrow.nbt.codec.JsonOps;
+import net.momirealms.sparrow.nbt.codec.LegacyJavaOps;
+import net.momirealms.sparrow.nbt.codec.LegacyJsonOps;
+import net.momirealms.sparrow.nbt.codec.NBTOps;
+import net.momirealms.sparrow.nbt.parser.TagParser;
 import net.momirealms.sparrow.reflection.clazz.SparrowClass;
 import net.momirealms.sparrow.reflection.constructor.SConstructor2;
 import net.momirealms.sparrow.reflection.constructor.matcher.ConstructorMatcher;
@@ -798,7 +806,22 @@ public class BukkitPlatform implements Platform {
         DataComponentValueConverterRegistry.Conversion<BinaryTagHolder, GsonDataComponentValue> convertor1 = DataComponentValueConverterRegistry.Conversion.convert(
                 BinaryTagHolder.class,
                 GsonDataComponentValue.class,
-                (key, srcValue) -> GsonDataComponentValue.gsonDataComponentValue(GsonHelper.get().fromJson(srcValue.toString(), JsonElement.class))
+                (key, srcValue) -> {
+                    try {
+                        Tag tag = TagParser.parseTagFully(srcValue.string());
+                        if (tag == EndTag.INSTANCE) {
+                            return GsonDataComponentValue.gsonDataComponentValue(JsonNull.INSTANCE);
+                        } else {
+                            if (VersionHelper.isVersionNewerThan1_20_5()) {
+                                return GsonDataComponentValue.gsonDataComponentValue(NBTOps.INSTANCE.convertTo(JsonOps.INSTANCE, tag));
+                            } else {
+                                return GsonDataComponentValue.gsonDataComponentValue(LegacyJavaOps.INSTANCE.convertTo(LegacyJsonOps.INSTANCE, tag));
+                            }
+                        }
+                    } catch (Throwable e) {
+                        return GsonDataComponentValue.gsonDataComponentValue(JsonNull.INSTANCE);
+                    }
+                }
         );
         SConstructor2 constructor = SparrowClass.of(SparrowClass.find("net.kyori.adventure.text.event.DataComponentValueConverterRegistry$RegisteredConversion"))
                 .getDeclaredSparrowConstructor(ConstructorMatcher.takeArguments(Key.class, DataComponentValueConverterRegistry.Conversion.class))

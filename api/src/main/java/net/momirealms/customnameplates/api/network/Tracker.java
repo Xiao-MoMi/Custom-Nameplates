@@ -19,7 +19,9 @@ package net.momirealms.customnameplates.api.network;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.momirealms.customnameplates.api.CNPlayer;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,7 +33,7 @@ public class Tracker {
     private boolean isCrouching;
     private double scale;
     private boolean isSpectator;
-    private final CNPlayer tracker;
+    private final WeakReference<CNPlayer> tracker;
     private final CopyOnWriteArrayList<Integer> passengerIDs = new CopyOnWriteArrayList<>();
 
     /**
@@ -42,16 +44,17 @@ public class Tracker {
     public Tracker(CNPlayer tracker) {
         this.isCrouching = false;
         this.scale = 1;
-        this.tracker = tracker;
+        this.tracker = new WeakReference<>(tracker);
     }
 
     /**
      * Retrieves the tracker
      *
-     * @return the tracker
+     * @return the tracker, or {@code null} if it is no longer reachable
      */
+    @Nullable
     public CNPlayer tracker() {
-        return tracker;
+        return tracker.get();
     }
 
     /**

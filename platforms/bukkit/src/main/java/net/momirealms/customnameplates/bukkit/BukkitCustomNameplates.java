@@ -440,20 +440,31 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         if (cnPlayer == null) {
             return;
         }
-        for (JoinQuitListener listener : joinQuitListeners) {
-            listener.onPlayerQuit(cnPlayer);
-        }
-        entityIDFastLookup.remove(cnPlayer.entityID());
-        if (VersionHelper.isFolia()) {
-            foliaLocationTracker.remove(player.getName());
+        try {
+            for (JoinQuitListener listener : joinQuitListeners) {
+                listener.onPlayerQuit(cnPlayer);
+            }
+        } finally {
+            removePlayerFromTrackers(cnPlayer);
+            entityIDFastLookup.remove(cnPlayer.entityID());
+            if (VersionHelper.isFolia()) {
+                foliaLocationTracker.remove(player.getName());
+            }
         }
     }
 
     public void handleQuit(CNPlayer cnPlayer) {
         entityIDFastLookup.remove(cnPlayer.entityID());
         onlinePlayerMap.remove(cnPlayer.uuid());
+        removePlayerFromTrackers(cnPlayer);
         if (VersionHelper.isFolia()) {
             foliaLocationTracker.remove(cnPlayer.name());
+        }
+    }
+
+    private void removePlayerFromTrackers(CNPlayer player) {
+        for (CNPlayer onlinePlayer : getOnlinePlayers()) {
+            onlinePlayer.removePlayerFromTracker(player);
         }
     }
 

@@ -25,6 +25,7 @@
 
 package net.momirealms.customnameplates.common.plugin.scheduler;
 
+import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -96,7 +97,7 @@ public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
     private void reportRunningTasks(Predicate<Thread> predicate) {
         Thread.getAllStackTraces().forEach((thread, stack) -> {
             if (predicate.test(thread)) {
-                this.plugin.getPluginLogger().warn("Thread " + thread.getName() + " is blocked, and may be the reason for the slow shutdown!\n" +
+                CustomNameplates.getInstance().getPluginLogger().warn("Thread " + thread.getName() + " is blocked, and may be the reason for the slow shutdown!\n" +
                         Arrays.stream(stack).map(el -> "  " + el).collect(Collectors.joining("\n"))
                 );
             }
@@ -115,10 +116,10 @@ public abstract class AbstractJavaScheduler<T> implements SchedulerAdapter<T> {
         }
     }
 
-    private final class ExceptionHandler implements UncaughtExceptionHandler {
+    private static final class ExceptionHandler implements UncaughtExceptionHandler {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
-            AbstractJavaScheduler.this.plugin.getPluginLogger().warn("Thread " + t.getName() + " threw an uncaught exception", e);
+            CustomNameplates.getInstance().getPluginLogger().warn("Thread " + t.getName() + " threw an uncaught exception", e);
         }
     }
 }
