@@ -289,15 +289,17 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
 
         @Override
         public void write(ChannelHandlerContext context, Object packet, ChannelPromise channelPromise) throws Exception {
+            PacketEvent event = new PacketEvent(packet);
             try {
-                PacketEvent event = new PacketEvent(packet);
                 plugin.getPlatform().onPacketSend(player, event);
-                if (event.cancelled()) return;
-                super.write(context, packet, channelPromise);
             } catch (Throwable e) {
-                plugin.getPluginLogger().severe("An error occurred when reading packets", e);
+                plugin.getPluginLogger().severe("An error occurred when processing an outbound packet", e);
                 super.write(context, packet, channelPromise);
+                return;
             }
+            if (event.cancelled()) return;
+            super.write(context, packet, channelPromise);
+            event.runAfterSendTasks(e -> plugin.getPluginLogger().severe("An error occurred in an after-send packet task", e));
         }
     }
 

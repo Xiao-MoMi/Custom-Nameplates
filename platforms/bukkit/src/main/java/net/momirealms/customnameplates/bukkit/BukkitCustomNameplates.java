@@ -491,6 +491,9 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
+        if (!event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+            return;
+        }
         CNPlayer cnPlayer = getPlayer(event.getPlayer().getUniqueId());
         if (cnPlayer != null) {
             for (PlayerListener listener : playerListeners) {

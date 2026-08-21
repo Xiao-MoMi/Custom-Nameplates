@@ -232,9 +232,11 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$ClientboundAddEntityPacket$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    Tracker tracker = added.addPlayerToTracker(player);
-                    tracker.setSpectator(added.isSpectator());
-                    CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
+                    event.afterSend(() -> {
+                        Tracker tracker = added.addPlayerToTracker(player);
+                        tracker.setSpectator(added.isSpectator());
+                        CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
+                    });
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle ClientboundAddEntityPacket", e);
@@ -248,9 +250,11 @@ public class BukkitPlatform implements Platform {
                 int entityID = (int) Reflections.field$PacketPlayOutNamedEntitySpawn$entityId.get(packet);
                 CNPlayer added = CustomNameplates.getInstance().getPlayer(entityID);
                 if (added != null) {
-                    Tracker tracker = added.addPlayerToTracker(player);
-                    tracker.setSpectator(added.isSpectator());
-                    CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
+                    event.afterSend(() -> {
+                        Tracker tracker = added.addPlayerToTracker(player);
+                        tracker.setSpectator(added.isSpectator());
+                        CustomNameplates.getInstance().getUnlimitedTagManager().onAddPlayer(added, player);
+                    });
                 }
             } catch (ReflectiveOperationException e) {
                 CustomNameplates.getInstance().getPluginLogger().severe("Failed to handle PacketPlayOutNamedEntitySpawn", e);

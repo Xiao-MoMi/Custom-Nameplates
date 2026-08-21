@@ -19,13 +19,18 @@ package net.momirealms.customnameplates.api.network;
 
 import net.momirealms.customnameplates.common.event.Cancellable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+
 /**
  * Represents a packet event, which can be cancelled and supports delayed tasks that are executed later.
  */
 public class PacketEvent implements Cancellable {
-
-    private boolean cancelled;
     private final Object packet;
+    private boolean cancelled;
+    private List<Runnable> afterSendTasks;
 
     /**
      * Constructs a new PacketEvent with the specified packet.
@@ -43,6 +48,42 @@ public class PacketEvent implements Cancellable {
      */
     public Object getPacket() {
         return packet;
+    }
+
+    /**
+     * Registers a task that must run only after this packet has been forwarded
+     * to the next outbound handler.
+     *
+     * @param task task to execute after the packet is sent
+     */
+    public void afterSend(Runnable task) {
+        this.afterSendTasks.add(Objects.requireNonNull(task, "task"));
+    }
+
+    public List<Runnable> afterSendTasks() {
+        if (this.afterSendTasks == null) {
+            this.afterSendTasks = new ArrayList<>(1);
+        }
+        return this.afterSendTasks;
+    }
+
+    /**
+     * Executes and clears all registered after-send tasks. A failure in one
+     * task is reported without preventing the remaining tasks from running.
+     *
+     * @param exceptionHandler handler for failures raised by after-send tasks
+     */
+    public void runAfterSendTasks(Consumer<Throwable> exceptionHandler) {
+        Objects.requireNonNull(exceptionHandler, "exceptionHandler");
+        List<Runnable> tasks = List.copyOf(afterSendTasks);
+        afterSendTasks.clear();
+        for (Runnable task : tasks) {
+            try {
+                task.run();
+            } catch (Throwable throwable) {
+                exceptionHandler.accept(throwable);
+            }
+        }
     }
 
     /**
