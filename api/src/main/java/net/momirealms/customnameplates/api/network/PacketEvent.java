@@ -57,7 +57,7 @@ public class PacketEvent implements Cancellable {
      * @param task task to execute after the packet is sent
      */
     public void afterSend(Runnable task) {
-        this.afterSendTasks.add(Objects.requireNonNull(task, "task"));
+        this.afterSendTasks().add(Objects.requireNonNull(task, "task"));
     }
 
     public List<Runnable> afterSendTasks() {
@@ -74,14 +74,14 @@ public class PacketEvent implements Cancellable {
      * @param exceptionHandler handler for failures raised by after-send tasks
      */
     public void runAfterSendTasks(Consumer<Throwable> exceptionHandler) {
-        Objects.requireNonNull(exceptionHandler, "exceptionHandler");
-        List<Runnable> tasks = List.copyOf(afterSendTasks);
-        afterSendTasks.clear();
-        for (Runnable task : tasks) {
-            try {
-                task.run();
-            } catch (Throwable throwable) {
-                exceptionHandler.accept(throwable);
+        if (this.afterSendTasks != null) {
+            Objects.requireNonNull(exceptionHandler, "exceptionHandler");
+            for (Runnable task : this.afterSendTasks) {
+                try {
+                    task.run();
+                } catch (Throwable throwable) {
+                    exceptionHandler.accept(throwable);
+                }
             }
         }
     }
