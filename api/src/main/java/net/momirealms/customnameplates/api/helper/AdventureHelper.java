@@ -27,6 +27,7 @@ import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.text.serializer.json.legacyimpl.NBTLegacyHoverEventSerializer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.common.text.minimessage.HeadTextureTag;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -52,8 +53,9 @@ public class AdventureHelper {
     private final Cache<String, String> jsonToMiniMessageCache;
 
     private AdventureHelper() {
-        this.miniMessage = MiniMessage.builder().build();
-        this.miniMessageStrict = MiniMessage.builder().strict(true).build();
+        MiniMessage.Builder miniMessageBuilder = MiniMessage.builder().editTags(tags -> tags.resolver(HeadTextureTag.INSTANCE));
+        this.miniMessage = miniMessageBuilder.build();
+        this.miniMessageStrict = miniMessageBuilder.strict(true).build();
         GsonComponentSerializer.Builder builder = GsonComponentSerializer.builder();
         if (!VersionHelper.isVersionNewerThan1_20_5()) {
             builder.legacyHoverEventSerializer(NBTLegacyHoverEventSerializer.get());

@@ -20,8 +20,8 @@ package net.momirealms.customnameplates.common.locale;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.Translator;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.common.plugin.CustomNameplatesProperties;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Pair;
@@ -69,7 +69,7 @@ public class TranslationManager {
             this.plugin.getConfigManager().saveResource("translations/" + lang + ".yml");
         }
 
-        this.registry = MiniMessageTranslationRegistry.create(Key.key("customnameplates", "main"), MiniMessage.miniMessage());
+        this.registry = MiniMessageTranslationRegistry.create(Key.key("customnameplates", "main"), AdventureHelper.miniMessage());
         this.registry.defaultLocale(DEFAULT_LOCALE);
         this.loadFromFileSystem(this.translationsDirectory, false);
         MiniMessageTranslator.translator().addSource(this.registry);

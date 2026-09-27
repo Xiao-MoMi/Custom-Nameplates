@@ -35,8 +35,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -53,7 +55,7 @@ public class DependencyManagerImpl implements DependencyManager {
     /** The classpath appender to preload dependencies into */
     private final ClassPathAppender classPathAppender;
     /** A map of dependencies which have already been loaded. */
-    private final EnumMap<Dependency, Path> loaded = new EnumMap<>(Dependency.class);
+    private final Map<Dependency, Path> loaded = Collections.synchronizedMap(new EnumMap<>(Dependency.class));
     /** A map of isolated classloaders which have been created. */
     private final Map<Set<Dependency>, IsolatedClassLoader> loaders = new HashMap<>();
     /** Cached relocation handler instance. */
@@ -152,7 +154,8 @@ public class DependencyManagerImpl implements DependencyManager {
 
     private Path downloadDependency(Dependency dependency) throws DependencyDownloadException {
         String fileName = dependency.getFileName(null);
-        Path file = this.cacheDirectory.resolve(fileName);
+        Path file = this.cacheDirectory.resolve(dependency.toLocalPath()).resolve(fileName);
+        cleanOutdatedVersions(file.getParent());
 
         // if the file already exists, don't attempt to re-download it.
         if (Files.exists(file)) {
@@ -179,13 +182,39 @@ public class DependencyManagerImpl implements DependencyManager {
         throw Objects.requireNonNull(lastError);
     }
 
+    private void cleanOutdatedVersions(Path currentVersionDirectory) {
+        Path artifactDirectory = currentVersionDirectory.getParent();
+        if (!Files.isDirectory(artifactDirectory)) return;
+
+        Set<Path> loadedVersionDirectories = new HashSet<>();
+        synchronized (this.loaded) {
+            this.loaded.values().forEach(path -> loadedVersionDirectories.add(path.getParent()));
+        }
+        try (DirectoryStream<Path> directories = Files.newDirectoryStream(artifactDirectory)) {
+            for (Path directory : directories) {
+                if (!Files.isDirectory(directory) || directory.equals(currentVersionDirectory)
+                        || loadedVersionDirectories.contains(directory)) continue;
+                try (Stream<Path> paths = Files.walk(directory)) {
+                    for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                        Files.delete(path);
+                    }
+                    this.plugin.getPluginLogger().info("Cleaned up outdated dependency " + directory);
+                } catch (IOException | RuntimeException e) {
+                    this.plugin.getPluginLogger().warn("Failed to clean outdated dependency " + directory, e);
+                }
+            }
+        } catch (IOException e) {
+            this.plugin.getPluginLogger().warn("Failed to clean outdated dependencies in " + artifactDirectory, e);
+        }
+    }
+
     private Path remapDependency(Dependency dependency, Path normalFile) throws Exception {
         List<Relocation> rules = new ArrayList<>(dependency.getRelocations());
         if (rules.isEmpty()) {
             return normalFile;
         }
 
-        Path remappedFile = this.cacheDirectory.resolve(dependency.getFileName(DependencyRegistry.isGsonRelocated() ? "remapped-legacy" : "remapped"));
+        Path remappedFile = normalFile.resolveSibling(dependency.getFileName(DependencyRegistry.isGsonRelocated() ? "remapped-legacy" : "remapped"));
 
         // if the remapped source exists already, just use that.
         if (Files.exists(remappedFile)) {
@@ -202,6 +231,7 @@ public class DependencyManagerImpl implements DependencyManager {
         Path cacheDirectory = plugin.getDataDirectory().resolve("libs");
         try {
             if (Files.exists(cacheDirectory) && (Files.isDirectory(cacheDirectory) || Files.isSymbolicLink(cacheDirectory))) {
+                cleanDirectoryJars(plugin, cacheDirectory);
                 return cacheDirectory;
             }
 
@@ -215,6 +245,19 @@ public class DependencyManagerImpl implements DependencyManager {
         }
 
         return cacheDirectory;
+    }
+
+    private static void cleanDirectoryJars(NameplatesPlugin plugin, Path directory) throws IOException {
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(directory, "*.jar")) {
+            for (Path file : files) {
+                if (!Files.isRegularFile(file)) continue;
+                try {
+                    Files.delete(file);
+                } catch (IOException e) {
+                    plugin.getPluginLogger().warn("Failed to clean legacy dependency " + file, e);
+                }
+            }
+        }
     }
 
     @Override

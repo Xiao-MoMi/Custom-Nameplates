@@ -54,7 +54,7 @@ dependencies {
     compileOnly("org.incendo:cloud-minecraft-extras:${rootProject.properties["cloud_minecraft_extras_version"]}")
     compileOnly("org.incendo:cloud-paper:${rootProject.properties["cloud_paper_version"]}")
     // Netty
-    compileOnly("io.netty:netty-all:4.1.117.Final")
+    compileOnly("io.netty:netty-all:${rootProject.properties["netty_version"]}")
 }
 
 tasks {

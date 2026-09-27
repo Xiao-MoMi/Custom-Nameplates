@@ -419,6 +419,10 @@ public enum Dependency {
         return s.replace("{}", ".");
     }
 
+    public String toLocalPath() {
+        return rewriteEscaping(groupId).replace(".", "/") + "/" + rewriteEscaping(artifactId) + "/" + getVersion();
+    }
+
     /**
      * Returns the filename for the dependency's JAR file, optionally with a classifier.
      *
