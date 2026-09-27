@@ -25,7 +25,6 @@
 
 package net.momirealms.customnameplates.common.sender;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.common.plugin.NameplatesPlugin;
 import net.momirealms.customnameplates.common.util.Tristate;

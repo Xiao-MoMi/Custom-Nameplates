@@ -74,17 +74,28 @@ public class BukkitNetworkManager implements PacketSender, PipelineInjector {
             };
         } else {
             packetConsumer = (player, packet) -> {
-                Vector3 vector3 = player.position();
-                Location location = new Location(Bukkit.getWorld(player.world()), vector3.x(), vector3.y(), vector3.z());
-                plugin.getScheduler().executeSync(() -> {
-                    try {
-                        Reflections.method$SendPacket.invoke(
-                                Reflections.field$PlayerConnection.get(
-                                        Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
-                    } catch (ReflectiveOperationException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, location);
+                Player bukkitPlayer = (Player) player.player();
+                if (VersionHelper.isFolia()) {
+                    // Follow the player across regions/worlds and discard tasks when the entity retires.
+                    bukkitPlayer.getScheduler().execute(plugin.getBootstrap(), () -> {
+                        if (!bukkitPlayer.isOnline()) return;
+                        try {
+                            Reflections.method$SendPacket.invoke(Reflections.field$PlayerConnection.get(Reflections.method$CraftPlayer$getHandle.invoke(bukkitPlayer)), packet);
+                        } catch (ReflectiveOperationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, null, 1L);
+                } else {
+                    Vector3 vector3 = player.position();
+                    Location location = new Location(Bukkit.getWorld(player.world()), vector3.x(), vector3.y(), vector3.z());
+                    plugin.getScheduler().executeSync(() -> {
+                        try {
+                            Reflections.method$SendPacket.invoke(Reflections.field$PlayerConnection.get(Reflections.method$CraftPlayer$getHandle.invoke(player.player())), packet);
+                        } catch (ReflectiveOperationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, location);
+                }
             };
         }
         this.active = true;

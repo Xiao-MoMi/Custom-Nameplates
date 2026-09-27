@@ -2,7 +2,8 @@ package net.momirealms.customnameplates.bukkit.reflection;
 
 import net.momirealms.sparrow.reflection.clazz.SparrowClass;
 import net.momirealms.sparrow.reflection.proxy.ASMProxyFactory;
-import net.momirealms.sparrow.reflection.proxy.annotation.*;
+import net.momirealms.sparrow.reflection.proxy.annotation.MethodInvoker;
+import net.momirealms.sparrow.reflection.proxy.annotation.ReflectionProxy;
 
 @ReflectionProxy(name = "net.minecraft.nbt.CompoundTag")
 public interface CompoundTagProxy {

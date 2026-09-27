@@ -22,7 +22,6 @@ import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.feature.bubble.BubbleConfig;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
-import net.momirealms.customnameplates.api.util.CharacterUtils;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
 import net.momirealms.customnameplates.common.command.CustomNameplatesCommandManager;

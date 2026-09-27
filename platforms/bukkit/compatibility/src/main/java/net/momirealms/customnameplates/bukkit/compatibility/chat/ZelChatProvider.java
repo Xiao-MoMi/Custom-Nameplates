@@ -19,7 +19,6 @@ package net.momirealms.customnameplates.bukkit.compatibility.chat;
 
 import it.pino.zelchat.api.ZelChatAPI;
 import it.pino.zelchat.api.message.ChatMessage;
-import it.pino.zelchat.api.message.channel.ChannelType;
 import it.pino.zelchat.api.message.channel.ChatChannel;
 import it.pino.zelchat.api.message.state.MessageState;
 import it.pino.zelchat.api.module.ChatModule;

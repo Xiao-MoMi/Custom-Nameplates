@@ -54,7 +54,6 @@ import net.momirealms.customnameplates.api.util.CharacterUtils;
 import net.momirealms.customnameplates.backend.util.FreeTypeUtils;
 import net.momirealms.customnameplates.common.util.Tuple;
 import org.apache.commons.io.FileUtils;
-import org.bson.types.MaxKey;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

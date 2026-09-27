@@ -21,17 +21,17 @@ import io.netty.channel.Channel;
 import net.momirealms.customnameplates.api.AbstractCNPlayer;
 import net.momirealms.customnameplates.api.CustomNameplates;
 import net.momirealms.customnameplates.api.util.Vector3;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BukkitCNPlayer extends AbstractCNPlayer<Player> {

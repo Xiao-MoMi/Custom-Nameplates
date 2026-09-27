@@ -17,10 +17,7 @@
 
 package net.momirealms.customnameplates.bukkit;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.key.Key;
@@ -34,7 +31,6 @@ import net.momirealms.customnameplates.api.Platform;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
 import net.momirealms.customnameplates.api.helper.AdventureHelper;
-import net.momirealms.customnameplates.api.helper.GsonHelper;
 import net.momirealms.customnameplates.api.helper.VersionHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.network.Tracker;

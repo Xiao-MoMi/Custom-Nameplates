@@ -26,7 +26,6 @@ import net.momirealms.customnameplates.api.feature.tag.Tag;
 import net.momirealms.customnameplates.api.feature.tag.TagRenderer;
 import net.momirealms.customnameplates.api.network.Tracker;
 import net.momirealms.customnameplates.api.util.Alignment;
-import net.momirealms.customnameplates.api.util.Billboard;
 import net.momirealms.customnameplates.api.util.SelfIncreaseEntityID;
 import net.momirealms.customnameplates.api.util.Vector3;
 import org.jetbrains.annotations.Nullable;
