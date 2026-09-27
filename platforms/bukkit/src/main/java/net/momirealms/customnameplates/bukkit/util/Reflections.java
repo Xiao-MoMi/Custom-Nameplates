@@ -1000,7 +1000,7 @@ public final class Reflections {
 
     public static final Field field$ClientboundSetPlayerTeamPacket$players = requireNonNull(
             ReflectionUtils.getInstanceDeclaredField(
-                    clazz$ClientboundSetPlayerTeamPacket, Collection.class, 0
+                    clazz$ClientboundSetPlayerTeamPacket, VersionHelper.isVersionNewerThan26_3() ? List.class : Collection.class, 0
             )
     );
 
