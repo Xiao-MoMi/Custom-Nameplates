@@ -76,13 +76,29 @@ public class ConfigUtils {
     }
 
     /**
-     * Converts a comma-separated string to an ARGB color value.
+     * Converts a color string to an ARGB integer.
+     * Accepts:
+     *  - hex {@code #AARRGGBB} or {@code #RRGGBB} (alpha defaults to 255 when omitted)
+     *  - comma-separated decimal {@code A,R,G,B}
      *
-     * @param arg the comma-separated string representing the ARGB color.
+     * @param arg the color string.
      * @return the corresponding ARGB color integer value.
      */
     public static int argb(String arg) {
-        return argb(arg.split(","));
+        String trimmed = arg.trim();
+        if (trimmed.startsWith("#")) {
+            String hex = trimmed.substring(1);
+            if (hex.length() == 6) {
+                // #RRGGBB — fully opaque
+                int rgb = Integer.parseUnsignedInt(hex, 16);
+                return (0xFF << 24) | rgb;
+            } else if (hex.length() == 8) {
+                // #AARRGGBB
+                return (int) Long.parseLong(hex, 16);
+            }
+            throw new IllegalArgumentException("Invalid hex color: " + arg);
+        }
+        return argb(trimmed.split(","));
     }
 
     /**
