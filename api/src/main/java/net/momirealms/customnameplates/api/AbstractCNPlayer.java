@@ -129,7 +129,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
         }
         if (value.ticks() != MainTask.getTicks()) {
             String newValue = placeholder.request(this);
-            value.updateTicks(!value.data().equals(newValue));
+            value.updateTicks(!Objects.equals(value.data(), newValue));
             value.data(newValue);
         }
         return value.data();
@@ -150,7 +150,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
         }
         if (value.ticks() != MainTask.getTicks()) {
             String newValue = placeholder.request(this, another);
-            value.updateTicks(!value.data().equals(newValue));
+            value.updateTicks(!Objects.equals(value.data(), newValue));
             value.data(newValue);
         }
         return value.data();
@@ -176,7 +176,7 @@ public abstract class AbstractCNPlayer<P> implements CNPlayer {
             } else {
                 latest = placeholder.request();
             }
-            value.updateTicks(!value.data().equals(latest));
+            value.updateTicks(!Objects.equals(value.data(), latest));
             value.data(latest);
         }
         return value.data();
