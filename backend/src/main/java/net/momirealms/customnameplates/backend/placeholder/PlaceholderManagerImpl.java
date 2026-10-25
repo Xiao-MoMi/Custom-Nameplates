@@ -593,8 +593,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
     public void refreshPlaceholders() {
         for (CNPlayer player : plugin.getOnlinePlayers()) {
             if (!player.isOnline()) continue;
-            Set<Feature> featuresToNotifyUpdates = new ObjectOpenHashSet<>();
-            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new Object2ObjectOpenHashMap<>();
+            Set<Feature> featuresToNotifyUpdates = new ObjectOpenHashSet<>(0);
+            Map<Feature, List<CNPlayer>> relationalFeaturesToNotifyUpdates = new Object2ObjectOpenHashMap<>(0);
             List<RelationalPlaceholder> delayedPlaceholdersToUpdate = new ObjectArrayList<>();
             for (Placeholder placeholder : player.activePlaceholdersToRefresh()) {
                 if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
@@ -705,6 +705,8 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                     }
                 }
             }
+
+            if (featuresToNotifyUpdates.isEmpty() && relationalFeaturesToNotifyUpdates.isEmpty()) continue;
 
             // Switch to another thread for updating
             plugin.getScheduler().async().execute(() -> {
