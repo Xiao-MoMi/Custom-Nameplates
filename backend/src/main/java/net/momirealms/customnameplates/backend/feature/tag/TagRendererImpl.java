@@ -79,7 +79,7 @@ public class TagRendererImpl implements TagRenderer {
 
     @Override
     public synchronized void onTick() {
-        if (!isValid()) return;
+        if (!isValid() || tagArray.length == 0) return;
         this.ticks++;
 
         Set<CNPlayer> playersToUpdatePassengers = new ObjectOpenHashSet<>();
