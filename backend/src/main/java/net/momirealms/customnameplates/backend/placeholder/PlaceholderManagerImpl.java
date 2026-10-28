@@ -612,7 +612,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                             continue;
                         }
                         String value = playerPlaceholder.request(player);
-                        if (!previous.data().equals(value)) {
+                        if (!Objects.equals(previous.data(), value)) {
                             previous.data(value);
                             previous.updateTicks(false);
                             featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
@@ -650,7 +650,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                         } else {
                             value = sharedPlaceholder.request();
                         }
-                        if (!previous.data().equals(value)) {
+                        if (!Objects.equals(previous.data(), value)) {
                             previous.data(value);
                             previous.updateTicks(false);
                             featuresToNotifyUpdates.addAll(player.activeFeatures(placeholder));
@@ -689,7 +689,7 @@ public class PlaceholderManagerImpl implements PlaceholderManager {
                             continue;
                         }
                         String value = placeholder.request(player, nearby);
-                        if (!previous.data().equals(value)) {
+                        if (!Objects.equals(previous.data(), value)) {
                             previous.data(value);
                             previous.updateTicks(false);
                             for (Feature feature : player.activeFeatures(placeholder)) {
