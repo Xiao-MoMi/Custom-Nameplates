@@ -769,6 +769,12 @@ public class BukkitPlatform implements Platform {
         }
     }
 
+    /** Bundles retain recursive dispatch and their shared cancellation/after-send event. */
+    static boolean handlesOutboundPacket(Object packet) {
+        return Reflections.clazz$ClientboundBundlePacket.isInstance(packet)
+                || packetFunctions.containsKey(packet.getClass().getSimpleName());
+    }
+
     @Override
     public void onPacketSend(CNPlayer player, PacketEvent event) {
         try {
@@ -792,8 +798,8 @@ public class BukkitPlatform implements Platform {
     }
 
     private void handlePacket(CNPlayer player, PacketEvent event, Object packet) {
-        Optional.ofNullable(packetFunctions.get(packet.getClass().getSimpleName()))
-                .ifPresent(function -> function.accept(player, event, packet));
+        var function = packetFunctions.get(packet.getClass().getSimpleName());
+        if (function != null) function.accept(player, event, packet);
     }
 
     @SuppressWarnings("unchecked")
