@@ -213,21 +213,7 @@ public class NameplatesGui implements Listener {
     }
 
     private Inventory createInventory(InventoryHolder holder, int size, String rawTitle, Player player) {
-        Object component = craftEngineComponent(resolvePlaceholders(player, rawTitle));
-        if (component != null) {
-            try {
-                for (Method method : Bukkit.class.getMethods()) {
-                    Class<?>[] parameters = method.getParameterTypes();
-                    if (method.getName().equals("createInventory") && parameters.length == 3 && parameters[1] == int.class
-                            && parameters[2].getName().equals("net.kyori.adventure.text.Component")) {
-                        return (Inventory) method.invoke(null, holder, size, component);
-                    }
-                }
-            } catch (ReflectiveOperationException exception) {
-                plugin.debug(() -> "Unable to create component titled GUI: " + exception.getMessage());
-            }
-        }
-        return Bukkit.createInventory(holder, size, color(stripMiniMessageTags(rawTitle)));
+        return Bukkit.createInventory(holder, size, color(resolvePlaceholders(player, rawTitle)));
     }
 
     private ItemTemplate loadTemplate(YamlDocument document, String path, Material fallbackMaterial, String fallbackName) {
