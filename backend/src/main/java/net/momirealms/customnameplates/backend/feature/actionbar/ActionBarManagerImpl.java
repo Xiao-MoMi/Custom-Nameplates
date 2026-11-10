@@ -100,7 +100,8 @@ public class ActionBarManagerImpl implements ActionBarManager, JoinQuitListener 
     public void handleActionBarPacket(CNPlayer player, String miniMessage) {
         ActionBarSender sender = senders.get(player.uuid());
         if (sender != null) {
-            if (miniMessage.length() >= 1024) return;
+            int maxLength = ConfigManager.otherActionBarMaxLength();
+            if (maxLength > 0 && miniMessage.length() >= maxLength) return;
             sender.externalActionBar(miniMessage);
         }
     }

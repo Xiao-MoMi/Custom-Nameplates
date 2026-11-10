@@ -163,6 +163,11 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected int otherActionBarStayTime;
 
     /**
+     * The exclusive MiniMessage length limit for other action bars; non-positive values disable the limit.
+     */
+    protected int otherActionBarMaxLength = 1024;
+
+    /**
      * The namespace used for resource identification.
      */
     protected String namespace;
@@ -483,6 +488,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
         defaultConditionRefreshInterval = config.getInt("other-settings.default-condition-refresh-interval", 20);
         catchOtherActionBar = config.getBoolean("other-settings.catch-other-plugin-actionbar", true);
         otherActionBarStayTime = config.getInt("other-settings.other-actionbar-stay-time", 3000);
+        otherActionBarMaxLength = config.getInt("other-settings.other-actionbar-max-length", 1024);
         displaySystemChat = config.getBoolean("other-settings.display-system-actionbar", true);
         hideTeamNames = config.getBoolean("other-settings.hide-team-names", true);
         stripChatColorTags = config.getBoolean("other-settings.strip-chat-color-tags", false);
@@ -819,6 +825,14 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
      */
     public static int otherActionBarStayTime() {
         return instance.otherActionBarStayTime;
+    }
+
+    /**
+     * Retrieves the exclusive MiniMessage length limit for other action bars.
+     * @return the length limit, or a non-positive value for no limit.
+     */
+    public static int otherActionBarMaxLength() {
+        return instance.otherActionBarMaxLength;
     }
 
     /**
