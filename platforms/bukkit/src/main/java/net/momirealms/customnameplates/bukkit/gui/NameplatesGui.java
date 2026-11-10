@@ -401,8 +401,9 @@ public class NameplatesGui implements Listener {
             ClassLoader loader = craftEngine.getClass().getClassLoader();
             Class<?> helper = Class.forName("net.momirealms.craftengine.core.util.AdventureHelper", true, loader);
             text = (String) helper.getMethod("legacyToMiniMessage", String.class).invoke(null, text);
-            Object miniMessage = helper.getMethod("customMiniMessage").invoke(null);
-            Object component = findSingleStringMethod(miniMessage.getClass(), "deserialize").invoke(miniMessage, text);
+            Method customMiniMessage = helper.getMethod("customMiniMessage");
+            Object miniMessage = customMiniMessage.invoke(null);
+            Object component = findSingleStringMethod(customMiniMessage.getReturnType(), "deserialize").invoke(miniMessage, text);
             Class<?> utils = Class.forName("net.momirealms.craftengine.bukkit.util.ComponentUtils", true, loader);
             return findSingleArgumentMethod(utils, "adventureToPaperAdventure").invoke(null, component);
         } catch (ReflectiveOperationException | LinkageError exception) {
