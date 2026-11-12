@@ -27,11 +27,13 @@ package net.momirealms.customnameplates.common.plugin.classpath;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Collection;
 
 /**
  * Provides access to {@link URLClassLoader}#addURL.
@@ -68,14 +70,14 @@ public abstract class URLClassLoaderAccess {
      */
     public abstract void addURL(@NotNull URL url);
 
-    private static void throwError(Throwable cause) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("CustomNameplates is unable to inject into the plugin URLClassLoader.\n" +
+    private static UnsupportedOperationException injectionError(Throwable cause) {
+        return new UnsupportedOperationException("CustomNameplates is unable to inject into the plugin URLClassLoader.\n" +
                 "You may be able to fix this problem by adding the following command-line argument " +
-                "directly after the 'java' command in your start script: \n'--add-opens java.base/java.lang=ALL-UNNAMED'", cause);
+                "directly after the 'java' command in your start script: \n'--add-opens java.base/java.net=ALL-UNNAMED'", cause);
     }
 
     /**
-     * Accesses using reflection, not supported on Java 9+.
+     * Accesses using reflection, requiring java.net to be opened on Java 9+.
      */
     private static class Reflection extends URLClassLoaderAccess {
         private static final Method ADD_URL_METHOD;
@@ -104,7 +106,7 @@ public abstract class URLClassLoaderAccess {
             try {
                 ADD_URL_METHOD.invoke(super.classLoader, url);
             } catch (ReflectiveOperationException e) {
-                URLClassLoaderAccess.throwError(e);
+                throw URLClassLoaderAccess.injectionError(e);
             }
         }
     }
@@ -133,43 +135,31 @@ public abstract class URLClassLoaderAccess {
             return UNSAFE != null;
         }
 
-        private final Collection<URL> unopenedURLs;
-        private final Collection<URL> pathURLs;
+        private final MethodHandle addURL;
 
-        @SuppressWarnings("unchecked")
         Unsafe(URLClassLoader classLoader) {
             super(classLoader);
 
-            Collection<URL> unopenedURLs;
-            Collection<URL> pathURLs;
             try {
-                Object ucp = fetchField(URLClassLoader.class, classLoader, "ucp");
-                unopenedURLs = (Collection<URL>) fetchField(ucp.getClass(), ucp, "unopenedUrls");
-                pathURLs = (Collection<URL>) fetchField(ucp.getClass(), ucp, "path");
+                // Invoke the JDK's addURL implementation instead of depending on URLClassPath's
+                // internal collections, which changed in Java 27. This also preserves its locking,
+                // duplicate checks and search order, including manifest Class-Path entries.
+                Field lookupField = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
+                MethodHandles.Lookup lookup = (MethodHandles.Lookup) UNSAFE.getObject(
+                        UNSAFE.staticFieldBase(lookupField), UNSAFE.staticFieldOffset(lookupField));
+                this.addURL = lookup.findVirtual(URLClassLoader.class, "addURL",
+                        MethodType.methodType(void.class, URL.class)).bindTo(classLoader);
             } catch (Throwable e) {
-                unopenedURLs = null;
-                pathURLs = null;
+                throw URLClassLoaderAccess.injectionError(e);
             }
-
-            this.unopenedURLs = unopenedURLs;
-            this.pathURLs = pathURLs;
-        }
-
-        private static Object fetchField(final Class<?> clazz, final Object object, final String name) throws NoSuchFieldException {
-            Field field = clazz.getDeclaredField(name);
-            long offset = UNSAFE.objectFieldOffset(field);
-            return UNSAFE.getObject(object, offset);
         }
 
         @Override
         public void addURL(@NotNull URL url) {
-            if (this.unopenedURLs == null || this.pathURLs == null) {
-                URLClassLoaderAccess.throwError(new NullPointerException("unopenedURLs or pathURLs"));
-            }
-
-            synchronized (this.unopenedURLs)  {
-                this.unopenedURLs.add(url);
-                this.pathURLs.add(url);
+            try {
+                this.addURL.invokeExact(url);
+            } catch (Throwable e) {
+                throw URLClassLoaderAccess.injectionError(e);
             }
         }
     }
@@ -183,7 +173,7 @@ public abstract class URLClassLoaderAccess {
 
         @Override
         public void addURL(@NotNull URL url) {
-            URLClassLoaderAccess.throwError(null);
+            throw URLClassLoaderAccess.injectionError(null);
         }
     }
 
