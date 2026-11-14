@@ -1,0 +1,101 @@
+# 每行必须是 9 个字符，最多 6 行。
+# layout 中的每个字符会读取 icons.<字符>。
+title: '&f<shift:-48><image:garden_ui_vol6:garden_ui_container_vol6_6row>'
+layout:
+  - '#########'
+  - '#ABCDEFG#'
+  - '#HIJKLMO#'
+  - '#QRSTUVW#'
+  - '#########'
+  - '###p#n#x#'
+
+icons:
+  '#':
+    type: static
+    display:
+      mat: BLACK_STAINED_GLASS_PANE
+      name: '&7隔离板'
+      hide-tooltip: true
+
+  # A-W（跳过 N、P）是动态铭牌槽。
+  # display 是未佩戴状态，equipped-display 是当前佩戴状态。
+  A: &nameplate-slot
+    type: nameplate
+    display:
+      mat: NAME_TAG
+      name: '&f{nameplate}'
+      lore:
+        - '&7编号: &f{id}'
+        - ''
+        - '&a点击佩戴'
+      # CraftEngine 物品示例：
+      # mat: 'source:craftengine:cuboide:iconic_name_tag'
+      # 现代物品模型组件：
+      # item-model: 'cuboide:iconic_name_tag'
+      # 物品提示框/边框：
+      # tooltip-style: 'cuboide:menu_border'
+      # hide-tooltip: false
+      # shiny: false
+      # custom-model-data: 0
+    equipped-display:
+      mat: LIME_DYE
+      name: '&a{nameplate}'
+      lore:
+        - '&7编号: &f{id}'
+        - ''
+        - '&e当前正在佩戴'
+        - '&c点击取消佩戴'
+      shiny: true
+  B: *nameplate-slot
+  C: *nameplate-slot
+  D: *nameplate-slot
+  E: *nameplate-slot
+  F: *nameplate-slot
+  G: *nameplate-slot
+  H: *nameplate-slot
+  I: *nameplate-slot
+  J: *nameplate-slot
+  K: *nameplate-slot
+  L: *nameplate-slot
+  M: *nameplate-slot
+  O: *nameplate-slot
+  Q: *nameplate-slot
+  R: *nameplate-slot
+  S: *nameplate-slot
+  T: *nameplate-slot
+  U: *nameplate-slot
+  V: *nameplate-slot
+  W: *nameplate-slot
+
+  p:
+    type: static
+    action: previous-page
+    display:
+      mat: ARROW
+      name: '&a上一页 &7({page}/{pages})'
+      lore:
+        - '&7已拥有: &f{owned}'
+      # mat: 'source:craftengine:你的命名空间:你的上一页物品'
+      # item-model: 'cuboide:iconic_arrow_left'
+      # tooltip-style: 'cuboide:menu_border'
+
+  n:
+    type: static
+    action: next-page
+    display:
+      mat: SPECTRAL_ARROW
+      name: '&a下一页 &7({page}/{pages})'
+      lore:
+        - '&7已拥有: &f{owned}'
+      # mat: 'source:craftengine:你的命名空间:你的下一页物品'
+
+  x:
+    type: static
+    action: close
+    display:
+      mat: 'source:craftengine:cuboide:iconic_barrier'
+      name: '&c关闭菜单'
+      lore:
+        - '&7点击关闭'
+      # tooltip-style 可用于 CraftEngine/资源包中的物品提示框边框。
+      # tooltip-style: 'cuboide:menu_border'
