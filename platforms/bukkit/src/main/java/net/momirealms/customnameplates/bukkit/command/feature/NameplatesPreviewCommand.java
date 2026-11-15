@@ -17,9 +17,11 @@
 
 package net.momirealms.customnameplates.bukkit.command.feature;
 
+import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.CNPlayer;
 import net.momirealms.customnameplates.api.ConfigManager;
 import net.momirealms.customnameplates.api.CustomNameplates;
+import net.momirealms.customnameplates.api.feature.nameplate.Nameplate;
 import net.momirealms.customnameplates.api.feature.JoinQuitListener;
 import net.momirealms.customnameplates.bukkit.BukkitCustomNameplates;
 import net.momirealms.customnameplates.bukkit.command.BukkitCommandFeature;
@@ -31,7 +33,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.context.CommandInput;
+import org.incendo.cloud.parser.standard.StringParser;
+import org.incendo.cloud.suggestion.Suggestion;
+import org.incendo.cloud.suggestion.SuggestionProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender> implements JoinQuitListener {
@@ -44,6 +53,13 @@ public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender
     public Command.Builder<? extends CommandSender> assembleCommand(CommandManager<CommandSender> manager, Command.Builder<CommandSender> builder) {
         return builder
                 .senderType(Player.class)
+                .optional("nameplate", StringParser.stringComponent().suggestionProvider(new SuggestionProvider<>() {
+                    @Override
+                    public @NonNull CompletableFuture<? extends @NonNull Iterable<? extends @NonNull Suggestion>> suggestionsFuture(@NonNull CommandContext<Object> context, @NonNull CommandInput input) {
+                        return CompletableFuture.completedFuture(plugin.getNameplateManager().nameplates().stream()
+                                .map(nameplate -> Suggestion.suggestion(nameplate.id())).toList());
+                    }
+                }))
                 .handler(context -> {
                     if (!ConfigManager.nametagModule()) return;
                     if (CustomNameplates.getInstance().getUnlimitedTagManager().isAlwaysShow()) return;
@@ -58,6 +74,23 @@ public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender
                         handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_PREVIEW_FAILURE_COOLDOWN);
                         return;
                     }
+
+                    String previousNameplate = player.nameplateData();
+                    boolean specified = context.optional("nameplate").isPresent();
+                    if (specified) {
+                        String nameplateId = context.get("nameplate");
+                        Nameplate nameplate = plugin.getNameplateManager().nameplateById(nameplateId);
+                        if (nameplate == null) {
+                            nameplate = plugin.getNameplateManager().nameplateByCommand(nameplateId);
+                        }
+                        if (nameplate == null) {
+                            handleFeedback(context, MessageConstants.COMMAND_NAMEPLATES_EQUIP_FAILURE_NOT_EXISTS,
+                                    Component.text(nameplateId));
+                            return;
+                        }
+                        player.setCurrentNameplate(nameplate.id());
+                    }
+
                     plugin.getUnlimitedTagManager().setTempPreviewing(player, true);
 
                     SchedulerTask task = plugin.getScheduler().asyncLater(() -> {
@@ -65,6 +98,9 @@ public class NameplatesPreviewCommand extends BukkitCommandFeature<CommandSender
                             return;
                         }
                         plugin.getUnlimitedTagManager().setTempPreviewing(player, false);
+                        if (specified) {
+                            player.setCurrentNameplate(previousNameplate);
+                        }
                     }, plugin.getUnlimitedTagManager().previewDuration(), TimeUnit.SECONDS);
 
                     PreviewTasks.delayedTasks.put(player.uuid(), task);

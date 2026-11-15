@@ -45,6 +45,7 @@ import net.momirealms.customnameplates.bukkit.compatibility.cosmetic.MagicCosmet
 import net.momirealms.customnameplates.bukkit.compatibility.perm.LuckPermsEventListeners;
 import net.momirealms.customnameplates.bukkit.compatibility.quest.TypeWriterListener;
 import net.momirealms.customnameplates.bukkit.compatibility.region.WorldGuardRegion;
+import net.momirealms.customnameplates.bukkit.gui.NameplatesGui;
 import net.momirealms.customnameplates.bukkit.requirement.BukkitRequirementManager;
 import net.momirealms.customnameplates.bukkit.scheduler.BukkitSchedulerAdapter;
 import net.momirealms.customnameplates.bukkit.tag.BukkitUnlimitedTagManager;
@@ -90,6 +91,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
     private BukkitSenderFactory senderFactory;
     private BukkitCommandManager commandManager;
     private BukkitNetworkManager networkManager;
+    private NameplatesGui nameplatesGui;
 
     private final JavaPlugin bootstrap;
 
@@ -174,6 +176,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.storageManager = new StorageManagerImpl(this);
         this.chatManager = new BukkitChatManager(this);
         this.resourcePackManager = new ResourcePackManagerImpl(this);
+        this.nameplatesGui = new NameplatesGui(this);
         this.eventManager = EventManager.create(this);
         this.api = new CustomNameplatesAPI(this);
 
@@ -239,6 +242,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.reload();
         this.loaded = true;
         Bukkit.getPluginManager().registerEvents(this, getBootstrap());
+        Bukkit.getPluginManager().registerEvents(this.nameplatesGui, getBootstrap());
         this.commandManager.registerDefaultFeatures();
 
         if (ConfigManager.metrics()) new Metrics(getBootstrap(), 16649);
@@ -337,6 +341,7 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
         this.backgroundManager.reload();
         this.bubbleManager.reload();
         this.nameplateManager.reload();
+        this.nameplatesGui.reload();
         this.imageManager.reload();
         this.advanceManager.reload();
         // set up placeholders
@@ -492,6 +497,10 @@ public class BukkitCustomNameplates extends CustomNameplates implements Listener
 
     public BukkitSenderFactory getSenderFactory() {
         return senderFactory;
+    }
+
+    public NameplatesGui getNameplatesGui() {
+        return nameplatesGui;
     }
 
     public void registerJoinQuitListener(JoinQuitListener listener) {

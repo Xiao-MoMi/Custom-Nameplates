@@ -80,12 +80,12 @@ nameplates_unequip:
     - /nameplates unequip
 
 # A command to preview the nameplate
-# Usage: [COMMAND]
+# Usage: [COMMAND] [NAMEPLATE]
 nameplates_preview:
   enable: true
   permission: nameplates.command.preview
   usage:
-    - /nameplates preview
+    - /nameplates preview [NAMEPLATE]
 
 # A command to toggle the nameplate previewing
 # This command conflicts with `/nameplates preview`

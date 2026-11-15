@@ -30,6 +30,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.parser.standard.StringParser;
+import org.incendo.cloud.suggestion.SuggestionProvider;
 
 import java.util.Collection;
 import java.util.StringJoiner;
@@ -44,8 +46,13 @@ public class NameplatesListCommand extends BukkitCommandFeature<CommandSender> {
     public Command.Builder<? extends CommandSender> assembleCommand(CommandManager<CommandSender> manager, Command.Builder<CommandSender> builder) {
         return builder
                 .senderType(Player.class)
+                .optional("view", StringParser.stringParser(), SuggestionProvider.suggestingStrings("gui"))
                 .handler(context -> {
                     if (!ConfigManager.nameplateModule()) return;
+                    if (context.<String>optional("view").map("gui"::equalsIgnoreCase).orElse(false)) {
+                        plugin.getNameplatesGui().open(context.sender());
+                        return;
+                    }
                     CNPlayer player = plugin.getPlayer(context.sender().getUniqueId());
                     if (player == null) {
                         throw new RuntimeException("Player should not be null");
