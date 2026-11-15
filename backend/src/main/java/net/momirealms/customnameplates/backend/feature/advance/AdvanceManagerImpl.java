@@ -1106,14 +1106,14 @@ public class AdvanceManagerImpl implements AdvanceManager {
                                 }
                                 if (value != null) {
                                     String finalText = AdventureHelper.stripTags(AdventureHelper.legacyToMiniMessage(value));
-                                    if (finalText.length() != 1) {
+                                    if (finalText.codePointCount(0, finalText.length()) != 1) {
                                         plugin.getPluginLogger().warn(character + " is not a supported placeholder");
                                     } else {
-                                        builder.advance(finalText.charAt(0), number.floatValue());
+                                        builder.advance(finalText.codePointAt(0), number.floatValue());
                                     }
                                 }
-                            } else if (character.length() == 1) {
-                                builder.advance(character.charAt(0), number.floatValue());
+                            } else if (character.codePointCount(0, character.length()) == 1) {
+                                builder.advance(character.codePointAt(0), number.floatValue());
                             } else {
                                 plugin.getPluginLogger().warn(character + " is not a supported character");
                             }
