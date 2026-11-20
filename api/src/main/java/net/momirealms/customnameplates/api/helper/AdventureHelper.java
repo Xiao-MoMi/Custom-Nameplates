@@ -135,14 +135,11 @@ public class AdventureHelper {
      * @return the resulting Component
      */
     public static Component miniMessage(String miniMessage) {
-        AdventureHelper instance = getInstance();
-        return instance.miniMessageToComponentCache.get(miniMessage, (text) -> {
-            if (legacySupport) {
-                return miniMessage().deserialize(legacyToMiniMessage(text));
-            } else {
-                return miniMessage().deserialize(text);
-            }
-        });
+        return getInstance().miniMessageToComponentCache.get(miniMessage, AdventureHelper::deserializeMiniMessage);
+    }
+
+    private static Component deserializeMiniMessage(String text) {
+        return miniMessage().deserialize(legacySupport ? legacyToMiniMessage(text) : text);
     }
 
     /**
@@ -183,8 +180,18 @@ public class AdventureHelper {
     public static Object miniMessageToMinecraftComponent(String miniMessage, String name, String objective) {
         AdventureHelper instance = getInstance();
         return instance.miniMessageToMinecraftComponentCache.get(miniMessage, (text) -> {
-            String json = instance.gsonComponentSerializer.serialize(Component.score().name(name).objective(objective).build().append(miniMessage(text)));
-            return CustomNameplates.getInstance().getPlatform().jsonToMinecraftComponent(json);
+            boolean actionBar = "actionbar".equals(objective);
+            // The native cache already keeps the finished actionbar.
+            Component parsed = actionBar ? instance.miniMessageToComponentCache.getIfPresent(text) : miniMessage(text);
+            if (parsed == null) {
+                parsed = deserializeMiniMessage(text);
+            }
+            Component component = Component.score().name(name).objective(objective).build().append(parsed);
+            var platform = CustomNameplates.getInstance().getPlatform();
+            if (actionBar) {
+                return platform.toMinecraftActionBar(component);
+            }
+            return platform.jsonToMinecraftComponent(instance.gsonComponentSerializer.serialize(component));
         });
     }
 
