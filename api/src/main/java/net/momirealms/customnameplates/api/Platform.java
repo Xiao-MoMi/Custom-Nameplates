@@ -17,8 +17,10 @@
 
 package net.momirealms.customnameplates.api;
 
+import net.kyori.adventure.text.Component;
 import net.momirealms.customnameplates.api.feature.bossbar.BossBar;
 import net.momirealms.customnameplates.api.feature.tag.NameTagConfig;
+import net.momirealms.customnameplates.api.helper.AdventureHelper;
 import net.momirealms.customnameplates.api.network.PacketEvent;
 import net.momirealms.customnameplates.api.placeholder.Placeholder;
 import net.momirealms.customnameplates.api.util.Alignment;
@@ -41,6 +43,10 @@ public interface Platform {
      * @return the Minecraft component object
      */
     Object jsonToMinecraftComponent(String json);
+
+    default Object toMinecraftActionBar(Component component) {
+        return jsonToMinecraftComponent(AdventureHelper.gson().serialize(component));
+    }
 
     /**
      * Converts a Minecraft component to a JSON string.

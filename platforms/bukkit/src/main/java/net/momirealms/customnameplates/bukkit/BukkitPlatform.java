@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValueConverterRegistry;
 import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
 import net.momirealms.customnameplates.api.CNPlayer;
@@ -543,6 +544,19 @@ public class BukkitPlatform implements Platform {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Object toMinecraftActionBar(Component component) {
+        JsonComponentCodec codec = ActionBarCodecHolder.CODEC;
+        if (codec == null) {
+            return Platform.super.toMinecraftActionBar(component);
+        }
+        return codec.decode(AdventureHelper.gson().serializeToTree(component));
+    }
+
+    private static final class ActionBarCodecHolder {
+        private static final JsonComponentCodec CODEC = JsonComponentCodec.find();
     }
 
     @Override
